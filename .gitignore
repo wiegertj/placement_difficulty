@@ -1,5 +1,6 @@
 # folders
-data/
+data/processed
+data/raw
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -76,7 +77,6 @@ docs/_build/
 
 # PyBuilder
 .pybuilder/
-target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
