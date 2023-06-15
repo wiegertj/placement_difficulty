@@ -33,6 +33,6 @@ if __name__ == '__main__':
         results.append(result)
 
     df = pd.DataFrame(results, columns=['dataset', 'avg_blength', 'max_blength', 'min_blength', 'std_blength', 'tree_depth'])
-    df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree"))
+    df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
 
 
