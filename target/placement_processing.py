@@ -22,7 +22,7 @@ def extract_entropy(jplace_file) -> pd.DataFrame:
             entropy_val = entropy(like_weight_ratios)
             entropies.append((sample_name, entropy_val))
 
-    df = pd.DataFrame(entropies, columns=['SampleID', 'Entropy'])
+    df = pd.DataFrame(entropies, columns=['sampleId', 'Entropy'])
     df['Entropy'] = min_max_normalize(df['Entropy'])
     return df
 
