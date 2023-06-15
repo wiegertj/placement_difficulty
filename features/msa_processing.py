@@ -1,16 +1,13 @@
 import math
-
 import pandas as pd
 import os
 from Bio import AlignIO
 import statistics
 import numpy as np
-from collections import Counter
 
 
 def basic_msa_features(msa_filepath):
     alignment = AlignIO.read(msa_filepath, 'fasta')
-    # Count the number of sequences
     num_sequences = len(alignment)
     seq_length = len(alignment[0].seq)
     return num_sequences, seq_length
@@ -28,8 +25,7 @@ def gap_statistics(msa_filepath):
 def compute_entropy(msa_file):
     alignment = AlignIO.read(msa_file, 'fasta')
     site_entropies = []
-    # Calculate the frequency of each residue at each alignment site
-    site_frequencies = []
+
     num_sites = alignment.get_alignment_length()
     print(msa_file)
     for site in range(num_sites):
@@ -49,11 +45,8 @@ def compute_entropy(msa_file):
 
         # Count the occurrences of each nucleotide
         nucleotide_counts = {nucleotide: site_column.count(nucleotide) for nucleotide in nucleotides}
-
-        # Compute the total count, excluding ambiguous characters
         total_count = sum(nucleotide_counts.values())
 
-        # Compute the probabilities
         probabilities = {}
         for nucleotide in nucleotides:
             count = nucleotide_counts[nucleotide]
@@ -75,12 +68,8 @@ def compute_entropy(msa_file):
             if probability != 0:
                 entropy -= probability * math.log(probability, 2)
 
-
         site_entropies.append(entropy)
 
-    # Calculate the entropy at each alignment site
-
-    # Compute the average entropy and standard deviation
     min_entropy = np.min(site_entropies)
     max_entropy = np.max(site_entropies)
     avg_entropy = np.mean(site_entropies)
@@ -90,15 +79,13 @@ def compute_entropy(msa_file):
 
 
 if __name__ == '__main__':
-    filenames = ["neotrop_reference.fasta","bv_reference.fasta","tara_reference.fasta"]
+    filenames = ["neotrop_reference.fasta", "bv_reference.fasta", "tara_reference.fasta"]
     results = []
     for file in filenames:
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
         avg_gaps, std_gaps = gap_statistics(filepath)
         avg_entropy, std_entropy, min_entropy, max_entropy = compute_entropy(filepath)
         num_seq, seq_length = basic_msa_features(filepath)
-
-
 
         name = ""
 

@@ -79,9 +79,6 @@ if __name__ == '__main__':
     results = []
     for file in filepaths:
         results_file = gap_statistics(file, 0.3)
-        # print(results_file)
         results.extend(results_file)
-    print(len(results))
-    print(len(results[0]))
     df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel", "average_gap_length"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index=False)

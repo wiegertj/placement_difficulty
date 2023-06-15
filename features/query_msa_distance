@@ -29,7 +29,6 @@ def compute_hamming_distance(msa_file, query_file):
 
         name = ""
 
-
         if msa_file == "neotrop_reference.fasta":
             name = "neotrop"
         elif msa_file == "bv_reference.fasta":
@@ -44,13 +43,12 @@ def compute_hamming_distance(msa_file, query_file):
 
 if __name__ == '__main__':
 
-    results = []
-
+    results_distances = []
 
     for msa_file, query_file in [("tara_reference.fasta", "tara_query.fasta")]:
         result_tmp = compute_hamming_distance(msa_file, query_file)
-        results.extend(result_tmp)
+        results_distances.extend(result_tmp)
 
-    df = pd.DataFrame(results, columns=['dataset', 'sampleId', 'min_ham_dist', 'max_ham_dist', 'avg_ham_dist', 'std_ham_dist'])
+    df = pd.DataFrame(results_distances, columns=['dataset', 'sampleId', 'min_ham_dist', 'max_ham_dist', 'avg_ham_dist', 'std_ham_dist'])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "tara_query_msa_dist.csv"))
 
