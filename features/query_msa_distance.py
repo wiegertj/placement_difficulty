@@ -14,8 +14,11 @@ def compute_hamming_distance(msa_file, query_file):
             print(counter)
         distances = []
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
-            distance = sum(ch1 != ch2 for ch1, ch2 in zip(record_query.seq, record_msa.seq))
-            distances.append(distance)
+            if record_msa.id != record_query.id:
+                distance = sum(ch1 != ch2 for ch1, ch2 in zip(record_query.seq, record_msa.seq))
+                distances.append(distance)
+            else:
+                print(record_query.id)
 
         max_ham = max(distances)
         min_ham = min(distances)
@@ -35,6 +38,8 @@ def compute_hamming_distance(msa_file, query_file):
             name = "bv"
         elif msa_file == "tara_reference.fasta":
             name = "tara"
+        else:
+            name = msa_file.replace("_msa.fasta","")
 
         results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham))
 
@@ -45,10 +50,10 @@ if __name__ == '__main__':
 
     results_distances = []
 
-    for msa_file, query_file in [("tara_reference.fasta", "tara_query.fasta")]:
+    for msa_file, query_file in [("13553_0_reference.fasta", "13553_0_query.fasta")]:
         result_tmp = compute_hamming_distance(msa_file, query_file)
         results_distances.extend(result_tmp)
 
     df = pd.DataFrame(results_distances, columns=['dataset', 'sampleId', 'min_ham_dist', 'max_ham_dist', 'avg_ham_dist', 'std_ham_dist'])
-    df.to_csv(os.path.join(os.pardir, "data/processed/features", "tara_query_msa_dist.csv"))
+    df.to_csv(os.path.join(os.pardir, "data/processed/features", "13553_0_msa_dist.csv"))
 
