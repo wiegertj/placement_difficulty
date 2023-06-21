@@ -60,9 +60,10 @@ def filter_gapped_kmers(sequence, k=config.K_MER_LENGTH, max_gap_percent=config.
     return kmer_list
 
 
-def compute_string_kernel_statistics(query, k=config.K_MER_LENGTH, max_gap_percent=config.K_MER_MAX_GAP_PERCENTAGE):
+def compute_string_kernel_statistics(query, k=config.K_MER_LENGTH, max_gap_percent=config.K_MER_MAX_GAP_PERCENTAGE) -> (str, str, float, float, float, float):
     """
-    Returns a list of k-mers for the given sequence considering a max_gap_percentage.
+    Computes string kernel using a bloom filter of the query and all the bloom filters of the MSA sequences.
+    Then summary statistics for a hash kernels are computed.
     Ambiguity code gets resolved on the fly by considering each possible k-mer.
 
             Parameters:
@@ -71,7 +72,7 @@ def compute_string_kernel_statistics(query, k=config.K_MER_LENGTH, max_gap_perce
                     max_gap_percent (float): maximum percentage of a k-mer to be valid
 
             Returns:
-                    kmers (list): list of k-mers
+                     tuple: (dataset, sampleId, min_kernel, max_kernel, mean_kernel, std_kernel)
     """
     kmers_query = filter_gapped_kmers(str(query.seq), k, max_gap_percent)
     query_bf = bloom_filter(kmers_query, len(kmers_query), config.BLOOM_FILTER_FP_RATE)
@@ -178,12 +179,14 @@ if __name__ == '__main__':
     interval_start = config.KMER_PROCESSING_INTERVAL_START  # sequence number to start with in query (last file number)
     bound = config.KMER_PROCESSING_COUNT  # how many sequences
 
-    results = []
+
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
 
-    for msa_file, query_file in [("bv_reference.fasta", "bv_query.fasta")]:
+    for msa_file, query_file in [("neotrop_reference.fasta", "neotrop_query_10k.fasta")]:
+
+        results = []
 
         bloom_filters_MSA = []
         string_kernel_features = []
@@ -208,6 +211,7 @@ if __name__ == '__main__':
                                        config.K_MER_LENGTH) + "_0" + str(config.K_MER_MAX_GAP_PERCENTAGE).replace("0.",
                                                                                                                   "") + "_" + str(
                                        interval_start) + ".csv"), index=False)
+            results = []
 
             if interval_start >= no_queries or interval_start >= bound:  # stop if we reached bound or no query samples left
                 break
