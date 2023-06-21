@@ -1,11 +1,21 @@
 import pandas as pd
 import os
-from Bio import SeqIO
 import statistics
+from Bio import SeqIO
 
 
-def compute_hamming_distance(msa_file, query_file):
+def compute_hamming_distance(msa_file, query_file) -> list:
+    """
+    Computes for each sequence in the query file all the hamming distances to the sequences in the MSA.
+    Then for each query sequence summary statistics are computed.
 
+            Parameters:
+                    msa_file (string): path to reference MSA file
+                    query_file (string): path to query file
+
+            Returns:
+                    list of: dataset, sampleId, relative min hamming dist, relative max hamming dist, relative average hamming distance, relative standard deviation hamming distance
+    """
     results = []
     counter = 0
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
@@ -22,7 +32,7 @@ def compute_hamming_distance(msa_file, query_file):
 
         max_ham = max(distances)
         min_ham = min(distances)
-        avg_ham = sum(distances)/len(distances)
+        avg_ham = sum(distances) / len(distances)
         std_ham = statistics.stdev(distances)
 
         rel_max_ham = max_ham / len(record_query.seq)
@@ -39,7 +49,7 @@ def compute_hamming_distance(msa_file, query_file):
         elif msa_file == "tara_reference.fasta":
             name = "tara"
         else:
-            name = msa_file.replace("_msa.fasta","")
+            name = msa_file.replace("_msa.fasta", "")
 
         results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham))
 
@@ -48,12 +58,13 @@ def compute_hamming_distance(msa_file, query_file):
 
 if __name__ == '__main__':
 
-    results_distances = []
-
-    for msa_file, query_file in [("13553_0_reference.fasta", "13553_0_query.fasta")]:
+    for msa_file, query_file in [("13553_0_reference.fasta", "13553_0_query.fasta"),
+                                 ("21086_0_reference.fasta", "21086_0_query.fasta"),
+                                 ("neotrop_reference", "neutrop_query_10k.fasta"),
+                                 ("bv_reference", "bv_query.fasta"), ("tara_reference", "tara_query.fasta")]:
         result_tmp = compute_hamming_distance(msa_file, query_file)
-        results_distances.extend(result_tmp)
 
-    df = pd.DataFrame(results_distances, columns=['dataset', 'sampleId', 'min_ham_dist', 'max_ham_dist', 'avg_ham_dist', 'std_ham_dist'])
-    df.to_csv(os.path.join(os.pardir, "data/processed/features", "13553_0_msa_dist.csv"))
-
+        df = pd.DataFrame(result_tmp, columns=['dataset', 'sampleId', 'min_ham_dist', 'max_ham_dist', 'avg_ham_dist',
+                                               'std_ham_dist'])
+        df.to_csv(os.path.join(os.pardir, "data/processed/features",
+                               msa_file.replace("_reference.fasta", "") + "_msa_dist.csv"))
