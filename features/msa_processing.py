@@ -1,33 +1,61 @@
 import math
 import pandas as pd
 import os
-from Bio import AlignIO
 import statistics
 import numpy as np
+from Bio import AlignIO
 
 
-def basic_msa_features(msa_filepath):
+def basic_msa_features(msa_filepath) -> (int, int):
+    """
+    Computes the number of sequences and their length in the MSA.
+
+            Parameters:
+                    msa_filepath (string): path to reference MSA
+
+            Returns:
+                    tuple: number of sequences, sequence length
+    """
     alignment = AlignIO.read(msa_filepath, 'fasta')
     num_sequences = len(alignment)
     seq_length = len(alignment[0].seq)
     return num_sequences, seq_length
 
 
-def gap_statistics(msa_filepath):
+def gap_statistics(msa_filepath) -> (float, float):
+    """
+    Computes gap statistics for a reference MSA.
+
+            Parameters:
+                    msa_filepath (string): path to reference MSA
+
+            Returns:
+                    tuple: average gaps per sequence, standard deviation of gap count
+    """
     alignment = AlignIO.read(msa_filepath, 'fasta')
     gap_counts = [seq.count('-') for seq in alignment]
-    avg_gaps = statistics.mean(gap_counts)
+    seq_length = len(alignment[0].seq)
+    avg_gaps = statistics.mean(gap_counts) / seq_length
     std_gaps = statistics.stdev(gap_counts)
 
     return avg_gaps, std_gaps
 
 
-def compute_entropy(msa_file):
-    alignment = AlignIO.read(msa_file, 'fasta')
+def compute_entropy(msa_filepath):
+    """
+    Computes the per site entropies of the MSA.
+    Returns summary statistics over them.
+
+            Parameters:
+                    msa_filepath (string): path to reference MSA
+
+            Returns:
+                    tuple: avg_entropy, std_entropy, min_entropy, max_entropy
+    """
+    alignment = AlignIO.read(msa_filepath, 'fasta')
     site_entropies = []
 
     num_sites = alignment.get_alignment_length()
-    print(msa_file)
     for site in range(num_sites):
         site_column = alignment[:, site]
 
@@ -70,16 +98,16 @@ def compute_entropy(msa_file):
 
         site_entropies.append(entropy)
 
-    min_entropy = np.min(site_entropies)
-    max_entropy = np.max(site_entropies)
-    avg_entropy = np.mean(site_entropies)
-    std_entropy = np.std(site_entropies)
+    min_entropy_ = np.min(site_entropies)
+    max_entropy_ = np.max(site_entropies)
+    avg_entropy_ = np.mean(site_entropies)
+    std_entropy_ = np.std(site_entropies)
 
-    return avg_entropy, std_entropy, min_entropy, max_entropy
+    return avg_entropy_, std_entropy_, min_entropy_, max_entropy_
 
 
 if __name__ == '__main__':
-    filenames = ["neotrop_reference.fasta", "bv_reference.fasta", "tara_reference.fasta"]
+    filenames = ["neotrop_reference.fasta", "bv_reference.fasta", "tara_reference.fasta", "13553_0_query.fasta", "21086_0_query.fasta"]
     results = []
     for file in filenames:
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
@@ -95,6 +123,8 @@ if __name__ == '__main__':
             name = "bv"
         elif file == "tara_reference.fasta":
             name = "tara"
+        else:
+            name = file.replace("_msa.fasta", "")
 
         results.append(
             (name, avg_gaps, std_gaps, avg_entropy, std_entropy, min_entropy, max_entropy, num_seq, seq_length))
