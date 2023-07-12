@@ -1,16 +1,24 @@
 import os
 import time
+import types
 import pandas as pd
 import statistics
 import multiprocessing
-import configs.feature_config as config
 from itertools import product
 from Bio import SeqIO
 from probables import BloomFilter
 
+module_path = os.path.join(os.pardir, "configs/feature_config.py")
 
-def filter_gapped_kmers(sequence, k=config.K_MER_LENGTH, max_gap_percent=config.K_MER_MAX_GAP_PERCENTAGE,
-                        max_n_percentage=config.K_MER_MAX_N_PERCENTAGE) -> list:
+feature_config = types.ModuleType('feature_config')
+feature_config.__file__ = module_path
+
+with open(module_path, 'rb') as module_file:
+    code = compile(module_file.read(), module_path, 'exec')
+    exec(code, feature_config.__dict__)
+
+def filter_gapped_kmers(sequence, k=feature_config.K_MER_LENGTH, max_gap_percent=feature_config.K_MER_MAX_GAP_PERCENTAGE,
+                        max_n_percentage=feature_config.K_MER_MAX_N_PERCENTAGE) -> list:
     """
     Returns a list of k-mers for the given sequence considering a max_gap_percentage.
     Ambiguity code gets resolved on the fly by considering each possible k-mer.
@@ -66,7 +74,7 @@ def filter_gapped_kmers(sequence, k=config.K_MER_LENGTH, max_gap_percent=config.
     return kmer_list
 
 
-def compute_string_kernel_statistics(query, k=config.K_MER_LENGTH, max_gap_percent=config.K_MER_MAX_GAP_PERCENTAGE) -> (
+def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH, max_gap_percent=feature_config.K_MER_MAX_GAP_PERCENTAGE) -> (
 str, str, float, float, float, float):
     """
     Computes string kernel using a bloom filter of the query and all the bloom filters of the MSA sequences.
@@ -82,7 +90,7 @@ str, str, float, float, float, float):
                      :return tuple: (dataset, sampleId, min_kernel, max_kernel, mean_kernel, std_kernel)
     """
     kmers_query = filter_gapped_kmers(str(query.seq), k, max_gap_percent)
-    query_bf = bloom_filter(set(kmers_query), len(kmers_query), config.BLOOM_FILTER_FP_RATE)
+    query_bf = bloom_filter(set(kmers_query), len(kmers_query), feature_config.BLOOM_FILTER_FP_RATE)
 
     result_string_kernels = []
     for bloom_filter_ref in bloom_filters_MSA:
@@ -168,7 +176,7 @@ def monitor_progress(results):
         print(progress)
         print(time_estimate)
 
-        time.sleep(config.KMER_PROCESSING_VERBOSE)
+        time.sleep(feature_config.KMER_PROCESSING_VERBOSE)
 
 
 def multiprocess_string_kernel(query_filename, bloom_filters_MSA_, msa_file_, interval):
@@ -176,7 +184,7 @@ def multiprocess_string_kernel(query_filename, bloom_filters_MSA_, msa_file_, in
     counter = 0
     for query_record in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_filename), 'fasta'):
         counter += 1
-        if (interval - config.KMER_PROCESSING_STEPSIZE) < counter <= interval:
+        if (interval - feature_config.KMER_PROCESSING_STEPSIZE) < counter <= interval:
             data.append(query_record)
         if counter > interval:
             break
@@ -213,7 +221,7 @@ if __name__ == '__main__':
         # Skip already processed
         potential_path = os.path.join(os.pardir, "data/processed/features",
                                       msa_file.replace("_reference.fasta", "") + "_kmer" + str(
-                                          config.K_MER_LENGTH) + "_0" + str(config.K_MER_MAX_GAP_PERCENTAGE).replace(
+                                          feature_config.K_MER_LENGTH) + "_0" + str(feature_config.K_MER_MAX_GAP_PERCENTAGE).replace(
                                           "0.",
                                           "") + "_" + str(
                                           200) + ".csv")
@@ -228,28 +236,28 @@ if __name__ == '__main__':
 
         no_queries = len(list(SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta').records))
 
-        interval_start = config.KMER_PROCESSING_INTERVAL_START  # sequence number to start with in query (last file number)
-        bound = config.KMER_PROCESSING_COUNT  # how many sequences
+        interval_start = feature_config.KMER_PROCESSING_INTERVAL_START  # sequence number to start with in query (last file number)
+        bound = feature_config.KMER_PROCESSING_COUNT  # how many sequences
 
         # Create bloom filters for each sequence in the MSA
         for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
-            kmers = filter_gapped_kmers(str(record.seq), config.K_MER_LENGTH, config.K_MER_MAX_GAP_PERCENTAGE)
+            kmers = filter_gapped_kmers(str(record.seq), feature_config.K_MER_LENGTH, feature_config.K_MER_MAX_GAP_PERCENTAGE)
             kmers = set(kmers)
-            bf = bloom_filter(kmers, len(kmers), config.BLOOM_FILTER_FP_RATE)
+            bf = bloom_filter(kmers, len(kmers), feature_config.BLOOM_FILTER_FP_RATE)
             bloom_filters_MSA.append((record.id, bf))
 
         print("Created Bloom Filter for MSAs ... ")
 
         # Parallel code to compute and store blocks of defined stepsize query samples
         while True:
-            interval_start += config.KMER_PROCESSING_STEPSIZE
+            interval_start += feature_config.KMER_PROCESSING_STEPSIZE
             result_tmp = multiprocess_string_kernel(query_file, bloom_filters_MSA, msa_file, interval_start)
             results.extend(result_tmp)
             df = pd.DataFrame(results,
                               columns=['dataset', 'sampleId', 'min_kernel', 'max_kernel', 'mean_kernel', 'std_kernel'])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    msa_file.replace("_reference.fasta", "") + "_kmer" + str(
-                                       config.K_MER_LENGTH) + "_0" + str(config.K_MER_MAX_GAP_PERCENTAGE).replace("0.",
+                                       feature_config.K_MER_LENGTH) + "_0" + str(feature_config.K_MER_MAX_GAP_PERCENTAGE).replace("0.",
                                                                                                                   "") + "_" + str(
                                        interval_start) + ".csv"), index=False)
             results = []

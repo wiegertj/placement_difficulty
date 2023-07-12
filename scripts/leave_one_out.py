@@ -5,13 +5,22 @@ import ete3
 import subprocess
 import glob
 import pandas as pd
-import configs.feature_config
 import numpy as np
 from Bio import AlignIO, SeqIO
 from dendropy.calculate import treecompare
+import types
 import sys
-sys.path.append(os.path.join(os.pardir, "configs"))
-import feature_config
+import importlib.util
+
+module_path = os.path.join(os.pardir, "configs/feature_config.py")
+
+feature_config = types.ModuleType('feature_config')
+feature_config.__file__ = module_path
+
+with open(module_path, 'rb') as module_file:
+    code = compile(module_file.read(), module_path, 'exec')
+    exec(code, feature_config.__dict__)
+
 
 def calculate_bsd_aligned(tree1, tree2):
     # Get the branch lengths of the aligned branches
@@ -89,7 +98,7 @@ for msa_name in filenames:
         # Get output tree path for result stroing
         output_file_tree = output_file.replace(".fasta", ".newick")
 
-        if configs.feature_config.REESTIMATE_TREE == True and len(
+        if feature_config.REESTIMATE_TREE == True and len(
                 sequence_ids) <= feature_config.REESTIMATE_TREE_SEQ_THRESHOLD:  # Reestimate smaller trees
 
             # ------------------------------------------ run RAxML-ng with LOO MSA ------------------------------------------
@@ -236,7 +245,7 @@ for msa_name in filenames:
 
         except FileNotFoundError:
             print("EPA-ng executable not found. Please make sure EPA-ng is installed and in the system PATH.")
-        if configs.feature_config.REESTIMATE_TREE == False:  # Delete tmp tree
+        if feature_config.REESTIMATE_TREE == False:  # Delete tmp tree
             os.remove(os.path.join(os.pardir, "data/raw/reference_tree_tmp", msa_name + "_" + to_query + ".newick"))
 
         # ------------------------------------ Cleanup ---------------------------------------
