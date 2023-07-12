@@ -12,7 +12,7 @@ samples = []
 for i in range(len(difficulty_ranges) - 1):
     lower_bound = difficulty_ranges[i]
     upper_bound = difficulty_ranges[i + 1]
-    subset = difficulties_df[(difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound) & (difficulties_df['data_type'] != 'AA')].sample(10)
+    subset = difficulties_df[(difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound) & (difficulties_df['data_type'] != 'AA')].sample(20)
     samples.append(subset)
 
 result = pd.concat(samples)
