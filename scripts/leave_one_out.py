@@ -23,8 +23,8 @@ def calculate_bsd_aligned(tree1, tree2):
     return score
 
 
-filenames = os.listdir(os.path.join(os.pardir, "data/raw/reference_tree"))
-filenames = [file.replace(".newick", "") for file in filenames]
+loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 
 print(filenames)
 msa_counter = 0
