@@ -256,7 +256,6 @@ SQLAlchemy==1.4.39
 stack-data==0.2.0
 statsmodels==0.13.5
 sympy==1.11.1
-tables==3.7.0
 TBB==0.2
 tblib==1.7.0
 tenacity==8.0.1
