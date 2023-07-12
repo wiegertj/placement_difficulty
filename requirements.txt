@@ -1,6 +1,6 @@
-ete3=*
-dendropy=*
-Bio=*
+ete3
+dendropy
+Bio
 click==8.0.4
 cryptography==39.0.1
 datashader==0.14.4
@@ -44,5 +44,5 @@ statsmodels==0.13.5
 tqdm==4.64.1
 Unidecode==1.2.0
 urllib3==1.26.14
-shutil=*
-tarfile=*
+shutil
+tarfile
