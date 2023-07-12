@@ -255,7 +255,6 @@ spyder-kernels==2.4.1
 SQLAlchemy==1.4.39
 stack-data==0.2.0
 statsmodels==0.13.5
-TBB==0.2
 tblib==1.7.0
 tenacity==8.0.1
 terminado==0.17.1
