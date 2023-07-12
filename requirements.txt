@@ -227,9 +227,6 @@ requests-file==1.5.1
 requests-toolbelt==0.9.1
 rope==1.7.0
 Rtree==1.0.1
-ruamel.yaml==0.17.21
-ruamel.yaml.clib==0.2.6
-ruamel-yaml-conda==0.17.21
 scikit-image==0.19.3
 scikit-learn==1.2.1
 scipy==1.10.0
