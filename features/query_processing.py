@@ -8,10 +8,10 @@ def gap_statistics(query_filepath) -> list:
     Computes gap statistics for each query in the query file.
 
             Parameters:
-                    query_filepath (string): path to query file
+                    :param query_filepath: path to query file
 
             Returns:
-                    list of: dataset, sampleId, gap_fraction, longest_gap_rel, average_gap_length
+                    :return list: dataset, sampleId, gap_fraction, longest_gap_rel, average_gap_length
     """
     results = []
     filepath = os.path.join(os.pardir, "data/raw/query", file)
@@ -77,7 +77,7 @@ def gap_statistics(query_filepath) -> list:
         elif query_filepath == "tara_query.fasta":
             name = "tara"
         else:
-            name = query_filepath.replace("0_query.fasta","")
+            name = query_filepath.replace("_query.fasta", "")
 
         results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length))
 
@@ -85,7 +85,12 @@ def gap_statistics(query_filepath) -> list:
 
 
 if __name__ == '__main__':
-    filepaths = ["neotrop_query_10k.fasta", "bv_query.fasta", "tara_query.fasta", "13553_0_query.fasta", "21086_0_query.fasta"]
+
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    loo_list = loo_selection['verbose_name'].str.replace(".phy", "_query.fasta").tolist()
+
+    filepaths = ["bv_query.fasta", "neotrop_query_10k.fasta", "tara_query.fasta"] + loo_list
+
     results = []
     for file in filepaths:
         results_file = gap_statistics(file)
@@ -96,4 +101,3 @@ if __name__ == '__main__':
     filepaths_loo = []
     for file in filepaths_loo:
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
-

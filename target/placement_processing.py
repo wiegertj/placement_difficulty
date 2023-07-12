@@ -1,8 +1,8 @@
 import json
 import os
 import pandas as pd
-from scipy.stats import entropy
 import math
+from scipy.stats import entropy
 from Bio import Phylo
 
 
@@ -19,10 +19,10 @@ def extract_entropy(jplace_file, tree_file) -> pd.DataFrame:
             sample_name = placement['n'][0]
             probabilities = placement['p']
             like_weight_ratios = [tup[2] for tup in probabilities]
-            entropy_val = entropy(like_weight_ratios) / math.log(num_branches)
+            entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)
             entropies.append((sample_name, entropy_val))
 
-    df = pd.DataFrame(entropies, columns=['sampleId', 'Entropy'])
+    df = pd.DataFrame(entropies, columns=['sampleId', 'entropy'])
     return df
 
 

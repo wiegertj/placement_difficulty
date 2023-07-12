@@ -1,6 +1,11 @@
 # folders
 data/processed
 data/raw
+data/loo_selection.csv
+data/treebase_difficulty.csv
+data/archive
+data
+.idea
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -148,6 +153,7 @@ dmypy.json
 
 # files
 *.csv
+*.xml
 *.fasta
 *.newick
 # Pyre type checker

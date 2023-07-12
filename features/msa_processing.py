@@ -11,10 +11,10 @@ def basic_msa_features(msa_filepath) -> (int, int):
     Computes the number of sequences and their length in the MSA.
 
             Parameters:
-                    msa_filepath (string): path to reference MSA
+                    :param msa_filepath: path to reference MSA
 
             Returns:
-                    tuple: number of sequences, sequence length
+                    :return tuple: number of sequences, sequence length
     """
     alignment = AlignIO.read(msa_filepath, 'fasta')
     num_sequences = len(alignment)
@@ -27,10 +27,10 @@ def gap_statistics(msa_filepath) -> (float, float):
     Computes gap statistics for a reference MSA.
 
             Parameters:
-                    msa_filepath (string): path to reference MSA
+                    :param msa_filepath: path to reference MSA
 
             Returns:
-                    tuple: average gaps per sequence, standard deviation of gap count
+                    :return tuple: average gaps per sequence, standard deviation of gap count
     """
     alignment = AlignIO.read(msa_filepath, 'fasta')
     gap_counts = [seq.count('-') for seq in alignment]
@@ -47,10 +47,10 @@ def compute_entropy(msa_filepath):
     Returns summary statistics over them.
 
             Parameters:
-                    msa_filepath (string): path to reference MSA
+                    :param msa_filepath: path to reference MSA
 
             Returns:
-                    tuple: avg_entropy, std_entropy, min_entropy, max_entropy
+                    :return tuple: avg_entropy, std_entropy, min_entropy, max_entropy
     """
     alignment = AlignIO.read(msa_filepath, 'fasta')
     site_entropies = []
@@ -58,6 +58,12 @@ def compute_entropy(msa_filepath):
     num_sites = alignment.get_alignment_length()
     for site in range(num_sites):
         site_column = alignment[:, site]
+
+        if (site_column == len(site_column) * 'N'): # if only N column
+            continue
+        if (site_column == len(site_column) * '-'):  # if only - column
+            continue
+
 
         nucleotides = ['A', 'C', 'T', 'G', '-']
         ambiguous_chars = {'R': ['A', 'G'],
@@ -74,6 +80,7 @@ def compute_entropy(msa_filepath):
         # Count the occurrences of each nucleotide
         nucleotide_counts = {nucleotide: site_column.count(nucleotide) for nucleotide in nucleotides}
         total_count = sum(nucleotide_counts.values())
+
 
         probabilities = {}
         for nucleotide in nucleotides:
@@ -107,11 +114,16 @@ def compute_entropy(msa_filepath):
 
 
 if __name__ == '__main__':
-    filenames = ["neotrop_reference.fasta", "bv_reference.fasta", "tara_reference.fasta", "13553_0_query.fasta", "21086_0_query.fasta"]
+    filenames = ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    loo_list = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
+    filenames = filenames + loo_list
+
     results = []
     for file in filenames:
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
         avg_gaps, std_gaps = gap_statistics(filepath)
+        print(filepath)
         avg_entropy, std_entropy, min_entropy, max_entropy = compute_entropy(filepath)
         num_seq, seq_length = basic_msa_features(filepath)
 
@@ -124,7 +136,7 @@ if __name__ == '__main__':
         elif file == "tara_reference.fasta":
             name = "tara"
         else:
-            name = file.replace("_msa.fasta", "")
+            name = file.replace("_reference.fasta", "")
 
         results.append(
             (name, avg_gaps, std_gaps, avg_entropy, std_entropy, min_entropy, max_entropy, num_seq, seq_length))

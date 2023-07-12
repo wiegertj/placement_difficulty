@@ -1,24 +1,66 @@
 import os
+import shutil
+import dendropy
 import ete3
 import subprocess
 import glob
+import pandas as pd
+import configs.feature_config
+import numpy as np
+from configs import feature_config
 from Bio import AlignIO, SeqIO
+from dendropy.calculate import treecompare
 
-for msa_name in ["21086_0"]:
+
+def calculate_bsd_aligned(tree1, tree2):
+    # Get the branch lengths of the aligned branches
+    branch_lengths1 = [branch.length for branch in tree1]
+    branch_lengths2 = [branch.length for branch in tree2]
+
+    # Calculate the BSD
+    score = np.sum(np.abs(branch_lengths1 - branch_lengths2)) / (np.sum(branch_lengths1) + np.sum(branch_lengths2))
+
+    return score
+
+
+filenames = os.listdir(os.path.join(os.pardir, "data/raw/reference_tree"))
+filenames = [file.replace(".newick", "") for file in filenames]
+
+print(filenames)
+msa_counter = 0
+for msa_name in filenames:
+    msa_counter += 1
+    print(str(msa_counter) + "/" + str(len(filenames)))
+    print(msa_name)
+
+    rf_distances = []
+    bsd_distances = []
 
     # Get all sequence Ids
     sequence_ids = []
-    for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_name + "_msa.fasta"), "fasta"):
+    for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta"), "fasta"):
         sequence_ids.append(record.id)
 
-    filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_msa.fasta")
+    if len(sequence_ids) >= feature_config.SEQUENCE_COUNT_THRESHOLD_THRESHOLD:  # if too large, skip
+        continue
+
+    if len(MSA[0].record) >= feature_config.SEQUENCE_LEN_THRESHOLD:  # if too large, skip
+        continue
+
+    filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
     MSA = AlignIO.read(filepath, 'fasta')
 
     counter = 0
 
     # Perform LOO for each sequence
     for to_query in sequence_ids:
+
+        if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
+            print("Skipping " + msa_name + " " + to_query + " result already exists")
+            continue
+
         counter += 1
+        print(to_query)
         print(str(counter) + "/" + str(len(sequence_ids)))
 
         new_alignment = []
@@ -46,42 +88,126 @@ for msa_name in ["21086_0"]:
         # Get output tree path for result stroing
         output_file_tree = output_file.replace(".fasta", ".newick")
 
-        # ------------------------------------------ run RAxML-ng with LOO MSA ------------------------------------------
+        if configs.feature_config.REESTIMATE_TREE == True and len(
+                sequence_ids) <= feature_config.REESTIMATE_TREE_SEQ_THRESHOLD:  # Reestimate smaller trees
 
-        command = ["raxml-ng", "--search", "--msa", output_file, "--model",
-                   os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt"), ]
-        try:
-            # Start the subprocess
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            # ------------------------------------------ run RAxML-ng with LOO MSA ------------------------------------------
 
-            # Wait for the process to complete and capture the output
-            stdout, stderr = process.communicate()
+            command = ["raxml-ng", "--search", "--msa", output_file, "--model",
+                       os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt"), ]
+            try:
+                # Start the subprocess
+                process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-            # Check the return code
-            if process.returncode == 0:
-                # Success
-                print("RAxML-ng process completed successfully.")
-                print("Output:")
-                print(stdout)
-            else:
-                # Error
-                print("RAxML-ng process failed with an error.")
-                print("Error Output:")
-                print(stderr)
+                # Wait for the process to complete and capture the output
+                stdout, stderr = process.communicate()
 
-        except FileNotFoundError:
-            print("RAxML-ng executable not found. Please make sure RAxML-ng is installed and in the system")
+                # Check the return code
+                if process.returncode == 0:
+                    # Success
+                    print("RAxML-ng process completed successfully.")
+                    print("Output:")
+                    print(stdout)
+                else:
+                    # Error
+                    print("RAxML-ng process failed with an error.")
+                    print("Error Output:")
+                    print(stderr)
 
-        rel_tree_path = os.path.join(os.pardir, "data/processed/loo",
-                                     msa_name + "_msa_" + to_query + ".fasta.raxml.bestTree")
-        tree_path = os.path.abspath(rel_tree_path)
-        with open(tree_path, 'r') as file:
-            newick_tree = file.read()
-            tree = ete3.Tree(newick_tree)
+            except FileNotFoundError:
+                print("RAxML-ng executable not found. Please make sure RAxML-ng is installed and in the system")
+
+            rel_tree_path = os.path.join(os.pardir, "data/processed/loo",
+                                         msa_name + "_msa_" + to_query + ".fasta.raxml.bestTree")
+            tree_path = os.path.abspath(rel_tree_path)
+
+            # Calculate RF-statistics
+            with open(tree_path, 'r') as file:
+                newick_tree = file.read()
+                tree = ete3.Tree(newick_tree)
+
+                original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick")
+                with open(original_tree_path, 'r') as original_file:
+
+                    original_newick_tree = original_file.read()
+                    original_tree = ete3.Tree(original_newick_tree)
+
+                    # Get the leaf names
+                    leaf_names = original_tree.get_leaf_names()
+
+                    # Get the leaf count
+                    leaf_count = len(leaf_names)
+                    leaf_node = original_tree.search_nodes(name=to_query)[0]
+
+                    # Delete the leaf node
+                    leaf_node.delete()
+
+                    results_distance = original_tree.robinson_foulds(tree, unrooted_trees=True)
+
+                    # BSD distance
+
+                    tree_list = dendropy.TreeList()
+                    tree_list.read(data=original_tree.write(format=1), schema="newick")
+                    tree_list.read(data=tree.write(format=1), schema="newick")
+
+                    bsd_aligned = treecompare.euclidean_distance(tree_list[0], tree_list[1])
+
+                    print("Branch Score Distance (Aligned Trees):", bsd_aligned)
+
+                    print("MSA " + str(msa_name + " query " + str(to_query)))
+                    print("RF distance is %s over a total of %s" % (results_distance[0], results_distance[1]))
+                    rf_distances.append(
+                        (msa_name + "_" + to_query, results_distance[0] / results_distance[1], bsd_aligned))
+                    df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "bsd"])
+
+                    if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv")):
+                        # Create the file if it doesn't exist
+                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv"), index=False,
+                                     columns=["dataset_sampleId", "norm_rf_dist", "bsd"])
+                    else:
+                        # Append to the file if it exists
+                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv"), index=False,
+                                     mode='a', header=False, columns=["dataset_sampleId", "norm_rf_dist", "bsd"])
+                    rf_distances = []
+        else:
+            original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick")
+            tree_path = original_tree_path  # use original tree without reestimation
+
+            with open(tree_path, 'r') as file:
+                print(tree_path)
+                newick_tree = file.read()
+                tree = ete3.Tree(newick_tree)
+
+                # Get the leaf names
+                leaf_names = tree.get_leaf_names()
+
+                # Get the leaf count
+                leaf_count = len(leaf_names)
+                print(leaf_count)
+
+                leaf_node = tree.search_nodes(name=to_query)[0]
+
+                # Delete the leaf node
+                leaf_node.delete()
+
+                leaf_names = tree.get_leaf_names()
+
+                # Get the leaf count
+                leaf_count = len(leaf_names)
+                print(leaf_count)
+
+                original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree_tmp",
+                                                  msa_name + "_" + to_query + ".newick")
+                tree.write(outfile=original_tree_path, format=1)
+
+                tree_path = original_tree_path
 
         # ------------------------------------ run epa-ng with new RAxML-ng tree ---------------------------------------
 
         # Create new directory for placement result
+        if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
+            shutil.rmtree(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query))
+
         os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query))
         command = ["epa-ng", "--model", os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt"),
                    "--ref-msa", output_file, "--tree", tree_path, "--query", output_file_query, "--redo", "--outdir",
@@ -109,6 +235,8 @@ for msa_name in ["21086_0"]:
 
         except FileNotFoundError:
             print("EPA-ng executable not found. Please make sure EPA-ng is installed and in the system PATH.")
+        if configs.feature_config.REESTIMATE_TREE == False:  # Delete tmp tree
+            os.remove(os.path.join(os.pardir, "data/raw/reference_tree_tmp", msa_name + "_" + to_query + ".newick"))
 
         # ------------------------------------ Cleanup ---------------------------------------
 

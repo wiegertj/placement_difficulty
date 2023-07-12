@@ -1,50 +1,57 @@
 import math
 import os
+from statistics import mean
+from sklearn.feature_selection import RFE
+
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_squared_error
+import numpy as np
 
 df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
-df.drop(axis=1, columns=['dataset', 'sampleId'], inplace=True)
+X = df.drop(axis=1, columns=["entropy"]) # Select all columns except the last column (features)
+#X = X[['min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
+ #      'avg_perc_hash_ham_dist', 'std_perc_hash_ham_dist', 'dataset', 'sampleId']]
+print(X.columns)
 
-# Split the dataset into features (X) and target (y)
-#X = df[["gap_fraction"]]
+y = df["entropy"]   # Select the last column (target)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Tara as test
-df_test = df[df["tree_depth"] == 3.8795620000000017]
-df_train = df[df["tree_depth"] != 3.8795620000000017]
+mse_ = mean_squared_error(y_test, np.zeros(len(y_test))) # RMSE on just predicting most common => 0
+rmse_ = math.sqrt(mse_)
+print("Baseline 0 RMSE: " + str(rmse_))
 
-X_train = df_train.drop(axis=1, columns=["Entropy"])
-y_train = df_train["Entropy"]
+mse_ = mean_squared_error(y_test, np.zeros(len(y_test)) + mean(y_train)) # RMSE on just predicting most common => 0
+rmse_ = math.sqrt(mse_)
+print("Baseline Mean RMSE: " + str(rmse_))
 
-X_test = df_test.drop(axis=1, columns=["Entropy"])
-y_test = df_test["Entropy"]
+model = RandomForestRegressor( n_estimators = 300,
+    max_depth = 20,
+    max_features= 10,
+    min_samples_split= 10,
+    min_samples_leaf=5)
 
-#X = df.drop(axis=1, columns=["Entropy"]) # Select all columns except the last column (features)
-#y = df["Entropy"]   # Select the last column (target)
-#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-model = RandomForestRegressor()
-#model = GradientBoostingRegressor()
-
-param_grid_GBR = {
-    'n_estimators': [300],
-    'learning_rate': [0.05],
-    'max_depth': [10]
-}
+rfe = RFE(estimator=model, n_features_to_select=10)  # Adjust the number of features as needed
+rfe.fit(X_train.drop(axis=1, columns=['dataset', 'sampleId']), y_train)
+print(rfe.support_)
+selected_features = X_train.drop(axis=1, columns=['dataset', 'sampleId']).columns[rfe.support_]
+print(selected_features)
+X_train = X_train[selected_features]
+X_test = X_test[selected_features]
 
 param_grid = {
-    'n_estimators': [300],
-    'max_depth': [20],
-    'max_features': [10],
-    'min_samples_split': [10],
-    'min_samples_leaf': [5]
+    'n_estimators': [250, 400],
+    'max_depth': [10, 20],
+    'max_features': [5, 10],
+    'min_samples_split': [10, 20],
+    'min_samples_leaf': [10, 20]
 }
 
 # GridSearch
-grid_search = GridSearchCV(model, param_grid, cv=8)
+
+grid_search = GridSearchCV(model, param_grid, cv=5)
 grid_search.fit(X_train, y_train)
 best_model = grid_search.best_estimator_
 
@@ -53,10 +60,11 @@ print("Best Parameters:")
 for param, value in best_params.items():
     print(f"{param}: {value}")
 
-# MSE of entropy prediction on testset
+# MSE of entropy.py prediction on testset
 y_pred = best_model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 rmse = math.sqrt(mse)
+print("RMSE: " + str(rmse))
 
 print(f"Root Mean Squared Error on test set: {rmse}")
 feature_importances = best_model.feature_importances_

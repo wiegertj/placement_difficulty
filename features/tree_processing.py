@@ -9,11 +9,11 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     Computes summary statistics for the tree.
 
             Parameters:
-                    newick_tree (e3e tree): tree to analyze
-                    tree_file (string): needed for name extraction
+                    :param newick_tree: tree to analyze
+                    :param tree_file: needed for name extraction
 
             Returns:
-                    tuple: dataset, average branch length, max branch length, min branch length, std branch length, depth
+                    :return tuple: dataset, average branch length, max branch length, min branch length, std branch length, depth
     """
 
     branch_lengths = [node.dist for node in newick_tree.traverse() if not node.is_root()]
@@ -31,7 +31,13 @@ if __name__ == '__main__':
 
     results = []
 
-    for tree_file in ["neotrop.newick", "bv.newick", "tara.newick", "13553_0.newick", "21086_0.newick"]:
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    loo_list = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
+
+    loo_list= loo_list + ["bv.newick", "tara.newick", "neotrop.newick"]
+    print(loo_list)
+
+    for tree_file in loo_list:
         with open(os.path.join(os.pardir, "data/raw/reference_tree", tree_file), 'r') as file:
             newick_tree = file.read()
 

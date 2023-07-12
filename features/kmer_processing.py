@@ -9,18 +9,22 @@ from Bio import SeqIO
 from probables import BloomFilter
 
 
-def filter_gapped_kmers(sequence, k=config.K_MER_LENGTH, max_gap_percent=config.K_MER_MAX_GAP_PERCENTAGE) -> list:
+def filter_gapped_kmers(sequence, k=config.K_MER_LENGTH, max_gap_percent=config.K_MER_MAX_GAP_PERCENTAGE,
+                        max_n_percentage=config.K_MER_MAX_N_PERCENTAGE) -> list:
     """
     Returns a list of k-mers for the given sequence considering a max_gap_percentage.
     Ambiguity code gets resolved on the fly by considering each possible k-mer.
 
             Parameters:
-                    sequence (string): DNA sequence
-                    k (int): k-mer length
-                    max_gap_percent (float): maximum percentage of gaps in a k-mer to be valid
+
+                    :param sequence:  DNA sequence
+                    :param k: k-mer length
+                    :param max_gap_percent: maximum percentage of gaps in a k-mer to be valid
+                    :param max_n_percentage: maximum percentage of 'N' nucleotides
 
             Returns:
-                    kmers (list): list of k-mers
+                    :return kmers: list of k-mers
+
     """
 
     kmer_list = []
@@ -34,56 +38,62 @@ def filter_gapped_kmers(sequence, k=config.K_MER_LENGTH, max_gap_percent=config.
         'B': ['C', 'G', 'T'],
         'D': ['A', 'G', 'T'],
         'H': ['A', 'C', 'T'],
-        'V': ['A', 'C', 'G']
+        'V': ['A', 'C', 'G'],
+        'N': ['A', 'C', 'G', 'T']
     }
 
     for i in range(len(sequence) - k + 1):
 
         kmer = sequence[i:i + k]
         gap_count = kmer.count('-')
-        if gap_count / k <= max_gap_percent:
+        if (kmer != ('N' * k)) and (kmer.count('N') / k <= max_n_percentage):
+            if gap_count / k <= max_gap_percent:
 
-            ambiguous_positions = [i for i, char in enumerate(kmer) if char in nucleotide_ambiguity_code]
+                ambiguous_positions = [i for i, char in enumerate(kmer) if char in nucleotide_ambiguity_code]
 
-            expanded_kmers = []
-            if ambiguous_positions:
-                combinations = product(
-                    *(nucleotide_ambiguity_code[char] for char in kmer if char in nucleotide_ambiguity_code))
-                for combination in combinations:
-                    expanded_kmer = list(kmer)
-                    for position, nucleotide in zip(ambiguous_positions, combination):
-                        expanded_kmer[position] = nucleotide
-                    expanded_kmers.append(''.join(expanded_kmer))
-                kmer_list.extend(expanded_kmers)
-            else:
-                kmer_list.append(kmer)
+                expanded_kmers = []
+                if ambiguous_positions:
+                    combinations = product(
+                        *(nucleotide_ambiguity_code[char] for char in kmer if char in nucleotide_ambiguity_code))
+                    for combination in combinations:
+                        expanded_kmer = list(kmer)
+                        for position, nucleotide in zip(ambiguous_positions, combination):
+                            expanded_kmer[position] = nucleotide
+                        expanded_kmers.append(''.join(expanded_kmer))
+                    kmer_list.extend(expanded_kmers)
+                else:
+                    kmer_list.append(kmer)
     return kmer_list
 
 
-def compute_string_kernel_statistics(query, k=config.K_MER_LENGTH, max_gap_percent=config.K_MER_MAX_GAP_PERCENTAGE) -> (str, str, float, float, float, float):
+def compute_string_kernel_statistics(query, k=config.K_MER_LENGTH, max_gap_percent=config.K_MER_MAX_GAP_PERCENTAGE) -> (
+str, str, float, float, float, float):
     """
     Computes string kernel using a bloom filter of the query and all the bloom filters of the MSA sequences.
     Then summary statistics for a hash kernels are computed.
     Ambiguity code gets resolved on the fly by considering each possible k-mer.
 
             Parameters:
-                    query (string): DNA sequence
-                    k (int): k-mer length
-                    max_gap_percent (float): maximum percentage of a k-mer to be valid
+                    :param query: DNA sequence
+                    :param k: k-mer length
+                    :param max_gap_percent: maximum percentage of a k-mer to be valid
 
             Returns:
-                     tuple: (dataset, sampleId, min_kernel, max_kernel, mean_kernel, std_kernel)
+                     :return tuple: (dataset, sampleId, min_kernel, max_kernel, mean_kernel, std_kernel)
     """
     kmers_query = filter_gapped_kmers(str(query.seq), k, max_gap_percent)
-    query_bf = bloom_filter(kmers_query, len(kmers_query), config.BLOOM_FILTER_FP_RATE)
+    query_bf = bloom_filter(set(kmers_query), len(kmers_query), config.BLOOM_FILTER_FP_RATE)
 
     result_string_kernels = []
     for bloom_filter_ref in bloom_filters_MSA:
-        hash_kernel = 0
-        for kmer in set(kmers_query):
-            hash_kernel += bloom_filter_ref.check(kmer) * query_bf.check(kmer)
 
-        result_string_kernels.append(hash_kernel / len(kmers_query))  # normalize by the number of k-mers in query
+        if not (bloom_filter_ref[0] == query.id):  # For leave one out, dont compare to sequence it self
+            hash_kernel = 0
+            for kmer in set(kmers_query):
+                hash_kernel += bloom_filter_ref[1].check(kmer) * query_bf.check(kmer)
+
+            result_string_kernels.append(
+                hash_kernel / len(set(kmers_query)))  # normalize by the number of k-mers in query
 
     # Compute summary statistics over string kernels as features
     min_kernel = min(result_string_kernels)
@@ -99,12 +109,12 @@ def bloom_filter(filtered_kmers, size, fp_rate):
     Returns a bloomfilter with the k-mers
 
             Parameters:
-                    filtered_kmers (list): list of k-mers to be put into a bloom filter
-                    size (int): size of the bloom filter
-                    fp_rate (float): false positive rate of the bloom filter
+                    :param filtered_kmers: list of k-mers to be put into a bloom filter
+                    :param size: size of the bloom filter
+                    :param fp_rate: false positive rate of the bloom filter
 
             Returns:
-                    bf (BloomFilter): bloom filter with k-mers
+                    :return bf: bloom filter with k-mers
     """
 
     bf_ = BloomFilter(size, fp_rate)
@@ -115,6 +125,17 @@ def bloom_filter(filtered_kmers, size, fp_rate):
 
 
 # ----------------------------------------------- HELPER -----------------------------------------------
+def combine_partial_files(dataset):
+    csv_files = [filename for filename in os.listdir(os.path.join(os.pardir, "data/processed/features")) if
+                 filename.startswith(dataset) and filename.endswith(".csv")]
+    print(csv_files)
+
+    combined_df = pd.concat(
+        [pd.read_csv(os.path.join(os.pardir, "data/processed/features", file)) for file in csv_files])
+    combined_df.to_csv(os.path.join(os.pardir, "data/processed/features",
+                                    dataset.replace("_reference.fasta", "") + "_" + str(
+                                        str(len(combined_df))) + ".csv"), index=False)
+    print("Done")
 
 
 def initializer(bloom_filters_MSA_, msa_file_):
@@ -176,15 +197,29 @@ def multiprocess_string_kernel(query_filename, bloom_filters_MSA_, msa_file_, in
 
 if __name__ == '__main__':
 
-    interval_start = config.KMER_PROCESSING_INTERVAL_START  # sequence number to start with in query (last file number)
-    bound = config.KMER_PROCESSING_COUNT  # how many sequences
-
-
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    loo_list = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
+    file_list = ["bv_reference.fasta", "tara_reference.fasta", "neotrop_reference.fasta"] + loo_list
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
 
-    for msa_file, query_file in [("neotrop_reference.fasta", "neotrop_query_10k.fasta")]:
+    counter_msa = 0
+    for msa_file in loo_list:
+        print(str(counter_msa) + "/" + str(len(loo_list)))
+        counter_msa += 1
+        query_file = msa_file.replace("reference.fasta", "query.fasta")
+
+        # Skip already processed
+        potential_path = os.path.join(os.pardir, "data/processed/features",
+                                      msa_file.replace("_reference.fasta", "") + "_kmer" + str(
+                                          config.K_MER_LENGTH) + "_0" + str(config.K_MER_MAX_GAP_PERCENTAGE).replace(
+                                          "0.",
+                                          "") + "_" + str(
+                                          200) + ".csv")
+        if os.path.exists(potential_path):
+            print("Skipped: " + msa_file + " already processed")
+            continue
 
         results = []
 
@@ -193,11 +228,17 @@ if __name__ == '__main__':
 
         no_queries = len(list(SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta').records))
 
+        interval_start = config.KMER_PROCESSING_INTERVAL_START  # sequence number to start with in query (last file number)
+        bound = config.KMER_PROCESSING_COUNT  # how many sequences
+
         # Create bloom filters for each sequence in the MSA
         for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             kmers = filter_gapped_kmers(str(record.seq), config.K_MER_LENGTH, config.K_MER_MAX_GAP_PERCENTAGE)
+            kmers = set(kmers)
             bf = bloom_filter(kmers, len(kmers), config.BLOOM_FILTER_FP_RATE)
-            bloom_filters_MSA.append(bf)
+            bloom_filters_MSA.append((record.id, bf))
+
+        print("Created Bloom Filter for MSAs ... ")
 
         # Parallel code to compute and store blocks of defined stepsize query samples
         while True:
