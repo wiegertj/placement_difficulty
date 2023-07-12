@@ -7,10 +7,11 @@ import glob
 import pandas as pd
 import configs.feature_config
 import numpy as np
-from configs import feature_config
 from Bio import AlignIO, SeqIO
 from dendropy.calculate import treecompare
-
+import sys
+sys.path.append(os.path.join(os.pardir, "configs"))
+import feature_config
 
 def calculate_bsd_aligned(tree1, tree2):
     # Get the branch lengths of the aligned branches
