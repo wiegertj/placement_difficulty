@@ -41,14 +41,14 @@ for msa_name in filenames:
     for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta"), "fasta"):
         sequence_ids.append(record.id)
 
-    if len(sequence_ids) >= feature_config.SEQUENCE_COUNT_THRESHOLD_THRESHOLD:  # if too large, skip
-        continue
-
-    if len(MSA[0].record) >= feature_config.SEQUENCE_LEN_THRESHOLD:  # if too large, skip
+    if len(sequence_ids) >= feature_config.SEQUENCE_COUNT_THRESHOLD:  # if too large, skip
         continue
 
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
     MSA = AlignIO.read(filepath, 'fasta')
+
+    if len(MSA[0].seq) >= feature_config.SEQUENCE_LEN_THRESHOLD:  # if too large, skip
+        continue
 
     counter = 0
 
