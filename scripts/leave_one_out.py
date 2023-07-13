@@ -68,6 +68,7 @@ for msa_name in filenames:
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
             if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
                 print("Empty folder found for " + msa_name + " " + to_query + " filling it")
+                os.rmdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)) # delete empty folder
             else:
                 print("Skipping " + msa_name + " " + to_query + " result already exists")
                 continue
