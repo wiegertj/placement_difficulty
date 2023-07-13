@@ -81,29 +81,29 @@ def compute_entropy(msa_filepath):
         nucleotide_counts = {nucleotide: site_column.count(nucleotide) for nucleotide in nucleotides}
         total_count = sum(nucleotide_counts.values())
 
+        if total_count != 0:
+            probabilities = {}
+            for nucleotide in nucleotides:
+                count = nucleotide_counts[nucleotide]
+                probabilities[nucleotide] = count / total_count
 
-        probabilities = {}
-        for nucleotide in nucleotides:
-            count = nucleotide_counts[nucleotide]
-            probabilities[nucleotide] = count / total_count
+            # Assign probabilities for ambiguous characters
+            for ambiguous_char, possible_nucleotides in ambiguous_chars.items():
+                count = site_column.count(ambiguous_char)
+                total_count += count
+                for nucleotide in possible_nucleotides:
+                    probabilities[nucleotide] += count / total_count
 
-        # Assign probabilities for ambiguous characters
-        for ambiguous_char, possible_nucleotides in ambiguous_chars.items():
-            count = site_column.count(ambiguous_char)
-            total_count += count
-            for nucleotide in possible_nucleotides:
-                probabilities[nucleotide] += count / total_count
+                total_probability = sum(probabilities.values())
+                probabilities = {nucleotide: probability / total_probability for nucleotide, probability in
+                                 probabilities.items()}
 
-            total_probability = sum(probabilities.values())
-            probabilities = {nucleotide: probability / total_probability for nucleotide, probability in
-                             probabilities.items()}
+            entropy = 0.0
+            for probability in probabilities.values():
+                if probability != 0:
+                    entropy -= probability * math.log(probability, 2)
 
-        entropy = 0.0
-        for probability in probabilities.values():
-            if probability != 0:
-                entropy -= probability * math.log(probability, 2)
-
-        site_entropies.append(entropy)
+            site_entropies.append(entropy)
 
     min_entropy_ = np.min(site_entropies)
     max_entropy_ = np.max(site_entropies)
