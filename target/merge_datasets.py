@@ -12,7 +12,7 @@ merged_df = merged_df.merge(tree_features, on="dataset", how="inner")
 
 # add kmer features neotrop
 neotrop = merged_df[merged_df['dataset'] == 'neotrop']
-file_paths = ['neotrop_kmer15_03_5000.csv']
+file_paths = ['neotrop_5000.csv']
 dataframes = []
 
 for file_path in file_paths:
@@ -38,7 +38,7 @@ neotrop = neotrop.merge(df, on=["sampleId", "dataset"], how="inner")
 # add kmer features bv
 
 bv = merged_df[merged_df['dataset'] == 'bv']
-file_paths = ['bv_kmer15_03_5000.csv']
+file_paths = ['bv_5000.csv']
 dataframes = []
 
 for file_path in file_paths:
@@ -64,7 +64,7 @@ bv = bv.merge(df, on=["sampleId", "dataset"], how="inner")
 # add kmer features tara
 
 tara = merged_df[merged_df['dataset'] == 'tara']
-file_paths = ['tara_kmer15_03_5000.csv']
+file_paths = ['tara_5000.csv']
 dataframes = []
 
 for file_path in file_paths:
