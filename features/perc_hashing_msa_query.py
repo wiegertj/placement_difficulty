@@ -93,6 +93,10 @@ if __name__ == '__main__':
     loo_list = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
     file_list = ["bv_reference.fasta", "tara_reference.fasta", "neotrop_reference.fasta"] + loo_list
 
+    for file in file_list:
+        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 10000:
+            file_list.remove(file)
+
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
 
