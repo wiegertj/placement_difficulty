@@ -62,6 +62,10 @@ if __name__ == '__main__':
     file_list = ["bv_reference.fasta", "tara_reference.fasta", "neotrop_reference.fasta"] + loo_list
     counter_msa = 0
     for msa_file in file_list:
+        print(msa_file)
+        if os.path.isfile(os.path.join(os.pardir, "data/processed/features", msa_file.replace("reference.fasta","msa_dist.csv"))):
+            print("Found " + msa_file + " skipped")
+            continue
 
         print(str(counter_msa) + "/" + str(len(loo_list)))
         counter_msa += 1
