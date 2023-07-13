@@ -66,6 +66,9 @@ if __name__ == '__main__':
         if os.path.isfile(os.path.join(os.pardir, "data/processed/features", msa_file.replace("reference.fasta","msa_dist.csv"))):
             print("Found " + msa_file + " skipped")
             continue
+        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
+            print("Skipped " + msa_file + " too large")
+            continue
 
         print(str(counter_msa) + "/" + str(len(loo_list)))
         counter_msa += 1
