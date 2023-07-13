@@ -1,4 +1,5 @@
 import math
+import multiprocessing
 import statistics
 import numpy as np
 import pandas as pd
@@ -39,9 +40,14 @@ def compute_dct_sign_only_hash(sequence):
     return hash_value
 
 
-def compute_perceptual_hash_distance(msa_file, query_file):
+def compute_perceptual_hash_distance(msa_file):
+    if msa_file == "neotrop_reference.fasta":
+        query_file = msa_file.replace("_reference.fasta", "_query_10k.fasta")
+    else:
+        query_file = msa_file.replace("_reference.fasta", "_query.fasta")
     results = []
     counter = 0
+    print(msa_file)
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
         if counter % 50 == 0:
@@ -78,7 +84,7 @@ def compute_perceptual_hash_distance(msa_file, query_file):
             name = msa_file.replace("_msa.fasta", "")
 
         results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham))
-    return results
+    return results, msa_file
 
 
 if __name__ == '__main__':
@@ -87,16 +93,21 @@ if __name__ == '__main__':
     loo_list = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
     file_list = ["bv_reference.fasta", "tara_reference.fasta", "neotrop_reference.fasta"] + loo_list
 
-    for msa_file in file_list:
-        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
-            print("Skipped " + msa_file + " too large")
-            continue
-        query_file = msa_file.replace("_reference.fasta", "_query.fasta")
-        result_tmp = compute_perceptual_hash_distance(msa_file, query_file)
+    if multiprocessing.current_process().name == 'MainProcess':
+        multiprocessing.freeze_support()
 
-        df = pd.DataFrame(result_tmp,
+    pool = multiprocessing.Pool()
+    results = pool.imap_unordered(compute_perceptual_hash_distance, file_list)
+
+    for result in results:
+        print("Finished processing: " + result[1] + "with query file")
+        df = pd.DataFrame(result[0],
                           columns=['dataset', 'sampleId', 'min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
                                    'avg_perc_hash_ham_dist',
                                    'std_perc_hash_ham_dist'])
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                               msa_file.replace("_reference.fasta", "") + "_msa_perc_hash_dist.csv"))
+                               result[1].replace("_reference.fasta", "") + "_msa_perc_hash_dist.csv"))
+
+    pool.close()
+    pool.join()
+
