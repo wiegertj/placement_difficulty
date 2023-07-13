@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import types
 import pandas as pd
@@ -135,7 +136,7 @@ def bloom_filter(filtered_kmers, size, fp_rate):
 # ----------------------------------------------- HELPER -----------------------------------------------
 def combine_partial_files(dataset):
     csv_files = [filename for filename in os.listdir(os.path.join(os.pardir, "data/processed/features")) if
-                 filename.startswith(dataset) and filename.endswith(".csv")]
+                 filename.startswith(dataset) and filename.endswith(".csv") and filename.__contains__("kmer")]
     print(csv_files)
 
     combined_df = pd.concat(
@@ -204,6 +205,12 @@ def multiprocess_string_kernel(query_filename, bloom_filters_MSA_, msa_file_, in
 
 
 if __name__ == '__main__':
+
+    combine_partial_files("neotrop")
+    combine_partial_files("bv")
+    combine_partial_files("tara")
+
+    sys.exit()
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     loo_list = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
