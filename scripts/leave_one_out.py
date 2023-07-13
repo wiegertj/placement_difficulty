@@ -66,8 +66,11 @@ for msa_name in filenames:
     for to_query in sequence_ids:
 
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
-            print("Skipping " + msa_name + " " + to_query + " result already exists")
-            continue
+            if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
+                print("Empty folder found for " + msa_name + " " + to_query + " filling it")
+            else:
+                print("Skipping " + msa_name + " " + to_query + " result already exists")
+                continue
 
         counter += 1
         print(to_query)
