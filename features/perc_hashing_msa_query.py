@@ -88,6 +88,9 @@ if __name__ == '__main__':
     file_list = ["bv_reference.fasta", "tara_reference.fasta", "neotrop_reference.fasta"] + loo_list
 
     for msa_file in file_list:
+        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
+            print("Skipped " + msa_file + " too large")
+            continue
         query_file = msa_file.replace("_reference.fasta", "_query.fasta")
         result_tmp = compute_perceptual_hash_distance(msa_file, query_file)
 
