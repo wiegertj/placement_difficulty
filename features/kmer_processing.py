@@ -213,10 +213,13 @@ if __name__ == '__main__':
         multiprocessing.freeze_support()
 
     counter_msa = 0
-    for msa_file in loo_list:
+    for msa_file in file_list:
         print(str(counter_msa) + "/" + str(len(loo_list)))
         counter_msa += 1
-        query_file = msa_file.replace("reference.fasta", "query.fasta")
+        if msa_file == "neotrop_reference.fasta":
+            query_file = msa_file.replace("reference.fasta", "query_10k.fasta")
+        else:
+            query_file = msa_file.replace("reference.fasta", "query.fasta")
 
         # Skip already processed
         potential_path = os.path.join(os.pardir, "data/processed/features",
@@ -224,7 +227,7 @@ if __name__ == '__main__':
                                           feature_config.K_MER_LENGTH) + "_0" + str(feature_config.K_MER_MAX_GAP_PERCENTAGE).replace(
                                           "0.",
                                           "") + "_" + str(
-                                          200) + ".csv")
+                                          1000) + ".csv")
         if os.path.exists(potential_path):
             print("Skipped: " + msa_file + " already processed")
             continue
