@@ -242,6 +242,11 @@ if __name__ == '__main__':
         interval_start = feature_config.KMER_PROCESSING_INTERVAL_START  # sequence number to start with in query (last file number)
         bound = feature_config.KMER_PROCESSING_COUNT  # how many sequences
 
+        # Check if too large
+        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
+            print("Skipped " + msa_file + " too large")
+            continue
+
         # Create bloom filters for each sequence in the MSA
         for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             kmers = filter_gapped_kmers(str(record.seq), feature_config.K_MER_LENGTH, feature_config.K_MER_MAX_GAP_PERCENTAGE)
