@@ -2,15 +2,16 @@ import json
 import os
 import pandas as pd
 import math
+import io
 from scipy.stats import entropy
 from Bio import Phylo
 
 
 def extract_entropy(jplace_file, tree_file) -> pd.DataFrame:
-
     # Get branch count for normalization
     tree = Phylo.read(os.path.join(os.pardir, "data/raw/reference_tree", tree_file), "newick")
     num_branches = tree.count_terminals() - 1
+    print(jplace_file)
 
     entropies = []
     with open(jplace_file, 'r') as f:
@@ -20,9 +21,37 @@ def extract_entropy(jplace_file, tree_file) -> pd.DataFrame:
             probabilities = placement['p']
             like_weight_ratios = [tup[2] for tup in probabilities]
             entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)
-            entropies.append((sample_name, entropy_val))
 
-    df = pd.DataFrame(entropies, columns=['sampleId', 'entropy'])
+            # calculate drop in lwr between best two branches
+            drop = 0
+            if len(like_weight_ratios) > 1:
+                sorted_lwr = sorted(like_weight_ratios, reverse=True)
+                largest_lwr1, largest_lwr2 = sorted_lwr[:2]
+                drop = abs(largest_lwr1 - largest_lwr2)
+            else:
+                drop = 1
+
+            # branch distance between two best
+            branch_distance = 0
+            if len(like_weight_ratios) > 1:
+                tree = Phylo.read(io.StringIO(jplace_data["tree"]), "newick")
+                best_edge = probabilities[0][0]
+                second_best_edge = probabilities[1][0]
+
+                for clade in tree.find_clades():
+                    if clade.name == "{" + str(best_edge) + "}":
+                        best_edge = clade
+                    elif clade.name == "{" + str(second_best_edge) + "}":
+                        second_best_edge = clade
+
+                clade_distance = 0
+                clade_distance = tree.distance(best_edge, second_best_edge)
+                if clade_distance != 0:
+                    branch_distance = clade_distance / tree.total_branch_length()
+
+            entropies.append((sample_name, entropy_val, drop, branch_distance))
+
+    df = pd.DataFrame(entropies, columns=['sampleId', 'entropy', "lwr_drop", "branch_dist_best_two_placements"])
     return df
 
 
