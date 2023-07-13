@@ -16,6 +16,18 @@ def extract_entropy(jplace_file, tree_file) -> pd.DataFrame:
     entropies = []
     with open(jplace_file, 'r') as f:
         jplace_data = json.load(f)
+
+        # Calculate max and min branch length for min-max-normalization
+        max_distance = 0
+        min_distance = float("inf")
+        for clade1 in tree.find_clades():
+            for clade2 in tree.find_clades():
+                distance = tree.distance(clade1, clade2)
+                if distance > max_distance:
+                    max_distance = distance
+                if (distance < min_distance) and (clade1.name != clade2.name):
+                    min_distance = distance
+
         for placement in jplace_data['placements']:
             sample_name = placement['n'][0]
             probabilities = placement['p']
@@ -38,16 +50,10 @@ def extract_entropy(jplace_file, tree_file) -> pd.DataFrame:
                 best_edge = probabilities[0][0]
                 second_best_edge = probabilities[1][0]
 
-                for clade in tree.find_clades():
-                    if clade.name == "{" + str(best_edge) + "}":
-                        best_edge = clade
-                    elif clade.name == "{" + str(second_best_edge) + "}":
-                        second_best_edge = clade
-
                 clade_distance = 0
                 clade_distance = tree.distance(best_edge, second_best_edge)
                 if clade_distance != 0:
-                    branch_distance = clade_distance / tree.total_branch_length()
+                    branch_distance = (clade_distance - min_distance) / (max_distance - min_distance)
 
             entropies.append((sample_name, entropy_val, drop, branch_distance))
 
