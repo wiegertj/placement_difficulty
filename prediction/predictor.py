@@ -1,14 +1,13 @@
 import math
 import os
+import numpy as np
+import pandas as pd
 from statistics import mean
 from sklearn.feature_selection import RFE
-
 from sklearn.preprocessing import MinMaxScaler
-import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_squared_error
-import numpy as np
 
 df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
 X = df.drop(axis=1, columns=["entropy"]) # Select all columns except the last column (features)
@@ -31,7 +30,7 @@ model = RandomForestRegressor( n_estimators = 300,
     max_depth = 20,
     max_features= 10,
     min_samples_split= 10,
-    min_samples_leaf=5)
+    min_samples_leaf=5, n_jobs=-1)
 
 rfe = RFE(estimator=model, n_features_to_select=10)  # Adjust the number of features as needed
 rfe.fit(X_train.drop(axis=1, columns=['dataset', 'sampleId']), y_train)
@@ -42,16 +41,14 @@ X_train = X_train[selected_features]
 X_test = X_test[selected_features]
 
 param_grid = {
-    'n_estimators': [250, 400],
+    'n_estimators': [250, 350, 500],
     'max_depth': [10, 20],
     'max_features': [5, 10],
     'min_samples_split': [10, 20],
     'min_samples_leaf': [10, 20]
 }
 
-# GridSearch
-
-grid_search = GridSearchCV(model, param_grid, cv=5)
+grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1)
 grid_search.fit(X_train, y_train)
 best_model = grid_search.best_estimator_
 
@@ -64,8 +61,6 @@ for param, value in best_params.items():
 y_pred = best_model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 rmse = math.sqrt(mse)
-print("RMSE: " + str(rmse))
-
 print(f"Root Mean Squared Error on test set: {rmse}")
 feature_importances = best_model.feature_importances_
 
