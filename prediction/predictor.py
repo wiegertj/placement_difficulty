@@ -13,8 +13,7 @@ import matplotlib.pyplot as plt
 
 df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
 X = df.drop(axis=1, columns=["entropy"]) # Select all columns except the last column (features)
-X = X[['min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
-       'avg_perc_hash_ham_dist', 'std_perc_hash_ham_dist', 'dataset', 'sampleId']]
+X = X.drop(axis=1, columns=['min_kernel', 'max_kernel', 'mean_kernel', 'std_kernel', 'min_ham_dist', 'max_ham_dist', 'avg_ham_dist', 'std_ham_dist'])
 print(X.columns)
 
 y = df["entropy"]   # Select the last column (target)
