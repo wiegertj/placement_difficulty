@@ -8,6 +8,8 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_squared_error
+import matplotlib.pyplot as plt
+
 
 df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
 X = df.drop(axis=1, columns=["entropy"]) # Select all columns except the last column (features)
@@ -69,6 +71,19 @@ scaler = MinMaxScaler()
 normalized_importances = scaler.fit_transform(feature_importances.reshape(-1, 1)).flatten()
 importance_df = pd.DataFrame({'Feature': X_train.columns, 'Importance': normalized_importances})
 importance_df = importance_df.sort_values(by='Importance', ascending=False)
+
+# Plot the feature importances
+plt.figure(figsize=(10, 6))
+plt.bar(importance_df['Feature'], importance_df['Importance'])
+plt.xticks(rotation=90)
+plt.xlabel('Features')
+plt.ylabel('Importance')
+plt.title('Feature Importances')
+plt.tight_layout()
+
+# Save the plot as a PNG file
+plot_filename = os.path.join(os.pardir, "data/prediction", "feature_importances.png")
+plt.savefig(plot_filename)
 
 print("Feature Importances (Normalized):")
 for index, row in importance_df.iterrows():
