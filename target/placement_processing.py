@@ -52,15 +52,15 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
         jplace_data = json.load(f)
 
         # Calculate max and min branch length for min-max-normalization
-        max_distance = 0
-        min_distance = float("inf")
-        for clade1 in tree.find_clades():
-            for clade2 in tree.find_clades():
-                distance = tree.distance(clade1, clade2)
-                if distance > max_distance:
-                    max_distance = distance
-                if (distance < min_distance) and (clade1.name != clade2.name):
-                    min_distance = distance
+        max_distance = 1
+        min_distance = 1
+        #for clade1 in tree.find_clades():
+         #   for clade2 in tree.find_clades():
+          #      distance = tree.distance(clade1, clade2)
+           #     if distance > max_distance:
+            #        max_distance = distance
+             #   if (distance < min_distance) and (clade1.name != clade2.name):
+              #      min_distance = distance
 
         print("Calculates max distance: " + str(max_distance))
         print("Calculates min distance: " + str(min_distance))
@@ -89,8 +89,8 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
 
 if __name__ == '__main__':
 
-    for file, tree_file in [("neotrop_10k_epa_result.jplace", "neotrop.newick"), ("bv_epa_result.jplace", "bv.newick"),
-                            ("tara_epa_result.jplace", "tara.newick")]:
+    for file, tree_file in [("neotrop_10k_epa_result.jplace", "neotrop.newick")]:#, ("bv_epa_result.jplace", "bv.newick"),
+                            #("tara_epa_result.jplace", "tara.newick")]:
         jplace_file_path = os.path.join(os.pardir, "data/raw/placements", file)
         df = extract_targets(jplace_file_path, tree_file)
         df.to_csv(os.path.join(os.pardir, "data/processed/target", file.replace(".jplace", "") + "_entropy.csv"))
