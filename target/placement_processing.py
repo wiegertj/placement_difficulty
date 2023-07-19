@@ -8,8 +8,12 @@ from scipy.stats import entropy
 from Bio import Phylo
 from joblib import Parallel, delayed
 
-def calculate_distance(tree, clade1, clade2):
-    distance = tree.distance(clade1, clade2)
+def calculate_distance(tree, clade):
+    clades = tree.find_clades()
+    distances = []
+    for clade_tmp in clades:
+        distance = tree.distance(clade, clade_tmp)
+        distances.append(distance)
     return distance
 
 def process_placements(*args):
@@ -58,24 +62,14 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
 
         num_jobs = -1  # Set to the number of CPU cores; -1 means using all available cores
 
-        all_clades = [(tree, clade1, clade2) for clade1 in tree.find_clades() for clade2 in tree.find_clades()]
+        all_clades = [(tree, clade1) for clade1 in tree.find_clades()]
 
         distances = Parallel(n_jobs=num_jobs)(delayed(calculate_distance)(*args) for args in all_clades)
+        distances = [number for sublist in distances for number in sublist]
 
         max_distance = max(distances)
         min_distance = min(distance for distance in distances if distance > 0)
         print(max_distance)
-
-        # Calculate max and min branch length for min-max-normalization
-        #max_distance = 0
-        #min_distance = float("inf")
-        #for clade1 in tree.find_clades():
-         #   for clade2 in tree.find_clades():
-          #      distance = tree.distance(clade1, clade2)
-           #     if distance > max_distance:
-            #        max_distance = distance
-             #   if (distance < min_distance) and (clade1.name != clade2.name):
-              #      min_distance = distance
 
         print("Calculates max distance: " + str(max_distance))
         print("Calculates min distance: " + str(min_distance))
