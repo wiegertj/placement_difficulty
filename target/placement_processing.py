@@ -14,7 +14,7 @@ def calculate_distance(tree, clade):
     for clade_tmp in clades:
         distance = tree.distance(clade, clade_tmp)
         distances.append(distance)
-    return distance
+    return distances
 
 def process_placements(*args):
         placement, tree, max_distance, min_distance, num_branches = args[0]
@@ -65,9 +65,10 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
         all_clades = [(tree, clade1) for clade1 in tree.find_clades()]
 
         distances = Parallel(n_jobs=num_jobs)(delayed(calculate_distance)(*args) for args in all_clades)
-        print(distances)
 
         distances = sum(distances, [])
+        print(distances)
+
 
         max_distance = max(distances)
         min_distance = min(distance for distance in distances if distance > 0)
