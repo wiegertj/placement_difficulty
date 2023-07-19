@@ -71,7 +71,7 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
 
 
         max_distance = max(distances)
-        min_distance = min(distance for distance in distances if distance > 0)
+        min_distance = min(distances)
 
         print("Calculates max distance: " + str(max_distance))
         print("Calculates min distance: " + str(min_distance))
