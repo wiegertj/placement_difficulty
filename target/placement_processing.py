@@ -12,8 +12,9 @@ def calculate_distance(tree, clade):
     clades = tree.find_clades()
     distances = []
     for clade_tmp in clades:
-        distance = tree.distance(clade, clade_tmp)
-        distances.append(distance)
+        if clade_tmp.name != clade.name:
+            distance = tree.distance(clade, clade_tmp)
+            distances.append(distance)
     return distances
 
 def process_placements(*args):
