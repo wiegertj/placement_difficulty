@@ -6,6 +6,11 @@ import math
 import io
 from scipy.stats import entropy
 from Bio import Phylo
+from joblib import Parallel, delayed
+
+def calculate_distance(tree, clade1, clade2):
+    distance = tree.distance(clade1, clade2)
+    return distance
 
 def process_placements(*args):
         placement, tree, max_distance, min_distance, num_branches = args[0]
@@ -51,23 +56,32 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
     with open(jplace_file, 'r') as f:
         jplace_data = json.load(f)
 
+        num_jobs = -1  # Set to the number of CPU cores; -1 means using all available cores
+
+        all_clades = [(tree, clade1, clade2) for clade1 in tree.find_clades() for clade2 in tree.find_clades()]
+
+        distances = Parallel(n_jobs=num_jobs)(delayed(calculate_distance)(*args) for args in all_clades)
+
+        max_distance = max(distances)
+        min_distance = min(distance for distance in distances if distance > 0)
+        print(max_distance)
+
         # Calculate max and min branch length for min-max-normalization
-        max_distance = 0
-        min_distance = float("inf")
-        for clade1 in tree.find_clades():
-            for clade2 in tree.find_clades():
-                distance = tree.distance(clade1, clade2)
-                if distance > max_distance:
-                    max_distance = distance
-                if (distance < min_distance) and (clade1.name != clade2.name):
-                    min_distance = distance
+        #max_distance = 0
+        #min_distance = float("inf")
+        #for clade1 in tree.find_clades():
+         #   for clade2 in tree.find_clades():
+          #      distance = tree.distance(clade1, clade2)
+           #     if distance > max_distance:
+            #        max_distance = distance
+             #   if (distance < min_distance) and (clade1.name != clade2.name):
+              #      min_distance = distance
 
         print("Calculates max distance: " + str(max_distance))
         print("Calculates min distance: " + str(min_distance))
 
         # Compute each placement target in parallel
-        if multiprocessing.current_process().name == 'MainProcess':
-            multiprocessing.freeze_support()
+
 
         pool = multiprocessing.Pool()
         results = pool.imap_unordered(process_placements, [(placement, jplace_data["tree"], max_distance, min_distance, num_branches) for placement in jplace_data['placements']])
