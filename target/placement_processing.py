@@ -65,7 +65,7 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
         all_clades = [(tree, clade1) for clade1 in tree.find_clades()]
 
         distances = Parallel(n_jobs=num_jobs)(delayed(calculate_distance)(*args) for args in all_clades)
-        distances = [number for sublist in distances for number in sublist]
+        distances = sum(distances, [])
 
         max_distance = max(distances)
         min_distance = min(distance for distance in distances if distance > 0)
