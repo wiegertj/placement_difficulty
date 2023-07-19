@@ -52,7 +52,7 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
         jplace_data = json.load(f)
 
         # Calculate max and min branch length for min-max-normalization
-        max_distance = 1
+        max_distance = 5
         min_distance = 1
         #for clade1 in tree.find_clades():
          #   for clade2 in tree.find_clades():
