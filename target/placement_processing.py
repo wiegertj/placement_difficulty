@@ -62,6 +62,9 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
                 if (distance < min_distance) and (clade1.name != clade2.name):
                     min_distance = distance
 
+        print("Calculates max distance: " + str(max_distance))
+        print("Calculates min distance: " + str(min_distance))
+
         # Compute each placement target in parallel
         if multiprocessing.current_process().name == 'MainProcess':
             multiprocessing.freeze_support()
