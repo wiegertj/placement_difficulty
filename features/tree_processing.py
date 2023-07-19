@@ -1,3 +1,4 @@
+import statistics
 import ete3
 import numpy as np
 import os
@@ -24,7 +25,22 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     std_length = np.std(branch_lengths)
     depth = tree.get_farthest_node()[1]
 
-    return tree_file.replace(".newick", ""), average_length, max_length, min_length, std_length, depth
+    tip_branch_lengths = [node.dist for node in tree.iter_leaves()]
+    average_branch_length_tips = sum(tip_branch_lengths) / len(tip_branch_lengths)
+    min_branch_length_tips = min(tip_branch_lengths)
+    max_branch_length_tips = max(tip_branch_lengths)
+    std_branch_length_tips = statistics.stdev(tip_branch_lengths)
+
+    all_nodes = tree.traverse()
+    inner_nodes = [node for node in all_nodes if not node.is_leaf()]
+    inner_branch_lengths = [node.dist for node in inner_nodes]
+    average_branch_length_inner = sum(inner_branch_lengths) / len(inner_nodes)
+    min_branch_length_inner = min(inner_branch_lengths)
+    max_branch_length_inner = max(inner_branch_lengths)
+    std_branch_length_inner = statistics.stdev(inner_branch_lengths)
+
+    return tree_file.replace(".newick", ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, min_branch_length_tips, max_branch_length_tips, std_branch_length_tips, average_branch_length_inner, min_branch_length_inner, max_branch_length_inner, std_branch_length_inner
+
 
 
 if __name__ == '__main__':
@@ -34,7 +50,7 @@ if __name__ == '__main__':
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     loo_list = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
 
-    loo_list= loo_list + ["bv.newick", "tara.newick", "neotrop.newick"]
+    loo_list = loo_list + ["bv.newick", "tara.newick", "neotrop.newick"]
     print(loo_list)
 
     for tree_file in loo_list:
@@ -47,5 +63,7 @@ if __name__ == '__main__':
         results.append(result)
 
     df = pd.DataFrame(results,
-                      columns=['dataset', 'avg_blength', 'max_blength', 'min_blength', 'std_blength', 'tree_depth'])
+                      columns=['dataset', 'avg_blength', 'max_blength', 'min_blength', 'std_blength', 'tree_depth',
+                               'average_branch_length_tips', 'min_branch_length_tips', 'max_branch_length_tips', 'std_branch_length_tips', 'average_branch_length_inner',
+                               'min_branch_length_inner', 'max_branch_length_inner', 'std_branch_length_inner'])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
