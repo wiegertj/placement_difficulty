@@ -13,7 +13,7 @@ difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda
 # Filter out already used LOO-files
 if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     df_used = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    names_used = df_used["verbose name"].unique()
+    names_used = df_used["verbose_name"].unique()
     difficulties_df = difficulties_df[~difficulties_df["verbose name"].isin(names_used)]
 
 difficulty_ranges = np.arange(0.1, 1.1, 0.1)
