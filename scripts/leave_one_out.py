@@ -187,12 +187,12 @@ for msa_name in filenames:
                     print("RF distance is %s over a total of" % (results_distance["norm_rf"]))
                     rf_distances.append(
                         (msa_name + "_" + to_query, results_distance["norm_rf"], bsd_aligned))
-                    df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "bsd"])
+                    df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd"])
 
                     if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv")):
                         # Create the file if it doesn't exist
                         df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv"), index=False,
-                                     columns=["dataset_sampleId", "norm_rf_dist", "bsd"])
+                                     columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd"])
                     else:
                         # Append to the file if it exists
                         df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv"), index=False,
