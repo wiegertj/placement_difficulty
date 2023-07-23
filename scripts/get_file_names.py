@@ -34,8 +34,12 @@ for file in result["verbose_name"]:
     tar_file = os.path.join(file_path, file + ".tar.gz") # path of msa tar file
     print(file)
 
-    with tarfile.open(tar_file, 'r:gz') as tar:
-        tar.extractall(file_path)
+    try:
+        with tarfile.open(tar_file, 'r:gz') as tar:
+            tar.extractall(file_path)
+    except FileNotFoundError:
+        print("Not found: " + file + " skipped")
+        continue
 
     extracted_path = os.path.join(file_path,
                                   'msa.fasta')
