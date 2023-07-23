@@ -184,7 +184,7 @@ for msa_name in filenames:
                     print("Branch Score Distance (Aligned Trees):", bsd_aligned)
 
                     print("MSA " + str(msa_name + " query " + str(to_query)))
-                    print("RF distance is %s over a total of %s" % (results_distance[0], results_distance[1]))
+                    print("RF distance is %s over a total of" % (results_distance["norm_rf"]))
                     rf_distances.append(
                         (msa_name + "_" + to_query, results_distance["norm_rf"], bsd_aligned))
                     df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "bsd"])
