@@ -34,6 +34,10 @@ for file in result["verbose_name"]:
     tar_file = os.path.join(file_path, file + ".tar.gz") # path of msa tar file
     print(file)
 
+    if not os.path.exists(os.path.join(file_path, "tree_best.newick")):
+        print("Tree file not found for " + file + " skipped")
+        continue
+
     try:
         with tarfile.open(tar_file, 'r:gz') as tar:
             tar.extractall(file_path)
