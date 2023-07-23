@@ -4,19 +4,25 @@ import os
 import pandas as pd
 import numpy as np
 
+# Filter out already used LOO-files
+df_used = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+names_used = df_used["verbose name"].unique()
+
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
+difficulties_df = difficulties_df[~difficulties_df["verbose name"].isin(names_used)]
+
 difficulty_ranges = np.arange(0.1, 1.1, 0.1)
 
 samples = []
 for i in range(len(difficulty_ranges) - 1):
     lower_bound = difficulty_ranges[i]
     upper_bound = difficulty_ranges[i + 1]
-    subset = difficulties_df[(difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound) & (difficulties_df['data_type'] != 'AA')].sample(20)
+    subset = difficulties_df[(difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound) & (difficulties_df['data_type'] != 'AA')].sample(40)
     samples.append(subset)
 
 result = pd.concat(samples)
-result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a')
 
 # Create reference MSA
 for file in result["verbose_name"]:
@@ -24,15 +30,12 @@ for file in result["verbose_name"]:
     tar_file = os.path.join(file_path, file + ".tar.gz") # path of msa tar file
     print(file)
 
-    # Open the tar.gz file
     with tarfile.open(tar_file, 'r:gz') as tar:
-        # Extract the contents of the tar.gz file to the target directory
         tar.extractall(file_path)
 
-    # Rename the extracted directory or file (if needed)
     extracted_path = os.path.join(file_path,
-                                  'msa.fasta')  # Replace 'original_extracted_name' with the actual extracted name
-    new_name_msa = os.path.join(file_path, file.replace(".phy","_reference.fasta"))  # Replace 'new_name' with the desired new name
+                                  'msa.fasta')
+    new_name_msa = os.path.join(file_path, file.replace(".phy","_reference.fasta"))
 
     os.rename(extracted_path, new_name_msa)
 
@@ -46,15 +49,15 @@ for file in result["verbose_name"]:
     #----------------------------- COPY tree-------------------------------------------
 
     tree_path = os.path.join(file_path, "tree_best.newick")
-    new_tree_name = os.path.join(file_path, file.replace(".phy", ".newick"))  # Replace 'new_name' with the desired new name
+    new_tree_name = os.path.join(file_path, file.replace(".phy", ".newick"))
     os.rename(tree_path, new_tree_name)
     copy_to_path_tree = os.path.join(os.pardir, "data/raw/reference_tree")
-    shutil.copy(new_tree_name, copy_to_path_tree)  # Copy to query
+    shutil.copy(new_tree_name, copy_to_path_tree)
 
     #----------------------------- COPY model -------------------------------------------
 
     model_path = os.path.join(file_path, "model_0.txt")
-    new_model_name = os.path.join(file_path, file.replace(".phy", "_msa_model.txt"))  # Replace 'new_name' with the desired new name
+    new_model_name = os.path.join(file_path, file.replace(".phy", "_msa_model.txt"))
     os.rename(model_path, new_model_name)
     copy_to_path_model = os.path.join(os.pardir, "data/processed/loo")
     shutil.copy(new_model_name, copy_to_path_model)  # Copy to query
