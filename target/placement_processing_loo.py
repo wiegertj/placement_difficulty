@@ -6,6 +6,22 @@ import json
 import pandas as pd
 from Bio import Phylo
 from scipy.stats import entropy
+from joblib import Parallel, delayed
+from multiprocessing import Pool
+
+
+def get_min_max(list):
+    return min(list), max(list)
+
+
+def calculate_distance(tree, clade):
+    clades = tree.find_clades()
+    distances = []
+    for clade_tmp in clades:
+        if clade_tmp.name != clade.name:
+            distance = tree.distance(clade, clade_tmp)
+            distances.append(distance)
+    return distances
 
 
 def extract_targets(*args):
@@ -55,15 +71,19 @@ def extract_targets(*args):
                     elif clade.name == "{" + str(second_best_edge) + "}":
                         second_best_edge = clade
 
-                max_distance = 0
-                min_distance = float("inf")
-                for clade1 in tree.find_clades():
-                    for clade2 in tree.find_clades():
-                        distance = tree.distance(clade1, clade2)
-                        if distance > max_distance:
-                            max_distance = distance
-                        if (distance < min_distance) and (clade1.name != clade2.name):
-                            min_distance = distance
+                # compute min/max distance between clades in parallel
+                all_clades = [(tree, clade1) for clade1 in tree.find_clades()]
+
+                distances = Parallel(n_jobs=-1)(delayed(calculate_distance)(*args) for args in all_clades)
+
+                print("Calculated list of distances ... start finding min/max")
+
+                with Pool(processes=os.cpu_count()) as pool:
+                    results = pool.map(get_min_max, distances)
+
+                # Extract the minimum and maximum values from the results
+                min_distance = min(result[0] for result in results)
+                max_distance = max(result[1] for result in results)
 
                 clade_distance = 0
                 clade_distance = tree.distance(best_edge, second_best_edge)
