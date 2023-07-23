@@ -75,7 +75,7 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
 
         print("Calculates list of distances ... start finding min/max")
 
-        with Pool(processes=num_jobs) as pool:
+        with Pool(processes=os.cpu_count()) as pool:
             results = pool.map(get_min_max, distances)
 
         # Extract the minimum and maximum values from the results
