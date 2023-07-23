@@ -66,7 +66,7 @@ for msa_name in filenames:
     for to_query in sequence_ids:
 
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
-            if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
+            if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)): # if folder empty
                 print("Empty folder found for " + msa_name + " " + to_query + " filling it")
                 os.rmdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)) # delete empty folder
             else:
@@ -164,6 +164,21 @@ for msa_name in filenames:
                     tree_list.read(data=original_tree.write(format=1), schema="newick")
                     tree_list.read(data=tree.write(format=1), schema="newick")
 
+                    # Normalize Branch Lengths to be between 0 and 1
+                    tree_len_1 = tree_list[0].length()
+                    for edge in tree_list[0].postorder_edge_iter():
+                        if edge.length is None:
+                            edge.length = 0
+                        else:
+                            edge.length = float(edge.length) / tree_len_1
+
+                    tree_len_2 = tree_list[1].length()
+                    for edge in tree_list[1].postorder_edge_iter():
+                        if edge.length is None:
+                            edge.length = 0
+                        else:
+                            edge.length = float(edge.length) / tree_len_2
+
                     bsd_aligned = treecompare.euclidean_distance(tree_list[0], tree_list[1])
 
                     print("Branch Score Distance (Aligned Trees):", bsd_aligned)
@@ -171,7 +186,7 @@ for msa_name in filenames:
                     print("MSA " + str(msa_name + " query " + str(to_query)))
                     print("RF distance is %s over a total of %s" % (results_distance[0], results_distance[1]))
                     rf_distances.append(
-                        (msa_name + "_" + to_query, results_distance[0] / results_distance[1], bsd_aligned))
+                        (msa_name + "_" + to_query, results_distance["norm_rf"], bsd_aligned))
                     df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "bsd"])
 
                     if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv")):
@@ -181,7 +196,7 @@ for msa_name in filenames:
                     else:
                         # Append to the file if it exists
                         df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv"), index=False,
-                                     mode='a', header=False, columns=["dataset_sampleId", "norm_rf_dist", "bsd"])
+                                     mode='a', header=False, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd"])
                     rf_distances = []
         else:
             original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick")
