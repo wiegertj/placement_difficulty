@@ -156,7 +156,7 @@ for msa_name in filenames:
                     # Delete the leaf node
                     leaf_node.delete()
 
-                    results_distance = original_tree.compare(tree)
+                    results_distance = original_tree.compare(tree, unrooted=True)
 
                     # BSD distance
 
