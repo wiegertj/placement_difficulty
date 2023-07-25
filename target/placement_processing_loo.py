@@ -9,6 +9,8 @@ from scipy.stats import entropy
 from joblib import Parallel, delayed
 from multiprocessing import Pool
 
+
+
 def get_min_max(list):
     return min(list), max(list)
 
@@ -91,6 +93,8 @@ def extract_targets(*args):
 
 
 def extract_jplace_info(directory):
+    counter = 0
+
     targets = []
     file_list = [(root, file) for root, dirs, files in os.walk(directory) for file in files if
                  file.endswith('.jplace')]
@@ -99,6 +103,8 @@ def extract_jplace_info(directory):
     results = pool.imap_unordered(extract_targets, file_list)
 
     for result in results:
+        counter += 1
+        print(str(counter) + "/" + str(len(file_list)))
         targets.append(result)
 
     pool.close()
