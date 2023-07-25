@@ -91,15 +91,34 @@ def extract_targets(*args):
 
             return tree_name, sample_name, entropy_val, drop, branch_distance
 
+def get_files_with_extension(directory):
+    file_list = [(root, file) for root, dirs, files in os.walk(directory) for file in files if file.endswith('.jplace')]
+    return file_list
 
 def extract_jplace_info(directory):
     counter = 0
 
     print("Start creating filelist ... ")
-    targets = []
-    file_list = [(root, file) for root, dirs, files in os.walk(directory) for file in files if
-                 file.endswith('.jplace')]
+
+    with Pool(processes=-1) as pool:
+        # Split the directories for each process
+        directories = [os.path.join(directory, subdir) for subdir in os.listdir(directory)]
+        results = pool.map(get_files_with_extension, directories)
+
+        # Merge the results from all processes into a single file list
+    file_list = [item for sublist in results for item in sublist]
+
+    # Now you have the complete file list
     print("Finished creating filelist ... ")
+    print(len(file_list))
+
+
+
+    targets = []
+
+
+
+
     pool = multiprocessing.Pool()
     results = pool.imap_unordered(extract_targets, file_list)
 
