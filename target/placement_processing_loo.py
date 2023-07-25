@@ -107,7 +107,7 @@ def extract_jplace_info(directory):
 
         # Merge the results from all processes into a single file list
     file_list = [item for sublist in results for item in sublist]
-
+    file_list = file_list.pop(1)
     # Now you have the complete file list
     print("Finished creating filelist ... ")
     print(len(file_list))
