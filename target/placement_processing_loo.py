@@ -130,7 +130,7 @@ def extract_jplace_info(directory):
     pool.close()
     pool.join()
 
-    df = pd.DataFrame(results,
+    df = pd.DataFrame(targets,
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
     df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), index=False)
 
