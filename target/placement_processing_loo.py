@@ -95,10 +95,11 @@ def extract_targets(*args):
 def extract_jplace_info(directory):
     counter = 0
 
+    print("Start creating filelist ... ")
     targets = []
     file_list = [(root, file) for root, dirs, files in os.walk(directory) for file in files if
                  file.endswith('.jplace')]
-
+    print("Finished creating filelist ... ")
     pool = multiprocessing.Pool()
     results = pool.imap_unordered(extract_targets, file_list)
 
