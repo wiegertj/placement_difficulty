@@ -18,6 +18,8 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     """
 
     branch_lengths = [node.dist for node in newick_tree.traverse() if not node.is_root()]
+    if tree_file.replace(".newick", "") == "test":
+        print(sum(branch_lengths))
 
     average_length = np.mean(branch_lengths)
     max_length = np.max(branch_lengths)
@@ -33,6 +35,7 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
 
     all_nodes = tree.traverse()
     inner_nodes = [node for node in all_nodes if not node.is_leaf()]
+    print(len(inner_nodes))
     inner_branch_lengths = [node.dist for node in inner_nodes]
     average_branch_length_inner = sum(inner_branch_lengths) / len(inner_nodes)
     min_branch_length_inner = min(inner_branch_lengths)
@@ -41,7 +44,17 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
 
     return tree_file.replace(".newick", ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, min_branch_length_tips, max_branch_length_tips, std_branch_length_tips, average_branch_length_inner, min_branch_length_inner, max_branch_length_inner, std_branch_length_inner
 
+def normalize_branch_lengths(tree):
+    total_length = 0.0
 
+    for node in tree.traverse():
+        if not node.is_root():
+            total_length += node.dist
+
+    for node in tree.traverse():
+        if node.up:
+            node.dist /= total_length
+    return tree
 
 if __name__ == '__main__':
 
@@ -50,7 +63,7 @@ if __name__ == '__main__':
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     loo_list = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
 
-    loo_list = loo_list + ["bv.newick", "tara.newick", "neotrop.newick"]
+    loo_list = loo_list + ["bv.newick", "tara.newick", "neotrop.newick", "test.newick"]
     print(loo_list)
 
     for tree_file in loo_list:
@@ -58,6 +71,7 @@ if __name__ == '__main__':
             newick_tree = file.read()
 
         tree = ete3.Tree(newick_tree)
+        tree = normalize_branch_lengths(tree)
 
         result = analyze_newick_tree(tree, tree_file)
         results.append(result)
