@@ -1,3 +1,4 @@
+import types
 import pandas as pd
 import os
 from Bio import AlignIO
@@ -38,7 +39,7 @@ def gap_statistics(query_filepath) -> list:
 
         longest_gap_rel = longest_gap / len(sequence)
 
-        # AVG Gap length
+        # average gap length
         total_gap_length = 0
         gap_count = 0
 
@@ -58,11 +59,10 @@ def gap_statistics(query_filepath) -> list:
                     gap_count += 1
                     in_gap = False
 
-        # Check if the last character is a gap
+        # check if the last character is a gap
         if in_gap:
             total_gap_length += current_gap_length
             gap_count += 1
-
         if gap_count > 0:
             average_gap_length = total_gap_length / gap_count
         else:
@@ -86,18 +86,24 @@ def gap_statistics(query_filepath) -> list:
 
 if __name__ == '__main__':
 
-    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    loo_list = loo_selection['verbose_name'].str.replace(".phy", "_query.fasta").tolist()
+    module_path = os.path.join(os.pardir, "configs/feature_config.py")
 
-    filepaths = ["bv_query.fasta", "neotrop_query_10k.fasta", "tara_query.fasta"] + loo_list
+    feature_config = types.ModuleType('feature_config')
+    feature_config.__file__ = module_path
+
+    with open(module_path, 'rb') as module_file:
+        code = compile(module_file.read(), module_path, 'exec')
+        exec(code, feature_config.__dict__)
+
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
+
+    if feature_config.INCUDE_TARA_BV_NEO:
+        filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
     results = []
-    for file in filepaths:
+    for file in filenames:
         results_file = gap_statistics(file)
         results.extend(results_file)
     df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel", "average_gap_length"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index=False)
-
-    filepaths_loo = []
-    for file in filepaths_loo:
-        filepath = os.path.join(os.pardir, "data/raw/msa", file)

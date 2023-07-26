@@ -1,3 +1,4 @@
+import types
 import pandas as pd
 import os
 import statistics
@@ -28,7 +29,6 @@ def compute_hamming_distance(msa_file, query_file) -> list:
                 distance = sum(ch1 != ch2 for ch1, ch2 in zip(record_query.seq, record_msa.seq))
                 distances.append(distance)
 
-
         max_ham = max(distances)
         min_ham = min(distances)
         avg_ham = sum(distances) / len(distances)
@@ -57,22 +57,35 @@ def compute_hamming_distance(msa_file, query_file) -> list:
 
 if __name__ == '__main__':
 
+    module_path = os.path.join(os.pardir, "configs/feature_config.py")
+
+    feature_config = types.ModuleType('feature_config')
+    feature_config.__file__ = module_path
+
+    with open(module_path, 'rb') as module_file:
+        code = compile(module_file.read(), module_path, 'exec')
+        exec(code, feature_config.__dict__)
+
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    loo_list = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
-    file_list = ["bv_reference.fasta", "tara_reference.fasta", "neotrop_reference.fasta"] + loo_list
+    filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
+
+    if feature_config.INCUDE_TARA_BV_NEO:
+        filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
+
     counter_msa = 0
-    for msa_file in file_list:
+    for msa_file in filenames:
         print(msa_file)
-        if os.path.isfile(os.path.join(os.pardir, "data/processed/features", msa_file.replace("reference.fasta","msa_dist.csv"))):
+        if os.path.isfile(os.path.join(os.pardir, "data/processed/features",
+                                       msa_file.replace("reference.fasta", "msa_dist.csv"))):
             print("Found " + msa_file + " skipped")
             continue
         if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
             print("Skipped " + msa_file + " too large")
             continue
 
-        print(str(counter_msa) + "/" + str(len(loo_list)))
+        print(str(counter_msa) + "/" + str(len(filenames)))
         counter_msa += 1
-        result_tmp = compute_hamming_distance(msa_file, msa_file.replace("reference.fasta","query.fasta"))
+        result_tmp = compute_hamming_distance(msa_file, msa_file.replace("reference.fasta", "query.fasta"))
 
         df = pd.DataFrame(result_tmp, columns=['dataset', 'sampleId', 'min_ham_dist', 'max_ham_dist', 'avg_ham_dist',
                                                'std_ham_dist'])

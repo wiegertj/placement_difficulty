@@ -1,11 +1,12 @@
 import math
 import multiprocessing
 import statistics
+import types
 import numpy as np
 import pandas as pd
 import os
 from Bio import SeqIO
-from scipy.fftpack import dct  # Discrete cosine transform
+from scipy.fftpack import dct  # Discrete cosine transformation
 from collections import defaultdict
 
 
@@ -19,7 +20,6 @@ def dna_to_numeric(sequence):
 def encode_dna_as_image(sequence):
     width = int(math.sqrt(len(sequence)))
     height = math.ceil(len(sequence) / width)
-
     image = np.resize(sequence, (height, width))
     return image
 
@@ -89,19 +89,30 @@ def compute_perceptual_hash_distance(msa_file):
 
 if __name__ == '__main__':
 
-    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    loo_list = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
-    file_list = ["bv_reference.fasta", "tara_reference.fasta", "neotrop_reference.fasta"] + loo_list
+    module_path = os.path.join(os.pardir, "configs/feature_config.py")
 
-    for file in file_list:
+    feature_config = types.ModuleType('feature_config')
+    feature_config.__file__ = module_path
+
+    with open(module_path, 'rb') as module_file:
+        code = compile(module_file.read(), module_path, 'exec')
+        exec(code, feature_config.__dict__)
+
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
+
+    if feature_config.INCUDE_TARA_BV_NEO:
+        filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
+
+    for file in filenames:
         if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 10000:
-            file_list.remove(file)
+            filenames.remove(file)
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
 
     pool = multiprocessing.Pool()
-    results = pool.imap_unordered(compute_perceptual_hash_distance, file_list)
+    results = pool.imap_unordered(compute_perceptual_hash_distance, filenames)
 
     for result in results:
         print("Finished processing: " + result[1] + "with query file")

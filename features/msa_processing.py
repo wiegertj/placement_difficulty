@@ -1,4 +1,5 @@
 import math
+import types
 import pandas as pd
 import os
 import statistics
@@ -114,10 +115,21 @@ def compute_entropy(msa_filepath):
 
 
 if __name__ == '__main__':
-    filenames = ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
+
+    module_path = os.path.join(os.pardir, "configs/feature_config.py")
+
+    feature_config = types.ModuleType('feature_config')
+    feature_config.__file__ = module_path
+
+    with open(module_path, 'rb') as module_file:
+        code = compile(module_file.read(), module_path, 'exec')
+        exec(code, feature_config.__dict__)
+
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    loo_list = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
-    filenames = filenames + loo_list
+    filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
+
+    if feature_config.INCUDE_TARA_BV_NEO:
+        filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
     results = []
     for file in filenames:

@@ -1,5 +1,4 @@
 import os
-import sys
 import time
 import types
 import pandas as pd
@@ -18,7 +17,9 @@ with open(module_path, 'rb') as module_file:
     code = compile(module_file.read(), module_path, 'exec')
     exec(code, feature_config.__dict__)
 
-def filter_gapped_kmers(sequence, k=feature_config.K_MER_LENGTH, max_gap_percent=feature_config.K_MER_MAX_GAP_PERCENTAGE,
+
+def filter_gapped_kmers(sequence, k=feature_config.K_MER_LENGTH,
+                        max_gap_percent=feature_config.K_MER_MAX_GAP_PERCENTAGE,
                         max_n_percentage=feature_config.K_MER_MAX_N_PERCENTAGE) -> list:
     """
     Returns a list of k-mers for the given sequence considering a max_gap_percentage.
@@ -75,8 +76,9 @@ def filter_gapped_kmers(sequence, k=feature_config.K_MER_LENGTH, max_gap_percent
     return kmer_list
 
 
-def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH, max_gap_percent=feature_config.K_MER_MAX_GAP_PERCENTAGE) -> (
-str, str, float, float, float, float):
+def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
+                                     max_gap_percent=feature_config.K_MER_MAX_GAP_PERCENTAGE) -> (
+        str, str, float, float, float, float):
     """
     Computes string kernel using a bloom filter of the query and all the bloom filters of the MSA sequences.
     Then summary statistics for a hash kernels are computed.
@@ -133,7 +135,6 @@ def bloom_filter(filtered_kmers, size, fp_rate):
     return bf_
 
 
-# ----------------------------------------------- HELPER -----------------------------------------------
 def combine_partial_files(dataset):
     csv_files = [filename for filename in os.listdir(os.path.join(os.pardir, "data/processed/features")) if
                  filename.startswith(dataset) and filename.endswith(".csv") and filename.__contains__("kmer")]
@@ -201,25 +202,33 @@ def multiprocess_string_kernel(query_filename, bloom_filters_MSA_, msa_file_, in
     return output
 
 
-# ----------------------------------------------- MAIN -----------------------------------------------
-
-
 if __name__ == '__main__':
 
-    #combine_partial_files("neotrop")
-    #combine_partial_files("bv")
-    #combine_partial_files("tara")
+    # combine_partial_files("neotrop")
+    # combine_partial_files("bv")
+    # combine_partial_files("tara")
+
+    module_path = os.path.join(os.pardir, "configs/feature_config.py")
+
+    feature_config = types.ModuleType('feature_config')
+    feature_config.__file__ = module_path
+
+    with open(module_path, 'rb') as module_file:
+        code = compile(module_file.read(), module_path, 'exec')
+        exec(code, feature_config.__dict__)
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    loo_list = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
-    file_list = loo_list
+    filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
+
+    if feature_config.INCUDE_TARA_BV_NEO:
+        filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
 
     counter_msa = 0
-    for msa_file in file_list:
-        print(str(counter_msa) + "/" + str(len(loo_list)))
+    for msa_file in filenames:
+        print(str(counter_msa) + "/" + str(len(filenames)))
         counter_msa += 1
         if msa_file == "neotrop_reference.fasta":
             query_file = msa_file.replace("reference.fasta", "query_10k.fasta")
@@ -229,7 +238,8 @@ if __name__ == '__main__':
         # Skip already processed
         potential_path = os.path.join(os.pardir, "data/processed/features",
                                       msa_file.replace("_reference.fasta", "") + "_kmer" + str(
-                                          feature_config.K_MER_LENGTH) + "_0" + str(feature_config.K_MER_MAX_GAP_PERCENTAGE).replace(
+                                          feature_config.K_MER_LENGTH) + "_0" + str(
+                                          feature_config.K_MER_MAX_GAP_PERCENTAGE).replace(
                                           "0.",
                                           "") + "_" + str(
                                           1000) + ".csv")
@@ -254,7 +264,8 @@ if __name__ == '__main__':
 
         # Create bloom filters for each sequence in the MSA
         for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
-            kmers = filter_gapped_kmers(str(record.seq), feature_config.K_MER_LENGTH, feature_config.K_MER_MAX_GAP_PERCENTAGE)
+            kmers = filter_gapped_kmers(str(record.seq), feature_config.K_MER_LENGTH,
+                                        feature_config.K_MER_MAX_GAP_PERCENTAGE)
             kmers = set(kmers)
             bf = bloom_filter(kmers, len(kmers), feature_config.BLOOM_FILTER_FP_RATE)
             bloom_filters_MSA.append((record.id, bf))
@@ -270,8 +281,9 @@ if __name__ == '__main__':
                               columns=['dataset', 'sampleId', 'min_kernel', 'max_kernel', 'mean_kernel', 'std_kernel'])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    msa_file.replace("_reference.fasta", "") + "_kmer" + str(
-                                       feature_config.K_MER_LENGTH) + "_0" + str(feature_config.K_MER_MAX_GAP_PERCENTAGE).replace("0.",
-                                                                                                                  "") + "_" + str(
+                                       feature_config.K_MER_LENGTH) + "_0" + str(
+                                       feature_config.K_MER_MAX_GAP_PERCENTAGE).replace("0.",
+                                                                                        "") + "_" + str(
                                        interval_start) + ".csv"), index=False)
             results = []
 

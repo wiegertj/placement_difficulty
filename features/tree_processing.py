@@ -1,4 +1,5 @@
 import statistics
+import types
 import ete3
 import numpy as np
 import os
@@ -42,7 +43,9 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     max_branch_length_inner = max(inner_branch_lengths)
     std_branch_length_inner = statistics.stdev(inner_branch_lengths)
 
-    return tree_file.replace(".newick", ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, min_branch_length_tips, max_branch_length_tips, std_branch_length_tips, average_branch_length_inner, min_branch_length_inner, max_branch_length_inner, std_branch_length_inner
+    return tree_file.replace(".newick",
+                             ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, min_branch_length_tips, max_branch_length_tips, std_branch_length_tips, average_branch_length_inner, min_branch_length_inner, max_branch_length_inner, std_branch_length_inner
+
 
 def normalize_branch_lengths(tree):
     total_length = 0.0
@@ -56,17 +59,29 @@ def normalize_branch_lengths(tree):
             node.dist /= total_length
     return tree
 
+
 if __name__ == '__main__':
 
     results = []
 
+    module_path = os.path.join(os.pardir, "configs/feature_config.py")
+
+    feature_config = types.ModuleType('feature_config')
+    feature_config.__file__ = module_path
+
+    with open(module_path, 'rb') as module_file:
+        code = compile(module_file.read(), module_path, 'exec')
+        exec(code, feature_config.__dict__)
+
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    loo_list = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
+    filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
 
-    loo_list = loo_list + ["bv.newick", "tara.newick", "neotrop.newick", "test.newick"]
-    print(loo_list)
+    if feature_config.INCUDE_TARA_BV_NEO:
+        filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
-    for tree_file in loo_list:
+    print(filenames)
+
+    for tree_file in filenames:
         with open(os.path.join(os.pardir, "data/raw/reference_tree", tree_file), 'r') as file:
             newick_tree = file.read()
 
@@ -78,6 +93,7 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(results,
                       columns=['dataset', 'avg_blength', 'max_blength', 'min_blength', 'std_blength', 'tree_depth',
-                               'average_branch_length_tips', 'min_branch_length_tips', 'max_branch_length_tips', 'std_branch_length_tips', 'average_branch_length_inner',
+                               'average_branch_length_tips', 'min_branch_length_tips', 'max_branch_length_tips',
+                               'std_branch_length_tips', 'average_branch_length_inner',
                                'min_branch_length_inner', 'max_branch_length_inner', 'std_branch_length_inner'])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
