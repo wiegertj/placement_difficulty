@@ -79,7 +79,7 @@ def gap_statistics(query_filepath) -> list:
         else:
             name = query_filepath.replace("_query.fasta", "")
 
-        results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length))
+        results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length / len(sequence)))
 
     return results
 
