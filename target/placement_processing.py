@@ -29,11 +29,6 @@ def process_placements(*args):
     sample_name = placement['n'][0]
     probabilities = placement['p']
     like_weight_ratios = [tup[2] for tup in probabilities]
-    sum_ratios = sum(like_weight_ratios)
-    if sum_ratios != 1.0:
-        difference = 1.0 - sum_ratios
-        like_weight_ratios.append(difference)
-    print(like_weight_ratios)
     entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)
 
     # calculate drop in lwr between best two branches
@@ -77,23 +72,33 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
     with open(jplace_file, 'r') as f:
         jplace_data = json.load(f)
 
-        num_jobs = -1  # Set to the number of CPU cores; -1 means using all available cores
+        #num_jobs = -1  # Set to the number of CPU cores; -1 means using all available cores
 
-        all_clades = [(tree, clade1) for clade1 in tree.find_clades()]
+        #all_clades = [(tree, clade1) for clade1 in tree.find_clades()]
 
-        distances = Parallel(n_jobs=num_jobs)(delayed(calculate_distance)(*args) for args in all_clades)
+        #distances = Parallel(n_jobs=num_jobs)(delayed(calculate_distance)(*args) for args in all_clades)
 
         print("Calculated list of distances ... start finding min/max")
 
-        with Pool(processes=os.cpu_count()) as pool:
-            results = pool.map(get_min_max, distances)
+        #with Pool(processes=os.cpu_count()) as pool:
+         #   results = pool.map(get_min_max, distances)
 
         # Extract the minimum and maximum values from the results
-        min_distance = min(result[0] for result in results)
-        max_distance = max(result[1] for result in results)
+        #min_distance = min(result[0] for result in results)
+        #max_distance = max(result[1] for result in results)
 
-        print("Calculated max distance: " + str(max_distance))
-        print("Calculated min distance: " + str(min_distance))
+        #print("Calculated max distance: " + str(max_distance))
+        #print("Calculated min distance: " + str(min_distance))
+
+        if tree_file == "neotrop.newick":
+            max_distance = 4.668786892515589
+            min_distance = 0.014107303220626066
+        elif tree_file == "bv.newick":
+            max_distance = 3.5175978763653024
+            min_distance = 1.00000050002909e-06
+        elif tree_file == "tara.newick":
+            max_distance = 6.4444184
+            min_distance = 1.0e-06
 
         pool = multiprocessing.Pool()
         results = pool.imap_unordered(process_placements,
