@@ -33,6 +33,7 @@ def process_placements(*args):
     if sum_ratios != 1.0:
         difference = 1.0 - sum_ratios
         like_weight_ratios.append(difference)
+    print(like_weight_ratios)
     entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)
 
     # calculate drop in lwr between best two branches
@@ -66,8 +67,12 @@ def process_placements(*args):
 def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
     # Get branch count for normalization
     tree = Phylo.read(os.path.join(os.pardir, "data/raw/reference_tree", tree_file), "newick")
-    num_branches = tree.count_terminals() - 1
+    tree_file_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_file)
 
+    with open(tree_file_path, 'r') as file:
+        newick_string = file.read()
+
+    num_branches = newick_string.count(":")
     entropies = []
     with open(jplace_file, 'r') as f:
         jplace_data = json.load(f)

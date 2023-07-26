@@ -39,7 +39,8 @@ def extract_targets(*args):
         # Get branch count for normalization
         tree = Phylo.read(os.path.join(os.pardir, "data/raw/reference_tree", tree_name + ".newick"),
                           "newick")
-        num_branches = tree.count_terminals() - 1
+        newick_string = data["tree"]
+        num_branches = newick_string.count(":")
 
         # Extract placement likelihood weight ratios
         sample_name = ""
@@ -48,11 +49,12 @@ def extract_targets(*args):
             probabilities = placement['p']
             like_weight_ratios = [tup[2] for tup in probabilities]
             sum_ratios = sum(like_weight_ratios)
-            if sum_ratios != 1.0:
-                difference = 1.0 - sum_ratios
-                like_weight_ratios.append(difference)
-            entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)
 
+            print(num_branches)
+            print(math.log2(num_branches))
+            entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)
+            print(like_weight_ratios)
+            print(entropy_val)
             # calculate drop in lwr between best two branches
             drop = 0
             if len(like_weight_ratios) > 1:
@@ -106,7 +108,7 @@ def extract_jplace_info(directory):
 
     print("Start creating filelist ... ")
 
-    with Pool(processes=100) as pool:
+    with Pool(processes=2) as pool:
         # Split the directories for each process
         directories = [os.path.join(directory, subdir) for subdir in os.listdir(directory)]
         results = pool.map(get_files_with_extension, directories)
