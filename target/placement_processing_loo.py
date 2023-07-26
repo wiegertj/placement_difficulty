@@ -103,7 +103,7 @@ def extract_jplace_info(directory):
 
     print("Start creating filelist ... ")
 
-    with Pool(processes=2) as pool:
+    with Pool(processes=80) as pool:
         # Split the directories for each process
         directories = [os.path.join(directory, subdir) for subdir in os.listdir(directory)]
         results = pool.map(get_files_with_extension, directories)
