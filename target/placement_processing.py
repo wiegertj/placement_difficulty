@@ -19,6 +19,7 @@ def calculate_distance(tree, clade):
             distances.append(distance)
     return distances
 
+
 def get_min_max(list):
     return min(list), max(list)
 
@@ -28,6 +29,10 @@ def process_placements(*args):
     sample_name = placement['n'][0]
     probabilities = placement['p']
     like_weight_ratios = [tup[2] for tup in probabilities]
+    sum_ratios = sum(like_weight_ratios)
+    if sum_ratios != 1.0:
+        difference = 1.0 - sum_ratios
+        like_weight_ratios.append(difference)
     entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)
 
     # calculate drop in lwr between best two branches
@@ -73,7 +78,7 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
 
         distances = Parallel(n_jobs=num_jobs)(delayed(calculate_distance)(*args) for args in all_clades)
 
-        print("Calculates list of distances ... start finding min/max")
+        print("Calculated list of distances ... start finding min/max")
 
         with Pool(processes=os.cpu_count()) as pool:
             results = pool.map(get_min_max, distances)
@@ -82,10 +87,8 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
         min_distance = min(result[0] for result in results)
         max_distance = max(result[1] for result in results)
 
-        print("Calculates max distance: " + str(max_distance))
-        print("Calculates min distance: " + str(min_distance))
-
-        # Compute each placement target in parallel
+        print("Calculated max distance: " + str(max_distance))
+        print("Calculated min distance: " + str(min_distance))
 
         pool = multiprocessing.Pool()
         results = pool.imap_unordered(process_placements,

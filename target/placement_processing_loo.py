@@ -10,9 +10,9 @@ from joblib import Parallel, delayed
 from multiprocessing import Pool
 
 
-
 def get_min_max(list):
     return min(list), max(list)
+
 
 def calculate_distance(tree, clade):
     clades = tree.find_clades()
@@ -22,6 +22,7 @@ def calculate_distance(tree, clade):
             distance = tree.distance(clade, clade_tmp)
             distances.append(distance)
     return distances
+
 
 def extract_targets(*args):
     root, file = args[0]
@@ -46,6 +47,10 @@ def extract_targets(*args):
             sample_name = placement['n'][0]
             probabilities = placement['p']
             like_weight_ratios = [tup[2] for tup in probabilities]
+            sum_ratios = sum(like_weight_ratios)
+            if sum_ratios != 1.0:
+                difference = 1.0 - sum_ratios
+                like_weight_ratios.append(difference)
             entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)
 
             # calculate drop in lwr between best two branches
@@ -70,7 +75,6 @@ def extract_targets(*args):
                     elif clade.name == "{" + str(second_best_edge) + "}":
                         second_best_edge = clade
 
-
                 # compute min/max distance between clades in parallel
                 all_clades = [(tree, clade1) for clade1 in tree.find_clades()]
 
@@ -91,9 +95,11 @@ def extract_targets(*args):
 
             return tree_name, sample_name, entropy_val, drop, branch_distance
 
+
 def get_files_with_extension(directory):
     file_list = [(root, file) for root, dirs, files in os.walk(directory) for file in files if file.endswith('.jplace')]
     return file_list
+
 
 def extract_jplace_info(directory):
     counter = 0
@@ -111,12 +117,7 @@ def extract_jplace_info(directory):
     print("Finished creating filelist ... ")
     print(len(file_list))
 
-
-
     targets = []
-
-
-
 
     pool = multiprocessing.Pool()
     results = pool.imap_unordered(extract_targets, file_list)
