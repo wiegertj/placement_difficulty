@@ -206,15 +206,13 @@ def multiprocess_string_kernel(query_filename, bloom_filters_MSA_, msa_file_, in
 
 if __name__ == '__main__':
 
-    combine_partial_files("neotrop")
-    combine_partial_files("bv")
-    combine_partial_files("tara")
-
-    sys.exit()
+    #combine_partial_files("neotrop")
+    #combine_partial_files("bv")
+    #combine_partial_files("tara")
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     loo_list = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
-    file_list = ["bv_reference.fasta", "tara_reference.fasta", "neotrop_reference.fasta"] + loo_list
+    file_list = loo_list
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
