@@ -48,13 +48,8 @@ def extract_targets(*args):
             sample_name = placement['n'][0]
             probabilities = placement['p']
             like_weight_ratios = [tup[2] for tup in probabilities]
-            sum_ratios = sum(like_weight_ratios)
-
-            print(num_branches)
-            print(math.log2(num_branches))
             entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)
-            print(like_weight_ratios)
-            print(entropy_val)
+
             # calculate drop in lwr between best two branches
             drop = 0
             if len(like_weight_ratios) > 1:
