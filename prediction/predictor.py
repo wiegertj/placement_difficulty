@@ -53,7 +53,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     model = RandomForestRegressor(n_jobs=8)
 
     param_grid = {
-        'n_estimators': [100, 250, 350, 500],
+        'n_estimators': [100, 250, 350],
         'max_depth': [5, 10, 20],
         'max_features': [5, 10],
         'min_samples_split': [10, 20],
@@ -79,7 +79,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     # Scale and print feature importances
     scaler = MinMaxScaler()
     normalized_importances = scaler.fit_transform(feature_importances.reshape(-1, 1)).flatten()
-    importance_df = pd.DataFrame({'Feature': X_train.columns, 'Importance': normalized_importances})
+    importance_df = pd.DataFrame({'Feature': X_train.drop(axis=1, columns=['dataset', 'sampleId']).columns, 'Importance': normalized_importances})
     importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
     # Plot the feature importances
