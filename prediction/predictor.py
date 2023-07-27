@@ -30,7 +30,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
         print("Baseline predicting mean RMSE: " + str(rmse_mean))
     else:
         data_frame = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-        dataset_sample = data_frame['dataset'].str.replace(".phy", "").sample(40)
+        dataset_sample = data_frame['verbose_name'].str.replace(".phy", "").sample(40)
         holdout_datasets = df[df["dataset"].isin(dataset_sample)]
         df = df[~df["dataset"].isin(dataset_sample)]
         X_test = holdout_datasets.drop(axis=1, columns=["entropy", "lwr_drop", "branch_dist_best_two_placements"])
