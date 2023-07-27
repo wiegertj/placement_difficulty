@@ -1,3 +1,4 @@
+import json
 import math
 import os
 import pickle
@@ -110,7 +111,8 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
         pickle.dump(best_model, f)
 
     with open(os.path.join(os.pardir, "data/prediction", "standard_rf_params_" + name + ".txt"), 'w') as f:
-        f.write(best_params)
+        best_params_str = json.dumps(best_params)
+        f.write(best_params_str)
 
 rand_forest_entropy(rfe=False, holdout_trees=0)
 rand_forest_entropy(holdout_trees=40, rfe=False)
