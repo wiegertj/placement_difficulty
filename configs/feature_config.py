@@ -7,7 +7,7 @@ KMER_PROCESSING_INTERVAL_START = 0
 KMER_PROCESSING_COUNT = 5000 # how many kmers of bv, tara, neotrop to compute
 KMER_PROCESSING_STEPSIZE = 1000 # save file every KMER_PROCESSING_STEPSIZE
 KMER_PROCESSING_VERBOSE = 10
-INCUDE_TARA_BV_NEO = False
+INCUDE_TARA_BV_NEO = True
 # -------------------- leave one out --------------------  #
 REESTIMATE_TREE = True
 REESTIMATE_TREE_SEQ_THRESHOLD = 30 # If REESTIMATE_TREE = True trees up to this no. of sequences will be reestimated
