@@ -1,5 +1,6 @@
 import json
 import math
+import shap
 import os
 import pickle
 import numpy as np
@@ -121,6 +122,11 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     X_test_["prediction"] = y_pred
     X_test_["entropy"] = y_test
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
+
+    explainer = shap.Explainer(model, X_test)
+    shap_values = explainer(X_test)
+    shap.summary_plot(shap_values, X_test)
+    plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
 rand_forest_entropy(rfe=False, holdout_trees=0)
 rand_forest_entropy(holdout_trees=40, rfe=False)
