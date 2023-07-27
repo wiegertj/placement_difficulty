@@ -14,6 +14,8 @@ from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 
+
+
 def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
 
@@ -123,7 +125,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     X_test_["entropy"] = y_test
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
 
-    explainer = shap.Explainer(model, X_test)
+    explainer = shap.Explainer(best_model, X_test)
     shap_values = explainer(X_test)
     shap.summary_plot(shap_values, X_test)
     plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
