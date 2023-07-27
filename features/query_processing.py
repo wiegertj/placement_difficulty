@@ -99,7 +99,7 @@ if __name__ == '__main__':
     filenames = loo_selection['verbose_name'].str.replace(".phy", "_query.fasta").tolist()
 
     if feature_config.INCUDE_TARA_BV_NEO:
-        filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
+        filenames = filenames + ["bv_query.fasta", "neotrop_query_10k.fasta", "tara_query.fasta"]
 
     results = []
     for file in filenames:
