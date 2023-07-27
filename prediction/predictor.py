@@ -70,7 +70,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
         print(f"{param}: {value}")
 
     # MSE of entropy.py prediction on testset
-    y_pred = best_model.predict(X_test)
+    y_pred = best_model.predict(X_test.drop(axis=1, columns=['dataset', 'sampleId']))
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
