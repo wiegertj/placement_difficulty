@@ -117,5 +117,11 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
         best_params_str = json.dumps(best_params)
         f.write(best_params_str)
 
+    X_test["prediction"] = y_pred
+    X_test["entropy"] = y_test
+    X_test.to_csv(os.path.join(os.pardir, "data/prediction", "standard_rf_params_" + name + ".csv"))
+
+rand_forest_entropy(rfe=False, holdout_trees=0)
+rand_forest_entropy(holdout_trees=40, rfe=False)
 rand_forest_entropy(rfe=True, holdout_trees=0)
 rand_forest_entropy(holdout_trees=40, rfe=True)
