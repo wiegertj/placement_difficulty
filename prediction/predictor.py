@@ -128,7 +128,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     print(X_test.shape)
     print(X_train.shape)
     explainer = shap.Explainer(best_model, X_test, check_additivity=False)
-    shap_values = explainer(X_test)
+    shap_values = explainer(X_test, check_additivity=False)
     shap.summary_plot(shap_values, X_test)
     plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
