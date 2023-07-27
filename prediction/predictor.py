@@ -62,8 +62,8 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     }
 
     grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1)
+    X_test_ = X_test
     if not rfe:
-        X_test_ = X_test
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
     grid_search.fit(X_train, y_train)
