@@ -29,7 +29,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
         rmse_mean = math.sqrt(mse_mean)
         print("Baseline predicting mean RMSE: " + str(rmse_mean))
     else:
-        data_frame = pd.read_csv(pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv")))
+        data_frame = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
         dataset_sample = data_frame['dataset'].str.replace(".phy", "").sample(40)
         holdout_datasets = df[df["dataset"].isin(dataset_sample)]
         df = df[~df["dataset"].isin(dataset_sample)]
@@ -114,5 +114,5 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
         best_params_str = json.dumps(best_params)
         f.write(best_params_str)
 
-rand_forest_entropy(rfe=False, holdout_trees=0)
+#rand_forest_entropy(rfe=False, holdout_trees=0)
 rand_forest_entropy(holdout_trees=40, rfe=False)
