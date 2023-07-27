@@ -61,7 +61,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
         'min_samples_leaf': [10, 20]
     }
 
-    grid_search = GridSearchCV(model, param_grid, cv=10, n_jobs=-1)
+    grid_search = GridSearchCV(model, param_grid, cv=5, n_jobs=-1)
     grid_search.fit(X_train.drop(axis=1, columns=['dataset', 'sampleId']), y_train)
     best_model = grid_search.best_estimator_
 
