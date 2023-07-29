@@ -120,7 +120,6 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
         best_params_str = json.dumps(best_params)
         f.write(best_params_str)
 
-
     X_test_["prediction"] = y_pred
     X_test_["entropy"] = y_test
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
@@ -128,42 +127,52 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
             (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
 
-
-
     explainer = shap.Explainer(best_model, X_test.drop(columns=["entropy", "prediction"]), check_additivity=False)
     shap_values = explainer(X_test.drop(columns=["entropy", "prediction"]), check_additivity=False)
 
     shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction"]), plot_type="bar")
     plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
-
-
     # Create the waterfall plot for the sample with the highest prediction
+    plt.figure(figsize=(10, 6))  # Adjust width and height as needed
+
+    # Create the waterfall plot
     shap.initjs()  # Initialize JavaScript visualization
-    shap.plots.waterfall(shap_values[0])
-    plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+    shap.plots.waterfall(shap_values[0], max_display=10)  # Limit the display to 10 features
+    plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
+    plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
+    plt.xticks(fontsize=12)  # Adjust x-axis tick font size
+    plt.yticks(fontsize=12)  # Adjust y-axis tick font size
     plt.tight_layout()  # Adjust layout to prevent overlapping elements
     plt.savefig("waterfall_plot_1.png")
-    plt.show()
 
-    # Create the waterfall plot for the sample with the lowest prediction
+    plt.figure(figsize=(10, 6))  # Adjust width and height as needed
+
+    # Create the waterfall plot
     shap.initjs()  # Initialize JavaScript visualization
-    shap.plots.waterfall(shap_values[100])
-    plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+    shap.plots.waterfall(shap_values[100], max_display=10)  # Limit the display to 10 features
+    plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
+    plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
+    plt.xticks(fontsize=12)  # Adjust x-axis tick font size
+    plt.yticks(fontsize=12)  # Adjust y-axis tick font size
     plt.tight_layout()  # Adjust layout to prevent overlapping elements
     plt.savefig("waterfall_plot_100.png")
-    plt.show()
 
-    # Create the waterfall plot for the sample with the lowest prediction
+    plt.figure(figsize=(10, 6))  # Adjust width and height as needed
+
+    # Create the waterfall plot
     shap.initjs()  # Initialize JavaScript visualization
-    shap.plots.waterfall(shap_values[-1])
-    plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+    shap.plots.waterfall(shap_values[-1], max_display=10)  # Limit the display to 10 features
+
+    plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
+    plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
+    plt.xticks(fontsize=12)  # Adjust x-axis tick font size
+    plt.yticks(fontsize=12)  # Adjust y-axis tick font size
     plt.tight_layout()  # Adjust layout to prevent overlapping elements
     plt.savefig("waterfall_plot_last.png")
-    plt.show()
 
 
-#rand_forest_entropy(rfe=False, holdout_trees=0)
-#rand_forest_entropy(holdout_trees=40, rfe=False)
+# rand_forest_entropy(rfe=False, holdout_trees=0)
+# rand_forest_entropy(holdout_trees=40, rfe=False)
 rand_forest_entropy(rfe=True, holdout_trees=0)
-#rand_forest_entropy(holdout_trees=40, rfe=True)
+# rand_forest_entropy(holdout_trees=40, rfe=True)
