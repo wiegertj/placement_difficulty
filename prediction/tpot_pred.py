@@ -18,7 +18,7 @@ print(dataset_sample)
 X_train = df.drop(axis=1, columns=["entropy", "dataset"])
 y_train = df["entropy"]
 
-tpot = TPOTRegressor(generations=5, population_size=20, cv=5,
+tpot = TPOTRegressor(generations=10, population_size=20, cv=5,
                      random_state=42, verbosity=2, n_jobs=-1)
 tpot.fit(X_train, y_train)
 
