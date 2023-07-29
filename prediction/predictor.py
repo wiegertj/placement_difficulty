@@ -160,7 +160,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     shap.initjs()  # Initialize JavaScript visualization
     shap.force_plot(explainer.expected_value, shap_values_highest, sample_highest)
     plt.title("Explanation for Sample with Highest Prediction")
-    plt.savefig("explanation_highest_prediction_highest_entropy.png")
+    plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap_highest_entropy.png"))
 
 
 # rand_forest_entropy(rfe=False, holdout_trees=0)
