@@ -130,10 +130,10 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
 
 
 
-    explainer = shap.Explainer(best_model, X_train, check_additivity=False)
-    shap_values = explainer(X_train, check_additivity=False)
+    explainer = shap.Explainer(best_model, X_test.drop(columns=["entropy", "prediction"]), check_additivity=False)
+    shap_values = explainer(X_test.drop(columns=["entropy", "prediction"]), check_additivity=False)
 
-    shap.summary_plot(shap_values, X_train, plot_type="bar")
+    shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction"]), plot_type="bar")
     plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
     # Get the predicted values for each sample
