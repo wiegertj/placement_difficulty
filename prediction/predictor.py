@@ -126,12 +126,12 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
 
     print(X_test.shape)
     print(X_train.shape)
-    explainer = shap.Explainer(best_model, X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
-    shap_values = explainer(X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
-    shap.summary_plot(shap_values, X_test.drop(columns=["prediction", "entropy"]))
-    plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
+    #explainer = shap.Explainer(best_model, X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
+    #shap_values = explainer(X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
+    #shap.summary_plot(shap_values, X_test.drop(columns=["prediction", "entropy"]))
+    #plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
-    df = df[(abs(df['entropy'] - df['prediction']) < 0.05) & ((df['entropy'] < 0.1) | (df['entropy'] > 0.9))]
+    X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & ((X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
     explainer = shap.Explainer(best_model, X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
     shap_values = explainer(X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
     # Assuming you already have 'explainer' and 'shap_values' from the previous code
