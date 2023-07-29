@@ -14,8 +14,6 @@ from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 
-
-
 def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
 
@@ -44,7 +42,8 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
         y_train = df["entropy"]
 
     if rfe:
-        model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20, min_samples_leaf=10)
+        model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
+                                      min_samples_leaf=10)
         rfe = RFE(estimator=model, n_features_to_select=rfe_feature_n)  # Adjust the number of features as needed
         rfe.fit(X_train.drop(axis=1, columns=['dataset', 'sampleId']), y_train)
         print(rfe.support_)
@@ -57,7 +56,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     model = RandomForestRegressor(n_jobs=8)
 
     param_grid = {
-        'n_estimators': [100, 250, 350],
+        'n_estimators': [100, 250],
         'max_depth': [5, 10, 20],
         'max_features': [5, 10],
         'min_samples_split': [10, 20],
@@ -127,12 +126,44 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
 
     print(X_test.shape)
     print(X_train.shape)
-    explainer = shap.Explainer(best_model, X_test, check_additivity=False)
-    shap_values = explainer(X_test, check_additivity=False)
-    shap.summary_plot(shap_values, X_test)
+    explainer = shap.Explainer(best_model, X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
+    shap_values = explainer(X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
+    shap.summary_plot(shap_values, X_test.drop(columns=["prediction", "entropy"]))
     plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
-rand_forest_entropy(rfe=False, holdout_trees=0)
-rand_forest_entropy(holdout_trees=40, rfe=False)
+    df = df[(abs(df['entropy'] - df['prediction']) < 0.05) & ((df['entropy'] < 0.1) | (df['entropy'] > 0.9))]
+    explainer = shap.Explainer(best_model, X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
+    shap_values = explainer(X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
+    # Assuming you already have 'explainer' and 'shap_values' from the previous code
+
+    # Find the index of the sample with the lowest prediction
+    lowest_prediction_idx = shap_values.base_values.argsort()[0]
+
+    # Find the index of the sample with the highest prediction
+    highest_prediction_idx = shap_values.base_values.argsort()[-1]
+
+    # Get the SHAP values for the samples with lowest and highest predictions
+    shap_values_lowest = shap_values[lowest_prediction_idx]
+    shap_values_highest = shap_values[highest_prediction_idx]
+
+    # Get the feature values for the samples with lowest and highest predictions
+    sample_lowest = X_test.iloc[lowest_prediction_idx]
+    sample_highest = X_test.iloc[highest_prediction_idx]
+
+    # Visualize the explanations for the sample with the lowest prediction
+    shap.initjs()  # Initialize JavaScript visualization
+    shap.force_plot(explainer.expected_value, shap_values_lowest, sample_lowest)
+    plt.title("Explanation for Sample with Lowest Prediction")
+    plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap_lowest_entropy.png"))
+
+    # Visualize the explanations for the sample with the highest prediction
+    shap.initjs()  # Initialize JavaScript visualization
+    shap.force_plot(explainer.expected_value, shap_values_highest, sample_highest)
+    plt.title("Explanation for Sample with Highest Prediction")
+    plt.savefig("explanation_highest_prediction_highest_entropy.png")
+
+
+# rand_forest_entropy(rfe=False, holdout_trees=0)
+# rand_forest_entropy(holdout_trees=40, rfe=False)
 rand_forest_entropy(rfe=True, holdout_trees=0)
 rand_forest_entropy(holdout_trees=40, rfe=True)
