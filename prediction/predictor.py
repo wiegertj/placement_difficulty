@@ -141,15 +141,25 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
     # Create the waterfall plot for the sample with the highest prediction
     shap.initjs()  # Initialize JavaScript visualization
     shap.plots.waterfall(shap_values[0])
-    plt.title("Waterfall Plot for Sample with Highest Prediction")
-    plt.savefig("waterfall_plot_highest.png")
+    plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+    plt.tight_layout()  # Adjust layout to prevent overlapping elements
+    plt.savefig("waterfall_plot_1.png")
     plt.show()
 
     # Create the waterfall plot for the sample with the lowest prediction
     shap.initjs()  # Initialize JavaScript visualization
-    shap.plots.waterfall(shap_values[0])
-    plt.title("Waterfall Plot for Sample with Lowest Prediction")
-    plt.savefig("waterfall_plot_lowest.png")
+    shap.plots.waterfall(shap_values[100])
+    plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+    plt.tight_layout()  # Adjust layout to prevent overlapping elements
+    plt.savefig("waterfall_plot_100.png")
+    plt.show()
+
+    # Create the waterfall plot for the sample with the lowest prediction
+    shap.initjs()  # Initialize JavaScript visualization
+    shap.plots.waterfall(shap_values[-1])
+    plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+    plt.tight_layout()  # Adjust layout to prevent overlapping elements
+    plt.savefig("waterfall_plot_last.png")
     plt.show()
 
 
