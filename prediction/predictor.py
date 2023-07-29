@@ -126,41 +126,13 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
 
     print(X_test.shape)
     print(X_train.shape)
-    #explainer = shap.Explainer(best_model, X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
-    #shap_values = explainer(X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
-    #shap.summary_plot(shap_values, X_test.drop(columns=["prediction", "entropy"]))
-    #plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
+    explainer = shap.Explainer(best_model, X_train, check_additivity=False)
+    shap_values = explainer(X_train, check_additivity=False)
 
-    X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & ((X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
-    explainer = shap.Explainer(best_model, X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
-    shap_values = explainer(X_test.drop(columns=["prediction", "entropy"]), check_additivity=False)
-    # Assuming you already have 'explainer' and 'shap_values' from the previous code
+    shap.summary_plot(shap_values, X_train, plot_type="bar")
+    plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
-    # Find the index of the sample with the lowest prediction
-    lowest_prediction_idx = shap_values.base_values.argsort()[0]
 
-    # Find the index of the sample with the highest prediction
-    highest_prediction_idx = shap_values.base_values.argsort()[-1]
-
-    # Get the SHAP values for the samples with lowest and highest predictions
-    shap_values_lowest = shap_values[lowest_prediction_idx]
-    shap_values_highest = shap_values[highest_prediction_idx]
-
-    # Get the feature values for the samples with lowest and highest predictions
-    sample_lowest = X_test.iloc[lowest_prediction_idx]
-    sample_highest = X_test.iloc[highest_prediction_idx]
-
-    # Visualize the explanations for the sample with the lowest prediction
-    shap.initjs()  # Initialize JavaScript visualization
-    shap.force_plot(explainer.expected_value, shap_values_lowest, sample_lowest)
-    plt.title("Explanation for Sample with Lowest Prediction")
-    plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap_lowest_entropy.png"))
-
-    # Visualize the explanations for the sample with the highest prediction
-    shap.initjs()  # Initialize JavaScript visualization
-    shap.force_plot(explainer.expected_value, shap_values_highest, sample_highest)
-    plt.title("Explanation for Sample with Highest Prediction")
-    plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap_highest_entropy.png"))
 
 
 # rand_forest_entropy(rfe=False, holdout_trees=0)
