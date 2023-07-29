@@ -120,22 +120,57 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10):
         best_params_str = json.dumps(best_params)
         f.write(best_params_str)
 
+
     X_test_["prediction"] = y_pred
     X_test_["entropy"] = y_test
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
 
-    print(X_test.shape)
-    print(X_train.shape)
+    X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
+            (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
+
+
+
     explainer = shap.Explainer(best_model, X_train, check_additivity=False)
     shap_values = explainer(X_train, check_additivity=False)
 
     shap.summary_plot(shap_values, X_train, plot_type="bar")
     plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
+    # Get the predicted values for each sample
+    predicted_values = shap_values.base_values + shap_values.values.sum(1)
+
+    # Find the index of the sample with the highest prediction
+    highest_prediction_idx = predicted_values.argmax()
+
+    # Find the index of the sample with the lowest prediction
+    lowest_prediction_idx = predicted_values.argmin()
+
+    # Get the SHAP values for the sample with the highest prediction
+    shap_values_highest = shap_values[highest_prediction_idx]
+
+    # Get the SHAP values for the sample with the lowest prediction
+    shap_values_lowest = shap_values[lowest_prediction_idx]
+
+    # Create the waterfall plot for the sample with the highest prediction
+    shap.initjs()  # Initialize JavaScript visualization
+    shap.waterfall_plot(
+        shap.Explanation(values=shap_values_highest.values[0], base_values=shap_values_highest.base_values,
+                         data=shap_values_highest.data, feature_names=X_test.columns.tolist()))
+    plt.title("Waterfall Plot for Sample with Highest Prediction")
+    plt.savefig("waterfall_plot_highest.png")
+    plt.show()
+
+    # Create the waterfall plot for the sample with the lowest prediction
+    shap.initjs()  # Initialize JavaScript visualization
+    shap.waterfall_plot(
+        shap.Explanation(values=shap_values_lowest.values[0], base_values=shap_values_lowest.base_values,
+                         data=shap_values_lowest.data, feature_names=X_test.columns.tolist()))
+    plt.title("Waterfall Plot for Sample with Lowest Prediction")
+    plt.savefig("waterfall_plot_lowest.png")
+    plt.show()
 
 
-
-rand_forest_entropy(rfe=False, holdout_trees=0)
-rand_forest_entropy(holdout_trees=40, rfe=False)
+#rand_forest_entropy(rfe=False, holdout_trees=0)
+#rand_forest_entropy(holdout_trees=40, rfe=False)
 rand_forest_entropy(rfe=True, holdout_trees=0)
-rand_forest_entropy(holdout_trees=40, rfe=True)
+#rand_forest_entropy(holdout_trees=40, rfe=True)
