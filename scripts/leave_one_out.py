@@ -80,7 +80,7 @@ for msa_name in filenames:
                 os.rmdir(os.path.join(os.pardir, "data/processed/loo_results",
                                       msa_name + "_" + to_query))  # delete empty folder
             else:
-                if feature_config.skip_existing_placementa_LOO:
+                if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
                     print("Skipping " + msa_name + " " + to_query + " result already exists")
                     continue
 
