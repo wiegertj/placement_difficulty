@@ -80,7 +80,8 @@ def extract_targets(*args):
 
                 print("Calculates list of distances ... start finding min/max")
 
-                results = Parallel(n_jobs=10)(delayed(get_min_max)(distance) for distance in distances)
+                with Pool(processes=os.cpu_count()) as pool:
+                    results = pool.map(get_min_max, distances)
 
                 # Extract the minimum and maximum values from the results
                 min_distance = min(result[0] for result in results)
