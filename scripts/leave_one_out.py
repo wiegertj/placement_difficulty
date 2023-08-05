@@ -44,7 +44,7 @@ print(filtered_filenames)
 msa_counter = 0
 for msa_name in filtered_filenames:
     msa_counter += 1
-    print(str(msa_counter) + "/" + str(len(filenames)))
+    print(str(msa_counter) + "/" + str(len(filtered_filenames)))
     print(msa_name)
 
     rf_distances = []
