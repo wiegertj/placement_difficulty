@@ -16,20 +16,13 @@ def get_min_max(list):
 
 
 def calculate_distance(tree, clade):
-    try:
-        clades = tree.find_clades()
-        print(tree)
-        print(clades)
-        distances = []
-        for clade_tmp in clades:
-            if clade_tmp.name != clade.name:
-                distance = tree.distance(clade, clade_tmp)
-                distances.append(distance)
-        return distances
-    except AttributeError:
-        print(tree)
-        print(clades)
-        print(clade)
+    clades = tree.find_clades()
+    distances = []
+    for clade_tmp in clades:
+        if clade_tmp.name != clade.name:
+            distance = tree.distance(clade, clade_tmp)
+            distances.append(distance)
+    return distances
 
 
 def extract_targets(*args):
@@ -138,11 +131,18 @@ def extract_jplace_info(directory):
 
         print("Finished filtering filelist ... ")
         file_list = filtered_file_list
-    targets = Parallel(n_jobs=-1)(delayed(extract_targets)(file_entry) for file_entry in file_list)
+    targets = []
 
-    for result in targets:
+    pool = multiprocessing.Pool()
+    results = pool.imap_unordered(extract_targets, file_list)
+
+    for result in results:
         counter += 1
         print(str(counter) + "/" + str(len(filtered_file_list)))
+        targets.append(result)
+
+    pool.close()
+    pool.join()
 
     df = pd.DataFrame(targets,
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
