@@ -66,7 +66,7 @@ for msa_name in filenames:
     counter = 0
 
     # Create random sample
-    if feature_config.SKIP_EXISTING_PLACEMENTS_LOO >= len(sequence_ids):
+    if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
         sequence_ids_sample = sequence_ids
     else:
         sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
