@@ -146,8 +146,13 @@ def extract_jplace_info(directory):
 
     df = pd.DataFrame(targets,
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
-    df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), index=False, header=False,
-              mode='a')
+    if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
+        # If the CSV file exists, append the data without header
+        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), index=False, header=False,
+                  mode='a')
+    else:
+        # If the CSV file does not exist, write the data with header
+        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), index=False, header=True)
 
 
 if __name__ == '__main__':
