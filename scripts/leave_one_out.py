@@ -164,6 +164,7 @@ for msa_name in filenames:
                           'w') as output_file:
                     SeqIO.write(extracted_query, output_file, 'fasta')
                 query_path_epa = output_file_disaligned.replace("_disaligned.fasta", "_query_realigned.fasta")
+                print("MAFFT Reestimation of " + msa_name + to_query +" was successful!")
 
             except subprocess.CalledProcessError as e:
                 print("Error running MAFFT:")
