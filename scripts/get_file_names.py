@@ -30,10 +30,10 @@ result = pd.concat(samples)
 
 if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     # Append to the existing file without writing the header again
-    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', index=False, header=False)
+    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', header=False)
 else:
     # Write the data to a new file with the header
-    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), index=False, header=True)
+    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), header=True)
 
 # Create reference MSA
 for file in result["verbose_name"]:
