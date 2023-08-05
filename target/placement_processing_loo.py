@@ -132,14 +132,17 @@ def extract_jplace_info(directory):
         print("Finished filtering filelist ... ")
         file_list = filtered_file_list
     targets = []
-    with Parallel(n_jobs=-1) as parallel:
-        results = parallel(map, extract_targets, file_list)
 
-        for result in results:
-            counter += 1
-            print(str(counter) + "/" + str(len(filtered_file_list)))
-            targets.append(result)
+    pool = multiprocessing.Pool()
+    results = pool.imap_unordered(extract_targets, file_list)
 
+    for result in results:
+        counter += 1
+        print(str(counter) + "/" + str(len(filtered_file_list)))
+        targets.append(result)
+
+    pool.close()
+    pool.join()
 
     df = pd.DataFrame(targets,
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
