@@ -16,13 +16,20 @@ def get_min_max(list):
 
 
 def calculate_distance(tree, clade):
-    clades = tree.find_clades()
-    distances = []
-    for clade_tmp in clades:
-        if clade_tmp.name != clade.name:
-            distance = tree.distance(clade, clade_tmp)
-            distances.append(distance)
-    return distances
+    try:
+        clades = tree.find_clades()
+        print(tree)
+        print(clades)
+        distances = []
+        for clade_tmp in clades:
+            if clade_tmp.name != clade.name:
+                distance = tree.distance(clade, clade_tmp)
+                distances.append(distance)
+        return distances
+    except AttributeError:
+        print(tree)
+        print(clades)
+        print(clade)
 
 
 def extract_targets(*args):
