@@ -330,7 +330,6 @@ for msa_name in filtered_filenames:
                 print("EPA-ng process failed with an error.")
                 print("Error Output:")
                 print(command)
-                sys.exit()
 
         except FileNotFoundError:
             print("EPA-ng executable not found. Please make sure EPA-ng is installed and in the system PATH.")
