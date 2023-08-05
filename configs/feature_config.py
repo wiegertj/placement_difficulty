@@ -9,7 +9,9 @@ KMER_PROCESSING_STEPSIZE = 1000 # save file every KMER_PROCESSING_STEPSIZE
 KMER_PROCESSING_VERBOSE = 10
 INCUDE_TARA_BV_NEO = True
 # -------------------- leave one out --------------------  #
-REESTIMATE_TREE = True
-REESTIMATE_TREE_SEQ_THRESHOLD = 30 # If REESTIMATE_TREE = True trees up to this no. of sequences will be reestimated
-SEQUENCE_COUNT_THRESHOLD = 500 # dont consider too large alignments
-SEQUENCE_LEN_THRESHOLD = 5000 # dont consider too long alignments
+LOO_SAMPLE_SIZE = 30
+REESTIMATE_TREE = False
+REESTIMATE_MSA = False
+SKIP_EXISTING_PLACEMENTS_LOO = False
+SEQUENCE_COUNT_THRESHOLD = 50 # dont consider too large alignments
+SEQUENCE_LEN_THRESHOLD = 500 # dont consider too long alignments

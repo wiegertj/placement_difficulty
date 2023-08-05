@@ -8,6 +8,7 @@ from Bio import Phylo
 from scipy.stats import entropy
 from joblib import Parallel, delayed
 from multiprocessing import Pool
+import re
 
 
 def get_min_max(list):
@@ -112,8 +113,24 @@ def extract_jplace_info(directory):
     file_list = [item for sublist in results for item in sublist]
     # Now you have the complete file list
     print("Finished creating filelist ... ")
-    print(len(file_list))
 
+    if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
+        current_df = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
+        filtered_file_list = []
+
+        for file_entry in file_list:
+            dataset = file_entry[0].split('/')[4].split('_taxon')[0]
+            dataset_match = current_df['dataset'].str.contains(dataset).any()
+            if dataset_match:
+                print("Found in df")
+                print(file_entry)
+            if not dataset_match:
+                filtered_file_list.append(file_entry)
+                print("Not found in df")
+                print(file_entry)
+
+        print("Finished filtering filelist ... ")
+        file_list = filtered_file_list
     targets = []
 
     pool = multiprocessing.Pool()
@@ -121,7 +138,7 @@ def extract_jplace_info(directory):
 
     for result in results:
         counter += 1
-        print(str(counter) + "/" + str(len(file_list)))
+        print(str(counter) + "/" + str(len(filtered_file_list)))
         targets.append(result)
 
     pool.close()
@@ -129,7 +146,8 @@ def extract_jplace_info(directory):
 
     df = pd.DataFrame(targets,
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
-    df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), index=False)
+    df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), index=False, header=False,
+              mode='a')
 
 
 if __name__ == '__main__':

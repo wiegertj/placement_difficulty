@@ -1,19 +1,19 @@
 import os
 import shutil
+import sys
 import dendropy
 import ete3
 import subprocess
 import glob
 import pandas as pd
 import numpy as np
+import types
+import random
 from Bio import AlignIO, SeqIO
 from dendropy.calculate import treecompare
-import types
-import sys
-import importlib.util
 
 module_path = os.path.join(os.pardir, "configs/feature_config.py")
-
+random.seed(42)
 feature_config = types.ModuleType('feature_config')
 feature_config.__file__ = module_path
 
@@ -22,14 +22,15 @@ with open(module_path, 'rb') as module_file:
     exec(code, feature_config.__dict__)
 
 
+def remove_gaps(sequence):
+    return sequence.replace('-', '')
+
+
 def calculate_bsd_aligned(tree1, tree2):
-    # Get the branch lengths of the aligned branches
     branch_lengths1 = [branch.length for branch in tree1]
     branch_lengths2 = [branch.length for branch in tree2]
 
-    # Calculate the BSD
     score = np.sum(np.abs(branch_lengths1 - branch_lengths2)) / (np.sum(branch_lengths1) + np.sum(branch_lengths2))
-
     return score
 
 
@@ -46,12 +47,15 @@ for msa_name in filenames:
     rf_distances = []
     bsd_distances = []
 
-    # Get all sequence Ids
     sequence_ids = []
-    for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta"), "fasta"):
-        sequence_ids.append(record.id)
+    try:
+        for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta"), "fasta"):
+            sequence_ids.append(record.id)
 
-    if len(sequence_ids) >= feature_config.SEQUENCE_COUNT_THRESHOLD:  # if too large, skip
+        if len(sequence_ids) >= feature_config.SEQUENCE_COUNT_THRESHOLD:  # if too large, skip
+            continue
+    except FileNotFoundError:
+        print("Reference MSA not found: " + msa_name)
         continue
 
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
@@ -59,23 +63,30 @@ for msa_name in filenames:
 
     if len(MSA[0].seq) >= feature_config.SEQUENCE_LEN_THRESHOLD:  # if too large, skip
         continue
-
     counter = 0
 
-    # Perform LOO for each sequence
-    for to_query in sequence_ids:
+    # Create random sample
+    if feature_config.SKIP_EXISTING_PLACEMENTS_LOO >= len(sequence_ids):
+        sequence_ids_sample = sequence_ids
+    else:
+        sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
+
+    for to_query in sequence_ids_sample:
 
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
-            if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)): # if folder empty
+            if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
+                                           msa_name + "_" + to_query)):  # if folder empty
                 print("Empty folder found for " + msa_name + " " + to_query + " filling it")
-                os.rmdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)) # delete empty folder
+                os.rmdir(os.path.join(os.pardir, "data/processed/loo_results",
+                                      msa_name + "_" + to_query))  # delete empty folder
             else:
-                print("Skipping " + msa_name + " " + to_query + " result already exists")
-                continue
+                if feature_config.skip_existing_placementa_LOO:
+                    print("Skipping " + msa_name + " " + to_query + " result already exists")
+                    continue
 
         counter += 1
         print(to_query)
-        print(str(counter) + "/" + str(len(sequence_ids)))
+        print(str(counter) + "/" + str(len(sequence_ids_sample)))
 
         new_alignment = []
         query_alignment = []
@@ -89,7 +100,6 @@ for msa_name in filenames:
                 seq_record = SeqIO.SeqRecord(seq=record.seq, id=record.id, description="")
                 query_alignment.append(seq_record)
 
-        # Write temporary query and MSA to files
         output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_" + to_query + ".fasta")
         output_file = os.path.abspath(output_file)
 
@@ -99,41 +109,97 @@ for msa_name in filenames:
         SeqIO.write(new_alignment, output_file, "fasta")
         SeqIO.write(query_alignment, output_file_query, "fasta")
 
-        # Get output tree path for result stroing
         output_file_tree = output_file.replace(".fasta", ".newick")
 
-        if feature_config.REESTIMATE_TREE == True and len(
-                sequence_ids) <= feature_config.REESTIMATE_TREE_SEQ_THRESHOLD:  # Reestimate smaller trees
+        if feature_config.REESTIMATE_TREE == True:
+
+            # Disalign msa
+            output_file_disaligned = output_file.replace(".fasta", "_disaligned.fasta")
+            output_file_query_disaligned = output_file_query.replace(".fasta", "_disaligned.fasta")
+            with open(output_file, "r") as input_handle, open(output_file_disaligned, "w") as output_handle:
+                for line in input_handle:
+                    if line.startswith('>'):
+                        output_handle.write(line)
+                    else:
+                        sequence = line.strip()
+                        disaligned_sequence = remove_gaps(sequence)
+                        output_handle.write(disaligned_sequence + '\n')
+            # Disalign query
+            with open(output_file_query, "r") as input_handle, open(output_file_query_disaligned, "w") as output_handle:
+                for line in input_handle:
+                    if line.startswith('>'):
+                        output_handle.write(line)
+                    else:
+                        sequence = line.strip()
+                        disaligned_sequence = remove_gaps(sequence)
+                        output_handle.write(disaligned_sequence + '\n')
+
+            # Use MAFFT to realign MSA without query sequence then realign query to new MSA
+            command = ["mafft", "--preservecase", output_file_disaligned]
+
+            try:
+                result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+                mafft_output = result.stdout
+                aligned_output_file = output_file_disaligned.replace("_disaligned.fasta", "_aligned.fasta")
+
+                with open(aligned_output_file, "w") as output_file:
+                    output_file.write(mafft_output)
+
+                command = ["mafft", "--preservecase", "--keeplength", "--add", output_file_query_disaligned, "--reorder",
+                           output_file_disaligned.replace("_disaligned.fasta", "_aligned.fasta")]
+                result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+
+                mafft_output = result.stdout
+
+                with open(output_file_disaligned.replace("_disaligned.fasta", "_added_query.fasta"),
+                          "w") as output_file:
+                    output_file.write(mafft_output)
+
+                extracted_query = None
+                with open(output_file_disaligned.replace("_disaligned.fasta", "_added_query.fasta"), 'r') as input_file:
+                    for record in SeqIO.parse(input_file, 'fasta'):
+                        if record.id == to_query:
+                            extracted_query = record
+                with open(output_file_disaligned.replace("_disaligned.fasta", "_query_realigned.fasta"),
+                          'w') as output_file:
+                    SeqIO.write(extracted_query, output_file, 'fasta')
+                query_path_epa = output_file_disaligned.replace("_disaligned.fasta", "_query_realigned.fasta")
+
+            except subprocess.CalledProcessError as e:
+                print("Error running MAFFT:")
+                print(e.stderr)
 
             # ------------------------------------------ run RAxML-ng with LOO MSA ------------------------------------------
 
-            command = ["raxml-ng", "--search", "--msa", output_file, "--model",
-                       os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt"), ]
-            try:
-                # Start the subprocess
-                process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            command = ["raxml-ng", "--search", "--msa", aligned_output_file, "--model",
+                       "GTR+G", "tree", "pars{50}, rand{50}", "--redo"]
+            print(command)
 
-                # Wait for the process to complete and capture the output
+            try:
+                process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 stdout, stderr = process.communicate()
 
-                # Check the return code
                 if process.returncode == 0:
-                    # Success
                     print("RAxML-ng process completed successfully.")
                     print("Output:")
                     print(stdout)
+
+                    model_path_epa = os.path.join(os.pardir, "data/processed/loo",
+                                                  msa_name + "_msa_" + str(to_query) + "_aligned.fasta.raxml.bestModel")
+
                 else:
-                    # Error
                     print("RAxML-ng process failed with an error.")
                     print("Error Output:")
                     print(stderr)
+                    continue
 
             except FileNotFoundError:
                 print("RAxML-ng executable not found. Please make sure RAxML-ng is installed and in the system")
 
             rel_tree_path = os.path.join(os.pardir, "data/processed/loo",
-                                         msa_name + "_msa_" + to_query + ".fasta.raxml.bestTree")
+                                         msa_name + "_msa_" + to_query + "_aligned.fasta.raxml.bestTree")
             tree_path = os.path.abspath(rel_tree_path)
+            tree_path_epa = tree_path
 
             # Calculate RF-statistics
             with open(tree_path, 'r') as file:
@@ -198,6 +264,7 @@ for msa_name in filenames:
                         df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv"), index=False,
                                      mode='a', header=False, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd"])
                     rf_distances = []
+                    msa_path_epa = aligned_output_file
         else:
             original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick")
             tree_path = original_tree_path  # use original tree without reestimation
@@ -230,37 +297,36 @@ for msa_name in filenames:
                 tree.write(outfile=original_tree_path, format=1)
 
                 tree_path = original_tree_path
+                tree_path_epa = tree_path
+                msa_path_epa = output_file
+                model_path_epa = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt")
+                query_path_epa = output_file_query
 
         # ------------------------------------ run epa-ng with new RAxML-ng tree ---------------------------------------
 
-        # Create new directory for placement result
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
             shutil.rmtree(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query))
 
         os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query))
-        command = ["epa-ng", "--model", os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt"),
-                   "--ref-msa", output_file, "--tree", tree_path, "--query", output_file_query, "--redo", "--outdir",
+        print(model_path_epa)
+        command = ["epa-ng", "--model", model_path_epa,
+                   "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
                    os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query), "--filter-max",
                    "10000", "--filter-acc-lwr", "0.99"]
 
         try:
-            # Start the subprocess
             process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-            # Wait for the process to complete and capture the output
             stdout, stderr = process.communicate()
 
-            # Check the return code
             if process.returncode == 0:
-                # Success
                 print("EPA-ng process completed successfully.")
                 print("Output:")
                 print(stdout)
             else:
-                # Error
                 print("EPA-ng process failed with an error.")
                 print("Error Output:")
-                print(stderr)
+                print(command)
+                sys.exit()
 
         except FileNotFoundError:
             print("EPA-ng executable not found. Please make sure EPA-ng is installed and in the system PATH.")
@@ -271,6 +337,5 @@ for msa_name in filenames:
 
         files = glob.glob(os.path.join(os.path.join(os.pardir, "data/processed/loo", f"*{to_query}*")))
 
-        # Iterate over the temporary files and remove them
         for file_path in files:
             os.remove(file_path)
