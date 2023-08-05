@@ -138,7 +138,7 @@ def extract_jplace_info(directory):
 
     for result in results:
         counter += 1
-        print(str(counter) + "/" + str(len(filtered_file_list)))
+        print(str(counter) + "/" + str(len(file_list)))
         targets.append(result)
 
     pool.close()
