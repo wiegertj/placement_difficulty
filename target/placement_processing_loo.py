@@ -76,12 +76,11 @@ def extract_targets(*args):
                 # compute min/max distance between clades in parallel
                 all_clades = [(tree, clade1) for clade1 in tree.find_clades()]
 
-                distances = Parallel(n_jobs=10)(delayed(calculate_distance)(*args) for args in all_clades)
+                distances = Parallel(n_jobs=-1)(delayed(calculate_distance)(*args) for args in all_clades)
 
                 print("Calculates list of distances ... start finding min/max")
 
-                with Pool(processes=os.cpu_count()) as pool:
-                    results = pool.map(get_min_max, distances)
+                results = Parallel(n_jobs=-1)(delayed(get_min_max)(distance) for distance in distances)
 
                 # Extract the minimum and maximum values from the results
                 min_distance = min(result[0] for result in results)
@@ -132,18 +131,11 @@ def extract_jplace_info(directory):
 
         print("Finished filtering filelist ... ")
         file_list = filtered_file_list
-    targets = []
+    targets = Parallel(n_jobs=-1)(delayed(extract_targets)(file_entry) for file_entry in file_list)
 
-    pool = multiprocessing.Pool()
-    results = pool.imap_unordered(extract_targets, file_list)
-
-    for result in results:
+    for result in targets:
         counter += 1
         print(str(counter) + "/" + str(len(filtered_file_list)))
-        targets.append(result)
-
-    pool.close()
-    pool.join()
 
     df = pd.DataFrame(targets,
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
