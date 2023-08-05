@@ -10,8 +10,8 @@ KMER_PROCESSING_VERBOSE = 10
 INCUDE_TARA_BV_NEO = True
 # -------------------- leave one out --------------------  #
 LOO_SAMPLE_SIZE = 30
-REESTIMATE_TREE = False
-REESTIMATE_MSA = False
+REESTIMATE_TREE = True
+REESTIMATE_MSA = True
 SKIP_EXISTING_PLACEMENTS_LOO = False
 SEQUENCE_COUNT_THRESHOLD = 50 # dont consider too large alignments
 SEQUENCE_LEN_THRESHOLD = 500 # dont consider too long alignments
