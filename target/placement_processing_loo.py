@@ -76,11 +76,11 @@ def extract_targets(*args):
                 # compute min/max distance between clades in parallel
                 all_clades = [(tree, clade1) for clade1 in tree.find_clades()]
 
-                distances = Parallel(n_jobs=-1)(delayed(calculate_distance)(*args) for args in all_clades)
+                distances = Parallel(n_jobs=10)(delayed(calculate_distance)(*args) for args in all_clades)
 
                 print("Calculates list of distances ... start finding min/max")
 
-                results = Parallel(n_jobs=-1)(delayed(get_min_max)(distance) for distance in distances)
+                results = Parallel(n_jobs=10)(delayed(get_min_max)(distance) for distance in distances)
 
                 # Extract the minimum and maximum values from the results
                 min_distance = min(result[0] for result in results)
