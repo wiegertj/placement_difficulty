@@ -31,7 +31,11 @@ def extract_targets(*args):
 
     with open(file_path, 'r') as f:
         print(file_path)
-        data = json.load(f)
+        try:
+            data = json.load(f)
+        except json.decoder.JSONDecodeError:
+            print("JSON Decoder Error: Skipped ")
+            return 0
 
         file_path = os.path.join(root, file)
         folder_name = os.path.basename(os.path.dirname(file_path))
@@ -139,7 +143,9 @@ def extract_jplace_info(directory):
     for result in results:
         counter += 1
         print(str(counter) + "/" + str(len(file_list)))
-        targets.append(result)
+        if result != 0:
+            print(result)
+            targets.append(result)
 
     pool.close()
     pool.join()
