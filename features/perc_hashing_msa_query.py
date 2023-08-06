@@ -35,7 +35,7 @@ def compute_dct_sign_only_hash(sequence):
 
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
-    sign_only_sequence = sign_only_sequence[np.ix_(list(range(8)), list(range(8)))]
+    sign_only_sequence = sign_only_sequence[np.ix_(list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)), list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)))]
     hash_value = "".join([str(int(sign)) for sign in sign_only_sequence.flatten()])
     return hash_value
 
