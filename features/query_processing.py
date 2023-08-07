@@ -169,6 +169,7 @@ if __name__ == '__main__':
         filenames = filenames + ["bv_query.fasta", "neotrop_query_10k.fasta", "tara_query.fasta"]
 
     print(len(filenames))
+    filenames = filenames[:1]
 
     num_processes = multiprocessing.cpu_count()  # You can adjust the number of processes as needed
     pool = multiprocessing.Pool(processes=num_processes)
