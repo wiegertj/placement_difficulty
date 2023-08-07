@@ -15,7 +15,7 @@ from uncertainty.Serial import Serial
 from uncertainty.Spectral import SpectralTest
 
 
-
+counter = 0
 
 def gap_statistics(query_filepath) -> list:
     """
@@ -146,6 +146,9 @@ def gap_statistics(query_filepath) -> list:
         results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length / len(sequence), approxEntropy, cumSum, monBit, spec, serial, matrix, complex, run, run_one,
                         randex[0], randex[1], randex[2], randex[3], randex[4], randex[5], randex[6], randex[7]))
 
+        print(counter)
+        counter += 1
+
     return results
 
 
@@ -170,6 +173,8 @@ if __name__ == '__main__':
 
     if feature_config.INCUDE_TARA_BV_NEO:
         filenames = filenames + ["bv_query.fasta", "neotrop_query_10k.fasta", "tara_query.fasta"]
+
+    print(len(filenames))
 
     num_processes = multiprocessing.cpu_count()  # You can adjust the number of processes as needed
     pool = multiprocessing.Pool(processes=num_processes)
