@@ -6,8 +6,8 @@ from Bio import AlignIO
 import sys
 # Get the current script's directory
 # Add the parent directory of 'features' to the Python path
-import features.uncertainty
-from features.uncertainty.ApproximateEntropy import ApproximateEntropy
+import features
+
 from features.uncertainty.Complexity import ComplexityTest
 from features.uncertainty.CumulativeSum import CumulativeSums
 from features.uncertainty.FrequencyTest import FrequencyTest
