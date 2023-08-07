@@ -4,6 +4,8 @@ import ete3
 import numpy as np
 import os
 import pandas as pd
+from scipy.stats import skew, kurtosis
+
 from sklearn.decomposition import PCA
 
 
@@ -34,6 +36,8 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     min_branch_length_tips = min(tip_branch_lengths)
     max_branch_length_tips = max(tip_branch_lengths)
     std_branch_length_tips = statistics.stdev(tip_branch_lengths)
+    skew_branch_length_tips = skew(tip_branch_lengths)
+    kurtosis_branch_length_tips = kurtosis(tip_branch_lengths, fisher=False)
 
     all_nodes = tree.traverse()
     inner_nodes = [node for node in all_nodes if not node.is_leaf()]
@@ -43,14 +47,57 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     min_branch_length_inner = min(inner_branch_lengths)
     max_branch_length_inner = max(inner_branch_lengths)
     std_branch_length_inner = statistics.stdev(inner_branch_lengths)
+    skew_branch_length_inner = skew(inner_branch_lengths)
+    kurtosis_branch_length_inner = kurtosis(inner_branch_lengths, fisher=False)
 
+    irs = compute_tree_imbalance(tree)
+    avg_irs = sum(irs) / len(irs)
+    std_irs = statistics.stdev(irs)
+    max_irs = max(irs)
+    min_irs = min(irs)
+    skew_irs = skew(irs)
+    kurtosis_irs = kurtosis(irs, fisher=False)
 
 
     return tree_file.replace(".newick",
-                             ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, min_branch_length_tips, max_branch_length_tips, std_branch_length_tips, average_branch_length_inner, min_branch_length_inner, max_branch_length_inner, std_branch_length_inner
+                             ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips,\
+           min_branch_length_tips, max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips,average_branch_length_inner,\
+           min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs, min_irs,\
+           skew_irs, kurtosis_irs
 
 
 
+def height(node):
+    if node is None:
+        return 0
+    if node.is_leaf():
+        return 1
+    return max(height(node.children[0]), height(node.children[1])) + 1
+
+
+def imbalance_ratio(node):
+    if node is None:
+        return 0
+
+    left_height = height(node.children[0])
+    right_height = height(node.children[1])
+    return max(left_height, right_height) / min(left_height, right_height)
+
+
+def compute_tree_imbalance(tree):
+    imbalance_values = []
+
+    def collect_imbalance(node):
+        if node is None:
+            return
+        if not node.is_leaf():
+            ir = imbalance_ratio(node)
+            imbalance_values.append(ir)
+            for child in node.children:
+                collect_imbalance(child)
+
+    collect_imbalance(tree)
+    return imbalance_values
 
 
 def normalize_branch_lengths(tree):
@@ -98,8 +145,8 @@ if __name__ == '__main__':
         results.append(result)
 
     df = pd.DataFrame(results,
-                      columns=['dataset', 'avg_blength', 'max_blength', 'min_blength', 'std_blength', 'tree_depth',
-                               'average_branch_length_tips', 'min_branch_length_tips', 'max_branch_length_tips',
-                               'std_branch_length_tips', 'average_branch_length_inner',
-                               'min_branch_length_inner', 'max_branch_length_inner', 'std_branch_length_inner'])
+                      columns=['dataset', "average_length", "max_length", "min_length", "std_length", "depth", "average_branch_length_tips",\
+           "min_branch_length_tips", "max_branch_length_tips", "std_branch_length_tips", "skew_branch_length_tips", "kurtosis_branch_length_tips","average_branch_length_inner",\
+           "min_branch_length_inner", "max_branch_length_inner", "std_branch_length_inner", "skew_branch_length_inner", "kurtosis_branch_length_inner", "avg_irs", "std_irs", "max_irs", "min_irs",\
+           "skew_irs", "kurtosis_irs"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
