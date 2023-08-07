@@ -44,37 +44,14 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     max_branch_length_inner = max(inner_branch_lengths)
     std_branch_length_inner = statistics.stdev(inner_branch_lengths)
 
-    embedding = compute_fixed_size_embedding(tree)
-    print(embedding)
+
 
     return tree_file.replace(".newick",
                              ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, min_branch_length_tips, max_branch_length_tips, std_branch_length_tips, average_branch_length_inner, min_branch_length_inner, max_branch_length_inner, std_branch_length_inner
 
 
-def calculate_inorder_branch_lengths(tree):
-    def inorder_traversal(node):
-        if node is None:
-            return []
-        left = inorder_traversal(node.children[0])
-        right = inorder_traversal(node.children[1])
-        return left + [node.dist] + right
-
-    branch_lengths = inorder_traversal(tree)
-    return branch_lengths
 
 
-def compute_fixed_size_embedding(branch_lengths):
-    # Create a feature matrix
-    feature_matrix = np.array([branch_lengths])
-
-    # Normalize the feature matrix
-    normalized_matrix = (feature_matrix - feature_matrix.mean(axis=0)) / feature_matrix.std(axis=0)
-
-    # Apply PCA to generate embeddings of fixed size
-    pca = PCA(n_components=10)
-    embeddings = pca.fit_transform(normalized_matrix)
-
-    return embeddings[0]
 
 def normalize_branch_lengths(tree):
     total_length = 0.0
@@ -103,7 +80,7 @@ if __name__ == '__main__':
         exec(code, feature_config.__dict__)
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
+    filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
 
     if feature_config.INCUDE_TARA_BV_NEO:
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
