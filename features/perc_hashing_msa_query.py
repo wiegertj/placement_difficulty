@@ -32,12 +32,15 @@ def compute_hamming_distance(hash_value_1, hash_value_2):
 def compute_dct_sign_only_hash(sequence):
     numeric_sequence = dna_to_numeric(sequence)
     image = encode_dna_as_image(numeric_sequence)
-    print(image.shape)
 
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
-    sign_only_sequence = sign_only_sequence[np.ix_(list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)), list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)))]
-    hash_value = "".join([str(int(sign)) for sign in sign_only_sequence.flatten()])
+    try:
+        sign_only_sequence = sign_only_sequence[np.ix_(list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)), list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)))]
+        hash_value = "".join([str(int(sign)) for sign in sign_only_sequence.flatten()])
+    except IndexError:
+        print("image too small, skipped")
+        return 0
     return hash_value
 
 
@@ -59,9 +62,11 @@ def compute_perceptual_hash_distance(msa_file):
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if record_msa.id != record_query.id:
                 hash_msa = compute_dct_sign_only_hash(record_msa.seq)
-                distance = compute_hamming_distance(hash_msa, hash_query)
-
-                distances.append(distance)
+                if hash_msa != 0:
+                    distance = compute_hamming_distance(hash_msa, hash_query)
+                    distances.append(distance)
+                else:
+                    return 0
 
         max_ham = max(distances)
         min_ham = min(distances)
@@ -116,13 +121,14 @@ if __name__ == '__main__':
     results = pool.imap_unordered(compute_perceptual_hash_distance, filenames)
 
     for result in results:
-        print("Finished processing: " + result[1] + "with query file")
-        df = pd.DataFrame(result[0],
-                          columns=['dataset', 'sampleId', 'min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
-                                   'avg_perc_hash_ham_dist',
-                                   'std_perc_hash_ham_dist'])
-        df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                               result[1].replace("_reference.fasta", "") + str(feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
+        if result != 0:
+            print("Finished processing: " + result[1] + "with query file")
+            df = pd.DataFrame(result[0],
+                              columns=['dataset', 'sampleId', 'min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
+                                       'avg_perc_hash_ham_dist',
+                                       'std_perc_hash_ham_dist'])
+            df.to_csv(os.path.join(os.pardir, "data/processed/features",
+                                   result[1].replace("_reference.fasta", "") + str(feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
 
     pool.close()
     pool.join()
