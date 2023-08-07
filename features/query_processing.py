@@ -15,7 +15,6 @@ from uncertainty.Serial import Serial
 from uncertainty.Spectral import SpectralTest
 
 
-
 def gap_statistics(query_filepath) -> list:
     """
     Computes gap statistics for each query in the query file.
@@ -79,7 +78,7 @@ def gap_statistics(query_filepath) -> list:
             average_gap_length = total_gap_length / gap_count
         else:
             average_gap_length = 0
-        byte_encoding = ''.join(format(ord(i),'b').zfill(8) for i in sequence)
+        byte_encoding = ''.join(format(ord(i), 'b').zfill(8) for i in sequence)
         approxEntropy = ApproximateEntropy.approximate_entropy_test(byte_encoding)
         if approxEntropy[1] == True:
             approxEntropy = 1
@@ -131,8 +130,6 @@ def gap_statistics(query_filepath) -> list:
         else:
             run_one = 0
 
-
-
         name = ""
 
         if query_filepath == "neotrop_query_10k.fasta":
@@ -144,16 +141,14 @@ def gap_statistics(query_filepath) -> list:
         else:
             name = query_filepath.replace("_query.fasta", "")
 
-        results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length / len(sequence), approxEntropy, cumSum, monBit, spec, serial, matrix, complex_, run, run_one,
+        results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length / len(sequence),
+                        approxEntropy, cumSum, monBit, spec, serial, matrix, complex_, run, run_one,
                         randex[0], randex[1], randex[2], randex[3], randex[4], randex[5], randex[6], randex[7]))
-
 
     return results
 
 
 if __name__ == '__main__':
-
-
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
@@ -193,7 +188,12 @@ if __name__ == '__main__':
 
     # Flatten the list of results if needed
     results = [item for sublist in results for item in sublist]
+    print(results[1])
 
-    df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel", "average_gap_length", "approxEntropy", "cumSum", "monBit", "spec", "serial", "matrix", "complex", "run", "run_one"
-                                        "randex-4", "randex-3", "randex-2", "randex-1", "randex1", "randex2", "randex3", "randex4"])
+
+    df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel", "average_gap_length",
+                                        "approxEntropy", "cumSum", "monBit", "spec", "serial", "matrix", "complex",
+                                        "run", "run_one"
+                                               "randex-4", "randex-3", "randex-2", "randex-1", "randex1", "randex2",
+                                        "randex3", "randex4"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index=False)
