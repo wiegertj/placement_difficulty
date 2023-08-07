@@ -15,7 +15,6 @@ from uncertainty.Serial import Serial
 from uncertainty.Spectral import SpectralTest
 
 
-counter = 0
 
 def gap_statistics(query_filepath) -> list:
     """
@@ -146,8 +145,6 @@ def gap_statistics(query_filepath) -> list:
         results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length / len(sequence), approxEntropy, cumSum, monBit, spec, serial, matrix, complex, run, run_one,
                         randex[0], randex[1], randex[2], randex[3], randex[4], randex[5], randex[6], randex[7]))
 
-        print(counter)
-        counter += 1
 
     return results
 
@@ -180,7 +177,11 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool(processes=num_processes)
 
     # Use the pool to parallelize the execution of gap_statistics function
-    results = pool.map(gap_statistics, filenames)
+    results = []
+    counter = 0
+    for result in pool.imap(gap_statistics, filenames):
+        print(counter)
+        counter += 1
 
     # Close the pool and wait for all processes to complete
     pool.close()
