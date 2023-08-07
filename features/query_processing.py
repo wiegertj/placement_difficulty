@@ -131,6 +131,8 @@ def gap_statistics(query_filepath) -> list:
         else:
             run_one = 0
 
+
+
         name = ""
 
         if query_filepath == "neotrop_query_10k.fasta":
@@ -182,6 +184,7 @@ if __name__ == '__main__':
     counter = 0
     for result in pool.imap(gap_statistics, filenames):
         results.append(result)
+        print(result)
         print(counter)
         counter += 1
 
