@@ -8,7 +8,7 @@ import sys
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Add the parent directory of 'features' to the Python path
-from uncertainty.ApproximateEntropy import ApproximateEntropy
+from placement_difficulty_prediction.features.uncertainty.ApproximateEntropy import ApproximateEntropy
 from uncertainty.Complexity import ComplexityTest
 from uncertainty.CumulativeSum import CumulativeSums
 from uncertainty.FrequencyTest import FrequencyTest
