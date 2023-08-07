@@ -3,10 +3,10 @@ import types
 import pandas as pd
 import os
 from Bio import AlignIO
-import sys
+import features.ApproximateEntropy
 # Get the current script's directory
 # Add the parent directory of 'features' to the Python path
-import features
+import features.ApproximateEntropy
 
 from features.uncertainty.Complexity import ComplexityTest
 from features.uncertainty.CumulativeSum import CumulativeSums
@@ -15,7 +15,7 @@ from features.uncertainty.Matrix import Matrix
 from features.uncertainty.RandomExcursions import RandomExcursions
 from features.uncertainty.RunTest import RunTest
 from features.uncertainty.Serial import Serial
-from features.uncertainty.Spectral import SpectralTest
+from features.uncertainty.Spectral import SpectralTest'
 
 
 def gap_statistics(query_filepath) -> list:
