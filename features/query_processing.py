@@ -4,7 +4,7 @@ import pandas as pd
 import os
 from Bio import AlignIO
 
-
+from uncertainty.ApproximateEntropy import ApproximateEntropy
 from uncertainty.Complexity import ComplexityTest
 from uncertainty.CumulativeSum import CumulativeSums
 from uncertainty.FrequencyTest import FrequencyTest
@@ -151,13 +151,14 @@ def gap_statistics(query_filepath) -> list:
 
 if __name__ == '__main__':
 
-    module_path = os.path.join(os.pardir, "features/uncertainty")
+    module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "features", "uncertainty"))
+    print(module_path)
     feature_config = types.ModuleType('uncertainty')
     feature_config.__file__ = module_path
 
-    with open(module_path, 'rb') as module_file:
-        code = compile(module_file.read(), module_path, 'exec')
-        exec(code, feature_config.__dict__)
+    #with open(module_path, 'rb') as module_file:
+     #   code = compile(module_file.read(), module_path, 'exec')
+      #  exec(code, feature_config.__dict__)
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
