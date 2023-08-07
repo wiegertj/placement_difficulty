@@ -15,7 +15,7 @@ from features.uncertainty.Matrix import Matrix
 from features.uncertainty.RandomExcursions import RandomExcursions
 from features.uncertainty.RunTest import RunTest
 from features.uncertainty.Serial import Serial
-from features.uncertainty.Spectral import SpectralTest'
+from features.uncertainty.Spectral import SpectralTest
 
 
 def gap_statistics(query_filepath) -> list:
