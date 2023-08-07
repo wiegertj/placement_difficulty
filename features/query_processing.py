@@ -4,7 +4,7 @@ import pandas as pd
 import os
 from Bio import AlignIO
 
-
+from uncertainty.ApproximateEntropy import ApproximateEntropy
 from uncertainty.Complexity import ComplexityTest
 from uncertainty.CumulativeSum import CumulativeSums
 from uncertainty.FrequencyTest import FrequencyTest
