@@ -181,6 +181,7 @@ if __name__ == '__main__':
     results = []
     counter = 0
     for result in pool.imap(gap_statistics, filenames):
+        results.append(result)
         print(counter)
         counter += 1
 
