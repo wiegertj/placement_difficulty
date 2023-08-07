@@ -4,7 +4,12 @@ import pandas as pd
 import os
 from Bio import AlignIO
 import sys
-sys.path.append(os.path.join(os.pardir, "features/uncertainty"))
+# Get the current script's directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Add the parent directory of 'features' to the Python path
+features_parent_dir = os.path.join(script_dir, '..')
+sys.path.append(features_parent_dir)
 from features.uncertainty.ApproximateEntropy import ApproximateEntropy
 from features.uncertainty.Complexity import ComplexityTest
 from features.uncertainty.CumulativeSum import CumulativeSums
