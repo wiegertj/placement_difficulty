@@ -121,7 +121,7 @@ if __name__ == '__main__':
                                    'avg_perc_hash_ham_dist',
                                    'std_perc_hash_ham_dist'])
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                               result[1].replace("_reference.fasta", "") + "_msa_perc_hash_dist.csv"))
+                               result[1].replace("_reference.fasta", "") + str(feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
 
     pool.close()
     pool.join()
