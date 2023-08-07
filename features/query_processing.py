@@ -4,7 +4,7 @@ import pandas as pd
 import os
 from Bio import AlignIO
 import sys
-sys.path.append(os.path.join(os.pardir, "features/uncertainty"))
+sys.path.insert(0, "..")
 from features.uncertainty.ApproximateEntropy import ApproximateEntropy
 from features.uncertainty.Complexity import ComplexityTest
 from features.uncertainty.CumulativeSum import CumulativeSums
