@@ -194,7 +194,7 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel", "average_gap_length",
                                         "approxEntropy", "cumSum", "monBit", "spec", "serial", "matrix", "complex",
-                                        "run", "run_one"
+                                        "run", "run_one",
                                                "randex-4", "randex-3", "randex-2", "randex-1", "randex1", "randex2",
                                         "randex3", "randex4"])
-    df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index=False)
+    df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"))
