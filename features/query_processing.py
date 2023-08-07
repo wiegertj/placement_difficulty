@@ -3,19 +3,18 @@ import types
 import pandas as pd
 import os
 from Bio import AlignIO
-import features.ApproximateEntropy
-# Get the current script's directory
-# Add the parent directory of 'features' to the Python path
-import features.ApproximateEntropy
 
-from features.uncertainty.Complexity import ComplexityTest
-from features.uncertainty.CumulativeSum import CumulativeSums
-from features.uncertainty.FrequencyTest import FrequencyTest
-from features.uncertainty.Matrix import Matrix
-from features.uncertainty.RandomExcursions import RandomExcursions
-from features.uncertainty.RunTest import RunTest
-from features.uncertainty.Serial import Serial
-from features.uncertainty.Spectral import SpectralTest
+
+from uncertainty.Complexity import ComplexityTest
+from uncertainty.CumulativeSum import CumulativeSums
+from uncertainty.FrequencyTest import FrequencyTest
+from uncertainty.Matrix import Matrix
+from uncertainty.RandomExcursions import RandomExcursions
+from uncertainty.RunTest import RunTest
+from uncertainty.Serial import Serial
+from uncertainty.Spectral import SpectralTest
+
+
 
 
 def gap_statistics(query_filepath) -> list:
@@ -151,6 +150,15 @@ def gap_statistics(query_filepath) -> list:
 
 
 if __name__ == '__main__':
+
+    module_path = os.path.join(os.pardir, "features/uncertainty")
+    feature_config = types.ModuleType('uncertainty')
+    feature_config.__file__ = module_path
+
+    with open(module_path, 'rb') as module_file:
+        code = compile(module_file.read(), module_path, 'exec')
+        exec(code, feature_config.__dict__)
+
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
 
