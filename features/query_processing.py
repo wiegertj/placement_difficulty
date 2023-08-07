@@ -110,11 +110,11 @@ def gap_statistics(query_filepath) -> list:
             matrix = 1
         else:
             matrix = 0
-        complex = ComplexityTest.linear_complexity_test(byte_encoding)
-        if complex[1] == True:
-            complex = 1
+        complex_ = ComplexityTest.linear_complexity_test(byte_encoding)
+        if complex_[1] == True:
+            complex_ = 1
         else:
-            complex = 0
+            complex_ = 0
 
         randex = RandomExcursions.random_excursions_test(byte_encoding)
         randex = [1 if entry[-1] else 0 for entry in randex]
@@ -142,7 +142,7 @@ def gap_statistics(query_filepath) -> list:
         else:
             name = query_filepath.replace("_query.fasta", "")
 
-        results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length / len(sequence), approxEntropy, cumSum, monBit, spec, serial, matrix, complex, run, run_one,
+        results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length / len(sequence), approxEntropy, cumSum, monBit, spec, serial, matrix, complex_, run, run_one,
                         randex[0], randex[1], randex[2], randex[3], randex[4], randex[5], randex[6], randex[7]))
 
 
@@ -191,6 +191,7 @@ if __name__ == '__main__':
 
     # Flatten the list of results if needed
     results = [item for sublist in results for item in sublist]
+
     df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel", "average_gap_length", "approxEntropy", "cumSum", "monBit", "spec", "serial", "matrix", "complex", "run", "run_one"
                                         "randex-4", "randex-3", "randex-2", "randex-1", "randex1", "randex2", "randex3", "randex4"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index=False)
