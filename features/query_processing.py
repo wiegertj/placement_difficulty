@@ -5,7 +5,7 @@ import os
 from Bio import AlignIO
 
 
-from uncertainty.Complexity import ComplexityTest
+from features.uncertainty.Complexity import ComplexityTest
 from features.uncertainty.CumulativeSum import CumulativeSums
 from features.uncertainty.FrequencyTest import FrequencyTest
 from features.uncertainty.Matrix import Matrix
