@@ -89,6 +89,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     # Get best parameters and best estimator
     best_params = grid_search.best_params_
     best_model = grid_search.best_estimator_
+    print(best_params)
 
     # Evaluate best model on test data
 
@@ -99,7 +100,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
-    feature_importance = model.feature_importances_()
+    feature_importance = model.feature_importances_
 
     # Print feature importances
     for feature, importance in zip(X_train.columns, feature_importance):
