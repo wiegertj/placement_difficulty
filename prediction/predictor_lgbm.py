@@ -74,7 +74,6 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         'boosting_type': ['gbdt', 'dart'],  # You can add more options
         'num_leaves': [31, 63, 127],
         'learning_rate': [0.01, 0.05, 0.1],
-        'feature_fraction': [0.8, 0.9],
         'n_estimators': [100, 200, 300]
     }
 
