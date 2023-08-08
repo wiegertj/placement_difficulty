@@ -36,7 +36,8 @@ def compute_dct_sign_only_hash(sequence):
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
     try:
-        sign_only_sequence = sign_only_sequence[np.ix_(list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)), list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)))]
+        sign_only_sequence = sign_only_sequence[np.ix_(list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)),
+                                                       list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)))]
         hash_value = "".join([str(int(sign)) for sign in sign_only_sequence.flatten()])
     except IndexError:
         print("image too small, skipped")
@@ -52,6 +53,13 @@ def compute_perceptual_hash_distance(msa_file):
     results = []
     counter = 0
     print(msa_file)
+    # Skip already processed
+    potential_path = os.path.join(os.pardir, "data/processed/features",
+                                  msa_file + "_msa_perc_hash_dist" + ".csv")
+    if os.path.exists(potential_path):
+        print("Skipped: " + msa_file + " already processed")
+        return 0
+
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
         if counter % 50 == 0:
@@ -128,8 +136,8 @@ if __name__ == '__main__':
                                        'avg_perc_hash_ham_dist',
                                        'std_perc_hash_ham_dist'])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                                   result[1].replace("_reference.fasta", "") + str(feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
+                                   result[1].replace("_reference.fasta", "") + str(
+                                       feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
 
     pool.close()
     pool.join()
-

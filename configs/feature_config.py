@@ -14,5 +14,5 @@ LOO_SAMPLE_SIZE = 30
 REESTIMATE_TREE = False
 REESTIMATE_MSA = False
 SKIP_EXISTING_PLACEMENTS_LOO = True
-SEQUENCE_COUNT_THRESHOLD = 600 # dont consider too large alignments
+SEQUENCE_COUNT_THRESHOLD = 1000 # dont consider too large alignments
 SEQUENCE_LEN_THRESHOLD = 10000 # dont consider too long alignments
