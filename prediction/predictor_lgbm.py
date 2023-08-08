@@ -71,12 +71,11 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
 
     # Define parameter grid for grid search
     param_grid = {
-        'boosting_type': ['gbdt', 'dart'],  # You can add more options
-        'num_leaves': [31, 63, 127],
-        'learning_rate': [0.01, 0.05, 0.1],
-        'n_estimators': [100, 200, 300]
+        'boosting_type': ['gbdt'],  # You can add more options
+        'num_leaves': [50, 63, 80],
+        'learning_rate': [0.05],
+        'n_estimators': [250, 300, 350]
     }
-
     # Create LightGBM model
     model = lgb.LGBMRegressor(n_jobs=40)
 
@@ -94,7 +93,8 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     # Evaluate best model on test data
 
     # MSE of entropy.py prediction on testset
-    y_pred = best_model.predict(X_test)
+    model = best_model
+    y_pred = model.predict(X_test)
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
