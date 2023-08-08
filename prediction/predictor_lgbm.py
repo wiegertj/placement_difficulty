@@ -64,31 +64,39 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         X_train = X_train[selected_features]
         X_test = X_test[selected_features]
 
-    model = RandomForestRegressor(n_jobs=8)
-
-    params = {
-        'boosting_type': 'gbdt',
-        'objective': 'regression',  # or 'classification' for classification problems
-        'metric': 'rmse',  # or other appropriate metrics
-        'num_leaves': 31,
-        'learning_rate': 0.05,
-        'feature_fraction': 0.9,
-    'num_threads': 40  # Set the number of threads (adjust as needed)
-
-    }
-
     X_test_ = X_test
     if not rfe:
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
-    train_data = lgb.Dataset(X_train, label=y_train)
-    test_data = lgb.Dataset(X_test, label=y_test, reference=train_data)
-    num_round = 100
-    model = lgb.train(params, train_data, num_round, valid_sets=[test_data], early_stopping_rounds=10)
+    # Define parameter grid for grid search
+    param_grid = {
+        'boosting_type': ['gbdt', 'dart'],  # You can add more options
+        'num_leaves': [31, 63, 127],
+        'learning_rate': [0.01, 0.05, 0.1],
+        'feature_fraction': [0.8, 0.9],
+        'n_estimators': [100, 200, 300]
+    }
+
+    # Create LightGBM model
+    model = lgb.LGBMRegressor(n_jobs=20)
+
+    # Create GridSearchCV instance
+    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, scoring='neg_mean_squared_error',
+                               n_jobs=-1)
+
+    # Perform grid search
+    grid_search.fit(X_train, y_train)
+
+    # Get best parameters and best estimator
+    best_params = grid_search.best_params_
+    best_model = grid_search.best_estimator_
+
+    # Evaluate best model on test data
 
     # MSE of entropy.py prediction on testset
-    y_pred = model.predict(X_test, num_iteration=model.best_iteration)
+    y_pred = best_model.predict(X_test)
+
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
@@ -184,7 +192,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         plt.savefig("waterfall_plot_100treeholdout.png")
 
 
-rand_forest_entropy(rfe=15, holdout_trees=0, shapley_calc =False, targets=[])
+rand_forest_entropy(rfe=False, holdout_trees=0, shapley_calc =False, targets=[])
 # rand_forest_entropy(holdout_trees=40, rfe=False)
 # rand_forest_entropy(rfe=False, holdout_trees=30, shapley_calc =False, targets=[])
 # rand_forest_entropy(holdout_trees=40, rfe=True)
