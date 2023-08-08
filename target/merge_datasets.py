@@ -1,9 +1,10 @@
 import os
 import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 import pandas as pd
 
 # Suppress FutureWarning from the str.replace() call
-warnings.filterwarnings("ignore", "FutureWarning")
 
 msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features",
                                         "msa_features.csv"), index_col=False,
@@ -142,7 +143,7 @@ for loo_dataset in loo_datasets:
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
         loo_resuls_dfs.append(df)
     except FileNotFoundError:
-        print("Not found Hash Perc: " + loo_dataset + " " + str(loo_dataset.shape))
+        print("Not found Hash Perc: " + loo_dataset)
 
 loo_hash_perc = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fasta", "")
