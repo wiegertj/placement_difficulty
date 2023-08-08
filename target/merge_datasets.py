@@ -1,5 +1,6 @@
 import os
 import warnings
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 import pandas as pd
@@ -150,7 +151,6 @@ loo_hash_perc = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fasta", "")
 loo_resuls_combined = loo_resuls_combined.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
 
-
 # final dataset
 # combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
 combined_df = loo_resuls_combined
@@ -162,4 +162,18 @@ print(combined_df.shape)
 
 print(combined_df['dataset'].unique())
 print(combined_df.shape)
+
+print("Create uniform sample")
+combined_df.loc[df['entropy'] > 1, 'entropy'] = 1
+
+print(combined_df.shape)
+bin_edges = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+combined_df['percentile'] = combined_df.cut(df['entropy'], bins=bin_edges, labels=False, include_lowest=True)
+
+
+def sample_rows(group):
+    max_sample_size = min(700, len(group))
+    return group.sample(max_sample_size)
+
+
 combined_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"), index=False)
