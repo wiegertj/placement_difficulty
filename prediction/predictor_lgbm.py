@@ -72,15 +72,16 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     # Define parameter grid for grid search
     param_grid = {
         'boosting_type': ['gbdt'],  # You can add more options
-        'num_leaves': [50, 63, 80],
+        'num_leaves': [45, 50, 55],
         'learning_rate': [0.05],
-        'n_estimators': [250, 300, 350]
+        'n_estimators': [350, 450]
     }
     # Create LightGBM model
+
     model = lgb.LGBMRegressor(n_jobs=40)
 
     # Create GridSearchCV instance
-    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, scoring='neg_mean_squared_error')
+    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
 
     # Perform grid search
     grid_search.fit(X_train, y_train)
