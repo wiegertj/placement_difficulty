@@ -82,8 +82,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     model = lgb.LGBMRegressor(n_jobs=20)
 
     # Create GridSearchCV instance
-    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, scoring='neg_mean_squared_error',
-                               n_jobs=-1)
+    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, scoring='neg_mean_squared_error')
 
     # Perform grid search
     grid_search.fit(X_train, y_train)
