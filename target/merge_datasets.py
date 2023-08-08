@@ -166,7 +166,7 @@ combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 
 print(combined_df.shape)
 bin_edges = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-combined_df['percentile'] = combined_df.cut(combined_df['entropy'], bins=bin_edges, labels=False, include_lowest=True)
+combined_df['percentile'] = pd.cut(combined_df['entropy'], bins=bin_edges, labels=False, include_lowest=True)
 
 
 def sample_rows(group):
