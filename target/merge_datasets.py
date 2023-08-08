@@ -154,7 +154,9 @@ loo_resuls_combined = loo_resuls_combined.merge(loo_hash_perc, on=["sampleId", '
 # final dataset
 # combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
 combined_df = loo_resuls_combined
-combined_df = combined_df[combined_df['entropy'] <= 1]
+print(combined_df.shape)
+combined_df = combined_df[combined_df['entropy'].astype(float) <= 1]
+print(combined_df.shape)
 
 print(combined_df['dataset'].unique())
 print(combined_df.shape)
