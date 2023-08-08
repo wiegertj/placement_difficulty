@@ -164,14 +164,19 @@ print(combined_df.shape)
 print("Create uniform sample")
 combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 
-print(combined_df.shape)
-bin_edges = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-combined_df['percentile'] = pd.cut(combined_df['entropy'], bins=bin_edges, labels=False, include_lowest=True)
-
-
 def sample_rows(group):
     max_sample_size = min(700, len(group))
     return group.sample(max_sample_size)
 
 
-combined_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"), index=False)
+print(combined_df.shape)
+bin_edges = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+combined_df['percentile'] = pd.cut(combined_df['entropy'], bins=bin_edges, labels=False, include_lowest=True)
+uniformly_distributed_df = df.groupby('percentile', group_keys=False).apply(sample_rows)
+print(uniformly_distributed_df["entropy"].mean())
+
+
+
+
+
+uniformly_distributed_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"), index=False)
