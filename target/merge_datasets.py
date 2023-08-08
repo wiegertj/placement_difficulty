@@ -140,7 +140,8 @@ loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fast
 loo_resuls_combined = loo_resuls_combined.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
 
 # final dataset
-combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
+#combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
+combined_df = loo_resuls_combined
 print(combined_df['dataset'].unique())
 print(combined_df.shape)
 combined_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"), index=False)
