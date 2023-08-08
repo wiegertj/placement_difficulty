@@ -5,9 +5,8 @@ import pandas as pd
 # Suppress FutureWarning from the str.replace() call
 warnings.filterwarnings("ignore", "FutureWarning")
 
-
-msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "m"
-                                                                              "msa_features.csv"), index_col=False,
+msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features",
+                                        "msa_features.csv"), index_col=False,
                            usecols=lambda column: column != 'Unnamed: 0')
 print("MSA feature count: " + str(msa_features.shape))
 query_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index_col=False,
@@ -150,7 +149,7 @@ loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fast
 loo_resuls_combined = loo_resuls_combined.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
 
 # final dataset
-#combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
+# combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
 combined_df = loo_resuls_combined
 print(combined_df['dataset'].unique())
 print(combined_df.shape)
