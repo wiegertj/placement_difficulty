@@ -162,7 +162,7 @@ print(combined_df['dataset'].unique())
 print(combined_df.shape)
 
 print("Create uniform sample")
-combined_df.loc[df['entropy'] > 1, 'entropy'] = 1
+combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 
 print(combined_df.shape)
 bin_edges = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
