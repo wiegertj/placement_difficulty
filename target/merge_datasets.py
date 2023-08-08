@@ -154,6 +154,10 @@ loo_resuls_combined = loo_resuls_combined.merge(loo_hash_perc, on=["sampleId", '
 # final dataset
 # combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
 combined_df = loo_resuls_combined
+print("Dropping NaN")
+print(combined_df.shape)
+print("After NaN")
+combined_df.dropna(axis=0, inplace=True)
 print(combined_df.shape)
 print(combined_df.entropy)
 combined_df["entropy"] = combined_df['entropy'].astype(float)
