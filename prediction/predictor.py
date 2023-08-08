@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements"], inplace=True)
+    print("Median Entropy: ")
+    print(df["entropy"].median())
 
 
     if targets == []:
@@ -38,7 +40,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         print("Baseline predicting mean RMSE: " + str(rmse_mean))
     else:
         data_frame = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-        dataset_sample = data_frame['verbose_name'].str.replace(".phy", "").sample(40)
+        dataset_sample = data_frame['verbose_name'].str.replace(".phy", "").sample(30)
         holdout_datasets = df[df["dataset"].isin(dataset_sample)]
         df = df[~df["dataset"].isin(dataset_sample)]
         X_test = holdout_datasets.drop(axis=1, columns=target)
@@ -63,7 +65,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     model = RandomForestRegressor(n_jobs=8)
 
     param_grid = {
-        'n_estimators': [100, 250],
+        'n_estimators': [50, 100, 250],
         'max_depth': [5, 10, 20],
         'max_features': [5, 10],
         'min_samples_split': [10, 20],
@@ -180,7 +182,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         plt.savefig("waterfall_plot_100treeholdout.png")
 
 
-rand_forest_entropy(rfe=True, holdout_trees=0, shapley_calc =False, targets=[])
+rand_forest_entropy(rfe=False, holdout_trees=0, shapley_calc =False, targets=[])
 # rand_forest_entropy(holdout_trees=40, rfe=False)
-rand_forest_entropy(rfe=True, holdout_trees=30, shapley_calc =False, targets=[])
+rand_forest_entropy(rfe=False, holdout_trees=30, shapley_calc =False, targets=[])
 # rand_forest_entropy(holdout_trees=40, rfe=True)
