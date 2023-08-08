@@ -143,15 +143,19 @@ for loo_dataset in loo_datasets:
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
         loo_resuls_dfs.append(df)
     except FileNotFoundError:
+        print(file_path)
         print("Not found Hash Perc: " + loo_dataset)
 
 loo_hash_perc = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fasta", "")
 loo_resuls_combined = loo_resuls_combined.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
 
+
 # final dataset
 # combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
 combined_df = loo_resuls_combined
+combined_df = combined_df[combined_df['entropy'] <= 1]
+
 print(combined_df['dataset'].unique())
 print(combined_df.shape)
 combined_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"), index=False)
