@@ -16,6 +16,8 @@ import matplotlib.pyplot as plt
 
 def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
+    df.drop(columns=["lwr_drop", "branch_dist_best_two_placements"], inplace=True)
+
 
     if targets == []:
         target = "entropy"
