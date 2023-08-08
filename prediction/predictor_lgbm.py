@@ -21,6 +21,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements"], inplace=True)
     print("Median Entropy: ")
     print(df["entropy"].median())
+    print(df.columns)
 
 
     if targets == []:
@@ -32,7 +33,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         X = df.drop(axis=1, columns=target)
         y = df[target]
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
         rmse_zero = math.sqrt(mse_zero)
         print("Baseline prediting 0 RMSE: " + str(rmse_zero))
