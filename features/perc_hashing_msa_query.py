@@ -9,6 +9,8 @@ from Bio import SeqIO
 from scipy.fftpack import dct  # Discrete cosine transformation
 from collections import defaultdict
 
+from scipy.stats import kurtosis, skew
+
 
 def dna_to_numeric(sequence):
     mapping = {'A': 63, 'C': 191, 'G': 255, 'T': 127, '-': 0, 'N': 0}
@@ -56,9 +58,9 @@ def compute_perceptual_hash_distance(msa_file):
     # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
                                   msa_file.replace("_reference.fasta", "") + "_msa_perc_hash_dist" + ".csv")
-    if os.path.exists(potential_path):
-        print("Skipped: " + msa_file + " already processed")
-        return 0
+    #if os.path.exists(potential_path):
+     #   print("Skipped: " + msa_file + " already processed")
+      #  return 0
 
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
@@ -81,6 +83,9 @@ def compute_perceptual_hash_distance(msa_file):
         avg_ham = sum(distances) / len(distances)
         std_ham = statistics.stdev(distances)
 
+        sk_ham = skew(distances)
+        kur_ham = kurtosis(distances, fisher=False)
+
         rel_max_ham = max_ham / len(hash_query)
         rel_min_ham = min_ham / len(hash_query)
         rel_avg_ham = avg_ham / len(hash_query)
@@ -97,7 +102,7 @@ def compute_perceptual_hash_distance(msa_file):
         else:
             name = msa_file.replace("_msa.fasta", "")
 
-        results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham))
+        results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham))
     return results, msa_file
 
 
@@ -134,7 +139,7 @@ if __name__ == '__main__':
             df = pd.DataFrame(result[0],
                               columns=['dataset', 'sampleId', 'min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
                                        'avg_perc_hash_ham_dist',
-                                       'std_perc_hash_ham_dist'])
+                                       'std_perc_hash_ham_dist', 'skewness_perc_hash_ham_dist', 'kurtosis_perc_hash_ham_dist'])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    result[1].replace("_reference.fasta", "") + str(
                                        feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
