@@ -78,7 +78,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     }
 
     # Create LightGBM model
-    model = lgb.LGBMRegressor(n_jobs=20)
+    model = lgb.LGBMRegressor(n_jobs=40)
 
     # Create GridSearchCV instance
     grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, scoring='neg_mean_squared_error')
@@ -99,7 +99,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
-    feature_importance = model.feature_importance()
+    feature_importance = model.feature_importances_()
 
     # Print feature importances
     for feature, importance in zip(X_train.columns, feature_importance):
