@@ -157,8 +157,6 @@ combined_df = loo_resuls_combined
 print(combined_df.shape)
 print(combined_df.entropy)
 combined_df["entropy"] = combined_df['entropy'].astype(float)
-combined_df = combined_df[combined_df['entropy'] <= 1]
-print(combined_df.shape)
 
 print(combined_df['dataset'].unique())
 print(combined_df.shape)
