@@ -1,12 +1,22 @@
-import pandas as pd
 import os
+import warnings
+import pandas as pd
 
-msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"), index_col=False,
+# Suppress FutureWarning from the str.replace() call
+warnings.filterwarnings("ignore", "FutureWarning")
+
+
+msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "m"
+                                                                              "msa_features.csv"), index_col=False,
                            usecols=lambda column: column != 'Unnamed: 0')
+print("MSA feature count: " + str(msa_features.shape))
 query_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
+print("Query feature count: " + str(query_features.shape))
 tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), index_col=False,
                             usecols=lambda column: column != 'Unnamed: 0')
+print("Tree feature count: " + str(tree_features.shape))
+
 merged_df = query_features.merge(msa_features, on='dataset', how='inner')
 merged_df = merged_df.merge(tree_features, on="dataset", how="inner")
 
@@ -102,7 +112,7 @@ for loo_dataset in loo_datasets:
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
     except FileNotFoundError:
-        print("The file was not found: " + file_path + " skipped")
+        print("Not found kmer: " + file_path + " skipped " + str(loo.shape))
         continue
 
     loo_distances = pd.read_csv(os.path.join(os.pardir, "data/processed/features", loo_dataset + "_msa_dist.csv"),
@@ -133,7 +143,7 @@ for loo_dataset in loo_datasets:
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
         loo_resuls_dfs.append(df)
     except FileNotFoundError:
-        print("Not found: " + loo_dataset)
+        print("Not found Hash Perc: " + loo_dataset + " " + str(loo_dataset.shape))
 
 loo_hash_perc = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fasta", "")
