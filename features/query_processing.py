@@ -79,55 +79,67 @@ def gap_statistics(query_filepath) -> list:
             average_gap_length = 0
         byte_encoding = ''.join(format(ord(i), 'b').zfill(8) for i in sequence)
         approxEntropy = ApproximateEntropy.approximate_entropy_test(byte_encoding)
-        if approxEntropy[1] == True:
-            approxEntropy = 1
-        else:
-            approxEntropy = 0
+        approxEntropy = approxEntropy[0]
+        #if approxEntropy[1] == True:
+         #   approxEntropy = 1
+        #else:
+         #   approxEntropy = 0
+
         cumSum = CumulativeSums.cumulative_sums_test(byte_encoding)
-        if cumSum[1] == True:
-            cumSum = 1
-        else:
-            cumSum = 0
+        cumSum = cumSum[0]
+        #if cumSum[1] == True:
+         #   cumSum = 1
+        #else:
+         #   cumSum = 0
+
         monBit = FrequencyTest.monobit_test(byte_encoding)
-        if monBit[1] == True:
-            monBit = 1
-        else:
-            monBit = 0
+        monBit = monBit[0]
+        #if monBit[1] == True:
+         #   monBit = 1
+        #else:
+         #   monBit = 0
         spec = SpectralTest.spectral_test(byte_encoding)
-        if spec[1] == True:
-            spec = 1
-        else:
-            spec = 0
+        spec = spec[0]
+        #if spec[1] == True:
+         #   spec = 1
+        #else:
+         #   spec = 0
         serial = Serial.serial_test(byte_encoding)
-        if serial[0][1] == True or serial[1][1] == True:
-            serial = 1
-        else:
-            serial = 0
+        serial = serial[0][0]
+        #if serial[0][1] == True or serial[1][1] == True:
+         #   serial = 1
+        #else:
+         #   serial = 0
         matrix = Matrix.binary_matrix_rank_text(byte_encoding)
-        if matrix[1] == True:
-            matrix = 1
-        else:
-            matrix = 0
+        matrix = matrix[0]
+        #if matrix[1] == True:
+         #   matrix = 1
+        #else:
+         #   matrix = 0
         complex_ = ComplexityTest.linear_complexity_test(byte_encoding)
-        if complex_[1] == True:
-            complex_ = 1
-        else:
-            complex_ = 0
+        complex_ = complex_[0]
+        #if complex_[1] == True:
+         #   complex_ = 1
+        #else:
+         #   complex_ = 0
 
         randex = RandomExcursions.random_excursions_test(byte_encoding)
-        randex = [1 if entry[-1] else 0 for entry in randex]
+        randex = [entry[3] for entry in randex]
 
         run = RunTest.run_test(byte_encoding)
-        if run[1] == True:
-            run = 1
-        else:
-            run = 0
+        run = run[0]
+        #if run[1] == True:
+         #   run = 1
+        #else:
+         #   run = 0
 
         run_one = RunTest.longest_one_block_test(byte_encoding)
-        if run_one[1] == True:
-            run_one = 1
-        else:
-            run_one = 0
+        run_one = run_one[0]
+       # if run_one[1] == True:
+        #    run_one = 1
+
+        #else:
+         #   run_one = 0
 
         name = ""
 
@@ -174,6 +186,7 @@ if __name__ == '__main__':
 
     results = []
     counter = 0
+    filenames = filenames[:1]
     for result in pool.imap(gap_statistics, filenames):
         results.append(result)
         print(counter)
