@@ -8,7 +8,7 @@ KMER_PROCESSING_COUNT = 5000 # how many kmers of bv, tara, neotrop to compute
 KMER_PROCESSING_STEPSIZE = 1000 # save file every KMER_PROCESSING_STEPSIZE
 KMER_PROCESSING_VERBOSE = 10
 INCUDE_TARA_BV_NEO = False
-SIGN_ONLY_MATRIX_SIZE = 16
+SIGN_ONLY_MATRIX_SIZE = 8
 # -------------------- leave one out --------------------  #
 LOO_SAMPLE_SIZE = 30
 REESTIMATE_TREE = False

@@ -147,7 +147,7 @@ loo_datasets = [value for value in dataset_list if value not in elements_to_dele
 
 for loo_dataset in loo_datasets:
     try:
-        file_path = loo_dataset + "16_msa_perc_hash_dist.csv"
+        file_path = loo_dataset + "8_msa_perc_hash_dist.csv"
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
         loo_resuls_dfs.append(df)
