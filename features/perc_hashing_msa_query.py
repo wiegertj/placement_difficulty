@@ -37,6 +37,7 @@ def compute_dct_sign_only_hash(sequence):
 
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
+    size_ = 16
     if sign_only_sequence.shape[0] >= 64 and sign_only_sequence.shape[1] >= 64:
         size_ = 64
     if sign_only_sequence.shape[0] >= 32 and sign_only_sequence.shape[1] >= 32:
