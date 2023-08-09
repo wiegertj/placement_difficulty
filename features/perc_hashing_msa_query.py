@@ -57,7 +57,7 @@ def compute_perceptual_hash_distance(msa_file):
     print(msa_file)
     # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
-                                  msa_file.replace("_reference.fasta", "") + "16_msa_perc_hash_dist" + ".csv")
+                                  msa_file.replace("_reference.fasta", "") + "16n_msa_perc_hash_dist" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped: " + msa_file + " already processed")
         return 0
@@ -142,7 +142,7 @@ if __name__ == '__main__':
                                        'std_perc_hash_ham_dist', 'skewness_perc_hash_ham_dist', 'kurtosis_perc_hash_ham_dist'])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    result[1].replace("_reference.fasta", "") + str(
-                                       feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
+                                       feature_config.SIGN_ONLY_MATRIX_SIZE) + "n_msa_perc_hash_dist.csv"))
 
     pool.close()
     pool.join()
