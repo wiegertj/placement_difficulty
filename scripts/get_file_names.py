@@ -15,7 +15,7 @@ if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     print(len(names_used))
     difficulties_df = difficulties_df[~difficulties_df["verbose_name"].isin(names_used)]
 
-difficulty_ranges = np.arange(0.1, 1.1, 0.1)
+difficulty_ranges = np.arange(0.5, 1.1, 0.1)
 
 samples = []
 for i in range(len(difficulty_ranges) - 1):
@@ -23,7 +23,7 @@ for i in range(len(difficulty_ranges) - 1):
     upper_bound = difficulty_ranges[i + 1]
     subset = difficulties_df[
         (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound) & (
-                    difficulties_df['data_type'] != 'AA')].sample(40)
+                    difficulties_df['data_type'] != 'AA')].sample(30)
     samples.append(subset)
 
 result = pd.concat(samples)
