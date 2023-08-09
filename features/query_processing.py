@@ -3,7 +3,6 @@ import types
 import pandas as pd
 import os
 from Bio import AlignIO
-
 from uncertainty.ApproximateEntropy import ApproximateEntropy
 from uncertainty.Complexity import ComplexityTest
 from uncertainty.CumulativeSum import CumulativeSums
@@ -173,7 +172,6 @@ if __name__ == '__main__':
     num_processes = multiprocessing.cpu_count()  # You can adjust the number of processes as needed
     pool = multiprocessing.Pool(processes=num_processes)
 
-    # Use the pool to parallelize the execution of gap_statistics function
     results = []
     counter = 0
     for result in pool.imap(gap_statistics, filenames):
@@ -181,11 +179,9 @@ if __name__ == '__main__':
         print(counter)
         counter += 1
 
-    # Close the pool and wait for all processes to complete
     pool.close()
     pool.join()
 
-    # Flatten the list of results if needed
     results = [item for sublist in results for item in sublist]
     print(results[1])
 
