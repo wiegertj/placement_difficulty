@@ -37,9 +37,19 @@ def compute_dct_sign_only_hash(sequence):
 
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
+    print(sign_only_sequence.shape)
+    if sign_only_sequence.shape[0] >= 64:
+        size = 64
+    if sign_only_sequence.shape[0] >= 32:
+        size = 32
+    elif sign_only_sequence.shape[0] >= 16:
+        size = 16
+    elif sign_only_sequence.shape[0] >= 8:
+        size = 8
+
     try:
-        sign_only_sequence = sign_only_sequence[np.ix_(list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)),
-                                                       list(range(feature_config.SIGN_ONLY_MATRIX_SIZE)))]
+        sign_only_sequence = sign_only_sequence[np.ix_(list(range(size)),
+                                                       list(range(size)))]
         hash_value = "".join([str(int(sign)) for sign in sign_only_sequence.flatten()])
     except IndexError:
         print("image too small, skipped")
