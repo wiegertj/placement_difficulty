@@ -20,9 +20,13 @@ def dna_to_numeric(sequence):
 
 
 def encode_dna_as_image(sequence):
-    width = int(math.sqrt(len(sequence)))
-    height = math.ceil(len(sequence) / width)
-    image = np.resize(sequence, (height, width))
+    # Calculate the nearest square side length
+    side_length = int(np.ceil(np.sqrt(len(sequence))))
+
+    image = np.resize(sequence, (side_length, side_length))
+    # width = int(math.sqrt(len(sequence)))
+    # height = math.ceil(len(sequence) / width)
+    # image = np.resize(sequence, (height, width))
     return image
 
 
@@ -37,10 +41,9 @@ def compute_dct_sign_only_hash(sequence):
 
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
-    size_ = 16
     if sign_only_sequence.shape[0] >= 64 and sign_only_sequence.shape[1] >= 64:
         size_ = 64
-    if sign_only_sequence.shape[0] >= 32 and sign_only_sequence.shape[1] >= 32:
+    elif sign_only_sequence.shape[0] >= 32 and sign_only_sequence.shape[1] >= 32:
         size_ = 32
     elif sign_only_sequence.shape[0] >= 16 and sign_only_sequence.shape[1] >= 16:
         size_ = 16
@@ -152,7 +155,7 @@ if __name__ == '__main__':
                                        'std_perc_hash_ham_dist', 'skewness_perc_hash_ham_dist', 'kurtosis_perc_hash_ham_dist'])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    result[1].replace("_reference.fasta", "") + str(
-                                       feature_config.SIGN_ONLY_MATRIX_SIZE) + "n_msa_perc_hash_dist.csv"))
+                                       feature_config.SIGN_ONLY_MATRIX_SIZE) + "16v_msa_perc_hash_dist.csv"))
 
     pool.close()
     pool.join()
