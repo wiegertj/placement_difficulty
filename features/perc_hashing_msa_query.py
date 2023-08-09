@@ -13,7 +13,7 @@ from scipy.stats import kurtosis, skew
 
 
 def dna_to_numeric(sequence):
-    mapping = {'A': 63, 'C': 191, 'G': 255, 'T': 127, '-': 0, 'N': 0}
+    mapping = {'A': 42, 'C': 95, 'G': 137, 'T': 180, '-': 222, 'N': 255}
     mapping = defaultdict(lambda: 0, mapping)
     numeric_sequence = [mapping[base] for base in sequence]
     return np.array(numeric_sequence)
@@ -57,7 +57,7 @@ def compute_perceptual_hash_distance(msa_file):
     print(msa_file)
     # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
-                                  msa_file.replace("_reference.fasta", "") + "20_msa_perc_hash_dist" + ".csv")
+                                  msa_file.replace("_reference.fasta", "") + "16_msa_perc_hash_dist" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped: " + msa_file + " already processed")
         return 0
