@@ -73,9 +73,9 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     # Define parameter grid for grid search
     param_grid = {
         'boosting_type': ['gbdt'],  # You can add more options
-        'num_leaves': [45],
-        'learning_rate': [0.05],
-        'n_estimators': [400, 450, 500, 600]
+        'num_leaves': [30, 45, 60],
+        'learning_rate': [0.05, 0.01],
+        'n_estimators': [600, 650, 700]
     }
     # Create LightGBM model
 
