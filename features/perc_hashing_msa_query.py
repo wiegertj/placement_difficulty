@@ -50,7 +50,6 @@ def compute_dct_sign_only_hash(sequence):
         size_ = 16
     elif sign_only_sequence.shape[0] >= 8 and sign_only_sequence.shape[1] >= 8:
         size_ = 8
-    print(size_)
 
     try:
         sign_only_sequence = sign_only_sequence[np.ix_(list(range(size_)),
