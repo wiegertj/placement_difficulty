@@ -148,8 +148,8 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
                 (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
 
-        explainer = shap.Explainer(model, X_test.drop(columns=["entropy", "prediction"]), check_additivity=False)
-        shap_values = explainer(X_test.drop(columns=["entropy", "prediction"]), check_additivity=False)
+        explainer = shap.Explainer(model, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), check_additivity=False)
+        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), check_additivity=False)
 
         shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction"]), plot_type="bar")
         plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
