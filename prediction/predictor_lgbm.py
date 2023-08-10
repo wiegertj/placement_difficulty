@@ -184,7 +184,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
 
         # Create the waterfall plot
         shap.initjs()  # Initialize JavaScript visualization
-        shap.plots.waterfall(shap_values[:-1], max_display=10)  # Limit the display to 10 features
+        shap.plots.waterfall(shap_values[-1], max_display=10)  # Limit the display to 10 features
 
         plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
         plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
