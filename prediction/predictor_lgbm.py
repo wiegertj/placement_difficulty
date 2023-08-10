@@ -73,9 +73,9 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     # Define parameter grid for grid search
     param_grid = {
         'boosting_type': ['gbdt'],  # You can add more options
-        'num_leaves': [60, 75, 100],
+        'num_leaves': [75],
         'learning_rate': [0.05],
-        'n_estimators': [800, 1000, 1200]
+        'n_estimators': [1000]
     }
     # Create LightGBM model
 
@@ -146,8 +146,9 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
 
     if shapley_calc:
         #X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
-         #       (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
-
+        #       (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
+        X_test = X_test_
+        X_test = X_test.sort_values(by="entropy")
         explainer = shap.Explainer(model, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), check_additivity=False)
         shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), check_additivity=False)
 
