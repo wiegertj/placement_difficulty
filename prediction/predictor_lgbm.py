@@ -193,7 +193,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         plt.savefig("waterfall_plot_100treeholdout.png")
 
 
-rand_forest_entropy(rfe=False, holdout_trees=0, shapley_calc =False, targets=[])
+rand_forest_entropy(rfe=False, holdout_trees=0, shapley_calc =True, targets=[])
 # rand_forest_entropy(holdout_trees=40, rfe=False)
 # rand_forest_entropy(rfe=False, holdout_trees=30, shapley_calc =False, targets=[])
 # rand_forest_entropy(holdout_trees=40, rfe=True)
