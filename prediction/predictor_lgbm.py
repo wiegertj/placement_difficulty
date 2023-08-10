@@ -160,31 +160,31 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
 
         # Create the waterfall plot
         shap.initjs()  # Initialize JavaScript visualization
-        shap.plots.waterfall(shap_values[9], max_display=10)  # Limit the display to 10 features
+        shap.plots.waterfall(shap_values[0], max_display=10)  # Limit the display to 10 features
         plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
         plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
         plt.xticks(fontsize=12)  # Adjust x-axis tick font size
         plt.yticks(fontsize=12)  # Adjust y-axis tick font size
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
-        plt.savefig("waterfall_plot_9_treeholdout.png")
+        plt.savefig("waterfall_plot_0_treeholdout.png")
 
         plt.figure(figsize=(10, 6))  # Adjust width and height as needed
 
         # Create the waterfall plot
         shap.initjs()  # Initialize JavaScript visualization
-        shap.plots.waterfall(shap_values[15], max_display=10)  # Limit the display to 10 features
+        shap.plots.waterfall(shap_values[1500], max_display=10)  # Limit the display to 10 features
         plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
         plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
         plt.xticks(fontsize=12)  # Adjust x-axis tick font size
         plt.yticks(fontsize=12)  # Adjust y-axis tick font size
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
-        plt.savefig("waterfall_plot_15_treeholdout.png")
+        plt.savefig("waterfall_plot_1500_treeholdout.png")
 
         plt.figure(figsize=(10, 6))  # Adjust width and height as needed
 
         # Create the waterfall plot
         shap.initjs()  # Initialize JavaScript visualization
-        shap.plots.waterfall(shap_values[800], max_display=10)  # Limit the display to 10 features
+        shap.plots.waterfall(shap_values[:-1], max_display=10)  # Limit the display to 10 features
 
         plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
         plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
