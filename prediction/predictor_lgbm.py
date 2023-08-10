@@ -151,7 +151,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         explainer = shap.Explainer(model, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), check_additivity=False)
         shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), check_additivity=False)
 
-        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction"]), plot_type="bar")
+        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), plot_type="bar")
         plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
         # Create the waterfall plot for the sample with the highest prediction
