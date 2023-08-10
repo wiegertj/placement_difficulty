@@ -184,14 +184,14 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
 
         # Create the waterfall plot
         shap.initjs()  # Initialize JavaScript visualization
-        shap.plots.waterfall(shap_values[-1], max_display=10)  # Limit the display to 10 features
+        shap.plots.waterfall(shap_values[-300], max_display=10)  # Limit the display to 10 features
 
         plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
         plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
         plt.xticks(fontsize=12)  # Adjust x-axis tick font size
         plt.yticks(fontsize=12)  # Adjust y-axis tick font size
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
-        plt.savefig("waterfall_plot_100treeholdout.png")
+        plt.savefig("waterfall_plot_2500treeholdout.png")
 
 
 rand_forest_entropy(rfe=False, holdout_trees=0, shapley_calc =True, targets=[])
