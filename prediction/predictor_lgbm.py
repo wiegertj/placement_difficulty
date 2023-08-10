@@ -145,8 +145,8 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
 
     if shapley_calc:
-        X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
-                (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
+        #X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
+         #       (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
 
         explainer = shap.Explainer(model, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), check_additivity=False)
         shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), check_additivity=False)
@@ -183,7 +183,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
 
         # Create the waterfall plot
         shap.initjs()  # Initialize JavaScript visualization
-        shap.plots.waterfall(shap_values[100], max_display=10)  # Limit the display to 10 features
+        shap.plots.waterfall(shap_values[800], max_display=10)  # Limit the display to 10 features
 
         plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
         plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
