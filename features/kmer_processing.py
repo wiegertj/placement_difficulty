@@ -92,8 +92,6 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
                      :return tuple: (dataset, sampleId, min_kernel, max_kernel, mean_kernel, std_kernel)
     """
     kmers_query = filter_gapped_kmers(str(query.seq), k, max_gap_percent)
-    if len(kmers_query) == 0:
-        return 0
     query_bf = bloom_filter(set(kmers_query), len(kmers_query), feature_config.BLOOM_FILTER_FP_RATE)
 
     result_string_kernels = []
@@ -268,6 +266,7 @@ if __name__ == '__main__':
             continue
 
         # Create bloom filters for each sequence in the MSA
+        print(msa_file)
         for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             kmers = filter_gapped_kmers(str(record.seq), feature_config.K_MER_LENGTH,
                                         feature_config.K_MER_MAX_GAP_PERCENTAGE)
@@ -284,10 +283,7 @@ if __name__ == '__main__':
         while True:
             interval_start += feature_config.KMER_PROCESSING_STEPSIZE
             result_tmp = multiprocess_string_kernel(query_file, bloom_filters_MSA, msa_file, interval_start)
-            for line in result_tmp:
-                if result_tmp == 0:
-                    print("Skipped")
-                    result_tmp.remove(line)
+
             results.extend(result_tmp)
             df = pd.DataFrame(results,
                               columns=['dataset', 'sampleId', 'min_kernel', 'max_kernel', 'mean_kernel', 'std_kernel'])
