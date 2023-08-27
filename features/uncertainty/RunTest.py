@@ -1,3 +1,4 @@
+import statistics
 from math import fabs as fabs
 from math import floor as floor
 from math import sqrt as sqrt
@@ -61,7 +62,7 @@ class RunTest:
             print('\tP-Value:\t\t\t\t\t\t', p_value)
             print('DEBUG END.')
 
-        return (p_value, (p_value > 0.01))
+        return (p_value, (p_value > 0.01), pi, vObs)
 
     @staticmethod
     def longest_one_block_test(binary_data:str, verbose=False):
@@ -158,4 +159,4 @@ class RunTest:
             print('\tP-Value:\t\t\t\t\t\t', p_value)
             print('DEBUG END.')
 
-        return (p_value, (p_value > 0.01))
+        return (p_value, (p_value > 0.01), xObs, statistics.mean(frequencies), statistics.stdev(frequencies), min(frequencies), max(frequencies))

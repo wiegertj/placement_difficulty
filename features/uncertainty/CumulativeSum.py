@@ -78,4 +78,4 @@ class CumulativeSums:
             print('\tP-Value:\t\t\t', p_value)
             print('DEBUG END.')
 
-        return (p_value, (p_value >= 0.01))
+        return (p_value, (p_value >= 0.01), abs_max, mode)

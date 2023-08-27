@@ -73,7 +73,7 @@ class ComplexityTest:
                 print('DEBUG END.')
 
 
-            return (p_value, (p_value >= 0.01))
+            return (p_value, (p_value >= 0.01), xObs)
         else:
             return (-1.0, False)
 
