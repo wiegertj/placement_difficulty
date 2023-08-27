@@ -177,7 +177,7 @@ print("Create uniform sample")
 combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 
 def sample_rows(group):
-    max_sample_size = min(2300, len(group))
+    max_sample_size = min(2100, len(group))
     return group.sample(max_sample_size)
 
 
