@@ -135,6 +135,7 @@ if __name__ == '__main__':
         if not os.path.exists(os.path.join(os.pardir, "data/raw/msa", file)):
             print("File not found: " + file)
             filenames.remove(file)
+            continue
 
         if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
             filenames.remove(file)
