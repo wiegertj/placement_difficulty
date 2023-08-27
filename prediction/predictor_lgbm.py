@@ -164,5 +164,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         plt.savefig("waterfall_plot_2500treeholdout.png")
 
 
-light_gbm_regressor(rfe=False, holdout_trees=0, shapley_calc=True, targets=[])
+light_gbm_regressor(rfe=False, shapley_calc=True, targets=[])
 
