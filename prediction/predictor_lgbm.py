@@ -1,10 +1,7 @@
-import json
 import math
 import shap
 import lightgbm as lgb
-
 import os
-import pickle
 import numpy as np
 import pandas as pd
 from statistics import mean
@@ -16,42 +13,29 @@ from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 
-def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_calc=True, targets=[]):
+def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements"], inplace=True)
     print("Median Entropy: ")
     print(df["entropy"].median())
     print(df.columns)
 
-
     if targets == []:
         target = "entropy"
     else:
         target = targets
 
-    if holdout_trees == 0:
-        X = df.drop(axis=1, columns=target)
-        y = df[target]
+    X = df.drop(axis=1, columns=target)
+    y = df[target]
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
-        rmse_zero = math.sqrt(mse_zero)
-        print("Baseline prediting 0 RMSE: " + str(rmse_zero))
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
+    rmse_zero = math.sqrt(mse_zero)
+    print("Baseline prediting 0 RMSE: " + str(rmse_zero))
 
-        mse_mean = mean_squared_error(y_test, np.zeros(len(y_test)) + mean(y_train))
-        rmse_mean = math.sqrt(mse_mean)
-        print("Baseline predicting mean RMSE: " + str(rmse_mean))
-    else:
-        data_frame = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-        dataset_sample = data_frame['verbose_name'].str.replace(".phy", "").sample(30)
-        holdout_datasets = df[df["dataset"].isin(dataset_sample)]
-        df = df[~df["dataset"].isin(dataset_sample)]
-        X_test = holdout_datasets.drop(axis=1, columns=target)
-        y_test = holdout_datasets[target]
-        print("Number of test samples: " + str(len(y_test)))
-        print(dataset_sample)
-        X_train = df.drop(axis=1, columns=target)
-        y_train = df[target]
+    mse_mean = mean_squared_error(y_test, np.zeros(len(y_test)) + mean(y_train))
+    rmse_mean = math.sqrt(mse_mean)
+    print("Baseline predicting mean RMSE: " + str(rmse_mean))
 
     if rfe:
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
@@ -70,31 +54,22 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
-    # Define parameter grid for grid search
     param_grid = {
         'boosting_type': ['gbdt'],  # You can add more options
-        'num_leaves': [75],
-        'learning_rate': [0.05],
-        'n_estimators': [1000]
+        'num_leaves': [75, 150],
+        'learning_rate': [0.05, 0.01],
+        'n_estimators': [500, 750, 1000]
     }
-    # Create LightGBM model
 
     model = lgb.LGBMRegressor(n_jobs=40)
 
-    # Create GridSearchCV instance
     grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
-
-    # Perform grid search
     grid_search.fit(X_train, y_train)
 
-    # Get best parameters and best estimator
     best_params = grid_search.best_params_
     best_model = grid_search.best_estimator_
     print(best_params)
 
-    # Evaluate best model on test data
-
-    # MSE of entropy.py prediction on testset
     model = best_model
     y_pred = model.predict(X_test)
 
@@ -104,17 +79,14 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
 
     feature_importance = model.feature_importances_
 
-    # Print feature importances
     for feature, importance in zip(X_train.columns, feature_importance):
         print(f'{feature}: {importance}')
 
-    # Scale and print feature importances
     scaler = MinMaxScaler()
     normalized_importances = scaler.fit_transform(feature_importance.reshape(-1, 1)).flatten()
     importance_df = pd.DataFrame({'Feature': X_train.columns, 'Importance': normalized_importances})
     importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
-    # Plot the feature importances
     plt.figure(figsize=(10, 6))
     plt.bar(importance_df['Feature'], importance_df['Importance'])
     plt.xticks(rotation=90)
@@ -123,11 +95,7 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     plt.title('Feature Importances')
     plt.tight_layout()
 
-    if holdout_trees == 0:
-        name = "rf_sample_holdout_02"
-    else:
-        name = "rf_tree_holdout_" + str(holdout_trees)
-
+    name = "rf_tree_holdout_20"
     if rfe:
         name = name + "_rfe_" + str(rfe_feature_n)
 
@@ -138,21 +106,22 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
     for index, row in importance_df.iterrows():
         print(f"{row['Feature']}: {row['Importance']:.4f}")
 
-
-
     X_test_["prediction"] = y_pred
     X_test_["entropy"] = y_test
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
 
     if shapley_calc:
-        #X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
+        # X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
         #       (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
         X_test = X_test_
         X_test = X_test.sort_values(by="entropy")
-        explainer = shap.Explainer(model, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), check_additivity=False)
-        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), check_additivity=False)
+        explainer = shap.Explainer(model, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]),
+                                   check_additivity=False)
+        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]),
+                                check_additivity=False)
 
-        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]), plot_type="bar")
+        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]),
+                          plot_type="bar")
         plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
         # Create the waterfall plot for the sample with the highest prediction
@@ -194,7 +163,5 @@ def rand_forest_entropy(holdout_trees=0, rfe=False, rfe_feature_n=10, shapley_ca
         plt.savefig("waterfall_plot_2500treeholdout.png")
 
 
-rand_forest_entropy(rfe=False, holdout_trees=0, shapley_calc =True, targets=[])
-# rand_forest_entropy(holdout_trees=40, rfe=False)
-# rand_forest_entropy(rfe=False, holdout_trees=30, shapley_calc =False, targets=[])
-# rand_forest_entropy(holdout_trees=40, rfe=True)
+light_gbm_regressor(rfe=False, holdout_trees=0, shapley_calc=True, targets=[])
+
