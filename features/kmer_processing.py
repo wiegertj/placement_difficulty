@@ -270,6 +270,9 @@ if __name__ == '__main__':
             kmers = filter_gapped_kmers(str(record.seq), feature_config.K_MER_LENGTH,
                                         feature_config.K_MER_MAX_GAP_PERCENTAGE)
             kmers = set(kmers)
+            if len(kmers) == 0:
+               print("Skipped")
+               continue
             bf = bloom_filter(kmers, len(kmers), feature_config.BLOOM_FILTER_FP_RATE)
             bloom_filters_MSA.append((record.id, bf))
 
