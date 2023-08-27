@@ -36,14 +36,14 @@ def compute_dct_sign_only_hash(sequence):
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
     size_ = 16
-    #if sign_only_sequence.shape[0] >= 64 and sign_only_sequence.shape[1] >= 64:
-     #   size_ = 64
-    #elif sign_only_sequence.shape[0] >= 32 and sign_only_sequence.shape[1] >= 32:
-     #   size_ = 32
-    #elif sign_only_sequence.shape[0] >= 16 and sign_only_sequence.shape[1] >= 16:
-     #   size_ = 16
-    #elif sign_only_sequence.shape[0] >= 8 and sign_only_sequence.shape[1] >= 8:
-     #   size_ = 8
+    # if sign_only_sequence.shape[0] >= 64 and sign_only_sequence.shape[1] >= 64:
+    #   size_ = 64
+    # elif sign_only_sequence.shape[0] >= 32 and sign_only_sequence.shape[1] >= 32:
+    #   size_ = 32
+    # elif sign_only_sequence.shape[0] >= 16 and sign_only_sequence.shape[1] >= 16:
+    #   size_ = 16
+    # elif sign_only_sequence.shape[0] >= 8 and sign_only_sequence.shape[1] >= 8:
+    #   size_ = 8
 
     try:
         sign_only_sequence = sign_only_sequence[np.ix_(list(range(size_)),
@@ -132,6 +132,10 @@ if __name__ == '__main__':
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
     for file in filenames:
+        if not os.path.exists(os.path.join(os.pardir, "data/raw/msa", file)):
+            print("File not found: " + file)
+            filenames.remove(file)
+
         if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
             filenames.remove(file)
 
@@ -147,7 +151,8 @@ if __name__ == '__main__':
             df = pd.DataFrame(result[0],
                               columns=['dataset', 'sampleId', 'min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
                                        'avg_perc_hash_ham_dist',
-                                       'std_perc_hash_ham_dist', 'skewness_perc_hash_ham_dist', 'kurtosis_perc_hash_ham_dist'])
+                                       'std_perc_hash_ham_dist', 'skewness_perc_hash_ham_dist',
+                                       'kurtosis_perc_hash_ham_dist'])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    result[1].replace("_reference.fasta", "") + str(
                                        feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
