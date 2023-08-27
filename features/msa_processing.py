@@ -200,7 +200,6 @@ if __name__ == '__main__':
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
-    filenames = filenames[:2]
 
     if feature_config.INCUDE_TARA_BV_NEO:
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
