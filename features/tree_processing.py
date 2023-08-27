@@ -128,6 +128,11 @@ if __name__ == '__main__':
 
     print(filenames)
 
+    for file in filenames:
+        if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree", file)):
+            print("Not found " + file)
+            filenames.remove(file)
+
     for tree_file in filenames:
         with open(os.path.join(os.pardir, "data/raw/reference_tree", tree_file), 'r') as file:
             newick_tree = file.read()
