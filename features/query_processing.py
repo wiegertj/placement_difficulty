@@ -204,12 +204,12 @@ if __name__ == '__main__':
                                         "gap_positions_0", "gap_positions_1", "gap_positions_2", "gap_positions_3",
                                         "gap_positions_4", "gap_positions_5", "gap_positions_6",
                                         "gap_positions_7", "gap_positions_8", "gap_positions_9",
-                                        "approxEntropy_ape", "cumSum_p", "cumSum_abs_max", "cumSum_mode", "spec_p",
-                                        "spec_d", "spec_n1", "matrix_p", "complex_p", "complex_xObs", "run_pi",
-                                        "run_vObs",
-                                        "run_one_p", "run_one_x0bs", "run_one_mean", "run_one_std", "run_one_min",
-                                        "run_one_max",
-                                        "randex-4", "randex-3", "randex-2", "randex-1", "randex1", "randex2",
-                                        "randex3", "randex4", "g_fraction",
-                                        "a_fraction", "t_fraction", "c_fraction", "rest_fraction"])
+                                        "approxEntropy_ape_query", "cumSum_p_query", "cumSum_abs_max_query", "cumSum_mode_query", "spec_p_query",
+                                        "spec_d_query", "spec_n1_query", "matrix_p_query", "complex_p_query", "complex_xObs_query", "run_pi_query",
+                                        "run_vObs_query",
+                                        "run_one_p_query", "run_one_x0bs_query", "run_one_mean_query", "run_one_std_query", "run_one_min_query",
+                                        "run_one_max_query",
+                                        "randex-4_query", "randex-3_query", "randex-2_query", "randex-1_query", "randex1_query", "randex2_query",
+                                        "randex3_query", "randex4_query", "g_fraction_query",
+                                        "a_fraction_query", "t_fraction_query", "c_fraction_query", "rest_fraction_query"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"))
