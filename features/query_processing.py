@@ -180,6 +180,11 @@ if __name__ == '__main__':
 
     print(len(filenames))
 
+    for file in filenames:
+        if not os.path.exists(os.path.join(os.pardir, "data/raw/query", file)):
+            print("Query file not found: " + file)
+            filenames.remove(file)
+
     num_processes = multiprocessing.cpu_count()  # You can adjust the number of processes as needed
     pool = multiprocessing.Pool(processes=num_processes)
 
