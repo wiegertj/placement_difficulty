@@ -284,6 +284,7 @@ if __name__ == '__main__':
         while True:
             interval_start += feature_config.KMER_PROCESSING_STEPSIZE
             result_tmp = multiprocess_string_kernel(query_file, bloom_filters_MSA, msa_file, interval_start)
+            print(result_tmp)
             if result_tmp == 0:
                 print("skipped" + query_file)
                 continue
