@@ -70,7 +70,7 @@ if __name__ == '__main__':
     filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
 
     for file in filenames:
-        if not os.path.exists(file.replace("reference.fasta", "query.fasta")):
+        if not os.path.exists(os.path.join(os.pardir, "data/raw/msa", file)):
             print("Not found: " + file)
             filenames.remove(file)
 
