@@ -124,6 +124,7 @@ def query_statistics(query_filepath) -> list:
         randex = [entry[3] for entry in randex]
 
         run = RunTest.run_test(byte_encoding)
+        print(run)
         run_pi = run[2]
         run_vObs = run[3]
 
