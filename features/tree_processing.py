@@ -6,8 +6,6 @@ import os
 import pandas as pd
 from scipy.stats import skew, kurtosis
 
-from sklearn.decomposition import PCA
-
 
 def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     """
@@ -33,7 +31,6 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
 
     tip_branch_lengths = [node.dist for node in tree.iter_leaves()]
     average_branch_length_tips = sum(tip_branch_lengths) / len(tip_branch_lengths)
-    min_branch_length_tips = min(tip_branch_lengths)
     max_branch_length_tips = max(tip_branch_lengths)
     std_branch_length_tips = statistics.stdev(tip_branch_lengths)
     skew_branch_length_tips = skew(tip_branch_lengths)
@@ -54,17 +51,14 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     avg_irs = sum(irs) / len(irs)
     std_irs = statistics.stdev(irs)
     max_irs = max(irs)
-    min_irs = min(irs)
     skew_irs = skew(irs)
     kurtosis_irs = kurtosis(irs, fisher=False)
 
-
     return tree_file.replace(".newick",
-                             ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips,\
-           min_branch_length_tips, max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips,average_branch_length_inner,\
-           min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs, min_irs,\
+                             ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, \
+           max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips, average_branch_length_inner, \
+           min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs, \
            skew_irs, kurtosis_irs
-
 
 
 def height(node):
@@ -145,8 +139,9 @@ if __name__ == '__main__':
         results.append(result)
 
     df = pd.DataFrame(results,
-                      columns=['dataset', "average_length", "max_length", "min_length", "std_length", "depth", "average_branch_length_tips",\
-           "min_branch_length_tips", "max_branch_length_tips", "std_branch_length_tips", "skew_branch_length_tips", "kurtosis_branch_length_tips","average_branch_length_inner",\
-           "min_branch_length_inner", "max_branch_length_inner", "std_branch_length_inner", "skew_branch_length_inner", "kurtosis_branch_length_inner", "avg_irs", "std_irs", "max_irs", "min_irs",\
-           "skew_irs", "kurtosis_irs"])
+                      columns=['dataset', "average_length", "max_length", "min_length", "std_length", "depth",
+                               "average_branch_length_tips", "max_branch_length_tips", "std_branch_length_tips", "skew_branch_length_tips",
+                               "kurtosis_branch_length_tips", "average_branch_length_inner", "min_branch_length_inner", "max_branch_length_inner", "std_branch_length_inner",
+                               "skew_branch_length_inner", "kurtosis_branch_length_inner", "avg_irs", "std_irs",
+                               "max_irs", "skew_irs", "kurtosis_irs"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
