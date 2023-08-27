@@ -40,7 +40,7 @@ class RunTest:
         # then the run test need not be performed.
         if abs(pi - 0.5) >= tau:
             ##print("The test should not have been run because of a failure to pass test 1, the Frequency (Monobit) test.")
-            return (0.0000, False)
+            return (0.0000, False, pi, vObs)
         else:
             # Step 3 - Compute vObs
             for item in range(1, length_of_binary_data):

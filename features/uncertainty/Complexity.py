@@ -75,7 +75,7 @@ class ComplexityTest:
 
             return (p_value, (p_value >= 0.01), xObs)
         else:
-            return (-1.0, False)
+            return (-1.0, False, 0)
 
     @staticmethod
     def berlekamp_massey_algorithm(block_data):
