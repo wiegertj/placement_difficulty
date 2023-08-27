@@ -9,7 +9,6 @@ from Bio import SeqIO
 from probables import BloomFilter
 
 module_path = os.path.join(os.pardir, "configs/feature_config.py")
-
 feature_config = types.ModuleType('feature_config')
 feature_config.__file__ = module_path
 
@@ -252,7 +251,11 @@ if __name__ == '__main__':
         bloom_filters_MSA = []
         string_kernel_features = []
 
-        no_queries = len(list(SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta').records))
+        if os.path.exists(os.path.join(os.pardir, "data/raw/query", query_file)):
+            no_queries = len(list(SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta').records))
+        else:
+            print("Query file not found: " + os.path.join(os.pardir, "data/raw/query", query_file))
+            continue
 
         interval_start = feature_config.KMER_PROCESSING_INTERVAL_START  # sequence number to start with in query (last file number)
         bound = feature_config.KMER_PROCESSING_COUNT  # how many sequences
