@@ -55,9 +55,9 @@ def query_statistics(query_filepath) -> list:
             part_sequence = sequence[start_pos:end_pos]
 
             gap_count = part_sequence.count("-")
-            gap_fraction = gap_count / part_length
+            gap_fraction_ = gap_count / part_length
 
-            gap_fractions.append(gap_fraction)
+            gap_fractions.append(gap_fraction_)
             gap_positions.append((start_pos, end_pos))
 
         longest_gap = 0

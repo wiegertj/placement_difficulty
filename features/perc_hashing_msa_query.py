@@ -1,4 +1,3 @@
-import math
 import multiprocessing
 import statistics
 import types
@@ -6,9 +5,8 @@ import numpy as np
 import pandas as pd
 import os
 from Bio import SeqIO
-from scipy.fftpack import dct  # Discrete cosine transformation
+from scipy.fftpack import dct
 from collections import defaultdict
-
 from scipy.stats import kurtosis, skew
 
 
@@ -22,11 +20,7 @@ def dna_to_numeric(sequence):
 def encode_dna_as_image(sequence):
     # Calculate the nearest square side length
     side_length = int(np.ceil(np.sqrt(len(sequence))))
-
     image = np.resize(sequence, (side_length, side_length))
-    # width = int(math.sqrt(len(sequence)))
-    # height = math.ceil(len(sequence) / width)
-    # image = np.resize(sequence, (height, width))
     return image
 
 
@@ -42,14 +36,14 @@ def compute_dct_sign_only_hash(sequence):
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
     size_ = 16
-    if sign_only_sequence.shape[0] >= 64 and sign_only_sequence.shape[1] >= 64:
-        size_ = 64
-    elif sign_only_sequence.shape[0] >= 32 and sign_only_sequence.shape[1] >= 32:
-        size_ = 32
-    elif sign_only_sequence.shape[0] >= 16 and sign_only_sequence.shape[1] >= 16:
-        size_ = 16
-    elif sign_only_sequence.shape[0] >= 8 and sign_only_sequence.shape[1] >= 8:
-        size_ = 8
+    #if sign_only_sequence.shape[0] >= 64 and sign_only_sequence.shape[1] >= 64:
+     #   size_ = 64
+    #elif sign_only_sequence.shape[0] >= 32 and sign_only_sequence.shape[1] >= 32:
+     #   size_ = 32
+    #elif sign_only_sequence.shape[0] >= 16 and sign_only_sequence.shape[1] >= 16:
+     #   size_ = 16
+    #elif sign_only_sequence.shape[0] >= 8 and sign_only_sequence.shape[1] >= 8:
+     #   size_ = 8
 
     try:
         sign_only_sequence = sign_only_sequence[np.ix_(list(range(size_)),
@@ -71,7 +65,7 @@ def compute_perceptual_hash_distance(msa_file):
     print(msa_file)
     # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
-                                  msa_file.replace("_reference.fasta", "") + "16v_msa_perc_hash_dist" + ".csv")
+                                  msa_file.replace("_reference.fasta", "") + "16_msa_perc_hash_dist" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped: " + msa_file + " already processed")
         return 0
@@ -156,7 +150,7 @@ if __name__ == '__main__':
                                        'std_perc_hash_ham_dist', 'skewness_perc_hash_ham_dist', 'kurtosis_perc_hash_ham_dist'])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    result[1].replace("_reference.fasta", "") + str(
-                                       feature_config.SIGN_ONLY_MATRIX_SIZE) + "16v_msa_perc_hash_dist.csv"))
+                                       feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
 
     pool.close()
     pool.join()
