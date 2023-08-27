@@ -124,7 +124,6 @@ def query_statistics(query_filepath) -> list:
         randex = [entry[3] for entry in randex]
 
         run = RunTest.run_test(byte_encoding)
-        print(run)
         run_pi = run[2]
         run_vObs = run[3]
 
@@ -148,12 +147,11 @@ def query_statistics(query_filepath) -> list:
             name = query_filepath.replace("_query.fasta", "")
 
         results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length / len(sequence),
-                        gap_positions[0], gap_positions[1], gap_positions[2], gap_positions[3], gap_positions[4], gap_positions[5], gap_positions[6],
-                        gap_positions[7], gap_positions[8], gap_positions[9],
+                        gap_fractions[0], gap_fractions[1], gap_fractions[2], gap_fractions[3], gap_fractions[4], gap_fractions[5], gap_fractions[6],
+                        gap_fractions[7], gap_fractions[8], gap_fractions[9],
                         approxEntropy_ape, cumSum_p, cumSum_abs_max, cumSum_mode, spec_p, spec_d, spec_n1, matrix_p,
                         complex_p, complex_xObs, run_pi, run_vObs,
                         run_one_p, run_one_x0bs, run_one_mean, run_one_std, run_one_min, run_one_max,
-                        complex_,
                         randex[0], randex[1], randex[2], randex[3], randex[4], randex[5], randex[6], randex[7],
                         g_fraction, a_fraction, t_fraction, c_fraction, rest_fraction))
 
@@ -207,7 +205,6 @@ if __name__ == '__main__':
                                         "run_vObs",
                                         "run_one_p", "run_one_x0bs", "run_one_mean", "run_one_std", "run_one_min",
                                         "run_one_max",
-                                        "complex_",
                                         "randex-4", "randex-3", "randex-2", "randex-1", "randex1", "randex2",
                                         "randex3", "randex4", "g_fraction",
                                         "a_fraction", "t_fraction", "c_fraction", "rest_fraction"])
