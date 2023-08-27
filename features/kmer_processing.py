@@ -284,10 +284,10 @@ if __name__ == '__main__':
         while True:
             interval_start += feature_config.KMER_PROCESSING_STEPSIZE
             result_tmp = multiprocess_string_kernel(query_file, bloom_filters_MSA, msa_file, interval_start)
-            print(result_tmp)
-            if result_tmp == 0:
-                print("skipped" + query_file)
-                continue
+            for line in result_tmp:
+                if result_tmp == 0:
+                    print("Skipped")
+                    result_tmp.remove(line)
             results.extend(result_tmp)
             df = pd.DataFrame(results,
                               columns=['dataset', 'sampleId', 'min_kernel', 'max_kernel', 'mean_kernel', 'std_kernel'])
