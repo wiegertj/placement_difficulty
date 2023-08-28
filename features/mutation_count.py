@@ -253,7 +253,7 @@ def main():
         reference_msa_path =  os.path.join(os.pardir, "data/raw/msa", dataset + "_reference.fasta")
         reference_msa = AlignIO.read(reference_msa_path, 'fasta')
         reference_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", dataset + ".newick")
-        sample_df = current_loo_targets[current_loo_targets['dataset'] == 'abc']["sampleId"]
+        sample_df = current_loo_targets[current_loo_targets['dataset'] == dataset]["sampleId"]
         for sample in sample_df:
             print("Sample: " + sample)
             # Split MSA into query and rest
