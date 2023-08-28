@@ -266,7 +266,8 @@ def main():
             output_file_msa = os.path.join(os.pardir, "data/processed/loo", dataset + "_msa_" + sample + ".fasta")
             output_file_msa = os.path.abspath(output_file_msa)
 
-            print(new_alignment)
+            for record in new_alignment:
+                print(record.id)
 
             SeqIO.write(new_alignment, output_file_msa, "fasta")
 
@@ -282,13 +283,13 @@ def main():
 
                 # Get the leaf count
                 leaf_count = len(leaf_names)
-                print("L Count: " + leaf_count)
+                print("L Count: " + str(leaf_count))
                 leaf_node = original_tree.search_nodes(name=sample)[0]
 
                 # Delete the leaf node
                 leaf_node.delete()
                 leaf_names = original_tree.get_leaf_names()
-                print("L Count2: " + len(leaf_names))
+                print("L Count2: " + str(len(leaf_names)))
                 output_file_tree = os.path.join(os.pardir, "data/raw/reference_tree", dataset + sample + ".newick")
                 output_file_tree = os.path.abspath(output_file_tree)
 
