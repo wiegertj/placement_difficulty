@@ -290,6 +290,7 @@ def main():
                 leaf_names = original_tree.get_leaf_names()
                 print("L Count2: " + len(leaf_names))
                 output_file_tree = os.path.join(os.pardir, "data/raw/reference_tree", dataset + sample + ".newick")
+                output_file_tree = os.path.abspath(output_file_tree)
 
                 original_tree.write(outfile=output_file_tree, format=5)  # Format 5 is for Newick format
 
