@@ -156,7 +156,7 @@ def compute_image_distances(msa_file):
         max_distance = max(distances_hu)
 
         # Normalize distances using Min-Max scaling
-        normalized_distances = [(d - min_distance) / (max_distance - min_distance) for d in distances_hu]
+        distances_hu = [(d - min_distance) / (max_distance - min_distance) for d in distances_hu]
 
         print(distances_hu)
 
