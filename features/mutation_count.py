@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import collections
 import os
+import statistics
 import sys
-
+from scipy.stats import kurtosis, skew
 import ete3
 import pandas as pd
 from io import StringIO
@@ -12,6 +13,8 @@ from Bio import Phylo, AlignIO, SeqIO
 """
 Our cheap MSA parser stuff 
 """
+
+
 class MSAParser:
     def __init__(self):
         pass
@@ -191,8 +194,6 @@ def parse_msa_somehow(msa_path):
     return sequences
 
 
-
-
 def traverse_and_count(clade, msa, mutation_counter):
     """
     Traverses a tree recursively and counts the number of substitutions based on the parsimony rule.
@@ -248,14 +249,18 @@ def example(tree_path, msa_path):
 def main():
     current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
     dataset_set = set(current_loo_targets['dataset'])
+    dataset_set = list(dataset_set)[:2]
+
+    results = []
+    counter = 0
     for dataset in dataset_set:
+        print(counter + "/" + str(len(dataset_set)))
         print("Dataset: " + dataset)
-        reference_msa_path =  os.path.join(os.pardir, "data/raw/msa", dataset + "_reference.fasta")
+        reference_msa_path = os.path.join(os.pardir, "data/raw/msa", dataset + "_reference.fasta")
         reference_msa = AlignIO.read(reference_msa_path, 'fasta')
         reference_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", dataset + ".newick")
         sample_df = current_loo_targets[current_loo_targets['dataset'] == dataset]["sampleId"]
         for sample in sample_df:
-            print("Sample: " + sample)
             # Split MSA into query and rest
             new_alignment = []
             for record in reference_msa:
@@ -265,9 +270,6 @@ def main():
 
             output_file_msa = os.path.join(os.pardir, "data/processed/loo", dataset + "_msa_" + sample + ".fasta")
             output_file_msa = os.path.abspath(output_file_msa)
-
-            for record in new_alignment:
-                print(record.id)
 
             SeqIO.write(new_alignment, output_file_msa, "fasta")
 
@@ -283,39 +285,32 @@ def main():
 
                 # Get the leaf count
                 leaf_count = len(leaf_names)
-                print("L Count: " + str(leaf_count))
                 leaf_node = original_tree.search_nodes(name=sample)[0]
 
                 # Delete the leaf node
                 leaf_node.delete()
                 leaf_names = original_tree.get_leaf_names()
-                print("L Count2: " + str(len(leaf_names)))
                 output_file_tree = os.path.join(os.pardir, "data/raw/reference_tree", dataset + sample + ".newick")
                 output_file_tree = os.path.abspath(output_file_tree)
 
                 original_tree.write(outfile=output_file_tree, format=5)  # Format 5 is for Newick format
 
             result = count_subst_freqs(output_file_tree, output_file_msa)
+            max_subst_freq = max(result)
+            avg_subst_freq = sum(result) / len(result)
+            std_subst_freq = statistics.stdev(result)
+            sk_subst_freq = skew(result)
+            kur_subst_freq = kurtosis(result, fisher=False)
+
+            results.append(
+                (dataset, sample, max_subst_freq, avg_subst_freq, std_subst_freq, sk_subst_freq, kur_subst_freq))
 
             os.remove(output_file_msa)
             os.remove(output_file_tree)
 
-            print(result)
-
-    # in entropies_loo => get all sampleIds, dataset
-    # get msa for dataset, get tree for dataset
-    # reference tree
-    # reference msa
-
-    # for each dataset in datasets:
-    #   for each sample in sample:
-    #   msa_tmp_ = -- sample
-    #   tree_tmp = --sample
-    #   result = ...
-    #   delete msa_tmp_
-    #   delete tree_tmp:_
-
-
+    df = pd.DataFrame(results,
+                      columns=['dataset', 'sampleId', "max_subst_freq", "avg_subst_freq", "std_subst_freq", "sk_subst_freq", "kur_subst_freq"])
+    df.to_csv(os.path.join(os.pardir, "data/processed/features","subst_freq_stats.csv"))
 
 
 if __name__ == "__main__":
