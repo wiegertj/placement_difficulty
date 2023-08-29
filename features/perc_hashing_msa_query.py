@@ -97,7 +97,8 @@ def compute_image_distances(msa_file):
         numeric_query = dna_to_numeric(record_query.seq)
         image_query = encode_dna_as_image(numeric_query)
         image_query = image_query.astype(np.uint8)
-        image_query[image_query != 0] = 1
+        image_query_hu = image_query
+        image_query_hu[image_query_hu != 0] = 1
         contours_query = cv2.findContours(image_query, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         # contours1 = measure.find_contours(image_query, 0.5)
@@ -115,14 +116,15 @@ def compute_image_distances(msa_file):
 
                 #ret, thresh = cv2.threshold(image_msa_req, 1, 255, 0)
                 #ret, thresh2 = cv2.threshold(image_query, 1, 255, 0)
-                image_msa_req[image_msa_req != 0] = 1
+                image_msa_req_hu = image_msa_req
+                image_msa_req_hu[image_msa_req_hu != 0] = 1
 
 
 
 
-                contours, hierarchy = cv2.findContours(image_query, 2, 1)
+                contours, hierarchy = cv2.findContours(image_query_hu, 2, 1)
                 cnt1 = contours[0]
-                contours, hierarchy = cv2.findContours(image_msa_req, 2, 1)
+                contours, hierarchy = cv2.findContours(image_msa_req_hu, 2, 1)
                 cnt2 = contours[0]
 
 
