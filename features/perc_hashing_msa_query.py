@@ -117,7 +117,7 @@ def compute_image_distances(msa_file):
 
                 #hu_moments2 = calculate_hu_moments(contours[0])
                 #shape_similarity_score = calculate_shape_similarity(hu_moments1, hu_moments2)
-                d1 = cv2.matchShapes(contours_query[1], contours_msa_req[1], cv2.CONTOURS_MATCH_I1, 0)
+                d1 = cv2.matchShapes(contours_query[0], contours_msa_req[0], cv2.CONTOURS_MATCH_I1, 0)
 
                 distances_hu.append(d1)
 
