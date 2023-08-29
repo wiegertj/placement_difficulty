@@ -21,7 +21,6 @@ from sklearn.preprocessing import normalize
 def lbp_histogram(image):
     patterns = local_binary_pattern(image, 8, 1)
     hist, _ = np.histogram(patterns, bins=np.arange(2 ** 8 + 1), density=True)
-    print(hist)
     return hist
 
 
