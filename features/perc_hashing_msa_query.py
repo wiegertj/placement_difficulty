@@ -135,6 +135,8 @@ def compute_image_distances(msa_file):
                 moments2 = cv2.moments(cnt2)
                 hu_moments2 = cv2.HuMoments(moments2)
 
+
+
                 distances_hu.append(np.sqrt(np.sum((hu_moments1 - hu_moments2)**2))
 )
 
@@ -149,7 +151,15 @@ def compute_image_distances(msa_file):
                 pca_components2 = pca2.fit_transform(normalize(image_msa_req, axis=1, norm="l1"))
                 distance_pca = np.linalg.norm(pca_components1 - pca_components2)
                 distances_pca.append(distance_pca)
+
+        min_distance = min(distances_hu)
+        max_distance = max(distances_hu)
+
+        # Normalize distances using Min-Max scaling
+        normalized_distances = [(d - min_distance) / (max_distance - min_distance) for d in distances_hu]
+
         print(distances_hu)
+
 
         max_dist_hu = max(distances_hu)
         min_dist_hu = min(distances_hu)
