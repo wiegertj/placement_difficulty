@@ -257,6 +257,7 @@ def main():
     for dataset in dataset_set:
         counter += 1
         print(str(counter) + "/" + str(len(dataset_set)))
+        print(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats.csv"))
         if os.path.exists(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats.csv")):
             print("Skipped, already exists " + dataset)
             continue
