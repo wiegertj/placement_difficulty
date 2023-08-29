@@ -125,6 +125,9 @@ def compute_image_distances(msa_file):
                 contours, hierarchy = cv2.findContours(image_msa_req, 2, 1)
                 cnt2 = contours[0]
 
+                print(cnt1)
+                print(cnt2)
+
                 d1 = cv2.matchShapes(cnt1, cnt2, 1, 0.0)
 
                 distances_hu.append(d1)
