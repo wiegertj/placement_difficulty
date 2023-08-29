@@ -204,7 +204,7 @@ def compute_perceptual_hash_distance(msa_file):
                                   msa_file.replace("_reference.fasta", "") + "16_msa_perc_hash_dist" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped: " + msa_file + " already processed")
-        return 0
+        #return 0
 
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
@@ -244,7 +244,7 @@ def compute_perceptual_hash_distance(msa_file):
         elif msa_file == "tara_reference.fasta":
             name = "tara"
         else:
-            name = msa_file.replace("_msa.fasta", "")
+            name = msa_file.replace("_reference.fasta", "")
 
         results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham))
     return results, msa_file
