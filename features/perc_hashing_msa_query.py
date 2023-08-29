@@ -97,7 +97,6 @@ def compute_image_distances(msa_file):
 
         numeric_query = dna_to_numeric(record_query.seq)
         image_query = encode_dna_as_image(numeric_query)
-        print(image_query)
         image_query = image_query.astype(np.uint8)
 
         #contours, _ = cv2.findContours(image_query, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
