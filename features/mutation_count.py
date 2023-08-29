@@ -254,7 +254,8 @@ def main():
     results = []
     counter = 0
     for dataset in dataset_set:
-        print(counter + "/" + str(len(dataset_set)))
+        counter += 1
+        print(str(counter) + "/" + str(len(dataset_set)))
         print("Dataset: " + dataset)
         reference_msa_path = os.path.join(os.pardir, "data/raw/msa", dataset + "_reference.fasta")
         reference_msa = AlignIO.read(reference_msa_path, 'fasta')
