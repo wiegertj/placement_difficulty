@@ -127,8 +127,8 @@ def compute_image_distances(msa_file):
                 num_components = 10
                 pca1 = PCA(n_components=num_components)
                 pca2 = PCA(n_components=num_components)
-                pca_components1 = pca1.fit_transform(image_query.reshape(1, -1))
-                pca_components2 = pca2.fit_transform(image_msa_req.reshape(1, -1))
+                pca_components1 = pca1.fit_transform(image_query)
+                pca_components2 = pca2.fit_transform(image_msa_req)
                 distance_pca = np.linalg.norm(pca_components1 - pca_components2)
                 distances_pca.append(distance_pca)
 
