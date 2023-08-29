@@ -298,7 +298,6 @@ if __name__ == '__main__':
     pool.join()
 
     pool = multiprocessing.Pool()
-    filenames = filenames[:2]
     results = pool.imap_unordered(compute_image_distances, filenames)
 
     for result in results:
