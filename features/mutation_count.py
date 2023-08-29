@@ -253,9 +253,14 @@ def main():
 
     results = []
     counter = 0
+
     for dataset in dataset_set:
         counter += 1
         print(str(counter) + "/" + str(len(dataset_set)))
+        if os.path.exists(os.path.join(os.pardir, "data/processed/features", + dataset + "subst_freq_stats.csv")):
+            print("Skipped, already exists " + dataset)
+            continue
+
         print("Dataset: " + dataset)
         reference_msa_path = os.path.join(os.pardir, "data/raw/msa", dataset + "_reference.fasta")
         reference_msa = AlignIO.read(reference_msa_path, 'fasta')
@@ -309,9 +314,10 @@ def main():
             os.remove(output_file_msa)
             os.remove(output_file_tree)
 
-    df = pd.DataFrame(results,
-                      columns=['dataset', 'sampleId', "max_subst_freq", "avg_subst_freq", "std_subst_freq", "sk_subst_freq", "kur_subst_freq"])
-    df.to_csv(os.path.join(os.pardir, "data/processed/features","subst_freq_stats.csv"))
+        df = pd.DataFrame(results,
+                          columns=['dataset', 'sampleId', "max_subst_freq", "avg_subst_freq", "std_subst_freq",
+                                   "sk_subst_freq", "kur_subst_freq"])
+        df.to_csv(os.path.join(os.pardir, "data/processed/features", + dataset + "subst_freq_stats.csv"))
 
 
 if __name__ == "__main__":
