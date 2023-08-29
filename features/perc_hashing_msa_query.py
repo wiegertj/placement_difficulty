@@ -125,12 +125,18 @@ def compute_image_distances(msa_file):
                 contours, hierarchy = cv2.findContours(image_msa_req, 2, 1)
                 cnt2 = contours[0]
 
-                print(cnt1)
-                print(cnt2)
 
-                d1 = cv2.matchShapes(cnt1, cnt2, 1, 0.0)
 
-                distances_hu.append(d1)
+                # Compute Hu moments for the first contour
+                moments1 = cv2.moments(cnt1)
+                hu_moments1 = cv2.HuMoments(moments1)
+
+                # Compute Hu moments for the second contour
+                moments2 = cv2.moments(cnt2)
+                hu_moments2 = cv2.HuMoments(moments2)
+
+                distances_hu.append(np.sqrt(np.sum((hu_moments1 - hu_moments2)**2))
+)
 
                 lbp_msa_req = lbp_histogram(image_msa_req)
                 lbp_dist = euclidean(lbp_msa_req, lbp_hist_query)
