@@ -250,10 +250,11 @@ def main():
     current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
     dataset_set = set(current_loo_targets['dataset'])
 
-    results = []
     counter = 0
 
     for dataset in dataset_set:
+        results = []
+
         counter += 1
         print(str(counter) + "/" + str(len(dataset_set)))
         print(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats.csv"))
