@@ -259,7 +259,7 @@ def main():
         print(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats.csv"))
         if os.path.exists(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats.csv")):
             print("Skipped, already exists " + dataset)
-            continue
+            #continue
 
         print("Dataset: " + dataset)
         reference_msa_path = os.path.join(os.pardir, "data/raw/msa", dataset + "_reference.fasta")
@@ -301,18 +301,18 @@ def main():
 
                 original_tree.write(outfile=output_file_tree, format=5)  # Format 5 is for Newick format
 
-            result = count_subst_freqs(output_file_tree, output_file_msa)
-            max_subst_freq = max(result)
-            avg_subst_freq = sum(result) / len(result)
-            std_subst_freq = statistics.stdev(result)
-            sk_subst_freq = skew(result)
-            kur_subst_freq = kurtosis(result, fisher=False)
+                result = count_subst_freqs(output_file_tree, output_file_msa)
+                max_subst_freq = max(result)
+                avg_subst_freq = sum(result) / len(result)
+                std_subst_freq = statistics.stdev(result)
+                sk_subst_freq = skew(result)
+                kur_subst_freq = kurtosis(result, fisher=False)
 
-            results.append(
-                (dataset, sample, max_subst_freq, avg_subst_freq, std_subst_freq, sk_subst_freq, kur_subst_freq))
+                results.append(
+                    (dataset, sample, max_subst_freq, avg_subst_freq, std_subst_freq, sk_subst_freq, kur_subst_freq))
 
-            os.remove(output_file_msa)
-            os.remove(output_file_tree)
+                os.remove(output_file_msa)
+                os.remove(output_file_tree)
 
         df = pd.DataFrame(results,
                           columns=['dataset', 'sampleId', "max_subst_freq", "avg_subst_freq", "std_subst_freq",
