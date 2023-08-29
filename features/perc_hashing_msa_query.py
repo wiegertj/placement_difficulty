@@ -38,7 +38,7 @@ def calculate_shape_similarity(hu_moments1, hu_moments2):
 
 
 def dna_to_numeric(sequence):
-    mapping = {'A': 42, 'C': 95, 'G': 137, 'T': 180, '-': 222, 'N': 255}
+    mapping = {'A': 63, 'C': 127, 'G': 191, 'T': 255, '-': 0, 'N': 0}
     mapping = defaultdict(lambda: 0, mapping)
     numeric_sequence = [mapping[base] for base in sequence]
     return np.array(numeric_sequence)
@@ -113,11 +113,16 @@ def compute_image_distances(msa_file):
                 numeric_req = dna_to_numeric(record_msa.seq)
                 image_msa_req = encode_dna_as_image(numeric_req)
                 image_msa_req = image_msa_req.astype(np.uint8)
-                contours_msa_req = cv2.findContours(image_msa_req, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-                #hu_moments2 = calculate_hu_moments(contours[0])
-                #shape_similarity_score = calculate_shape_similarity(hu_moments1, hu_moments2)
-                d1 = cv2.matchShapes(contours_query[0], contours_msa_req[0], cv2.CONTOURS_MATCH_I1, 0)
+                ret, thresh = cv2.threshold(image_msa_req, 1, 255, 0)
+                ret, thresh2 = cv2.threshold(image_query, 1, 255, 0)
+
+                contours, hierarchy = cv2.findContours(thresh, 2, 1)
+                cnt1 = contours[0]
+                contours, hierarchy = cv2.findContours(thresh2, 2, 1)
+                cnt2 = contours[0]
+
+                d1 = cv2.matchShapes(cnt1,cnt2,1,0.0)
 
                 distances_hu.append(d1)
 
