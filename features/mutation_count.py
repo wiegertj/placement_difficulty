@@ -249,7 +249,6 @@ def example(tree_path, msa_path):
 def main():
     current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
     dataset_set = set(current_loo_targets['dataset'])
-    dataset_set = list(dataset_set)[:2]
 
     results = []
     counter = 0
