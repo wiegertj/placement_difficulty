@@ -17,7 +17,6 @@ from scipy.spatial.distance import euclidean
 from sklearn.preprocessing import normalize
 
 
-
 def lbp_histogram(image):
     patterns = local_binary_pattern(image, 8, 1)
     hist, _ = np.histogram(patterns, bins=np.arange(2 ** 8 + 1), density=True)
@@ -27,8 +26,6 @@ def lbp_histogram(image):
 def calculate_hu_moments(contour):
     moments = cv2.moments(contour)
     hu_moments = cv2.HuMoments(moments)
-
-
 
     return hu_moments.flatten()
 
@@ -87,7 +84,7 @@ def compute_image_distances(msa_file):
                                   msa_file.replace("_reference.fasta", "") + "_msa_im_comp" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped: " + msa_file + " already processed")
-        #return 0
+        # return 0
 
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
@@ -99,20 +96,20 @@ def compute_image_distances(msa_file):
 
         numeric_query = dna_to_numeric(record_query.seq)
         image_query = encode_dna_as_image(numeric_query)
-        image_query = image_query.astype(np.uint8)
+        #image_query = image_query.astype(np.uint8)
 
         contours_query = cv2.findContours(image_query, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        #contours1 = measure.find_contours(image_query, 0.5)
-        #print(contours)
-        #hu_moments1 = calculate_hu_moments(contours[0])
+        # contours1 = measure.find_contours(image_query, 0.5)
+        # print(contours)
+        # hu_moments1 = calculate_hu_moments(contours[0])
         lbp_hist_query = lbp_histogram(image_query)
 
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if record_msa.id != record_query.id:
                 numeric_req = dna_to_numeric(record_msa.seq)
                 image_msa_req = encode_dna_as_image(numeric_req)
-                image_msa_req = image_msa_req.astype(np.uint8)
+                #image_msa_req = image_msa_req.astype(np.uint8)
 
                 ret, thresh = cv2.threshold(image_msa_req, 1, 255, 0)
                 ret, thresh2 = cv2.threshold(image_query, 1, 255, 0)
@@ -122,7 +119,7 @@ def compute_image_distances(msa_file):
                 contours, hierarchy = cv2.findContours(thresh2, 2, 1)
                 cnt2 = contours[0]
 
-                d1 = cv2.matchShapes(cnt1,cnt2,1,0.0)
+                d1 = cv2.matchShapes(cnt1, cnt2, 1, 0.0)
 
                 distances_hu.append(d1)
 
@@ -147,10 +144,10 @@ def compute_image_distances(msa_file):
         sk_dist_hu = skew(distances_hu)
         kur_dist_hu = kurtosis(distances_hu, fisher=False)
 
-       # max_dist_hu = max_dist_hu / len(distances_hu)
-      #  min_dist_hu = min_dist_hu / len(distances_hu)
-        #avg_dist_hu = avg_dist_hu / len(distances_hu)
-        #std_dist_hu = std_dist_hu / len(distances_hu)
+        # max_dist_hu = max_dist_hu / len(distances_hu)
+        #  min_dist_hu = min_dist_hu / len(distances_hu)
+        # avg_dist_hu = avg_dist_hu / len(distances_hu)
+        # std_dist_hu = std_dist_hu / len(distances_hu)
 
         max_dist_lbp = max(distances_lbp)
         min_dist_lbp = min(distances_lbp)
