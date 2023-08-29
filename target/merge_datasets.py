@@ -159,6 +159,46 @@ loo_hash_perc = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fasta", "")
 loo_resuls_combined = loo_resuls_combined.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
 
+# add mutation rates
+
+loo_resuls_dfs = []
+elements_to_delete = ['tara', 'bv', "neotrop"]
+dataset_list = list(merged_df['dataset'].unique())
+loo_datasets = [value for value in dataset_list if value not in elements_to_delete]
+
+for loo_dataset in loo_datasets:
+    try:
+        file_path = loo_dataset + "_subst_freq_stats.csv"
+        file_path = os.path.join(os.pardir, "data/processed/features", file_path)
+        df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
+        loo_resuls_dfs.append(df)
+    except FileNotFoundError:
+        print(file_path)
+        print("Not found Mutation Stats: " + loo_dataset)
+
+loo_subst = pd.concat(loo_resuls_dfs, ignore_index=True)
+loo_resuls_combined = loo_resuls_combined.merge(loo_subst, on=["sampleId", 'dataset'], how='inner')
+
+# add image comp
+
+loo_resuls_dfs = []
+elements_to_delete = ['tara', 'bv', "neotrop"]
+dataset_list = list(merged_df['dataset'].unique())
+loo_datasets = [value for value in dataset_list if value not in elements_to_delete]
+
+for loo_dataset in loo_datasets:
+    try:
+        file_path = loo_dataset + "_msa_im_comp.csv"
+        file_path = os.path.join(os.pardir, "data/processed/features", file_path)
+        df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
+        loo_resuls_dfs.append(df)
+    except FileNotFoundError:
+        print(file_path)
+        print("Not found Mutation Stats: " + loo_dataset)
+
+loo_im_comp = pd.concat(loo_resuls_dfs, ignore_index=True)
+loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'dataset'], how='inner')
+
 # final dataset
 # combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
 combined_df = loo_resuls_combined
@@ -177,7 +217,7 @@ print("Create uniform sample")
 combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 
 def sample_rows(group):
-    max_sample_size = min(2100, len(group))
+    max_sample_size = min(3000, len(group))
     return group.sample(max_sample_size)
 
 
