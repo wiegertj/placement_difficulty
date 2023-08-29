@@ -100,21 +100,25 @@ def compute_image_distances(msa_file):
         print(image_query)
         image_query = image_query.astype(np.uint8)
 
-        contours, _ = cv2.findContours(image_query, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        #contours, _ = cv2.findContours(image_query, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         #contours1 = measure.find_contours(image_query, 0.5)
         #print(contours)
-        hu_moments1 = calculate_hu_moments(contours[0])
+        #hu_moments1 = calculate_hu_moments(contours[0])
         lbp_hist_query = lbp_histogram(image_query)
 
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if record_msa.id != record_query.id:
                 numeric_req = dna_to_numeric(record_msa.seq)
                 image_msa_req = encode_dna_as_image(numeric_req)
-                contours2 = measure.find_contours(image_msa_req, 0.5)
-                hu_moments2 = calculate_hu_moments(contours2[0])
-                shape_similarity_score = calculate_shape_similarity(hu_moments1, hu_moments2)
-                distances_hu.append(shape_similarity_score)
+                image_msa_req = image_msa_req.astype(np.uint8)
+                #contours, _ = cv2.findContours(image_msa_req, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+                #hu_moments2 = calculate_hu_moments(contours[0])
+                #shape_similarity_score = calculate_shape_similarity(hu_moments1, hu_moments2)
+                d1 = cv2.matchShapes(image_msa_req, image_query, cv2.CONTOURS_MATCH_I1, 0)
+
+                distances_hu.append(d1)
 
                 lbp_msa_req = lbp_histogram(image_msa_req)
                 lbp_dist = euclidean(lbp_msa_req, lbp_hist_query)
