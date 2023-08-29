@@ -116,7 +116,7 @@ def compute_image_distances(msa_file):
                 ret, thresh = cv2.threshold(image_msa_req, 1, 255, 0)
                 ret, thresh2 = cv2.threshold(image_query, 1, 255, 0)
 
-                print(ret)
+                print(thresh)
 
 
                 contours, hierarchy = cv2.findContours(thresh, 2, 1)
