@@ -141,10 +141,10 @@ def compute_image_distances(msa_file):
         sk_dist_hu = skew(distances_hu)
         kur_dist_hu = kurtosis(distances_hu, fisher=False)
 
-        max_dist_hu = max_dist_hu / len(distances_hu)
-        min_dist_hu = min_dist_hu / len(distances_hu)
-        avg_dist_hu = avg_dist_hu / len(distances_hu)
-        std_dist_hu = std_dist_hu / len(distances_hu)
+       # max_dist_hu = max_dist_hu / len(distances_hu)
+      #  min_dist_hu = min_dist_hu / len(distances_hu)
+        #avg_dist_hu = avg_dist_hu / len(distances_hu)
+        #std_dist_hu = std_dist_hu / len(distances_hu)
 
         max_dist_lbp = max(distances_lbp)
         min_dist_lbp = min(distances_lbp)
