@@ -257,7 +257,7 @@ def main():
     for dataset in dataset_set:
         counter += 1
         print(str(counter) + "/" + str(len(dataset_set)))
-        if os.path.exists(os.path.join(os.pardir, "data/processed/features", + dataset + "subst_freq_stats.csv")):
+        if os.path.exists(os.path.join(os.pardir, "data/processed/features", dataset + "subst_freq_stats.csv")):
             print("Skipped, already exists " + dataset)
             continue
 
@@ -317,7 +317,7 @@ def main():
         df = pd.DataFrame(results,
                           columns=['dataset', 'sampleId', "max_subst_freq", "avg_subst_freq", "std_subst_freq",
                                    "sk_subst_freq", "kur_subst_freq"])
-        df.to_csv(os.path.join(os.pardir, "data/processed/features", + dataset + "subst_freq_stats.csv"))
+        df.to_csv(os.path.join(os.pardir, "data/processed/features", dataset + "subst_freq_stats.csv"))
 
 
 if __name__ == "__main__":
