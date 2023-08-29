@@ -25,6 +25,9 @@ def lbp_histogram(image):
 def calculate_hu_moments(contour):
     moments = cv2.moments(contour)
     hu_moments = cv2.HuMoments(moments)
+
+
+
     return hu_moments.flatten()
 
 
@@ -95,8 +98,11 @@ def compute_image_distances(msa_file):
         numeric_query = dna_to_numeric(record_query.seq)
         image_query = encode_dna_as_image(numeric_query)
         print(image_query)
-        contours1 = measure.find_contours(image_query, 0.5)
-        hu_moments1 = calculate_hu_moments(contours1[0])
+        contours, _ = cv2.findContours(image_query, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        #contours1 = measure.find_contours(image_query, 0.5)
+        #print(contours)
+        hu_moments1 = calculate_hu_moments(contours[0])
         lbp_hist_query = lbp_histogram(image_query)
 
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
