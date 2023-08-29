@@ -92,14 +92,16 @@ def compute_image_distances(msa_file):
         distances_lbp = []
         distances_pca = []
 
-        image_query = encode_dna_as_image(record_query.seq)
+        numeric_query = dna_to_numeric(record_query.seq)
+        image_query = encode_dna_as_image(numeric_query)
         contours1 = measure.find_contours(image_query, 0.5)
         hu_moments1 = calculate_hu_moments(contours1[0])
         lbp_hist_query = lbp_histogram(image_query)
 
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if record_msa.id != record_query.id:
-                image_msa_req = encode_dna_as_image(record_msa.seq)
+                numeric_req = dna_to_numeric(record_msa.seq)
+                image_msa_req = encode_dna_as_image(numeric_req)
                 contours2 = measure.find_contours(image_msa_req, 0.5)
                 hu_moments2 = calculate_hu_moments(contours2[0])
                 shape_similarity_score = calculate_shape_similarity(hu_moments1, hu_moments2)
