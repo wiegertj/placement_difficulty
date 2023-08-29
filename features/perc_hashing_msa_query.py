@@ -181,7 +181,7 @@ def compute_image_distances(msa_file):
         elif msa_file == "tara_reference.fasta":
             name = "tara"
         else:
-            name = msa_file.replace("_msa.fasta", "")
+            name = msa_file.replace("_reference.fasta", "")
 
         results.append(
             (name, record_query.id, max_dist_hu, min_dist_hu, avg_dist_hu, std_dist_hu, sk_dist_hu, kur_dist_hu,
