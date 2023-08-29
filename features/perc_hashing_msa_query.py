@@ -8,6 +8,28 @@ from Bio import SeqIO
 from scipy.fftpack import dct
 from collections import defaultdict
 from scipy.stats import kurtosis, skew
+import numpy as np
+from skimage import measure
+import cv2
+from sklearn.decomposition import PCA
+from skimage.feature import local_binary_pattern
+from scipy.spatial.distance import euclidean
+
+
+def lbp_histogram(image):
+    patterns = local_binary_pattern(image, 8, 1)
+    hist, _ = np.histogram(patterns, bins=np.arange(2 ** 8 + 1), density=True)
+    return hist
+
+
+def calculate_hu_moments(contour):
+    moments = cv2.moments(contour)
+    hu_moments = cv2.HuMoments(moments)
+    return hu_moments.flatten()
+
+
+def calculate_shape_similarity(hu_moments1, hu_moments2):
+    return np.linalg.norm(hu_moments1 - hu_moments2)
 
 
 def dna_to_numeric(sequence):
@@ -36,14 +58,6 @@ def compute_dct_sign_only_hash(sequence):
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
     size_ = 16
-    # if sign_only_sequence.shape[0] >= 64 and sign_only_sequence.shape[1] >= 64:
-    #   size_ = 64
-    # elif sign_only_sequence.shape[0] >= 32 and sign_only_sequence.shape[1] >= 32:
-    #   size_ = 32
-    # elif sign_only_sequence.shape[0] >= 16 and sign_only_sequence.shape[1] >= 16:
-    #   size_ = 16
-    # elif sign_only_sequence.shape[0] >= 8 and sign_only_sequence.shape[1] >= 8:
-    #   size_ = 8
 
     try:
         sign_only_sequence = sign_only_sequence[np.ix_(list(range(size_)),
@@ -53,6 +67,112 @@ def compute_dct_sign_only_hash(sequence):
         print("image too small, skipped")
         return 0
     return hash_value
+
+
+def compute_image_distances(msa_file):
+    if msa_file == "neotrop_reference.fasta":
+        query_file = msa_file.replace("_reference.fasta", "_query_10k.fasta")
+    else:
+        query_file = msa_file.replace("_reference.fasta", "_query.fasta")
+    results = []
+    counter = 0
+    print(msa_file)
+    # Skip already processed
+    potential_path = os.path.join(os.pardir, "data/processed/features",
+                                  msa_file.replace("_reference.fasta", "") + "_msa_im_comp" + ".csv")
+    if os.path.exists(potential_path):
+        print("Skipped: " + msa_file + " already processed")
+        return 0
+
+    for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
+        counter += 1
+        if counter % 50 == 0:
+            print(counter)
+        distances_hu = []
+        distances_lbp = []
+        distances_pca = []
+
+        image_query = encode_dna_as_image(record_query.seq)
+        contours1 = measure.find_contours(image_query, 0.5)
+        hu_moments1 = calculate_hu_moments(contours1[0])
+        lbp_hist_query = lbp_histogram(image_query)
+
+        for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
+            if record_msa.id != record_query.id:
+                image_msa_req = encode_dna_as_image(record_msa.seq)
+                contours2 = measure.find_contours(image_msa_req, 0.5)
+                hu_moments2 = calculate_hu_moments(contours2[0])
+                shape_similarity_score = calculate_shape_similarity(hu_moments1, hu_moments2)
+                distances_hu.append(shape_similarity_score)
+
+                lbp_msa_req = lbp_histogram(image_msa_req)
+                lbp_dist = euclidean(lbp_msa_req, lbp_hist_query)
+                distances_lbp.append(lbp_dist)
+
+                num_components = 10
+                pca1 = PCA(n_components=num_components)
+                pca2 = PCA(n_components=num_components)
+                pca_components1 = pca1.fit_transform(image_query.reshape(1, -1))
+                pca_components2 = pca2.fit_transform(image_msa_req.reshape(1, -1))
+                distance_pca = np.linalg.norm(pca_components1 - pca_components2)
+                distances_pca.append(distance_pca)
+
+        max_dist_hu = max(distances_hu)
+        min_dist_hu = min(distances_hu)
+        avg_dist_hu = sum(distances_hu) / len(distances_hu)
+        std_dist_hu = statistics.stdev(distances_hu)
+
+        sk_dist_hu = skew(distances_hu)
+        kur_dist_hu = kurtosis(distances_hu, fisher=False)
+
+        max_dist_hu = max_dist_hu / len(distances_hu)
+        min_dist_hu = min_dist_hu / len(distances_hu)
+        avg_dist_hu = avg_dist_hu / len(distances_hu)
+        std_dist_hu = std_dist_hu / len(distances_hu)
+
+        max_dist_lbp = max(distances_lbp)
+        min_dist_lbp = min(distances_lbp)
+        avg_dist_lbp = sum(distances_lbp) / len(distances_lbp)
+        std_dist_lbp = statistics.stdev(distances_lbp)
+
+        sk_dist_lbp = skew(distances_lbp)
+        kur_dist_lbp = kurtosis(distances_lbp, fisher=False)
+
+        max_dist_lbp = max_dist_lbp / len(distances_lbp)
+        min_dist_lbp = min_dist_lbp / len(distances_lbp)
+        avg_dist_lbp = avg_dist_lbp / len(distances_lbp)
+        std_dist_lbp = std_dist_lbp / len(distances_lbp)
+
+        max_dist_pca = max(distances_pca)
+        min_dist_pca = min(distances_pca)
+        avg_dist_pca = sum(distances_pca) / len(distances_pca)
+        std_dist_pca = statistics.stdev(distances_pca)
+
+        sk_dist_pca = skew(distances_pca)
+        kur_dist_pca = kurtosis(distances_pca, fisher=False)
+
+        max_dist_pca = max_dist_pca / len(distances_pca)
+        min_dist_pca = min_dist_pca / len(distances_pca)
+        avg_dist_pca = avg_dist_pca / len(distances_pca)
+        std_dist_pca = std_dist_pca / len(distances_pca)
+
+        name = ""
+
+        if msa_file == "neotrop_reference.fasta":
+            name = "neotrop"
+        elif msa_file == "bv_reference.fasta":
+            name = "bv"
+        elif msa_file == "tara_reference.fasta":
+            name = "tara"
+        else:
+            name = msa_file.replace("_msa.fasta", "")
+
+        results.append(
+            (name, record_query.id, max_dist_hu, min_dist_hu, avg_dist_hu, std_dist_hu, sk_dist_hu, kur_dist_hu,
+             sk_dist_lbp, kur_dist_lbp, max_dist_lbp, min_dist_lbp, avg_dist_lbp, std_dist_lbp, sk_dist_pca,
+             kur_dist_pca,
+             max_dist_pca, min_dist_pca, avg_dist_pca, std_dist_pca))
+    return results, msa_file
 
 
 def compute_perceptual_hash_distance(msa_file):
@@ -157,6 +277,25 @@ if __name__ == '__main__':
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    result[1].replace("_reference.fasta", "") + str(
                                        feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
+
+    pool.close()
+    pool.join()
+
+    pool = multiprocessing.Pool()
+    filenames = filenames[:2]
+    results = pool.imap_unordered(compute_image_distances, filenames)
+
+    for result in results:
+        if result != 0:
+            print("Finished processing: " + result[1] + "with query file")
+            df = pd.DataFrame(result[0],
+                              columns=['dataset', 'sampleId', "max_dist_hu", "min_dist_hu", "avg_dist_hu",
+                                       "std_dist_hu", "sk_dist_hu", "kur_dist_hu",
+                                       "sk_dist_lbp", "kur_dist_lbp", "max_dist_lbp", "min_dist_lbp", "avg_dist_lbp",
+                                       "std_dist_lbp", "sk_dist_pca", "kur_dist_pca",
+                                       "max_dist_pca", "min_dist_pca", "avg_dist_pca", "std_dist_pca"])
+            df.to_csv(os.path.join(os.pardir, "data/processed/features",
+                                   result[1].replace("_reference.fasta", "") + "_msa_im_comp.csv"))
 
     pool.close()
     pool.join()
