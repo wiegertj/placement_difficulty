@@ -101,7 +101,7 @@ def compute_image_distances(msa_file):
         image_query = encode_dna_as_image(numeric_query)
         image_query = image_query.astype(np.uint8)
 
-        contours_query, _ = cv2.findContours(image_query, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours_query = cv2.findContours(image_query, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         #contours1 = measure.find_contours(image_query, 0.5)
         #print(contours)
@@ -113,11 +113,11 @@ def compute_image_distances(msa_file):
                 numeric_req = dna_to_numeric(record_msa.seq)
                 image_msa_req = encode_dna_as_image(numeric_req)
                 image_msa_req = image_msa_req.astype(np.uint8)
-                contours_msa_req, _ = cv2.findContours(image_msa_req, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+                contours_msa_req = cv2.findContours(image_msa_req, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
                 #hu_moments2 = calculate_hu_moments(contours[0])
                 #shape_similarity_score = calculate_shape_similarity(hu_moments1, hu_moments2)
-                d1 = cv2.matchShapes(contours_query, contours_msa_req, cv2.CONTOURS_MATCH_I1, 0)
+                d1 = cv2.matchShapes(contours_query[1], contours_msa_req[1], cv2.CONTOURS_MATCH_I1, 0)
 
                 distances_hu.append(d1)
 
