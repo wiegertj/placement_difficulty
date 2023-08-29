@@ -14,11 +14,14 @@ import cv2
 from sklearn.decomposition import PCA
 from skimage.feature import local_binary_pattern
 from scipy.spatial.distance import euclidean
+from sklearn.preprocessing import normalize
+
 
 
 def lbp_histogram(image):
     patterns = local_binary_pattern(image, 8, 1)
     hist, _ = np.histogram(patterns, bins=np.arange(2 ** 8 + 1), density=True)
+    print(hist)
     return hist
 
 
@@ -126,8 +129,8 @@ def compute_image_distances(msa_file):
                 num_components = 10
                 pca1 = PCA(n_components=num_components)
                 pca2 = PCA(n_components=num_components)
-                pca_components1 = pca1.fit_transform(image_query)
-                pca_components2 = pca2.fit_transform(image_msa_req)
+                pca_components1 = pca1.fit_transform(normalize(image_query, axis=1, norm="l1"))
+                pca_components2 = pca2.fit_transform(normalize(image_msa_req, axis=1, norm="l1"))
                 distance_pca = np.linalg.norm(pca_components1 - pca_components2)
                 distances_pca.append(distance_pca)
 
