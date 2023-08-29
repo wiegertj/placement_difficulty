@@ -84,7 +84,7 @@ def compute_image_distances(msa_file):
                                   msa_file.replace("_reference.fasta", "") + "_msa_im_comp" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped: " + msa_file + " already processed")
-        # return 0
+        return 0
 
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
