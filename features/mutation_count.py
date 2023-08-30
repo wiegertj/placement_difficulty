@@ -260,7 +260,7 @@ def main():
         print(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats.csv"))
         if os.path.exists(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats.csv")):
             print("Skipped, already exists " + dataset)
-            #continue
+            continue
 
         print("Dataset: " + dataset)
         reference_msa_path = os.path.join(os.pardir, "data/raw/msa", dataset + "_reference.fasta")
