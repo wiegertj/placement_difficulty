@@ -178,7 +178,7 @@ for loo_dataset in loo_datasets:
         print("Not found Mutation Stats: " + loo_dataset)
 
 loo_subst = pd.concat(loo_resuls_dfs, ignore_index=True)
-loo_resuls_combined = loo_resuls_combined.merge(loo_subst, on=["sampleId", 'dataset'], how='inner')
+#loo_resuls_combined = loo_resuls_combined.merge(loo_subst, on=["sampleId", 'dataset'], how='inner')
 
 # add image comp
 
@@ -198,7 +198,7 @@ for loo_dataset in loo_datasets:
         print("Not found Image Comp Stats: " + loo_dataset)
 
 loo_im_comp = pd.concat(loo_resuls_dfs, ignore_index=True)
-loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'dataset'], how='inner')
+#loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'dataset'], how='inner')
 
 # final dataset
 # combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
@@ -219,7 +219,7 @@ combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 
 
 def sample_rows(group):
-    max_sample_size = min(2100, len(group))
+    max_sample_size = min(2800, len(group))
     return group.sample(max_sample_size)
 
 
