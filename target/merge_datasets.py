@@ -227,7 +227,7 @@ print(combined_df.shape)
 bin_edges = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 combined_df['percentile'] = pd.cut(combined_df['entropy'], bins=bin_edges, labels=False, include_lowest=True)
 uniformly_distributed_df = combined_df.groupby('percentile', group_keys=False).apply(sample_rows)
-print(uniformly_distributed_df["entropy"].mean())
+print(uniformly_distributed_df["entropy"].median())
 uniformly_distributed_df.drop(columns=["percentile"], inplace=True)
-
+print(uniformly_distributed_df.shape)
 uniformly_distributed_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"), index=False)
