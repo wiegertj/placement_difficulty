@@ -170,6 +170,7 @@ def compute_image_distances(msa_file):
                         pca_components1 = pca1.fit_transform(normalize(image_query, axis=1, norm="l1"))
                         pca_components2 = pca2.fit_transform(normalize(image_msa_req, axis=1, norm="l1"))
                         distance_pca = np.linalg.norm(pca_components1 - pca_components2)
+                        print(distances_pca)
                         distances_pca.append(distance_pca)
 
         min_distance = min(distances_hu)
