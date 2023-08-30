@@ -147,12 +147,15 @@ def compute_image_distances(msa_file):
                 distances_lbp.append(lbp_dist)
 
                 num_components = 10
-                pca1 = PCA(n_components=num_components)
-                pca2 = PCA(n_components=num_components)
-                pca_components1 = pca1.fit_transform(normalize(image_query, axis=1, norm="l1"))
-                pca_components2 = pca2.fit_transform(normalize(image_msa_req, axis=1, norm="l1"))
-                distance_pca = np.linalg.norm(pca_components1 - pca_components2)
-                distances_pca.append(distance_pca)
+                try:
+                    pca1 = PCA(n_components=num_components)
+                    pca2 = PCA(n_components=num_components)
+                    pca_components1 = pca1.fit_transform(normalize(image_query, axis=1, norm="l1"))
+                    pca_components2 = pca2.fit_transform(normalize(image_msa_req, axis=1, norm="l1"))
+                    distance_pca = np.linalg.norm(pca_components1 - pca_components2)
+                    distances_pca.append(distance_pca)
+                except ValueError:
+                    print("Value error occured")
 
         min_distance = min(distances_hu)
         max_distance = max(distances_hu)
