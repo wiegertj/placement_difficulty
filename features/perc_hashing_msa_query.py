@@ -294,7 +294,6 @@ if __name__ == '__main__':
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
-    filenames_comp = filenames
 
     if feature_config.INCUDE_TARA_BV_NEO:
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
@@ -307,6 +306,7 @@ if __name__ == '__main__':
 
         #if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
          #   filenames.remove(file)
+    filenames_comp = filenames
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
