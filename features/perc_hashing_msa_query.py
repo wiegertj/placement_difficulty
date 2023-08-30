@@ -305,8 +305,8 @@ if __name__ == '__main__':
             filenames.remove(file)
             continue
 
-        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
-            filenames.remove(file)
+        #if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
+         #   filenames.remove(file)
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
