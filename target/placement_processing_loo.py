@@ -154,7 +154,7 @@ def extract_jplace_info(directory):
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
     if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
         df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), header=False,
-                  mode='a')
+                  mode='a', index=False)
     else:
         df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), header=True)
 
