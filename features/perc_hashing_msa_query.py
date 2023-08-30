@@ -294,6 +294,7 @@ if __name__ == '__main__':
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
+    filenames_comp = filenames
 
     if feature_config.INCUDE_TARA_BV_NEO:
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
@@ -329,7 +330,7 @@ if __name__ == '__main__':
     pool.join()
 
     pool = multiprocessing.Pool(multiprocessing.cpu_count())
-    results = pool.imap_unordered(compute_image_distances, filenames)
+    results = pool.imap_unordered(compute_image_distances, filenames_comp)
 
     for result in results:
         if result != 0:
