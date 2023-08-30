@@ -195,7 +195,7 @@ for loo_dataset in loo_datasets:
         loo_resuls_dfs.append(df)
     except FileNotFoundError:
         print(file_path)
-        print("Not found Mutation Stats: " + loo_dataset)
+        print("Not found Image Comp Stats: " + loo_dataset)
 
 loo_im_comp = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'dataset'], how='inner')
@@ -219,7 +219,7 @@ combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 
 
 def sample_rows(group):
-    max_sample_size = min(3000, len(group))
+    max_sample_size = min(2500, len(group))
     return group.sample(max_sample_size)
 
 
