@@ -224,7 +224,7 @@ def sample_rows(group):
 
 
 print(combined_df.shape)
-bin_edges = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+bin_edges = [0, 0.2, 0.4, 0.6, 0.8, 1]
 combined_df['percentile'] = pd.cut(combined_df['entropy'], bins=bin_edges, labels=False, include_lowest=True)
 uniformly_distributed_df = combined_df.groupby('percentile', group_keys=False).apply(sample_rows)
 print(uniformly_distributed_df["entropy"].median())
