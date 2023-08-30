@@ -219,15 +219,16 @@ combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 
 
 def sample_rows(group):
-    max_sample_size = min(5000, len(group))
+    max_sample_size = min(2500, len(group))
     return group.sample(max_sample_size)
 
 
 print(combined_df.shape)
-bin_edges = [0, 0.2, 0.4, 0.6, 0.8, 1]
+bin_edges = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 combined_df['percentile'] = pd.cut(combined_df['entropy'], bins=bin_edges, labels=False, include_lowest=True)
 uniformly_distributed_df = combined_df.groupby('percentile', group_keys=False).apply(sample_rows)
 print(uniformly_distributed_df["entropy"].median())
+print(uniformly_distributed_df["entropy"].mean())
 uniformly_distributed_df.drop(columns=["percentile"], inplace=True)
 print(uniformly_distributed_df.shape)
 uniformly_distributed_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"), index=False)
