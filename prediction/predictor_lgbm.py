@@ -1,6 +1,8 @@
 import math
 import shap
 import lightgbm as lgb
+from verstack import LGBMTuner
+
 import os
 import numpy as np
 import pandas as pd
@@ -55,37 +57,36 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
-    param_grid = {
-        'boosting_type': ['gbdt'],  # You can add more options
-        'num_leaves': [75, 100],
-        'learning_rate': [0.05],
-        'n_estimators': [850, 1000, 1100]
-    }
+    #param_grid = {
+     #   'boosting_type': ['gbdt'],
+      #  'num_leaves': [75, 100],
+       # 'max_depth': [5, 10],
+       # 'learning_rate': [0.05],
+       # 'n_estimators': [850, 1000],
+       # 'min_child_samples': [20, 50]
+    #}
 
-    param_grid = {
-        'boosting_type': ['gbdt'],
-        'num_leaves': [75, 100],
-        'max_depth': [5, 10],
-        'learning_rate': [0.05],
-        'n_estimators': [850, 1000],
-        'min_child_samples': [20, 50]
-    }
+    tuner = LGBMTuner(metric='rmse')  # <- the only required argument
+    tuner.fit(X, y)
+    # check the optimization log in the console.
+    #pred = tuner.predict(test)
 
-    model = lgb.LGBMRegressor(n_jobs=40)
+    #model = lgb.LGBMRegressor(n_jobs=40)
 
-    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
-    grid_search.fit(X_train, y_train)
+    #grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
+    #grid_search.fit(X_train, y_train)
 
-    best_params = grid_search.best_params_
-    best_model = grid_search.best_estimator_
-    print(best_params)
+    #best_params = grid_search.best_params_
+    #best_model = grid_search.best_estimator_
+    #print(best_params)
 
-    model = best_model
-    y_pred = model.predict(X_test)
+    y_pred = tuner.predict(X_test)
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
+
+    model = tuner.fitted_model
 
     feature_importance = model.feature_importances_
 
