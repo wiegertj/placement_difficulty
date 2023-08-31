@@ -268,7 +268,7 @@ if __name__ == '__main__':
             print("Skipped " + msa_file + " too large")
             continue
 
-        if len(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records) > 150:
+        if len(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta')) > 150:
             print("Skipped " + msa_file + " too large")
             continue
 
