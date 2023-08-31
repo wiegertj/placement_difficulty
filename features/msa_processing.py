@@ -45,7 +45,10 @@ def basic_msa_features(msa_filepath) -> (int, int):
         # Iterate through each sequence in the alignment
         for record in alignment:
             # Add the character at the current column to the set
-            unique_characters.add(record.seq[column])
+            try:
+                unique_characters.add(record.seq[column])
+            except IndexError:
+                print("Index error occured, skipped " + msa_filepath )
 
         # If there's only one unique character in the column, it's invariant
         if len(unique_characters) == 1:
