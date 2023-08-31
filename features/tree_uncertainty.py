@@ -16,10 +16,10 @@ for file in filenames:
 
 # Loop through each tree file
 for tree_filename in filenames:
+    tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
-    bootstrap_supports = []
-
+    bootstrap_filepath =  os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")
     # Output prefix for each tree
     output_prefix = tree_filename.split(".")[0]  # Using the filename as the prefix
 
@@ -38,7 +38,17 @@ for tree_filename in filenames:
 
     print(f"Bootstrap analysis for {tree_filename} completed.")
 
-    # Read the bootstrap support values from the output file
+
+    raxml_command = ["raxml-ng",
+        "--support",
+        f"--tree {tree_filename}",
+        f"--bs-trees {bootstrap_filepath}",
+        "--redo"   ]
+
+
+    subprocess.run(" ".join(raxml_command), shell=True)
+
+# Read the bootstrap support values from the output file
     with open(f"{output_prefix}.raxml.support", "r") as support_file:
         for line in support_file:
             bootstrap_supports.append(float(line.strip()))
