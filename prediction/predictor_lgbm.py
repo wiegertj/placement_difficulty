@@ -57,9 +57,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
-    FS = FeatureSelector(objective='regression', auto=True)
-    selected_feats = FS.fit_transform(X_train, y_train)
-    print(selected_feats)
+    #FS = FeatureSelector(objective='regression', auto=True)
+    #selected_feats = FS.fit_transform(X_train, y_train)
+    #print(selected_feats)
 
     tuner = LGBMTuner(metric='mse', trials=100, visualization=True, verbostity=2)
     tuner.fit(X_train, y_train)
@@ -161,5 +161,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         plt.savefig("waterfall_plot_2500treeholdout.png")
 
 
-light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
+light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
 
