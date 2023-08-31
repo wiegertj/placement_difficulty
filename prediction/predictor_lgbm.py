@@ -81,8 +81,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     tuner.plot_param_importances()
 
     scaler = MinMaxScaler()
-    normalized_importances = scaler.fit_transform(feature_importance.reshape(-1, 1)).flatten()
-    importance_df = pd.DataFrame({'Feature': X_train.columns, 'Importance': normalized_importances})
+    #normalized_importances = scaler.fit_transform(feature_importance.reshape(-1, 1)).flatten()
+    importance_df = pd.DataFrame({'Feature': X_train.columns, 'Importance': feature_importance})
     importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
     plt.figure(figsize=(10, 6))
