@@ -63,12 +63,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     }
 
     param_grid = {
-        'boosting_type': ['gbdt', 'dart', 'goss'],
+        'boosting_type': ['gbdt'],
         'num_leaves': [75, 100],
         'max_depth': [5, 10],
         'learning_rate': [0.05],
         'n_estimators': [850, 1000],
-        'subsample': [0.8, 0.9, 1.0],
         'min_child_samples': [20, 50]
     }
 
