@@ -94,6 +94,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     for feature, importance in zip(X_train.columns, feature_importance):
         print(f'{feature}: {importance}')
 
+    tuner.plot_importances()
+    tuner.plot_intermediate_values()
+    tuner.plot_optimization_history()
+    tuner.plot_param_importances()
+
     scaler = MinMaxScaler()
     normalized_importances = scaler.fit_transform(feature_importance.reshape(-1, 1)).flatten()
     importance_df = pd.DataFrame({'Feature': X_train.columns, 'Importance': normalized_importances})
