@@ -89,6 +89,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     model = tuner.fitted_model
 
     feature_importance = tuner.feature_importances
+    feature_importance = feature_importance.sort_values(by='Importance', ascending=False)
 
     for feature, importance in zip(X_train.columns, feature_importance):
         print(f'{feature}: {importance}')
