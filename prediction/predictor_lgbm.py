@@ -67,7 +67,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     #}
 
     tuner = LGBMTuner(metric='rmse')  # <- the only required argument
-    tuner.fit(X, y)
+    tuner.fit(X_train, y_train)
     # check the optimization log in the console.
     #pred = tuner.predict(test)
 
