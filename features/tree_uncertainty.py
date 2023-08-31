@@ -14,6 +14,11 @@ counter = 0
 for tree_filename in filenames:
     counter += 1
     print(counter)
+    if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
+                                      tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
+        print("Skipped, already found: " + tree_filename)
+        continue
+
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
