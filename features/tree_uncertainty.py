@@ -16,7 +16,7 @@ for file in filenames:
 
 # Loop through each tree file
 for tree_filename in filenames:
-    msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace("newick", "fasta"))
+    msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace("newick", "_reference.fasta"))
     bootstrap_supports = []
 
     # Output prefix for each tree
