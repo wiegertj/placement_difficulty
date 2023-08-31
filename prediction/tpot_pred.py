@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.metrics import mean_squared_error
 
 df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
-df.drop(columns=['sampleId', "lwr_drop", "min_blength", "branch_dist_best_two_placements"], inplace=True)
+df.drop(columns=['sampleId', "lwr_drop", "branch_dist_best_two_placements"], inplace=True)
 
 data_frame = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 dataset_sample = data_frame['verbose_name'].str.replace(".phy", "").sample(40)
