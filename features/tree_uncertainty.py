@@ -17,6 +17,7 @@ for file in filenames:
 # Loop through each tree file
 for tree_filename in filenames:
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
+    model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
     bootstrap_supports = []
 
     # Output prefix for each tree
@@ -26,6 +27,7 @@ for tree_filename in filenames:
     raxml_command = [
         "raxml-ng",
         "--bootstrap",
+        f"--model {}",
         f"--bs-trees {100}",
         f"--msa {msa_filepath}",
         "--redo"
