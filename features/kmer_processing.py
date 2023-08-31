@@ -230,7 +230,7 @@ if __name__ == '__main__':
     for msa_file in filenames:
         print(str(counter_msa) + "/" + str(len(filenames)))
         counter_msa += 1
-        print("started: " + filenames)
+        print("started: " + msa_file)
         if msa_file == "neotrop_reference.fasta":
             query_file = msa_file.replace("reference.fasta", "query_10k.fasta")
         else:
