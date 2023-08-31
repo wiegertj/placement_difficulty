@@ -41,7 +41,7 @@ for tree_filename in filenames:
 
     raxml_command = ["raxml-ng",
         "--support",
-        f"--tree {tree_filename}",
+        f"--tree {tree_path}",
         f"--bs-trees {bootstrap_filepath}",
         "--redo"   ]
 
