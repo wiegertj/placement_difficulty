@@ -66,7 +66,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
        # 'min_child_samples': [20, 50]
     #}
 
-    tuner = LGBMTuner(metric='mse')  # <- the only required argument
+    tuner = LGBMTuner(metric='mse', trials=200, visualization=True, verbostity=2)  # <- the only required argument
     tuner.fit(X_train, y_train)
     # check the optimization log in the console.
     #pred = tuner.predict(test)
@@ -88,7 +88,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
 
     model = tuner.fitted_model
 
-    feature_importance = model.feature_importances_
+    feature_importance = tuner.feature_importances
 
     for feature, importance in zip(X_train.columns, feature_importance):
         print(f'{feature}: {importance}')
