@@ -32,7 +32,29 @@ def basic_msa_features(msa_filepath) -> (int, int):
     alignment = AlignIO.read(msa_filepath, 'fasta')
     num_sequences = len(alignment)
     seq_length = len(alignment[0].seq)
-    return num_sequences, seq_length
+    site_taxa_ratio = seq_length / num_sequences
+
+    # Initialize a counter for invariant sites
+    invariant_count = 0
+
+    # Iterate through each column (position) in the alignment
+    for column in range(num_sequences):
+        # Create a set to store unique characters in the column
+        unique_characters = set()
+
+        # Iterate through each sequence in the alignment
+        for record in alignment:
+            # Add the character at the current column to the set
+            unique_characters.add(record.seq[column])
+
+        # If there's only one unique character in the column, it's invariant
+        if len(unique_characters) == 1:
+            invariant_count += 1
+
+    # Calculate the percentage of invariant sites
+    percentage_invariant_sites = (invariant_count / num_sequences)
+
+    return num_sequences, seq_length, site_taxa_ratio, percentage_invariant_sites
 
 
 def gap_statistics(msa_filepath) -> (float, float):
@@ -218,7 +240,7 @@ if __name__ == '__main__':
         complex_xObs_msa, randex_0_msa, randex_1_msa, randex_2_msa, randex_3_msa, randex_4_msa, randex_5_msa, randex_6_msa, randex_7_msa, run_pi, run_vObs, run_one_p, run_one_x0bs, run_one_mean, \
         run_one_std_msa, run_one_min_msa, run_one_max_msa = compute_entropy(
             filepath)
-        num_seq, seq_length = basic_msa_features(filepath)
+        num_seq, seq_length, site_taxa_ratio, percentage_invariant_sites = basic_msa_features(filepath)
 
         name = ""
 
@@ -238,7 +260,7 @@ if __name__ == '__main__':
              cumSum_mode_msa, spec_p_msa, spec_n1_msa, spec_d_msa, matrix_p_msa, complex_p_msa, complex_xObs_msa,
              randex_0_msa, randex_1_msa, randex_2_msa, randex_3_msa, randex_4_msa, randex_5_msa,
              randex_6_msa, randex_7_msa, run_pi, run_vObs, run_one_p, run_one_x0bs, run_one_mean, run_one_std_msa,
-             run_one_min_msa, run_one_max_msa))
+             run_one_min_msa, run_one_max_msa, site_taxa_ratio, percentage_invariant_sites))
     df = pd.DataFrame(results, columns=["dataset", "avg_gaps", "std_gaps", "avg_entropy", "std_entropy",
                                         "max_entropy", "skw_entropy", "kurtosis_entropy", "num_seq", "seq_length",
                                         "g_fraction", "c_fraction",
@@ -247,5 +269,5 @@ if __name__ == '__main__':
                                         "spec_n1_msa", "spec_d_msa", "matrix_p_msa", "complex_p_msa", "complex_xObs_msa", "randex_0_msa", "randex_1_msa", "randex_2_msa",
                                         "randex_3_msa", "randex_4_msa", "randex_5_msa", "randex_6_msa", "randex_7_msa",
                                         "run_pi", "run_vObs", "run_one_p", "run_one_x0bs", "run_one_mean",
-                                        "run_one_std_msa", "run_one_min_msa", "run_one_max_msa"])
+                                        "run_one_std_msa", "run_one_min_msa", "run_one_max_msa", "site_taxa_ratio", "percentage_invariant_sites"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"), index=False)
