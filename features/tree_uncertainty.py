@@ -27,7 +27,7 @@ for tree_filename in filenames:
     raxml_command = [
         "raxml-ng",
         "--bootstrap",
-        f"--model {}",
+        f"--model {model_path}",
         f"--bs-trees {100}",
         f"--msa {msa_filepath}",
         "--redo"
