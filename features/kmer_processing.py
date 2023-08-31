@@ -220,6 +220,7 @@ if __name__ == '__main__':
     filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
     filenames.remove("11226_0_reference.fasta")
     filenames.remove("15849_4_reference.fasta")
+    filenames.remove("15849_1_reference.fasta")
 
     if feature_config.INCUDE_TARA_BV_NEO:
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
@@ -236,6 +237,8 @@ if __name__ == '__main__':
             query_file = msa_file.replace("reference.fasta", "query_10k.fasta")
         else:
             query_file = msa_file.replace("reference.fasta", "query.fasta")
+
+
 
         # Skip already processed
         potential_path = os.path.join(os.pardir, "data/processed/features",
