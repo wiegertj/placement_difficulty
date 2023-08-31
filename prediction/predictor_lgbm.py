@@ -62,18 +62,17 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         'n_estimators': [850, 1000, 1100]
     }
 
-    #param_grid = {
-     #   'boosting_type': ['gbdt', 'dart', 'goss'],
-      #  'num_leaves': [75, 100],
-       # 'max_depth': [-1, 5, 10],
-    #    'learning_rate': [0.05],
-     #   'n_estimators': [850, 1000],
-      #  'subsample': [0.8, 0.9, 1.0],
-       # 'colsample_bytree': [0.8, 0.9, 1.0],
-      #  'reg_alpha': [0, 0.1, 0.5],
-       # 'reg_lambda': [0, 0.1, 0.5],
-        #'min_child_samples': [20, 50, 100]
-    #}
+    param_grid = {
+        'boosting_type': ['gbdt', 'dart', 'goss'],
+        'num_leaves': [75, 100],
+        'max_depth': [5, 10],
+        'learning_rate': [0.05],
+        'n_estimators': [850, 1000],
+        'subsample': [0.8, 0.9, 1.0],
+        'reg_alpha': [0, 0.1, 0.5],
+        'reg_lambda': [0, 0.1, 0.5],
+        'min_child_samples': [20, 50]
+    }
 
     model = lgb.LGBMRegressor(n_jobs=40)
 
