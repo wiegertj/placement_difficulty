@@ -2,7 +2,6 @@ import math
 import shap
 import lightgbm as lgb
 from verstack import LGBMTuner
-
 import os
 import numpy as np
 import pandas as pd
@@ -57,29 +56,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
-    #param_grid = {
-     #   'boosting_type': ['gbdt'],
-      #  'num_leaves': [75, 100],
-       # 'max_depth': [5, 10],
-       # 'learning_rate': [0.05],
-       # 'n_estimators': [850, 1000],
-       # 'min_child_samples': [20, 50]
-    #}
-
-    tuner = LGBMTuner(metric='mse', trials=100, visualization=True, verbostity=2)  # <- the only required argument
+    tuner = LGBMTuner(metric='mse', trials=100, visualization=True, verbostity=2)
     tuner.fit(X_train, y_train)
-    # check the optimization log in the console.
-    #pred = tuner.predict(test)
-
-    #model = lgb.LGBMRegressor(n_jobs=40)
-
-    #grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
-    #grid_search.fit(X_train, y_train)
-
-    #best_params = grid_search.best_params_
-    #best_model = grid_search.best_estimator_
-    #print(best_params)
-
     y_pred = tuner.predict(X_test)
 
     mse = mean_squared_error(y_test, y_pred)
@@ -87,9 +65,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     print(f"Root Mean Squared Error on test set: {rmse}")
 
     model = tuner.fitted_model
-
     feature_importance = tuner.feature_importances
-    feature_importance = feature_importance.sort_values(by='Importance', ascending=False)
 
     for feature, importance in zip(X_train.columns, feature_importance):
         print(f'{feature}: {importance}')
