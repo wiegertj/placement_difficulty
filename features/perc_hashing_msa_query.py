@@ -26,8 +26,8 @@ def generate_8mers(binary_string):
     eight_mers = []
 
     # Iterate through the binary string to generate 8-mers
-    for i in range(len(binary_string) - 11):
-        eight_mer = binary_string[i:i + 12]
+    for i in range(len(binary_string) - 13):
+        eight_mer = binary_string[i:i + 14]
         eight_mers.append(eight_mer)
 
     return eight_mers
@@ -301,7 +301,7 @@ def compute_perceptual_hash_distance(msa_file):
                     # print(lcs)
                     distances.append(distance)
                     kmer_sim = fraction_shared_8mers(hash_msa, hash_query)
-                    print(kmer_sim)
+                    #print(kmer_sim)
                     distances_cosine.append(kmer_sim)
                     lcs_values.append(lcs)
                 else:
