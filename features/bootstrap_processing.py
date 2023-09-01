@@ -27,7 +27,6 @@ def calculate_support_statistics(support_file_path):
     for node in phylo_tree.traverse():
         if node.support is not None:
             support_values.append(node.support)
-            print(node.support)
 
     min_support = np.min(support_values)
     max_support = np.max(support_values)
@@ -64,6 +63,9 @@ def compute_rf_distance_statistics(support_file_path, reference_tree_path):
     if kurtosis_rf == None:
         kurtosis_rf = 0
 
+    print(skewness_rf)
+    print(kurtosis_rf)
+
     return min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf
 
 
@@ -92,7 +94,7 @@ for file in filenames:
          skewness_rf, kurtosis_rf))
 
 df = pd.DataFrame(results,
-                  columns=["dataset", "min_support", "max_support", "mean_support", "std_support", "skewness", "kurt",
+                  columns=["dataset", "min_support", "max_support", "mean_support", "std_support", "skewness_support", "kurt_support",
                            "min_rf", "max_rf", "mean_rf", "std_dev_rf", "skewness_rf", "kurtosis_rf"
                            ])
 df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
