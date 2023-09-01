@@ -83,6 +83,7 @@ for file in filenames:
 
     if not os.path.exists(bootstrap_file):
         print("Skipped, no bootstrap found: " + file)
+        continue
 
     min_support, max_support, mean_support, std_support, skewness, kurt = calculate_support_statistics(bootstrap_file)
     min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_file, tree_path)
