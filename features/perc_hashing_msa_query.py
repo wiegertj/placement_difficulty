@@ -115,23 +115,17 @@ def compute_image_distances(msa_file):
                 numeric_req = dna_to_numeric(record_msa.seq)
                 image_msa_req = encode_dna_as_image(numeric_req)
                 image_msa_req = image_msa_req.astype(np.uint8)
-                #print(image_msa_req)
+                # print(image_msa_req)
 
-
-                #ret, thresh = cv2.threshold(image_msa_req, 1, 255, 0)
-                #ret, thresh2 = cv2.threshold(image_query, 1, 255, 0)
+                # ret, thresh = cv2.threshold(image_msa_req, 1, 255, 0)
+                # ret, thresh2 = cv2.threshold(image_query, 1, 255, 0)
                 image_msa_req_hu = image_msa_req
                 image_msa_req_hu[image_msa_req_hu != 0] = 1
-
-
-
 
                 contours, hierarchy = cv2.findContours(image_query_hu, 2, 1)
                 cnt1 = contours[0]
                 contours, hierarchy = cv2.findContours(image_msa_req_hu, 2, 1)
                 cnt2 = contours[0]
-
-
 
                 # Compute Hu moments for the first contour
                 moments1 = cv2.moments(cnt1)
@@ -141,10 +135,8 @@ def compute_image_distances(msa_file):
                 moments2 = cv2.moments(cnt2)
                 hu_moments2 = cv2.HuMoments(moments2)
 
-
-
-                distances_hu.append(np.sqrt(np.sum((hu_moments1 - hu_moments2)**2))
-)
+                distances_hu.append(np.sqrt(np.sum((hu_moments1 - hu_moments2) ** 2))
+                                    )
 
                 lbp_msa_req = lbp_histogram(image_msa_req)
                 lbp_dist = euclidean(lbp_msa_req, lbp_hist_query)
@@ -183,11 +175,10 @@ def compute_image_distances(msa_file):
         max_distance = max(distances_hu)
 
         # Normalize distances using Min-Max scaling
-        #print(distances_hu)
-        #distances_hu = [(d - min_distance) / (max_distance - min_distance) for d in distances_hu]
+        # print(distances_hu)
+        # distances_hu = [(d - min_distance) / (max_distance - min_distance) for d in distances_hu]
 
-        #print(distances_hu)
-
+        # print(distances_hu)
 
         max_dist_hu = max(distances_hu)
         min_dist_hu = min(distances_hu)
@@ -268,7 +259,7 @@ def compute_perceptual_hash_distance(msa_file):
             print(counter)
         distances = []
         distances_cosine = []
-        lcs_values =  []
+        lcs_values = []
         hash_query = compute_dct_sign_only_hash(record_query.seq)
 
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
@@ -278,6 +269,7 @@ def compute_perceptual_hash_distance(msa_file):
                     distance = compute_hamming_distance(hash_msa, hash_query)
                     distance_cosine = cosine_similarity(hash_msa, hash_query)
                     lcs = pylcs.lcs_sequence_length(hash_msa, hash_query)
+                    print(lcs)
                     distances.append(distance)
                     distances_cosine.append(distance_cosine)
                     lcs_values.append(lcs)
@@ -335,7 +327,8 @@ def compute_perceptual_hash_distance(msa_file):
             name = msa_file.replace("_reference.fasta", "")
 
         results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham,
-                        sk_ham_cos, kur_ham_cos, rel_max_ham_cos, rel_min_ham_cos, rel_avg_ham_cos, rel_std_ham_cos, sk_ham_lcs,
+                        sk_ham_cos, kur_ham_cos, rel_max_ham_cos, rel_min_ham_cos, rel_avg_ham_cos, rel_std_ham_cos,
+                        sk_ham_lcs,
                         kur_ham_lcs, rel_max_ham_lcs, rel_min_ham_lcs, rel_avg_ham_lcs, rel_std_ham_lcs))
     return results, msa_file
 
@@ -363,8 +356,8 @@ if __name__ == '__main__':
             filenames.remove(file)
             continue
 
-        #if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
-         #   filenames.remove(file)
+        # if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
+        #   filenames.remove(file)
     filenames_comp = filenames
 
     if multiprocessing.current_process().name == 'MainProcess':
@@ -380,7 +373,10 @@ if __name__ == '__main__':
                               columns=['dataset', 'sampleId', 'min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
                                        'avg_perc_hash_ham_dist',
                                        'std_perc_hash_ham_dist', 'skewness_perc_hash_ham_dist',
-                                       'kurtosis_perc_hash_ham_dist', "sk_ham_cos", "kur_ham_cos", "rel_max_ham_cos", "rel_min_ham_cos", "rel_avg_ham_cos", "rel_std_ham_cos", "sk_ham_lcs", "kur_ham_lcs", "rel_max_ham_lcs", "rel_min_ham_lcs", "rel_avg_ham_lcs", "rel_std_ham_lcs"
+                                       'kurtosis_perc_hash_ham_dist', "sk_ham_cos", "kur_ham_cos", "rel_max_ham_cos",
+                                       "rel_min_ham_cos", "rel_avg_ham_cos", "rel_std_ham_cos", "sk_ham_lcs",
+                                       "kur_ham_lcs", "rel_max_ham_lcs", "rel_min_ham_lcs", "rel_avg_ham_lcs",
+                                       "rel_std_ham_lcs"
                                        ])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    result[1].replace("_reference.fasta", "") + str(
