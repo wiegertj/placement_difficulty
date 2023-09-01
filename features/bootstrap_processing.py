@@ -56,8 +56,9 @@ def compute_rf_distance_statistics(support_file_path, reference_tree_path):
     with open(support_file_path, "r") as support_file:
         for line in support_file:
             bootstrap_tree = Tree(line.strip())
-            rf_distance = reference_tree.robinson_foulds(bootstrap_tree)[0]
-            rf_distances.append(rf_distance)
+            results_distance = reference_tree.compare(bootstrap_tree, unrooted=True)
+            #rf_distance = reference_tree.robinson_foulds(bootstrap_tree, unrooted_trees=True)[0]
+            rf_distances.append(results_distance["norm_rf"])
 
     min_rf = min(rf_distances)
     max_rf = max(rf_distances)
