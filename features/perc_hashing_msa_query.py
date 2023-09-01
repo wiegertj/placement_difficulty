@@ -108,7 +108,7 @@ def compute_dct_sign_only_hash(sequence):
 
        # Flatten the binary matrix into a binary string
        hash_value = "".join([str(int(bit)) for bit in binary_sequence.flatten()])
-       print(len(hash_value))
+       #print(len(hash_value))
     except IndexError:
         print("image too small, skipped")
         return 0
