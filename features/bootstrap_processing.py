@@ -55,7 +55,7 @@ def compute_rf_distance_statistics(support_file_path, reference_tree_path):
     print(support_file_path)
     with open(support_file_path, "r") as support_file:
         for line in support_file:
-            print(line)
+            #print(line)
             bootstrap_tree = Tree(line.strip())
             results_distance = reference_tree.compare(bootstrap_tree, unrooted=True)
             print(results_distance)
