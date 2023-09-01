@@ -99,7 +99,6 @@ def compute_dct_sign_only_hash(sequence):
        # sign_only_sequence = sign_only_sequence[np.ix_(list(range(size_)),
         #                                               list(range(size_)))]
         #hash_value = "".join([str(int(sign)) for sign in sign_only_sequence.flatten()])
-       print(sign_only_sequence)
 
        sign_only_sequence[sign_only_sequence >= 0] = 1
        sign_only_sequence[sign_only_sequence < 0] = 0
@@ -109,7 +108,6 @@ def compute_dct_sign_only_hash(sequence):
 
        # Flatten the binary matrix into a binary string
        hash_value = "".join([str(int(bit)) for bit in binary_sequence.flatten()])
-       print(hash_value)
        #print(len(hash_value))
     except IndexError:
         print("image too small, skipped")
