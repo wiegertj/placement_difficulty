@@ -45,7 +45,7 @@ def compute_rf_distance_statistics(support_file_path, reference_tree_path):
     print(support_file_path)
     with open(support_file_path, "r") as support_file:
         for line in support_file:
-            # print(line)
+            print("line")
             bootstrap_tree = Tree(line.strip())
             results_distance = reference_tree.compare(bootstrap_tree, unrooted=True)
             rf_distances.append(results_distance["norm_rf"])
@@ -58,10 +58,10 @@ def compute_rf_distance_statistics(support_file_path, reference_tree_path):
     skewness_rf = skew(rf_distances)
     kurtosis_rf = kurtosis(rf_distances)
 
-    if skewness_rf == np.NaN:
+    if skewness_rf == np.nan:
         skewness_rf = 0
 
-    if kurtosis_rf == np.NaN:
+    if kurtosis_rf == np.nan:
         kurtosis_rf = 0
 
     print(skewness_rf)
