@@ -42,8 +42,8 @@ def calculate_support_statistics(support_file_path):
 def compute_rf_distance_statistics(bootstrap_path, reference_tree_path):
     reference_tree = Tree(reference_tree_path)
     rf_distances = []
-    print(support_file_path)
-    with open(support_file_path, "r") as support_file:
+    print(bootstrap_path)
+    with open(bootstrap_path, "r") as support_file:
         for line in support_file:
             print("line")
             bootstrap_tree = Tree(line.strip())
