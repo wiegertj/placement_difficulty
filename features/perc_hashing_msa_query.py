@@ -341,10 +341,10 @@ def compute_perceptual_hash_distance(msa_file):
         sk_ham_lcs = skew(lcs_values)
         kur_ham_lcs = kurtosis(lcs_values, fisher=False)
 
-        rel_max_ham_lcs = max_ham_lcs / len(lcs_values)
-        rel_min_ham_lcs = min_ham_lcs / len(lcs_values)
-        rel_avg_ham_lcs = avg_ham_lcs / len(lcs_values)
-        rel_std_ham_lcs = std_ham_lcs / len(lcs_values)
+        rel_max_ham_lcs = max_ham_lcs / 256
+        rel_min_ham_lcs = min_ham_lcs / 256
+        rel_avg_ham_lcs = avg_ham_lcs / 256
+        rel_std_ham_lcs = std_ham_lcs / 256
 
         name = ""
 
