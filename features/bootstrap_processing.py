@@ -60,6 +60,8 @@ def compute_rf_distance_statistics(support_file_path, reference_tree_path):
             #rf_distance = reference_tree.robinson_foulds(bootstrap_tree, unrooted_trees=True)[0]
             rf_distances.append(results_distance["norm_rf"])
 
+    print(rf_distances)
+
     min_rf = min(rf_distances)
     max_rf = max(rf_distances)
     mean_rf = np.mean(rf_distances)
@@ -67,7 +69,7 @@ def compute_rf_distance_statistics(support_file_path, reference_tree_path):
     skewness_rf = skew(rf_distances)
     kurtosis_rf = kurtosis(rf_distances)
 
-    return min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf,
+    return min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf
 
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
