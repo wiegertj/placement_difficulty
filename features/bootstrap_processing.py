@@ -78,10 +78,10 @@ counter = 0
 for file in filenames:
     counter +=1
     print(counter)
-    bootstrap_file = pd.read_csv(os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support")
+    bootstrap_file = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
 
-    if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"):
+    if not os.path.exists(bootstrap_file):
         print("Skipped, no bootstrap found: " + file)
         continue
 
