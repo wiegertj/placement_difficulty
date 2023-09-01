@@ -298,7 +298,7 @@ def compute_perceptual_hash_distance(msa_file):
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
                     lcs = pylcs.lcs_sequence_length(hash_msa, hash_query)
-                    # print(lcs)
+                    print(lcs)
                     distances.append(distance)
                     kmer_sim = fraction_shared_8mers(hash_msa, hash_query)
                     #print(kmer_sim)
