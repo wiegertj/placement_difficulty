@@ -20,6 +20,7 @@ tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "
                             usecols=lambda column: column != 'Unnamed: 0')
 tree_features_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index_col=False,
                                         usecols=lambda column: column != 'Unnamed: 0')
+tree_features_uncertainty["dataset"] = tree_features_uncertainty["dataset"].str.replace(".newick", "")
 tree_features = tree_features.merge(tree_features_uncertainty, on="dataset", how="inner")
 print("Tree feature count after diff merging" + str(tree_features.shape))
 print(tree_features.tail(10))
