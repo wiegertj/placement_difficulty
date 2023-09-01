@@ -27,16 +27,7 @@ def calculate_support_statistics(support_file_path):
     for node in phylo_tree.traverse():
         if node.support is not None:
             support_values.append(node.support)
-
-    # Calculate statistics
-    if len(support_values) == 0:
-        return {
-            "min_support": None,
-            "max_support": None,
-            "mean_support": None,
-            "skewness": None,
-            "kurtosis": None,
-        }
+            print(node.support)
 
     min_support = np.min(support_values)
     max_support = np.max(support_values)
@@ -55,14 +46,10 @@ def compute_rf_distance_statistics(support_file_path, reference_tree_path):
     print(support_file_path)
     with open(support_file_path, "r") as support_file:
         for line in support_file:
-            #print(line)
+            # print(line)
             bootstrap_tree = Tree(line.strip())
             results_distance = reference_tree.compare(bootstrap_tree, unrooted=True)
-            print(results_distance)
-            #rf_distance = reference_tree.robinson_foulds(bootstrap_tree, unrooted_trees=True)[0]
             rf_distances.append(results_distance["norm_rf"])
-
-    print(rf_distances)
 
     min_rf = min(rf_distances)
     max_rf = max(rf_distances)
@@ -70,6 +57,12 @@ def compute_rf_distance_statistics(support_file_path, reference_tree_path):
     std_dev_rf = np.std(rf_distances)
     skewness_rf = skew(rf_distances)
     kurtosis_rf = kurtosis(rf_distances)
+
+    if skewness_rf == None:
+        skewness_rf = 0
+
+    if kurtosis_rf == None:
+        kurtosis_rf = 0
 
     return min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf
 
@@ -81,7 +74,7 @@ results = []
 counter = 0
 
 for file in filenames:
-    counter +=1
+    counter += 1
     print(counter)
     bootstrap_file = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
@@ -91,11 +84,15 @@ for file in filenames:
         continue
 
     min_support, max_support, mean_support, std_support, skewness, kurt = calculate_support_statistics(bootstrap_file)
-    min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_file, tree_path)
+    min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_file,
+                                                                                                   tree_path)
 
     results.append(
-        (file, min_support, max_support, mean_support, std_support, skewness, kurt, min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf))
+        (file, min_support, max_support, mean_support, std_support, skewness, kurt, min_rf, max_rf, mean_rf, std_dev_rf,
+         skewness_rf, kurtosis_rf))
 
-df = pd.DataFrame(results, columns=["dataset", "min_support", "max_support", "mean_support", "std_support", "skewness", "kurt", "min_rf", "max_rf", "mean_rf", "std_dev_rf", "skewness_rf", "kurtosis_rf"
-                                       ])
+df = pd.DataFrame(results,
+                  columns=["dataset", "min_support", "max_support", "mean_support", "std_support", "skewness", "kurt",
+                           "min_rf", "max_rf", "mean_rf", "std_dev_rf", "skewness_rf", "kurtosis_rf"
+                           ])
 df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
