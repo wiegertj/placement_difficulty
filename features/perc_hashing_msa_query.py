@@ -21,6 +21,36 @@ from scipy.spatial.distance import euclidean
 from sklearn.preprocessing import normalize
 
 
+def generate_8mers(binary_string):
+    # Initialize an empty list to store 8-mers
+    eight_mers = []
+
+    # Iterate through the binary string to generate 8-mers
+    for i in range(len(binary_string) - 7):
+        eight_mer = binary_string[i:i + 8]
+        eight_mers.append(eight_mer)
+
+    return eight_mers
+
+
+def fraction_shared_8mers(binary_string1, binary_string2):
+    # Generate 8-mers from both binary strings
+    eight_mers1 = generate_8mers(binary_string1)
+    eight_mers2 = generate_8mers(binary_string2)
+
+    # Convert the lists of 8-mers to sets for efficient intersection
+    set_8mers1 = set(eight_mers1)
+    set_8mers2 = set(eight_mers2)
+
+    # Calculate the number of shared 8-mers
+    shared_8mers = set_8mers1.intersection(set_8mers2)
+
+    # Compute the fraction of shared 8-mers
+    fraction_shared = len(shared_8mers) / (len(set_8mers1) + len(set_8mers2) - len(shared_8mers))
+
+    return fraction_shared
+
+
 def lbp_histogram(image):
     patterns = local_binary_pattern(image, 8, 1)
     hist, _ = np.histogram(patterns, bins=np.arange(2 ** 8 + 1), density=True)
@@ -267,12 +297,12 @@ def compute_perceptual_hash_distance(msa_file):
                 hash_msa = compute_dct_sign_only_hash(record_msa.seq)
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
-                    distance_cosine = cosine_similarity(np.array(list(map(int, hash_msa.replace("-", "0")))).reshape(1, -1),
-                                                        np.array(list(map(int, hash_query.replace("-", "0")))).reshape(1, -1))
                     lcs = pylcs.lcs_sequence_length(hash_msa, hash_query)
-                    #print(lcs)
+                    # print(lcs)
                     distances.append(distance)
-                    distances_cosine.append(distance_cosine)
+                    kmer_sim = fraction_shared_8mers(hash_msa, hash_query)
+                    print(kmer_sim)
+                    distances_cosine.append(kmer_sim)
                     lcs_values.append(lcs)
                 else:
                     return 0
@@ -298,10 +328,10 @@ def compute_perceptual_hash_distance(msa_file):
         sk_ham_cos = skew(distances_cosine)
         kur_ham_cos = kurtosis(distances_cosine, fisher=False)
 
-        rel_max_ham_cos = max_ham_cos / len(distances_cosine)
-        rel_min_ham_cos = min_ham_cos / len(distances_cosine)
-        rel_avg_ham_cos = avg_ham_cos / len(distances_cosine)
-        rel_std_ham_cos = std_ham_cos / len(distances_cosine)
+        rel_max_ham_cos = max_ham_cos
+        rel_min_ham_cos = min_ham_cos
+        rel_avg_ham_cos = avg_ham_cos
+        rel_std_ham_cos = std_ham_cos
 
         max_ham_lcs = max(lcs_values)
         min_ham_lcs = min(lcs_values)
