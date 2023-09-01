@@ -78,7 +78,7 @@ for file in filenames:
     support_path = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
 
-    if not os.path.exists(support_path):
+    if not os.path.exists(bootstrap_path):
         print("Skipped, no bootstrap found: " + file)
         continue
 
