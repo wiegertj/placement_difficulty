@@ -96,9 +96,19 @@ def compute_dct_sign_only_hash(sequence):
     size_ = 16
 
     try:
-        sign_only_sequence = sign_only_sequence[np.ix_(list(range(size_)),
-                                                       list(range(size_)))]
-        hash_value = "".join([str(int(sign)) for sign in sign_only_sequence.flatten()])
+       # sign_only_sequence = sign_only_sequence[np.ix_(list(range(size_)),
+        #                                               list(range(size_)))]
+        #hash_value = "".join([str(int(sign)) for sign in sign_only_sequence.flatten()])
+
+       sign_only_sequence[sign_only_sequence >= 0] = 1
+       sign_only_sequence[sign_only_sequence < 0] = 0
+
+       # Resize the binary matrix to the desired size (e.g., 16x16)
+       binary_sequence = sign_only_sequence[:size_, :size_]
+
+       # Flatten the binary matrix into a binary string
+       hash_value = "".join([str(int(bit)) for bit in binary_sequence.flatten()])
+       print(len(hash_value))
     except IndexError:
         print("image too small, skipped")
         return 0
