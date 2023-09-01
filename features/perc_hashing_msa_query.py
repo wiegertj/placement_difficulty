@@ -1,13 +1,17 @@
 import multiprocessing
 import statistics
+import sys
 import types
 import numpy as np
+import pylcs
+
 import pandas as pd
 import os
 from Bio import SeqIO
 from scipy.fftpack import dct
 from collections import defaultdict
 from scipy.stats import kurtosis, skew
+from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from skimage import measure
 import cv2
@@ -253,7 +257,7 @@ def compute_perceptual_hash_distance(msa_file):
     print(msa_file)
     # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
-                                  msa_file.replace("_reference.fasta", "") + "16_msa_perc_hash_dist" + ".csv")
+                                  msa_file.replace("_reference.fasta", "") + "16p_msa_perc_hash_dist" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped: " + msa_file + " already processed")
         return 0
@@ -263,6 +267,8 @@ def compute_perceptual_hash_distance(msa_file):
         if counter % 50 == 0:
             print(counter)
         distances = []
+        distances_cosine = []
+        lcs_values =  []
         hash_query = compute_dct_sign_only_hash(record_query.seq)
 
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
@@ -270,7 +276,11 @@ def compute_perceptual_hash_distance(msa_file):
                 hash_msa = compute_dct_sign_only_hash(record_msa.seq)
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
+                    distance_cosine = cosine_similarity(hash_msa, hash_query)
+                    lcs = pylcs.lcs_sequence_length(hash_msa, hash_query)
                     distances.append(distance)
+                    distances_cosine.append(distance_cosine)
+                    lcs_values.append(lcs)
                 else:
                     return 0
 
@@ -287,6 +297,32 @@ def compute_perceptual_hash_distance(msa_file):
         rel_avg_ham = avg_ham / len(hash_query)
         rel_std_ham = std_ham / len(hash_query)
 
+        max_ham_cos = max(distances_cosine)
+        min_ham_cos = min(distances_cosine)
+        avg_ham_cos = sum(distances_cosine) / len(distances_cosine)
+        std_ham_cos = statistics.stdev(distances_cosine)
+
+        sk_ham_cos = skew(distances_cosine)
+        kur_ham_cos = kurtosis(distances_cosine, fisher=False)
+
+        rel_max_ham_cos = max_ham_cos / len(distances_cosine)
+        rel_min_ham_cos = min_ham_cos / len(distances_cosine)
+        rel_avg_ham_cos = avg_ham_cos / len(distances_cosine)
+        rel_std_ham_cos = std_ham_cos / len(distances_cosine)
+
+        max_ham_lcs = max(lcs_values)
+        min_ham_lcs = min(lcs_values)
+        avg_ham_lcs = sum(lcs_values) / len(lcs_values)
+        std_ham_lcs = statistics.stdev(lcs_values)
+
+        sk_ham_lcs = skew(lcs_values)
+        kur_ham_lcs = kurtosis(lcs_values, fisher=False)
+
+        rel_max_ham_lcs = max_ham_lcs / len(lcs_values)
+        rel_min_ham_lcs = min_ham_lcs / len(lcs_values)
+        rel_avg_ham_lcs = avg_ham_lcs / len(lcs_values)
+        rel_std_ham_lcs = std_ham_lcs / len(lcs_values)
+
         name = ""
 
         if msa_file == "neotrop_reference.fasta":
@@ -298,7 +334,9 @@ def compute_perceptual_hash_distance(msa_file):
         else:
             name = msa_file.replace("_reference.fasta", "")
 
-        results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham))
+        results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham,
+                        sk_ham_cos, kur_ham_cos, rel_max_ham_cos, rel_min_ham_cos, rel_avg_ham_cos, rel_std_ham_cos, sk_ham_lcs,
+                        kur_ham_lcs, rel_max_ham_lcs, rel_min_ham_lcs, rel_avg_ham_lcs, rel_std_ham_lcs))
     return results, msa_file
 
 
@@ -342,13 +380,16 @@ if __name__ == '__main__':
                               columns=['dataset', 'sampleId', 'min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
                                        'avg_perc_hash_ham_dist',
                                        'std_perc_hash_ham_dist', 'skewness_perc_hash_ham_dist',
-                                       'kurtosis_perc_hash_ham_dist'])
+                                       'kurtosis_perc_hash_ham_dist', "sk_ham_cos", "kur_ham_cos", "rel_max_ham_cos", "rel_min_ham_cos", "rel_avg_ham_cos", "rel_std_ham_cos", "sk_ham_lcs", "kur_ham_lcs", "rel_max_ham_lcs", "rel_min_ham_lcs", "rel_avg_ham_lcs", "rel_std_ham_lcs"
+                                       ])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    result[1].replace("_reference.fasta", "") + str(
-                                       feature_config.SIGN_ONLY_MATRIX_SIZE) + "_msa_perc_hash_dist.csv"))
+                                       feature_config.SIGN_ONLY_MATRIX_SIZE) + "p_msa_perc_hash_dist.csv"))
 
     pool.close()
     pool.join()
+
+    sys.exit()
 
     pool = multiprocessing.Pool(multiprocessing.cpu_count())
     results = pool.imap_unordered(compute_image_distances, filenames_comp)
