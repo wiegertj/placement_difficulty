@@ -81,7 +81,7 @@ for file in filenames:
     bootstrap_file = pd.read_csv(os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support")
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
 
-    if not os.path.exists(bootstrap_file):
+    if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"):
         print("Skipped, no bootstrap found: " + file)
         continue
 
