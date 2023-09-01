@@ -92,4 +92,4 @@ for file in filenames:
 
 df = pd.DataFrame(results, columns=["dataset", "min_support", "max_support", "mean_support", "std_support", "skewness", "kurt", "min_rf", "max_rf", "mean_rf", "std_dev_rf", "skewness_rf", "kurtosis_rf"
                                        ])
-df.to_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"), index=False)
+df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
