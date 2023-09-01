@@ -267,9 +267,10 @@ def compute_perceptual_hash_distance(msa_file):
                 hash_msa = compute_dct_sign_only_hash(record_msa.seq)
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
-                    distance_cosine = cosine_similarity(hash_msa, hash_query)
+                    print(hash_query)
+                    distance_cosine = cosine_similarity(hash_msa.replace("-", 0), hash_query.replace("-",0))
                     lcs = pylcs.lcs_sequence_length(hash_msa, hash_query)
-                    print(lcs)
+                    #print(lcs)
                     distances.append(distance)
                     distances_cosine.append(distance_cosine)
                     lcs_values.append(lcs)
