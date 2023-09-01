@@ -26,8 +26,8 @@ def generate_8mers(binary_string):
     eight_mers = []
 
     # Iterate through the binary string to generate 8-mers
-    for i in range(len(binary_string) - 15):
-        eight_mer = binary_string[i:i + 16]
+    for i in range(len(binary_string) - 11):
+        eight_mer = binary_string[i:i + 12]
         eight_mers.append(eight_mer)
 
     return eight_mers
