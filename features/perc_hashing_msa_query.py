@@ -316,8 +316,7 @@ def compute_perceptual_hash_distance(msa_file):
                     lcs_values.append(lcs)
                 else:
                     return 0
-            else:
-                print("Found the one")
+
 
         max_ham = max(distances)
         min_ham = min(distances)
