@@ -39,7 +39,7 @@ def calculate_support_statistics(support_file_path):
     return min_support, max_support, mean_support, std_support, skewness, kurt
 
 
-def compute_rf_distance_statistics(support_file_path, reference_tree_path):
+def compute_rf_distance_statistics(bootstrap_path, reference_tree_path):
     reference_tree = Tree(reference_tree_path)
     rf_distances = []
     print(support_file_path)
@@ -79,15 +79,17 @@ counter = 0
 for file in filenames:
     counter += 1
     print(counter)
-    bootstrap_file = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
+    bootstrap_path = os.path.join(os.pardir, "data/raw/msa",
+                                      file.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")
+    support_path = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
 
-    if not os.path.exists(bootstrap_file):
+    if not os.path.exists(support_path):
         print("Skipped, no bootstrap found: " + file)
         continue
 
-    min_support, max_support, mean_support, std_support, skewness, kurt = calculate_support_statistics(bootstrap_file)
-    min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_file,
+    min_support, max_support, mean_support, std_support, skewness, kurt = calculate_support_statistics(support_path)
+    min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_path,
                                                                                                    tree_path)
 
     results.append(
