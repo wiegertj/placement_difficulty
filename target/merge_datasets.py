@@ -8,7 +8,6 @@ import pandas as pd
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 difficulties_df["verbose_name"] = difficulties_df["verbose_name"].str.replace(".phy", "")
-# Suppress FutureWarning from the str.replace() call
 
 msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features",
                                         "msa_features.csv"), index_col=False,
@@ -19,6 +18,9 @@ query_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", 
 print("Query feature count: " + str(query_features.shape))
 tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), index_col=False,
                             usecols=lambda column: column != 'Unnamed: 0')
+tree_features_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index_col=False,
+                                        usecols=lambda column: column != 'Unnamed: 0')
+tree_features = tree_features.merge(on="dataset", how="inner")
 print("Tree feature count after diff merging" + str(tree_features.shape))
 print(tree_features.tail(10))
 
