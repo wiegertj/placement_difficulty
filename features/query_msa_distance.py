@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import statistics
 from Bio import SeqIO
+from scipy.stats import kurtosis, skew
 
 
 def compute_hamming_distance(msa_file, query_file) -> list:
@@ -33,7 +34,17 @@ def compute_hamming_distance(msa_file, query_file) -> list:
         min_ham = min(distances)
         avg_ham = sum(distances) / len(distances)
         std_ham = statistics.stdev(distances)
+        if avg_ham != 0:
+            cv_ham = std_ham / avg_ham
+        else:
+            cv_ham = 0
 
+        if min(distances) == max(distances):
+            sk_ham = 0
+        else:
+            sk_ham = skew([(x - min(distances)) / (max(distances) - min(distances)) for x in
+                                              distances])
+        kur_ham = kurtosis(distances, fisher=True)
         rel_max_ham = max_ham / len(record_query.seq)
         rel_min_ham = min_ham / len(record_query.seq)
         rel_avg_ham = avg_ham / len(record_query.seq)
@@ -50,7 +61,7 @@ def compute_hamming_distance(msa_file, query_file) -> list:
         else:
             name = msa_file.replace("_msa.fasta", "")
 
-        results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham))
+        results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, cv_ham, sk_ham, kur_ham))
 
     return results
 
@@ -93,6 +104,6 @@ if __name__ == '__main__':
         result_tmp = compute_hamming_distance(msa_file, msa_file.replace("reference.fasta", "query.fasta"))
 
         df = pd.DataFrame(result_tmp, columns=['dataset', 'sampleId', 'min_ham_dist', 'max_ham_dist', 'avg_ham_dist',
-                                               'std_ham_dist'])
+                                               'std_ham_dist', "cv_ham_dist", "sk_ham_dist", "kur_ham_dist"])
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                msa_file.replace("_reference.fasta", "") + "_msa_dist.csv"))
