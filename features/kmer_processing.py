@@ -250,9 +250,9 @@ if __name__ == '__main__':
                                           "0.",
                                           "") + "_" + str(
                                           1000) + ".csv")
-        if os.path.exists(potential_path):
-            print("Skipped: " + msa_file + " already processed")
-            continue
+        #if os.path.exists(potential_path):
+         #   print("Skipped: " + msa_file + " already processed")
+          #  continue
 
         results = []
 
