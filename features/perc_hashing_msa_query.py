@@ -295,7 +295,7 @@ def compute_perceptual_hash_distance(msa_file):
                     kmer_sims10.append(kmer_sim10)
                     kmer_sims25.append(kmer_sim25)
                     lcs_values.append(lcs)
-                    coeff_dist = coeff_dist(np.linalg.norm(normalized_msa_dct_coeff.flatten(), normalized_query_dct_coeff.flatten()))
+                    coeff_dist = np.linalg.norm(normalized_msa_dct_coeff.flatten(), normalized_query_dct_coeff.flatten())
                     coeff_dists.append(coeff_dist)
                 else:
                     return 0
