@@ -280,43 +280,46 @@ def main():
 
             SeqIO.write(new_alignment, output_file_msa, "fasta")
 
-            #### TREEEEE ######
-
             with open(reference_tree_path, 'r') as original_file:
 
                 original_newick_tree = original_file.read()
                 original_tree = ete3.Tree(original_newick_tree)
 
-                # Get the leaf names
                 leaf_names = original_tree.get_leaf_names()
 
-                # Get the leaf count
                 leaf_count = len(leaf_names)
                 leaf_node = original_tree.search_nodes(name=sample)[0]
 
-                # Delete the leaf node
                 leaf_node.delete()
                 leaf_names = original_tree.get_leaf_names()
                 output_file_tree = os.path.join(os.pardir, "data/raw/reference_tree", dataset + sample + ".newick")
                 output_file_tree = os.path.abspath(output_file_tree)
 
-                original_tree.write(outfile=output_file_tree, format=5)  # Format 5 is for Newick format
+                original_tree.write(outfile=output_file_tree, format=5)
 
                 result = count_subst_freqs(output_file_tree, output_file_msa)
-                max_subst_freq = max(result)
-                avg_subst_freq = sum(result) / len(result)
-                std_subst_freq = statistics.stdev(result)
-                sk_subst_freq = skew(result)
-                kur_subst_freq = kurtosis(result, fisher=False)
+                max_subst_freq = max(result) / leaf_count
+                avg_subst_freq = (sum(result) / len(result)) / leaf_count
+                if statistics.mean(result) != 0:
+                    cv_subst_freq = statistics.stdev(result) / statistics.mean(result)
+                else:
+                    cv_subst_freq = 0
+                if max(result) == min(result):
+                    normalized_result = result
+                else:
+                    normalized_result = [(x - min(result)) / (max(result) - min(result)) for x in
+                                              result]
+                sk_subst_freq = skew(normalized_result)
+                kur_subst_freq = kurtosis(result, fisher=True)
 
                 results.append(
-                    (dataset, sample, max_subst_freq, avg_subst_freq, std_subst_freq, sk_subst_freq, kur_subst_freq))
+                    (dataset, sample, max_subst_freq, avg_subst_freq, cv_subst_freq, sk_subst_freq, kur_subst_freq))
 
                 os.remove(output_file_msa)
                 os.remove(output_file_tree)
 
         df = pd.DataFrame(results,
-                          columns=['dataset', 'sampleId', "max_subst_freq", "avg_subst_freq", "std_subst_freq",
+                          columns=['dataset', 'sampleId', "max_subst_freq", "avg_subst_freq", "cv_subst_freq",
                                    "sk_subst_freq", "kur_subst_freq"])
         df.to_csv(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats.csv"))
 
