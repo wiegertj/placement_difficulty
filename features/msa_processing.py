@@ -69,7 +69,10 @@ def gap_statistics(msa_filepath) -> (float, float):
     avg_gaps = statistics.mean(gap_counts) / seq_length
     if mean_gaps != 0:
         cv_gaps = statistics.stdev(gap_counts) / mean_gaps
-        normalized_gaps_counts = [(x - min(gap_counts)) / (max(gap_counts) - min(gap_counts)) for x in gap_counts]
+        if max(gap_counts) == min(gap_counts):
+            normalized_gaps_counts = gap_counts
+        else:
+            normalized_gaps_counts = [(x - min(gap_counts)) / (max(gap_counts) - min(gap_counts)) for x in gap_counts]
         sk_gaps = skew(normalized_gaps_counts)
     else:
         cv_gaps = 0
