@@ -42,7 +42,7 @@ def basic_msa_features(msa_filepath) -> (int, int):
             try:
                 unique_characters.add(record.seq[column])
             except IndexError:
-                print("Index error occured, skipped " + msa_filepath )
+                print("Index error occured, skipped " + msa_filepath)
         if len(unique_characters) == 1:
             invariant_count += 1
 
@@ -69,12 +69,12 @@ def gap_statistics(msa_filepath) -> (float, float):
     avg_gaps = statistics.mean(gap_counts) / seq_length
     if mean_gaps != 0:
         cv_gaps = statistics.stdev(gap_counts) / mean_gaps
+        normalized_gaps_counts = [(x - min(gap_counts)) / (max(gap_counts) - min(gap_counts)) for x in gap_counts]
+        sk_gaps = skew(normalized_gaps_counts)
     else:
         cv_gaps = 0
+        sk_gaps = 0
     kur_gaps = kurtosis(gap_counts, fisher=True)
-
-    normalized_gaps_counts = [(x - min(gap_counts)) / (max(gap_counts) - min(gap_counts)) for x in gap_counts]
-    sk_gaps = skew(normalized_gaps_counts)
 
     return avg_gaps, cv_gaps, kur_gaps, sk_gaps
 
@@ -256,20 +256,25 @@ if __name__ == '__main__':
             name = file.replace("_reference.fasta", "")
 
         results.append(
-            (name, avg_gaps, cv_gaps, kur_gaps, sk_gaps, avg_entropy, std_entropy, max_entropy, skw_entropy, kurtosis_entropy, num_seq,
+            (name, avg_gaps, cv_gaps, kur_gaps, sk_gaps, avg_entropy, std_entropy, max_entropy, skw_entropy,
+             kurtosis_entropy, num_seq,
              seq_length, g_fraction, c_fraction,
              a_fraction, t_fraction, rest_fraction, approxEntropy_ape_msa, cumSum_p_msa, cumSum_abs_max_msa,
              cumSum_mode_msa, spec_p_msa, spec_n1_msa, spec_d_msa, matrix_p_msa, complex_p_msa, complex_xObs_msa,
              randex_0_msa, randex_1_msa, randex_2_msa, randex_3_msa, randex_4_msa, randex_5_msa,
              randex_6_msa, randex_7_msa, run_pi, run_vObs, run_one_p, run_one_x0bs, run_one_mean, run_one_std_msa,
              run_one_min_msa, run_one_max_msa, site_taxa_ratio, percentage_invariant_sites))
-    df = pd.DataFrame(results, columns=["dataset", "avg_gaps_msa", "cv_gaps_msa", "std_gaps_msa", "kur_gaps_msa", "sk_gaps_msa", "avg_entropy_msa", "std_entropy_msa",
-                                        "max_entropy_msa", "sk_entropy_msa", "kur_entropy_msa", "num_seq", "seq_length",
-                                        "g_fraction_msa", "c_fraction_msa",
-                                        "a_fraction_msa", "t_fraction_msa", "rest_fraction_msa", "approxEntropy_ape_msa",
-                                        "cumSum_p_msa", "cumSum_abs_max_msa", "cumSum_mode_msa", "spec_p_msa",
-                                        "spec_n1_msa", "spec_d_msa", "matrix_p_msa", "complex_p_msa", "complex_xObs_msa", "randex_0_msa", "randex_1_msa", "randex_2_msa",
-                                        "randex_3_msa", "randex_4_msa", "randex_5_msa", "randex_6_msa", "randex_7_msa",
-                                        "run_pi_msa", "run_vObs_msa", "run_one_p_msa", "run_one_x0bs_msa", "run_one_mean_msa",
-                                        "run_one_std_msa", "run_one_min_msa", "run_one_max_msa", "site_taxa_ratio_msa", "percentage_invariant_sites_msa"])
+    df = pd.DataFrame(results,
+                      columns=["dataset", "avg_gaps_msa", "cv_gaps_msa", "std_gaps_msa", "kur_gaps_msa", "sk_gaps_msa",
+                               "avg_entropy_msa", "std_entropy_msa",
+                               "max_entropy_msa", "sk_entropy_msa", "kur_entropy_msa", "num_seq", "seq_length",
+                               "g_fraction_msa", "c_fraction_msa",
+                               "a_fraction_msa", "t_fraction_msa", "rest_fraction_msa", "approxEntropy_ape_msa",
+                               "cumSum_p_msa", "cumSum_abs_max_msa", "cumSum_mode_msa", "spec_p_msa",
+                               "spec_n1_msa", "spec_d_msa", "matrix_p_msa", "complex_p_msa", "complex_xObs_msa",
+                               "randex_0_msa", "randex_1_msa", "randex_2_msa",
+                               "randex_3_msa", "randex_4_msa", "randex_5_msa", "randex_6_msa", "randex_7_msa",
+                               "run_pi_msa", "run_vObs_msa", "run_one_p_msa", "run_one_x0bs_msa", "run_one_mean_msa",
+                               "run_one_std_msa", "run_one_min_msa", "run_one_max_msa", "site_taxa_ratio_msa",
+                               "percentage_invariant_sites_msa"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"), index=False)
