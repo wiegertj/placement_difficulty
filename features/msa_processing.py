@@ -268,7 +268,7 @@ if __name__ == '__main__':
              randex_6_msa, randex_7_msa, run_pi, run_vObs, run_one_p, run_one_x0bs, run_one_mean, run_one_std_msa,
              run_one_min_msa, run_one_max_msa, site_taxa_ratio, percentage_invariant_sites))
     df = pd.DataFrame(results,
-                      columns=["dataset", "avg_gaps_msa", "cv_gaps_msa", "std_gaps_msa", "kur_gaps_msa", "sk_gaps_msa",
+                      columns=["dataset", "avg_gaps_msa", "cv_gaps_msa", "kur_gaps_msa", "sk_gaps_msa",
                                "avg_entropy_msa", "std_entropy_msa",
                                "max_entropy_msa", "sk_entropy_msa", "kur_entropy_msa", "num_seq", "seq_length",
                                "g_fraction_msa", "c_fraction_msa",
