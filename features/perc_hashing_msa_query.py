@@ -2,18 +2,14 @@ import multiprocessing
 import statistics
 import sys
 import types
-import numpy as np
 import pylcs
-
 import pandas as pd
 import os
 from Bio import SeqIO
 from scipy.fftpack import dct
 from collections import defaultdict
 from scipy.stats import kurtosis, skew
-from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
-from skimage import measure
 import cv2
 from sklearn.decomposition import PCA
 from skimage.feature import local_binary_pattern
@@ -21,32 +17,29 @@ from scipy.spatial.distance import euclidean
 from sklearn.preprocessing import normalize
 
 
-def generate_8mers(binary_string):
-    # Initialize an empty list to store 8-mers
-    eight_mers = []
+def generate_k_mers(input_string, k):
+    k_mers = []
 
-    # Iterate through the binary string to generate 8-mers
-    for i in range(len(binary_string) - 13):
-        eight_mer = binary_string[i:i + 14]
-        eight_mers.append(eight_mer)
+    if len(input_string) < k:
+        return k_mers
 
-    return eight_mers
+    for i in range(len(input_string) - k + 1):
+        k_mer = input_string[i:i + k]
+        k_mers.append(k_mer)
+
+    return k_mers
 
 
-def fraction_shared_8mers(binary_string1, binary_string2):
-    # Generate 8-mers from both binary strings
-    eight_mers1 = generate_8mers(binary_string1)
-    eight_mers2 = generate_8mers(binary_string2)
+def fraction_shared_kmers(binary_string1, binary_string2, k):
+    kmers1 = generate_k_mers(binary_string1, k)
+    kmers2 = generate_k_mers(binary_string2, k)
 
-    # Convert the lists of 8-mers to sets for efficient intersection
-    set_8mers1 = set(eight_mers1)
-    set_8mers2 = set(eight_mers2)
+    set_kmers1 = set(kmers1)
+    set_kmers2 = set(kmers2)
 
-    # Calculate the number of shared 8-mers
-    shared_8mers = set_8mers1.intersection(set_8mers2)
+    shared_kmers = set_kmers1.intersection(set_kmers2)
 
-    # Compute the fraction of shared 8-mers
-    fraction_shared = len(shared_8mers) / (len(set_8mers1) + len(set_8mers2) - len(shared_8mers))
+    fraction_shared = len(shared_kmers) / (len(set_kmers1) + len(set_kmers2) - len(shared_kmers))
 
     return fraction_shared
 
@@ -96,19 +89,17 @@ def compute_dct_sign_only_hash(sequence):
     size_ = 16
 
     try:
-       # sign_only_sequence = sign_only_sequence[np.ix_(list(range(size_)),
+        # sign_only_sequence = sign_only_sequence[np.ix_(list(range(size_)),
         #                                               list(range(size_)))]
-        #hash_value = "".join([str(int(sign)) for sign in sign_only_sequence.flatten()])
+        # hash_value = "".join([str(int(sign)) for sign in sign_only_sequence.flatten()])
 
-       sign_only_sequence[sign_only_sequence >= 0] = 1
-       sign_only_sequence[sign_only_sequence < 0] = 0
+        sign_only_sequence[sign_only_sequence >= 0] = 1
+        sign_only_sequence[sign_only_sequence < 0] = 0
+        binary_sequence = sign_only_sequence[:size_, :size_]
 
-       # Resize the binary matrix to the desired size (e.g., 16x16)
-       binary_sequence = sign_only_sequence[:size_, :size_]
-
-       # Flatten the binary matrix into a binary string
-       hash_value = "".join([str(int(bit)) for bit in binary_sequence.flatten()])
-       #print(len(hash_value))
+        # Flatten the binary matrix into a binary string
+        hash_value = "".join([str(int(bit)) for bit in binary_sequence.flatten()])
+        # print(len(hash_value))
     except IndexError:
         print("image too small, skipped")
         return 0
@@ -143,11 +134,6 @@ def compute_image_distances(msa_file):
         image_query = image_query.astype(np.uint8)
         image_query_hu = image_query
         image_query_hu[image_query_hu != 0] = 1
-        contours_query = cv2.findContours(image_query, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-        # contours1 = measure.find_contours(image_query, 0.5)
-        # print(contours)
-        # hu_moments1 = calculate_hu_moments(contours[0])
         lbp_hist_query = lbp_histogram(image_query)
 
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
@@ -155,10 +141,7 @@ def compute_image_distances(msa_file):
                 numeric_req = dna_to_numeric(record_msa.seq)
                 image_msa_req = encode_dna_as_image(numeric_req)
                 image_msa_req = image_msa_req.astype(np.uint8)
-                # print(image_msa_req)
 
-                # ret, thresh = cv2.threshold(image_msa_req, 1, 255, 0)
-                # ret, thresh2 = cv2.threshold(image_query, 1, 255, 0)
                 image_msa_req_hu = image_msa_req
                 image_msa_req_hu[image_msa_req_hu != 0] = 1
 
@@ -167,11 +150,9 @@ def compute_image_distances(msa_file):
                 contours, hierarchy = cv2.findContours(image_msa_req_hu, 2, 1)
                 cnt2 = contours[0]
 
-                # Compute Hu moments for the first contour
                 moments1 = cv2.moments(cnt1)
                 hu_moments1 = cv2.HuMoments(moments1)
 
-                # Compute Hu moments for the second contour
                 moments2 = cv2.moments(cnt2)
                 hu_moments2 = cv2.HuMoments(moments2)
 
@@ -213,12 +194,6 @@ def compute_image_distances(msa_file):
 
         min_distance = min(distances_hu)
         max_distance = max(distances_hu)
-
-        # Normalize distances using Min-Max scaling
-        # print(distances_hu)
-        # distances_hu = [(d - min_distance) / (max_distance - min_distance) for d in distances_hu]
-
-        # print(distances_hu)
 
         max_dist_hu = max(distances_hu)
         min_dist_hu = min(distances_hu)
@@ -289,16 +264,18 @@ def compute_perceptual_hash_distance(msa_file):
     # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
                                   msa_file.replace("_reference.fasta", "") + "16p_msa_perc_hash_dist" + ".csv")
-    if os.path.exists(potential_path):
-        print("Skipped: " + msa_file + " already processed")
-        return 0
+    # if os.path.exists(potential_path):
+    # print("Skipped: " + msa_file + " already processed")
+    # return 0
 
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
         if counter % 50 == 0:
             print(counter)
         distances = []
-        distances_cosine = []
+        kmer_sims10 = []
+        kmer_sims15 = []
+        kmer_sims25 = []
         lcs_values = []
         hash_query = compute_dct_sign_only_hash(record_query.seq)
 
@@ -308,15 +285,16 @@ def compute_perceptual_hash_distance(msa_file):
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
                     lcs = pylcs.lcs_sequence_length(hash_msa, hash_query)
-                    #print(len(hash_msa))
                     distances.append(distance)
-                    kmer_sim = fraction_shared_8mers(hash_msa, hash_query)
-                    #print(kmer_sim)
-                    distances_cosine.append(kmer_sim)
+                    kmer_sim10 = fraction_shared_kmers(hash_msa, hash_query, 10)
+                    kmer_sim15 = fraction_shared_kmers(hash_msa, hash_query, 15)
+                    kmer_sim25 = fraction_shared_kmers(hash_msa, hash_query, 25)
+                    kmer_sims15.append(kmer_sim15)
+                    kmer_sims10.append(kmer_sim10)
+                    kmer_sims25.append(kmer_sim25)
                     lcs_values.append(lcs)
                 else:
                     return 0
-
 
         max_ham = max(distances)
         min_ham = min(distances)
@@ -324,25 +302,51 @@ def compute_perceptual_hash_distance(msa_file):
         std_ham = statistics.stdev(distances)
 
         sk_ham = skew(distances)
-        kur_ham = kurtosis(distances, fisher=False)
+        kur_ham = kurtosis(distances, fisher=True)
 
         rel_max_ham = max_ham / len(hash_query)
         rel_min_ham = min_ham / len(hash_query)
         rel_avg_ham = avg_ham / len(hash_query)
         rel_std_ham = std_ham / len(hash_query)
 
-        max_ham_cos = max(distances_cosine)
-        min_ham_cos = min(distances_cosine)
-        avg_ham_cos = sum(distances_cosine) / len(distances_cosine)
-        std_ham_cos = statistics.stdev(distances_cosine)
+        max_kmer_sim10 = max(kmer_sims10)
+        min_kmer_sim10 = min(kmer_sims10)
+        avg_kmer_sim10 = sum(kmer_sims10) / len(kmer_sims10)
+        std_kmer_sim10 = statistics.stdev(kmer_sims10)
 
-        sk_ham_cos = skew(distances_cosine)
-        kur_ham_cos = kurtosis(distances_cosine, fisher=False)
+        sk_kmer_sim10 = skew(kmer_sims10)
+        kur_kmer_sim10 = kurtosis(kmer_sims10, fisher=True)
 
-        rel_max_ham_cos = max_ham_cos
-        rel_min_ham_cos = min_ham_cos
-        rel_avg_ham_cos = avg_ham_cos
-        rel_std_ham_cos = std_ham_cos
+        rel_max_kmer_sim10 = max_kmer_sim10
+        rel_min_kmer_sim10 = min_kmer_sim10
+        rel_avg_kmer_sim10 = avg_kmer_sim10
+        rel_std_kmer_sim10 = std_kmer_sim10
+
+        max_kmer_sim15 = max(kmer_sims15)
+        min_kmer_sim15 = min(kmer_sims15)
+        avg_kmer_sim15 = sum(kmer_sims15) / len(kmer_sims15)
+        std_kmer_sim15 = statistics.stdev(kmer_sims15)
+
+        sk_kmer_sim15 = skew(kmer_sims15)
+        kur_kmer_sim15 = kurtosis(kmer_sims15, fisher=True)
+
+        rel_max_kmer_sim15 = max_kmer_sim15
+        rel_min_kmer_sim15 = min_kmer_sim15
+        rel_avg_kmer_sim15 = avg_kmer_sim15
+        rel_std_kmer_sim15 = std_kmer_sim15
+
+        max_kmer_sim25 = max(kmer_sims25)
+        min_kmer_sim25 = min(kmer_sims25)
+        avg_kmer_sim25 = sum(kmer_sims25) / len(kmer_sims25)
+        std_kmer_sim25 = statistics.stdev(kmer_sims25)
+
+        sk_kmer_sim25 = skew(kmer_sims25)
+        kur_kmer_sim25 = kurtosis(kmer_sims25, fisher=True)
+
+        rel_max_kmer_sim25 = max_kmer_sim25
+        rel_min_kmer_sim25 = min_kmer_sim25
+        rel_avg_kmer_sim25 = avg_kmer_sim25
+        rel_std_kmer_sim25 = std_kmer_sim25
 
         max_ham_lcs = max(lcs_values)
         min_ham_lcs = min(lcs_values)
@@ -350,12 +354,12 @@ def compute_perceptual_hash_distance(msa_file):
         std_ham_lcs = statistics.stdev(lcs_values)
 
         sk_ham_lcs = skew(lcs_values)
-        kur_ham_lcs = kurtosis(lcs_values, fisher=False)
+        kur_ham_lcs = kurtosis(lcs_values, fisher=True)
 
-        rel_max_ham_lcs = max_ham_lcs / 256
-        rel_min_ham_lcs = min_ham_lcs / 256
-        rel_avg_ham_lcs = avg_ham_lcs / 256
-        rel_std_ham_lcs = std_ham_lcs / 256
+        rel_max_ham_lcs = max_ham_lcs / len(hash_query)
+        rel_min_ham_lcs = min_ham_lcs / len(hash_query)
+        rel_avg_ham_lcs = avg_ham_lcs / len(hash_query)
+        rel_std_ham_lcs = std_ham_lcs / len(hash_query)
 
         name = ""
 
@@ -369,7 +373,12 @@ def compute_perceptual_hash_distance(msa_file):
             name = msa_file.replace("_reference.fasta", "")
 
         results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham,
-                        sk_ham_cos, kur_ham_cos, rel_max_ham_cos, rel_min_ham_cos, rel_avg_ham_cos, rel_std_ham_cos,
+                        sk_kmer_sim10, kur_kmer_sim10, rel_max_kmer_sim10, rel_min_kmer_sim10, rel_avg_kmer_sim10,
+                        rel_std_kmer_sim10,
+                        sk_kmer_sim15, kur_kmer_sim15, rel_max_kmer_sim15, rel_min_kmer_sim15, rel_avg_kmer_sim15,
+                        rel_std_kmer_sim15,
+                        sk_kmer_sim25, kur_kmer_sim25, rel_max_kmer_sim25, rel_min_kmer_sim25, rel_avg_kmer_sim25,
+                        rel_std_kmer_sim25,
                         sk_ham_lcs,
                         kur_ham_lcs, rel_max_ham_lcs, rel_min_ham_lcs, rel_avg_ham_lcs, rel_std_ham_lcs))
     return results, msa_file
@@ -414,11 +423,20 @@ if __name__ == '__main__':
             df = pd.DataFrame(result[0],
                               columns=['dataset', 'sampleId', 'min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
                                        'avg_perc_hash_ham_dist',
-                                       'std_perc_hash_ham_dist', 'skewness_perc_hash_ham_dist',
-                                       'kurtosis_perc_hash_ham_dist', "sk_ham_cos", "kur_ham_cos", "rel_max_ham_cos",
-                                       "rel_min_ham_cos", "rel_avg_ham_cos", "rel_std_ham_cos", "sk_ham_lcs",
-                                       "kur_ham_lcs", "rel_max_ham_lcs", "rel_min_ham_lcs", "rel_avg_ham_lcs",
-                                       "rel_std_ham_lcs"
+                                       'std_perc_hash_ham_dist', 'sks_perc_hash_ham_dist',
+                                       'kur_perc_hash_ham_dist', "sk_kmer_sim10", "kur_kmer_sim10",
+                                       "rel_max_kmer_sim10", "rel_min_kmer_sim10", "rel_avg_kmer_sim10",
+                                       "rel_std_kmer_sim10",
+                                       "sk_kmer_sim15", "kur_kmer_sim15", "rel_max_kmer_sim15", "rel_min_kmer_sim15",
+                                       "rel_avg_kmer_sim15",
+                                       "rel_std_kmer_sim15",
+                                       "sk_kmer_sim25", "kur_kmer_sim25", "rel_max_kmer_sim25", "rel_min_kmer_sim25",
+                                       "rel_avg_kmer_sim25",
+                                       "rel_std_kmer_sim25",
+                                       "sk_perc_hash_lcs",
+                                       "kur_perc_hash_lcs", "max_perc_hash_lcs", "min_perc_hash_lcs",
+                                       "avg_perc_hash_lcs",
+                                       "std_perc_hash_lcs"
                                        ])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    result[1].replace("_reference.fasta", "") + str(
