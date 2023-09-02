@@ -34,7 +34,7 @@ def calculate_support_statistics(support_file_path):
     std_support = np.std(support_values)
 
     skewness = skew(support_values)
-    kurt = kurtosis(support_values)
+    kurt = kurtosis(support_values, fisher=True)
 
     return min_support, max_support, mean_support, std_support, skewness, kurt
 
@@ -54,7 +54,7 @@ def compute_rf_distance_statistics(bootstrap_path, reference_tree_path):
     mean_rf = np.mean(rf_distances)
     std_dev_rf = np.std(rf_distances)
     skewness_rf = skew(rf_distances)
-    kurtosis_rf = kurtosis(rf_distances)
+    kurtosis_rf = kurtosis(rf_distances, fisher=True)
 
     if skewness_rf == np.nan:
         skewness_rf = 0
@@ -91,8 +91,8 @@ for file in filenames:
          skewness_rf, kurtosis_rf))
 
 df = pd.DataFrame(results,
-                  columns=["dataset", "min_support", "max_support", "mean_support", "std_support", "skewness_support",
+                  columns=["dataset", "min_sup_tree", "max_sup_tree", "mean_sup_tree", "std_sup_tree", "sk_sup_tree",
                            "kurt_support",
-                           "min_rf", "max_rf", "mean_rf", "std_dev_rf", "skewness_rf", "kurtosis_rf"
+                           "min_rf_tree", "max_rf_tree", "mean_rf_tree", "std_rf_tree", "sk_rf_tree", "kur_rf_tree"
                            ])
 df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
