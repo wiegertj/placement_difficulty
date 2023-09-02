@@ -244,7 +244,7 @@ if __name__ == '__main__':
         name = ""
 
         if file == "neotrop_reference.fasta":
-            name = "neotrop"dict
+            name = "neotrop"
         elif file == "bv_reference.fasta":
             name = "bv"
         elif file == "tara_reference.fasta":
