@@ -93,13 +93,13 @@ def query_statistics(query_filepath) -> list:
         min_gap = min(gap_lengths) / len(sequence)
         max_gap = max(gap_lengths) / len(sequence)
         mean_gap = statistics.mean(gap_lengths) / len(sequence)
-        if min(gap_lengths) == max(gap_lengths):
+        if min(gap_lengths) != max(gap_lengths):
             sk_gap = skew([(x - min(gap_lengths)) / (max(gap_lengths) - min(gap_lengths)) for x in
                                                   gap_lengths])
         else:
             sk_gap = 0
         kur_gap = kurtosis(gap_lengths, fisher=True)
-        if mean_gap != 0:
+        if mean_gap != 0 and len(gap_lengths) > 1:
             cv_gap = statistics.stdev(gap_lengths) / mean_gap
         else:
             cv_gap = 0
@@ -180,6 +180,7 @@ if __name__ == '__main__':
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     filenames = loo_selection['verbose_name'].str.replace(".phy", "_query.fasta").tolist()
+    filenames = filenames[:2]
 
     if feature_config.INCUDE_TARA_BV_NEO:
         filenames = filenames + ["bv_query.fasta", "neotrop_query_10k.fasta", "tara_query.fasta"]
@@ -206,7 +207,7 @@ if __name__ == '__main__':
 
     results = [item for sublist in results for item in sublist]
 
-    df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel", "average_gap_length",
+    df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel",
                                         "gap_positions_0", "gap_positions_1", "gap_positions_2", "gap_positions_3",
                                         "gap_positions_4", "gap_positions_5", "gap_positions_6",
                                         "gap_positions_7", "gap_positions_8", "gap_positions_9",
@@ -217,5 +218,5 @@ if __name__ == '__main__':
                                         "run_one_max_query",
                                         "randex-4_query", "randex-3_query", "randex-2_query", "randex-1_query", "randex1_query", "randex2_query",
                                         "randex3_query", "randex4_query", "g_fraction_query",
-                                        "a_fraction_query", "t_fraction_query", "c_fraction_query", "rest_fraction_query"])
+                                        "a_fraction_query", "t_fraction_query", "c_fraction_query", "rest_fraction_query", "min_gap_query", "max_gap_query", "mean_gap_query", "cv_gap_query", "sk_gap_query", "kur_gap_query"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"))
