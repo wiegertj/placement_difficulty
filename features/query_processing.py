@@ -10,7 +10,8 @@ from uncertainty.Matrix import Matrix
 from uncertainty.RandomExcursions import RandomExcursions
 from uncertainty.RunTest import RunTest
 from uncertainty.Spectral import SpectralTest
-
+from scipy.stats import skew, kurtosis
+import statistics
 
 def query_statistics(query_filepath) -> list:
     """
@@ -72,10 +73,8 @@ def query_statistics(query_filepath) -> list:
 
         longest_gap_rel = longest_gap / len(sequence)
 
-        total_gap_length = 0
-        gap_count = 0
-
         in_gap = False
+        gap_lengths = []
         current_gap_length = 0
 
         for char in sequence:
@@ -87,17 +86,24 @@ def query_statistics(query_filepath) -> list:
                     current_gap_length = 1
             else:
                 if in_gap:
-                    total_gap_length += current_gap_length
-                    gap_count += 1
+                    gap_lengths.append(current_gap_length)
                     in_gap = False
 
-        if in_gap:
-            total_gap_length += current_gap_length
-            gap_count += 1
-        if gap_count > 0:
-            average_gap_length = total_gap_length / gap_count
+        number_of_gaps = len(gap_lengths)
+        min_gap = min(gap_lengths) / len(sequence)
+        max_gap = max(gap_lengths) / len(sequence)
+        mean_gap = statistics.mean(gap_lengths) / len(sequence)
+        if min(gap_lengths) == max(gap_lengths):
+            sk_gap = skew([(x - min(gap_lengths)) / (max(gap_lengths) - min(gap_lengths)) for x in
+                                                  gap_lengths])
         else:
-            average_gap_length = 0
+            sk_gap = 0
+        kur_gap = kurtosis(gap_lengths, fisher=True)
+        if mean_gap != 0:
+            cv_gap = statistics.stdev(gap_lengths) / mean_gap
+        else:
+            cv_gap = 0
+
         byte_encoding = ''.join(format(ord(i), 'b').zfill(8) for i in sequence)
 
         approxEntropy = ApproximateEntropy.approximate_entropy_test(byte_encoding)
@@ -146,14 +152,14 @@ def query_statistics(query_filepath) -> list:
         else:
             name = query_filepath.replace("_query.fasta", "")
 
-        results.append((name, record.id, gap_fraction, longest_gap_rel, average_gap_length / len(sequence),
+        results.append((name, record.id, gap_fraction, longest_gap_rel,
                         gap_fractions[0], gap_fractions[1], gap_fractions[2], gap_fractions[3], gap_fractions[4], gap_fractions[5], gap_fractions[6],
                         gap_fractions[7], gap_fractions[8], gap_fractions[9],
                         approxEntropy_ape, cumSum_p, cumSum_abs_max, cumSum_mode, spec_p, spec_d, spec_n1, matrix_p,
                         complex_p, complex_xObs, run_pi, run_vObs,
                         run_one_p, run_one_x0bs, run_one_mean, run_one_std, run_one_min, run_one_max,
                         randex[0], randex[1], randex[2], randex[3], randex[4], randex[5], randex[6], randex[7],
-                        g_fraction, a_fraction, t_fraction, c_fraction, rest_fraction))
+                        g_fraction, a_fraction, t_fraction, c_fraction, rest_fraction, min_gap, max_gap, mean_gap, cv_gap, sk_gap, kur_gap))
 
     return results
 
