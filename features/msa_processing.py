@@ -34,27 +34,18 @@ def basic_msa_features(msa_filepath) -> (int, int):
     seq_length = len(alignment[0].seq)
     site_taxa_ratio = seq_length / num_sequences
 
-    # Initialize a counter for invariant sites
     invariant_count = 0
 
-    # Iterate through each column (position) in the alignment
     for column in range(num_sequences):
-        # Create a set to store unique characters in the column
         unique_characters = set()
-
-        # Iterate through each sequence in the alignment
         for record in alignment:
-            # Add the character at the current column to the set
             try:
                 unique_characters.add(record.seq[column])
             except IndexError:
                 print("Index error occured, skipped " + msa_filepath )
-
-        # If there's only one unique character in the column, it's invariant
         if len(unique_characters) == 1:
             invariant_count += 1
 
-    # Calculate the percentage of invariant sites
     percentage_invariant_sites = (invariant_count / num_sequences)
 
     return num_sequences, seq_length, site_taxa_ratio, percentage_invariant_sites
@@ -73,10 +64,16 @@ def gap_statistics(msa_filepath) -> (float, float):
     alignment = AlignIO.read(msa_filepath, 'fasta')
     gap_counts = [seq.count('-') for seq in alignment]
     seq_length = len(alignment[0].seq)
-    avg_gaps = statistics.mean(gap_counts) / seq_length
-    std_gaps = statistics.stdev(gap_counts)
 
-    return avg_gaps, std_gaps
+    mean_gaps = statistics.mean(gap_counts)
+    avg_gaps = statistics.mean(gap_counts) / seq_length
+    cv_gaps = statistics.stdev(gap_counts) / mean_gaps
+    kur_gaps = kurtosis(gap_counts, fisher=True)
+
+    normalized_gaps_counts = [(x - min(gap_counts)) / (max(gap_counts) - min(gap_counts)) for x in gap_counts]
+    sk_gaps = skew(normalized_gaps_counts)
+
+    return avg_gaps, cv_gaps, kur_gaps, sk_gaps
 
 
 def compute_entropy(msa_filepath):
@@ -106,7 +103,6 @@ def compute_entropy(msa_filepath):
                        'H': ['A', 'C', 'T'],
                        'V': ['A', 'C', 'G']}
 
-    # Get randomness
     summary_align = AlignInfo.SummaryInfo(alignment)
     consensus = summary_align.gap_consensus(threshold=0.7, ambiguous='-')
     byte_encoding = ''.join(format(ord(i), 'b').zfill(8) for i in consensus)
@@ -146,7 +142,6 @@ def compute_entropy(msa_filepath):
     run_one_min = run_one[5]
     run_one_max = run_one[6]
 
-    # Count the occurrences of each nucleotide
     nucleotide_statistics = []
     for seq_record in alignment:
         nucleotide_counts = {nucleotide: seq_record.upper().count(nucleotide) for nucleotide in nucleotides}
@@ -179,7 +174,6 @@ def compute_entropy(msa_filepath):
                 count = nucleotide_counts[nucleotide]
                 probabilities[nucleotide] = count / total_count
 
-            # Assign probabilities for ambiguous characters
             for ambiguous_char, possible_nucleotides in ambiguous_chars.items():
                 count = site_column.count(ambiguous_char)
                 total_count += count
@@ -195,13 +189,14 @@ def compute_entropy(msa_filepath):
                 if probability != 0:
                     entropy -= probability * math.log(probability, 2)
 
+            entropy = entropy / math.log2(len(site_column))
             site_entropies.append(entropy)
 
     max_entropy_ = np.max(site_entropies)
     avg_entropy_ = np.mean(site_entropies)
     std_entropy_ = np.std(site_entropies)
     skw_entropy_ = skew(site_entropies)
-    kurtosis_entropy_ = kurtosis(site_entropies, fisher=False)
+    kurtosis_entropy_ = kurtosis(site_entropies, fisher=True)
 
     return avg_entropy_, std_entropy_, max_entropy_, skw_entropy_, kurtosis_entropy_, mean_values[0], mean_values[1], \
            mean_values[2], \
@@ -237,7 +232,8 @@ if __name__ == '__main__':
     results = []
     for file in filenames:
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
-        avg_gaps, std_gaps = gap_statistics(filepath)
+        avg_gaps, cv_gaps, kur_gaps, sk_gaps = gap_statistics(filepath)
+
         print(filepath)
         avg_entropy, std_entropy, max_entropy, skw_entropy, kurtosis_entropy, g_fraction, c_fraction, a_fraction, t_fraction, rest_fraction, approxEntropy_ape_msa, cumSum_p_msa, cumSum_abs_max_msa, cumSum_mode_msa, spec_p_msa, spec_n1_msa, spec_d_msa, matrix_p_msa, complex_p_msa, \
         complex_xObs_msa, randex_0_msa, randex_1_msa, randex_2_msa, randex_3_msa, randex_4_msa, randex_5_msa, randex_6_msa, randex_7_msa, run_pi, run_vObs, run_one_p, run_one_x0bs, run_one_mean, \
@@ -248,7 +244,7 @@ if __name__ == '__main__':
         name = ""
 
         if file == "neotrop_reference.fasta":
-            name = "neotrop"
+            name = "neotrop"dict
         elif file == "bv_reference.fasta":
             name = "bv"
         elif file == "tara_reference.fasta":
@@ -257,20 +253,20 @@ if __name__ == '__main__':
             name = file.replace("_reference.fasta", "")
 
         results.append(
-            (name, avg_gaps, std_gaps, avg_entropy, std_entropy, max_entropy, skw_entropy, kurtosis_entropy, num_seq,
+            (name, avg_gaps, cv_gaps, kur_gaps, sk_gaps, avg_entropy, std_entropy, max_entropy, skw_entropy, kurtosis_entropy, num_seq,
              seq_length, g_fraction, c_fraction,
              a_fraction, t_fraction, rest_fraction, approxEntropy_ape_msa, cumSum_p_msa, cumSum_abs_max_msa,
              cumSum_mode_msa, spec_p_msa, spec_n1_msa, spec_d_msa, matrix_p_msa, complex_p_msa, complex_xObs_msa,
              randex_0_msa, randex_1_msa, randex_2_msa, randex_3_msa, randex_4_msa, randex_5_msa,
              randex_6_msa, randex_7_msa, run_pi, run_vObs, run_one_p, run_one_x0bs, run_one_mean, run_one_std_msa,
              run_one_min_msa, run_one_max_msa, site_taxa_ratio, percentage_invariant_sites))
-    df = pd.DataFrame(results, columns=["dataset", "avg_gaps", "std_gaps", "avg_entropy", "std_entropy",
-                                        "max_entropy", "skw_entropy", "kurtosis_entropy", "num_seq", "seq_length",
-                                        "g_fraction", "c_fraction",
-                                        "a_fraction", "t_fraction", "rest_fraction", "approxEntropy_ape_msa",
+    df = pd.DataFrame(results, columns=["dataset", "avg_gaps_msa", "cv_gaps_msa", "std_gaps_msa", "kur_gaps_msa", "sk_gaps_msa", "avg_entropy_msa", "std_entropy_msa",
+                                        "max_entropy_msa", "sk_entropy_msa", "kur_entropy_msa", "num_seq", "seq_length",
+                                        "g_fraction_msa", "c_fraction_msa",
+                                        "a_fraction_msa", "t_fraction_msa", "rest_fraction_msa", "approxEntropy_ape_msa",
                                         "cumSum_p_msa", "cumSum_abs_max_msa", "cumSum_mode_msa", "spec_p_msa",
                                         "spec_n1_msa", "spec_d_msa", "matrix_p_msa", "complex_p_msa", "complex_xObs_msa", "randex_0_msa", "randex_1_msa", "randex_2_msa",
                                         "randex_3_msa", "randex_4_msa", "randex_5_msa", "randex_6_msa", "randex_7_msa",
-                                        "run_pi", "run_vObs", "run_one_p", "run_one_x0bs", "run_one_mean",
-                                        "run_one_std_msa", "run_one_min_msa", "run_one_max_msa", "site_taxa_ratio", "percentage_invariant_sites"])
+                                        "run_pi_msa", "run_vObs_msa", "run_one_p_msa", "run_one_x0bs_msa", "run_one_mean_msa",
+                                        "run_one_std_msa", "run_one_min_msa", "run_one_max_msa", "site_taxa_ratio_msa", "percentage_invariant_sites_msa"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"), index=False)
