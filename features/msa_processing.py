@@ -67,7 +67,10 @@ def gap_statistics(msa_filepath) -> (float, float):
 
     mean_gaps = statistics.mean(gap_counts)
     avg_gaps = statistics.mean(gap_counts) / seq_length
-    cv_gaps = statistics.stdev(gap_counts) / mean_gaps
+    if mean_gaps != 0:
+        cv_gaps = statistics.stdev(gap_counts) / mean_gaps
+    else:
+        cv_gaps = 0
     kur_gaps = kurtosis(gap_counts, fisher=True)
 
     normalized_gaps_counts = [(x - min(gap_counts)) / (max(gap_counts) - min(gap_counts)) for x in gap_counts]
