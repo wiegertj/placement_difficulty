@@ -7,6 +7,7 @@ import multiprocessing
 from itertools import product
 from Bio import SeqIO
 from probables import BloomFilter
+from scipy.stats import skew, kurtosis
 
 module_path = os.path.join(os.pardir, "configs/feature_config.py")
 feature_config = types.ModuleType('feature_config')
@@ -110,8 +111,11 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
     max_kernel = max(result_string_kernels)
     mean_kernel = sum(result_string_kernels) / len(result_string_kernels)
     std_kernel = statistics.stdev(result_string_kernels)
+    kur_kernel = kurtosis(result_string_kernels, fisher=True)
+    sk_kernel = skew(result_string_kernels)
 
-    return msa_file.replace("_reference.fasta", ""), query.id, min_kernel, max_kernel, mean_kernel, std_kernel
+    return msa_file.replace("_reference.fasta",
+                            ""), query.id, min_kernel, max_kernel, mean_kernel, std_kernel, sk_kernel, kur_kernel
 
 
 def bloom_filter(filtered_kmers, size, fp_rate):
@@ -238,8 +242,6 @@ if __name__ == '__main__':
         else:
             query_file = msa_file.replace("reference.fasta", "query.fasta")
 
-
-
         # Skip already processed
         potential_path = os.path.join(os.pardir, "data/processed/features",
                                       msa_file.replace("_reference.fasta", "") + "_kmer" + str(
@@ -283,8 +285,8 @@ if __name__ == '__main__':
                                         feature_config.K_MER_MAX_GAP_PERCENTAGE)
             kmers = set(kmers)
             if len(kmers) == 0:
-               print("Skipped")
-               continue
+                print("Skipped")
+                continue
             bf = bloom_filter(kmers, len(kmers), feature_config.BLOOM_FILTER_FP_RATE)
             bloom_filters_MSA.append((record.id, bf))
 
@@ -297,7 +299,8 @@ if __name__ == '__main__':
 
             results.extend(result_tmp)
             df = pd.DataFrame(results,
-                              columns=['dataset', 'sampleId', 'min_kernel', 'max_kernel', 'mean_kernel', 'std_kernel'])
+                              columns=['dataset', 'sampleId', 'min_kmer_sim', 'max_kmer_sim', 'mean_kmer_sim',
+                                       'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim'])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                    msa_file.replace("_reference.fasta", "") + "_kmer" + str(
                                        feature_config.K_MER_LENGTH) + "_0" + str(
