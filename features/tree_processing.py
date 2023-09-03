@@ -58,14 +58,13 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     skew_irs = skew(irs)
     kurtosis_irs = kurtosis(irs, fisher=True)
 
-    pca_comps = embed_tree_with_pca(newick_tree)
-    print(pca_comps)
+    betweenness, closeness, eigenvec = calculate_all_centrality_measures(newick_tree)
 
     return tree_file.replace(".newick",
                              ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, \
            max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips, average_branch_length_inner, \
            min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs, \
-           skew_irs, kurtosis_irs, pca_comps[0], pca_comps[1], pca_comps[2], pca_comps[3], pca_comps[4]
+           skew_irs, kurtosis_irs,  betweenness, closeness, eigenvec
 
 
 def height(node):
@@ -114,29 +113,30 @@ def normalize_branch_lengths(tree):
     return tree
 
 
-def embed_tree_with_pca(ete3_tree):
-    # Perform depth-first traversal and create the vector representation
-    def depth_first_traversal(node, current_position, embedding_vector):
-        embedding_vector[current_position] += 1
+import networkx as nx
+from ete3 import Tree
+
+
+def calculate_all_centrality_measures(ete3_tree):
+    # Create an empty directed graph
+    G = nx.DiGraph()
+
+    # Traverse the ETE3 tree and add edges to the graph with branch lengths as weights
+    def traverse_and_add_edges(node):
         for child in node.children:
-            depth_first_traversal(child, current_position + 1, embedding_vector)
+            edge_weight = node.get_distance(child)
+            G.add_edge(node.name, child.name, weight=edge_weight)
+            traverse_and_add_edges(child)
 
-    # Initialize the vector with zeros
-    total_nodes = len(ete3_tree.get_leaves()) + 1  # Include internal nodes
-    embedding_vector = np.zeros(total_nodes)
+    # Start traversal from the tree root
+    traverse_and_add_edges(ete3_tree)
 
-    # Start traversal from the root node
-    depth_first_traversal(ete3_tree, 0, embedding_vector)
+    # Calculate all centrality measures considering edge weights (branch lengths)
+    betweenness_centrality = nx.betweenness_centrality(G, weight='weight')
+    closeness_centrality = nx.closeness_centrality(G, distance='weight')
+    eigenvector_centrality = nx.eigenvector_centrality_numpy(G, weight='weight')
 
-    # Normalize the vector
-    normalized_vector = embedding_vector / np.sum(embedding_vector)
-    print(normalized_vector)
-    # Apply PCA to embed the vector into 5 dimensions
-    pca = PCA(n_components=3)
-    embedded_vector_pca = pca.fit_transform(normalized_vector.reshape(1, -1))
-
-    return embedded_vector_pca[0]
-
+    return betweenness_centrality, closeness_centrality, eigenvector_centrality
 
 if __name__ == '__main__':
 
@@ -181,5 +181,5 @@ if __name__ == '__main__':
                                "kurtosis_branch_length_tips", "average_branch_length_inner", "min_branch_length_inner",
                                "max_branch_length_inner", "std_branch_length_inner",
                                "skew_branch_length_inner", "kurtosis_branch_length_inner", "avg_irs", "std_irs",
-                               "max_irs", "skew_irs", "kurtosis_irs", "pca_comps0", "pca_comps1", "pca_comps2", "pca_comps3", "pca_comps4"])
+                               "max_irs", "skew_irs", "kurtosis_irs", "betweenness_sim", "closeness_sim", "eigenvector_sim"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
