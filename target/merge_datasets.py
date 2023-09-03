@@ -1,4 +1,5 @@
 import os
+import sys
 import warnings
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -135,6 +136,7 @@ for loo_dataset in loo_datasets:
     loo_distances["dataset"] = loo_distances["dataset"].str.replace("_reference.fasta", "")
     df = df.merge(loo_distances, on=["sampleId", "dataset"], how="inner")
     loo_resuls_dfs.append(df)
+sys.exit()
 
 loo_resuls_combined = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_resuls_dfs = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"),
