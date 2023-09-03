@@ -23,13 +23,8 @@ tree_features_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/
                                         usecols=lambda column: column != 'Unnamed: 0')
 tree_features_uncertainty["dataset"] = tree_features_uncertainty["dataset"].str.replace(".newick", "")
 tree_features = tree_features.merge(tree_features_uncertainty, on="dataset", how="inner")
-print("Tree feature count after diff merging" + str(tree_features.shape))
-print(tree_features.tail(10))
-
 tree_features = tree_features.merge(difficulties_df[["verbose_name", "difficult"]], left_on="dataset",
                                     right_on="verbose_name", how="inner").drop(columns=["verbose_name"])
-print(tree_features.tail(10))
-print("Tree feature count: " + str(tree_features.shape))
 
 merged_df = query_features.merge(msa_features, on='dataset', how='inner')
 merged_df = merged_df.merge(tree_features, on="dataset", how="inner")
@@ -41,7 +36,6 @@ loo_datasets = [value for value in dataset_list if value not in elements_to_dele
 
 for loo_dataset in loo_datasets:
 
-    loo = merged_df[merged_df['dataset'] == loo_dataset]
     file_path = loo_dataset + "_kmer15_03_1000.csv"
     try:
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
@@ -51,7 +45,7 @@ for loo_dataset in loo_datasets:
             print("shape " + str(df.shape))
             continue
     except FileNotFoundError:
-        print("Not found kmer: " + file_path + " skipped " + str(loo.shape))
+        print("Not found kmer: " + file_path + " skipped " )
         continue
 
     loo_distances = pd.read_csv(os.path.join(os.pardir, "data/processed/features", loo_dataset + "_msa_dist.csv"),
@@ -60,17 +54,29 @@ for loo_dataset in loo_datasets:
     df = df.merge(loo_distances, on=["sampleId", "dataset"], how="inner")
     loo_resuls_dfs.append(df)
 
-loo_resuls_combined = pd.concat(loo_resuls_dfs, ignore_index=True)
-print("LOO Shape before merging")
-print(loo_resuls_combined.shape)
-loo_resuls_dfs = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"),
+loo_kmer_distances = pd.concat(loo_resuls_dfs, ignore_index=True)
+print("Kmer Disances SHAPE:")
+print(loo_kmer_distances.shape)
+loo_entropies = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"),
                              index_col=False, usecols=lambda column: column != 'Unnamed: 0')
-print("LOO Entropies RAW")
-print(loo_resuls_dfs.shape)
-loo_resuls_combined = loo_resuls_combined.merge(loo_resuls_dfs, on=["sampleId", "dataset"], how="inner")
+
+print("LOO Entropies SHAPE:")
+print(loo_entropies.shape)
+loo_resuls_combined = loo_entropies.merge(loo_kmer_distances, on=["sampleId", "dataset"], how="inner")
+
+
+
+loo_resuls_combined.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_KMER_ENTROPY_MERGE.csv"), index=False)
+
+
+
+
+
 print("LOO Entropies After Merging")
 print(loo_resuls_combined.shape)
 loo_resuls_combined = loo_resuls_combined.merge(query_features, on=["sampleId", 'dataset'], how='inner')
+loo_resuls_combined.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_QUERY.csv"), index=False)
+
 print("LOO Entropies After Merging Query Features")
 print(loo_resuls_combined.shape)
 loo_resuls_combined = loo_resuls_combined.merge(tree_features, on='dataset', how='inner')
