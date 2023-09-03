@@ -64,7 +64,7 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
                              ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, \
            max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips, average_branch_length_inner, \
            min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs, \
-           skew_irs, kurtosis_irs,  min_btw_sim, max_btw_sim, mean_btw_sim, std_btw_sim, sk_btw_sim, kur_btw_sim, min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim
+           skew_irs, kurtosis_irs, min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim
 
 
 def height(node):
