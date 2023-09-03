@@ -64,7 +64,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=
     n_components = 10
     pca = PCA(n_components=n_components)
 
-    X_pca = pca.fit_transform(X)
+    X_pca = pca.fit_transform(X_train)
     pca = PCA(n_components=n_components)
 
     X_pca_test = pca.fit_transform(X_test)
