@@ -65,9 +65,19 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=
     pca = PCA(n_components=n_components)
 
     X_pca = pca.fit_transform(X_train)
+    num_components = X_pca.shape[1]  # Number of PCA components
+    column_names = [f'PC{i + 1}' for i in range(num_components)]  # Naming the columns PC1, PC2, ...
+
+    # Create a DataFrame using the PCA results and column names
+    X_pca = pd.DataFrame(data=X_pca, columns=column_names)
     pca = PCA(n_components=n_components)
 
     X_pca_test = pca.fit_transform(X_test)
+    num_components = X_pca_test.shape[1]  # Number of PCA components
+    column_names = [f'PC{i + 1}' for i in range(num_components)]  # Naming the columns PC1, PC2, ...
+
+    # Create a DataFrame using the PCA results and column names
+    X_pca_test = pd.DataFrame(data=X_pca_test, columns=column_names)
 
     explained_variance_ratio = pca.explained_variance_ratio_
     print("Explained Variance Ratio of Each Component:")
