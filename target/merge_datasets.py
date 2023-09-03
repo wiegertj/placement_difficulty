@@ -224,14 +224,14 @@ for col in columns_with_nan:
     num_nan = combined_df[col].isna().sum()
     print(f"Column '{col}' contains {num_nan} NaN values.")
 
-df['kur_gaps_msa'].fillna(-1, inplace=True)
-df['kur_gaps_query'].fillna(-1, inplace=True)
+combined_df['kur_gaps_msa'].fillna(-1, inplace=True)
+combined_df['kur_gap_query'].fillna(-1, inplace=True)
 
-df['sk_dist_hu'].fillna(-1, inplace=True)
-df['sk_dist_lbp'].fillna(-1, inplace=True)
-df['kur_dist_lbp'].fillna(-1, inplace=True)
-df['sk_dist_pca'].fillna(-1, inplace=True)
-df['kur_dist_pca'].fillna(-1, inplace=True)
+combined_df['sk_dist_hu'].fillna(-1, inplace=True)
+combined_df['sk_dist_lbp'].fillna(-1, inplace=True)
+combined_df['kur_dist_lbp'].fillna(-1, inplace=True)
+combined_df['sk_dist_pca'].fillna(-1, inplace=True)
+combined_df['kur_dist_pca'].fillna(-1, inplace=True)
 
 print("Dropping NaN")
 print(combined_df.shape)
