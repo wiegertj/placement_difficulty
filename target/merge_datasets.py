@@ -71,9 +71,13 @@ loo_resuls_combined = loo_resuls_combined.merge(loo_resuls_dfs, on=["sampleId", 
 print("LOO Entropies After Merging")
 print(loo_resuls_combined.shape)
 loo_resuls_combined = loo_resuls_combined.merge(query_features, on=["sampleId", 'dataset'], how='inner')
+print("LOO Entropies After Merging Query Features")
+print(loo_resuls_combined.shape)
 loo_resuls_combined = loo_resuls_combined.merge(tree_features, on='dataset', how='inner')
+print("LOO Entropies After Merging Tree Features")
+print(loo_resuls_combined.shape)
 loo_resuls_combined = loo_resuls_combined.merge(msa_features, on='dataset', how='inner')
-print("LOO Shape after merging")
+print("LOO Shape after merging MSA Features")
 print(loo_resuls_combined.shape)
 
 # add perc hashing distance loo
