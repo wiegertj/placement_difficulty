@@ -6,6 +6,8 @@ import os
 import pandas as pd
 from scipy.stats import skew, kurtosis
 import dendropy
+from sklearn.decomposition import PCA
+
 
 def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     """
@@ -26,16 +28,6 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     tree_list = dendropy.TreeList()
     tree_list.read(data=newick_tree.write(format=1), schema="newick")
 
-
-
-    tree_len_1 = sum(branch_lengths)
-    #print(branch_lengths)
-    print(tree_len_1)
-    branch_lengths = [b / tree_len_1 for b in branch_lengths]
-    #print(branch_lengths)
-    print("After nor")
-    print(sum(branch_lengths))
-
     average_length = np.mean(branch_lengths)
     max_length = np.max(branch_lengths)
     min_length = np.min(branch_lengths)
@@ -43,7 +35,6 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     depth = tree.get_farthest_node()[1]
 
     tip_branch_lengths = [node.dist for node in tree.iter_leaves()]
-    tip_branch_lengths = [b / tree_len_1 for b in tip_branch_lengths]
     average_branch_length_tips = sum(tip_branch_lengths) / len(tip_branch_lengths)
     max_branch_length_tips = max(tip_branch_lengths)
     std_branch_length_tips = statistics.stdev(tip_branch_lengths)
@@ -51,15 +42,14 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     kurtosis_branch_length_tips = kurtosis(tip_branch_lengths, fisher=True)
 
     all_nodes = tree.traverse()
-    inner_nodes = [node for node in all_nodes if not node.is_leaf()]
-    inner_branch_lengths = [b.dist / tree_len_1 for b in inner_nodes]
-    #inner_branch_lengths = [node.dist for node in inner_nodes]
-    average_branch_length_inner = sum(inner_branch_lengths) / len(inner_nodes)
-    min_branch_length_inner = min(inner_branch_lengths)
-    max_branch_length_inner = max(inner_branch_lengths)
-    std_branch_length_inner = statistics.stdev(inner_branch_lengths)
-    skew_branch_length_inner = skew(inner_branch_lengths)
-    kurtosis_branch_length_inner = kurtosis(inner_branch_lengths, fisher=True)
+    inner_nodes = [node.dist for node in all_nodes if not node.is_leaf()]
+    # inner_branch_lengths = [node.dist for node in inner_nodes]
+    average_branch_length_inner = sum(inner_nodes) / len(inner_nodes)
+    min_branch_length_inner = min(inner_nodes)
+    max_branch_length_inner = max(inner_nodes)
+    std_branch_length_inner = statistics.stdev(inner_nodes)
+    skew_branch_length_inner = skew(inner_nodes)
+    kurtosis_branch_length_inner = kurtosis(inner_nodes, fisher=True)
 
     irs = compute_tree_imbalance(tree)
     avg_irs = sum(irs) / len(irs)
@@ -68,11 +58,14 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     skew_irs = skew(irs)
     kurtosis_irs = kurtosis(irs, fisher=True)
 
+    pca_comps = embed_tree_with_pca(newick_tree)
+    print(pca_comps)
+
     return tree_file.replace(".newick",
                              ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, \
            max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips, average_branch_length_inner, \
            min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs, \
-           skew_irs, kurtosis_irs
+           skew_irs, kurtosis_irs, pca_comps[0], pca_comps[1], pca_comps[2], pca_comps[3], pca_comps[4]
 
 
 def height(node):
@@ -121,6 +114,30 @@ def normalize_branch_lengths(tree):
     return tree
 
 
+def embed_tree_with_pca(ete3_tree):
+    # Perform depth-first traversal and create the vector representation
+    def depth_first_traversal(node, current_position, embedding_vector):
+        embedding_vector[current_position] += 1
+        for child in node.children:
+            depth_first_traversal(child, current_position + 1, embedding_vector)
+
+    # Initialize the vector with zeros
+    total_nodes = len(ete3_tree.get_leaves()) + 1  # Include internal nodes
+    embedding_vector = np.zeros(total_nodes)
+
+    # Start traversal from the root node
+    depth_first_traversal(ete3_tree, 0, embedding_vector)
+
+    # Normalize the vector
+    normalized_vector = embedding_vector / np.sum(embedding_vector)
+
+    # Apply PCA to embed the vector into 5 dimensions
+    pca = PCA(n_components=5)
+    embedded_vector_pca = pca.fit_transform(normalized_vector.reshape(1, -1))
+
+    return embedded_vector_pca[0]
+
+
 if __name__ == '__main__':
 
     results = []
@@ -159,8 +176,10 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(results,
                       columns=['dataset', "average_length", "max_length", "min_length", "std_length", "depth",
-                               "average_branch_length_tips", "max_branch_length_tips", "std_branch_length_tips", "skew_branch_length_tips",
-                               "kurtosis_branch_length_tips", "average_branch_length_inner", "min_branch_length_inner", "max_branch_length_inner", "std_branch_length_inner",
+                               "average_branch_length_tips", "max_branch_length_tips", "std_branch_length_tips",
+                               "skew_branch_length_tips",
+                               "kurtosis_branch_length_tips", "average_branch_length_inner", "min_branch_length_inner",
+                               "max_branch_length_inner", "std_branch_length_inner",
                                "skew_branch_length_inner", "kurtosis_branch_length_inner", "avg_irs", "std_irs",
-                               "max_irs", "skew_irs", "kurtosis_irs"])
+                               "max_irs", "skew_irs", "kurtosis_irs", "pca_comps0", "pca_comps1", "pca_comps2", "pca_comps3", "pca_comps4")
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
