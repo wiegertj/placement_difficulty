@@ -181,5 +181,5 @@ if __name__ == '__main__':
                                "kurtosis_branch_length_tips", "average_branch_length_inner", "min_branch_length_inner",
                                "max_branch_length_inner", "std_branch_length_inner",
                                "skew_branch_length_inner", "kurtosis_branch_length_inner", "avg_irs", "std_irs",
-                               "max_irs", "skew_irs", "kurtosis_irs", "pca_comps0", "pca_comps1", "pca_comps2", "pca_comps3", "pca_comps4")
+                               "max_irs", "skew_irs", "kurtosis_irs", "pca_comps0", "pca_comps1", "pca_comps2", "pca_comps3", "pca_comps4"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
