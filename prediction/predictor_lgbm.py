@@ -1,6 +1,7 @@
 import math
 import shap
 import lightgbm as lgb
+from sklearn.decomposition import PCA
 from verstack import FeatureSelector
 from verstack import LGBMTuner
 import os
@@ -60,10 +61,21 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=
     #FS = FeatureSelector(objective='regression', auto=True)
     #selected_feats = FS.fit_transform(X_train, y_train)
     #print(selected_feats)
+    n_components = 10
+    pca = PCA(n_components=n_components)
+
+    X_pca = pca.fit_transform(X)
+    pca = PCA(n_components=n_components)
+
+    X_pca_test = pca.fit_transform(X_test)
+
+    explained_variance_ratio = pca.explained_variance_ratio_
+    print("Explained Variance Ratio of Each Component:")
+    print(explained_variance_ratio)
 
     tuner = LGBMTuner(metric='rmse', trials=100, visualization=True, verbostity=2)
-    tuner.fit(X_train, y_train)
-    y_pred = tuner.predict(X_test)
+    tuner.fit(X_pca, y_train)
+    y_pred = tuner.predict(X_pca_test)
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
@@ -161,5 +173,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=
         plt.savefig("waterfall_plot_2500treeholdout.png")
 
 
-light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
+light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
 
