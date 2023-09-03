@@ -125,8 +125,9 @@ for loo_dataset in loo_datasets:
     try:
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
-        print("kmer_shape")
-        print(df.shape)
+        if df.shape[1] == 6:
+            print("found old kmers " + loo_dataset)
+            continue
     except FileNotFoundError:
         print("Not found kmer: " + file_path + " skipped " + str(loo.shape))
         continue
@@ -136,7 +137,6 @@ for loo_dataset in loo_datasets:
     loo_distances["dataset"] = loo_distances["dataset"].str.replace("_reference.fasta", "")
     df = df.merge(loo_distances, on=["sampleId", "dataset"], how="inner")
     loo_resuls_dfs.append(df)
-sys.exit()
 
 loo_resuls_combined = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_resuls_dfs = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"),
