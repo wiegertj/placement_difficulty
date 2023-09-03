@@ -83,11 +83,18 @@ loo_resuls_combined2.to_csv(os.path.join(os.pardir, "data/processed/final", "fin
 unique_values_combined1 = set(loo_resuls_combined1[['dataset', 'sampleId']].itertuples(index=False, name=None))
 unique_values_combined2 = set(loo_resuls_combined2[['dataset', 'sampleId']].itertuples(index=False, name=None))
 
-# Find values that are in loo_results_combined2 but not in loo_results_combined1
-values_in_combined2_not_in_combined1 = unique_values_combined2 - unique_values_combined1
+# Find duplicate values based on the "dataset" and "sampleId" columns
+duplicates = loo_resuls_combined2[loo_resuls_combined2.duplicated(['dataset', 'sampleId'], keep=False)]
 
-# Print the values
-for dataset, sampleId in values_in_combined2_not_in_combined1:
+# Extract the unique duplicate values
+unique_duplicates = duplicates[['dataset', 'sampleId']].drop_duplicates()
+
+# Convert the unique duplicates to a list
+duplicate_values_list = unique_duplicates.values.tolist()
+
+# Print the list of duplicate values
+print("List of Duplicate Values:")
+for dataset, sampleId in duplicate_values_list:
     print(f"Dataset: {dataset}, SampleID: {sampleId}")
 
 
