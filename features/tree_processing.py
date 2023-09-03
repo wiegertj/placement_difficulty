@@ -190,5 +190,5 @@ if __name__ == '__main__':
                                "kurtosis_branch_length_tips", "average_branch_length_inner", "min_branch_length_inner",
                                "max_branch_length_inner", "std_branch_length_inner",
                                "skew_branch_length_inner", "kurtosis_branch_length_inner", "avg_irs", "std_irs",
-                               "max_irs", "skew_irs", "kurtosis_irs", "max_clo_sim", "mean_clo_sim", "std_clo_sim", "sk_clo_sim", "kur_clo_sim", "min_eig_sim", "max_eig_sim", "mean_eig_sim", "std_eig_sim", "sk_eig_sim", "kur_eig_sim"])
+                               "max_irs", "skew_irs", "kurtosis_irs","min_clo_sim", "max_clo_sim", "mean_clo_sim", "std_clo_sim", "sk_clo_sim", "kur_clo_sim", "min_eig_sim", "max_eig_sim", "mean_eig_sim", "std_eig_sim", "sk_eig_sim", "kur_eig_sim"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
