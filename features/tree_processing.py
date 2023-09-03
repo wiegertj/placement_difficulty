@@ -49,9 +49,9 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
 
     all_nodes = tree.traverse()
     inner_nodes = [node for node in all_nodes if not node.is_leaf()]
-    inner_nodes = [b.dist / tree_len_1 for b in inner_nodes]
+    inner_branch_lengths = [b.dist / tree_len_1 for b in inner_nodes]
     print(len(inner_nodes))
-    inner_branch_lengths = [node.dist for node in inner_nodes]
+    #inner_branch_lengths = [node.dist for node in inner_nodes]
     average_branch_length_inner = sum(inner_branch_lengths) / len(inner_nodes)
     min_branch_length_inner = min(inner_branch_lengths)
     max_branch_length_inner = max(inner_branch_lengths)
