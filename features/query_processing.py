@@ -92,7 +92,7 @@ def query_statistics(query_filepath) -> list:
         number_of_gaps = len(gap_lengths)
         min_gap = min(gap_lengths) / len(sequence)
         max_gap = max(gap_lengths) / len(sequence)
-        mean_gap = statistics.mean(gap_lengths) / len(sequence)
+        mean_gap = statistics.mean(gap_lengths)
         if min(gap_lengths) != max(gap_lengths):
             sk_gap = skew([(x - min(gap_lengths)) / (max(gap_lengths) - min(gap_lengths)) for x in
                                                   gap_lengths])
