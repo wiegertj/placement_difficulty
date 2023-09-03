@@ -124,6 +124,8 @@ for loo_dataset in loo_datasets:
     try:
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
+        print("kmer_shape")
+        print(df.shape)
     except FileNotFoundError:
         print("Not found kmer: " + file_path + " skipped " + str(loo.shape))
         continue
