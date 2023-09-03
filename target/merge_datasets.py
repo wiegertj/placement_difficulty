@@ -8,7 +8,7 @@ import pandas as pd
 
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
-difficulties_df = difficulties_df.drop_duplicates(subset=['dataset'], keep='first')
+difficulties_df = difficulties_df.drop_duplicates(subset=['verbose_name'], keep='first')
 difficulties_df["verbose_name"] = difficulties_df["verbose_name"].str.replace(".phy", "")
 
 msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features",
