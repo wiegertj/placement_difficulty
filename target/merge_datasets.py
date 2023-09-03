@@ -125,8 +125,9 @@ for loo_dataset in loo_datasets:
     try:
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
-        if df.shape[1] == 6:
+        if df.shape[1] != 8:
             print("found old kmers " + loo_dataset)
+            print("shape " + str(df.shape))
             continue
     except FileNotFoundError:
         print("Not found kmer: " + file_path + " skipped " + str(loo.shape))
