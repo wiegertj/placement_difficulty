@@ -17,14 +17,14 @@ import matplotlib.pyplot as plt
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
-    df.drop(columns=["entropy", "branch_dist_best_two_placements"], inplace=True)
-    print("Median LWR Drop: ")
-    print(df["lwr_drop"].median())
+    df.drop(columns=["lwr_drop", "branch_dist_best_two_placements"], inplace=True)
+    print("Median Entropy: ")
+    print(df["entropy"].median())
     print(df.columns)
     print(df.shape)
 
     if targets == []:
-        target = "lwr_drop"
+        target = "entropy"
     else:
         target = targets
 
@@ -105,7 +105,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=
         print(f"{row['Feature']}: {row['Importance']:.4f}")
 
     X_test_["prediction"] = y_pred
-    X_test_["lwr_drop"] = y_test
+    X_test_["entropy"] = y_test
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
 
     if shapley_calc:
