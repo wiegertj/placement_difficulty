@@ -95,16 +95,18 @@ def query_statistics(query_filepath) -> list:
             max_gap = max(gap_lengths) / len(sequence)
             mean_gap = statistics.mean(gap_lengths)
             kur_gap = kurtosis(gap_lengths, fisher=True)
+            if min(gap_lengths) != max(gap_lengths):
+                sk_gap = skew([(x - min(gap_lengths)) / (max(gap_lengths) - min(gap_lengths)) for x in
+                               gap_lengths])
+            else:
+                sk_gap = 0
         else:
             min_gap = 0
             max_gap = 0
             mean_gap = 0
             kur_gap = 0
-        if min(gap_lengths) != max(gap_lengths):
-            sk_gap = skew([(x - min(gap_lengths)) / (max(gap_lengths) - min(gap_lengths)) for x in
-                                                  gap_lengths])
-        else:
             sk_gap = 0
+
         if mean_gap != 0 and len(gap_lengths) > 1:
             cv_gap = statistics.stdev(gap_lengths) / mean_gap
         else:
