@@ -159,6 +159,7 @@ for loo_dataset in loo_datasets:
         file_path = loo_dataset + "16p_msa_perc_hash_dist.csv"
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
+        print(df.shape)
         loo_resuls_dfs.append(df)
     except FileNotFoundError:
         print(file_path)
