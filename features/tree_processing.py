@@ -130,9 +130,9 @@ def embed_tree_with_pca(ete3_tree):
 
     # Normalize the vector
     normalized_vector = embedding_vector / np.sum(embedding_vector)
-
+    print(normalized_vector)
     # Apply PCA to embed the vector into 5 dimensions
-    pca = PCA(n_components=5)
+    pca = PCA(n_components=3)
     embedded_vector_pca = pca.fit_transform(normalized_vector.reshape(1, -1))
 
     return embedded_vector_pca[0]
