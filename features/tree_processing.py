@@ -58,13 +58,13 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     skew_irs = skew(irs)
     kurtosis_irs = kurtosis(irs, fisher=True)
 
-    betweenness, closeness, eigenvec = calculate_all_centrality_measures(newick_tree)
+    min_btw_sim, max_btw_sim, mean_btw_sim, std_btw_sim, sk_btw_sim, kur_btw_sim, min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim = calculate_all_centrality_measures(newick_tree)
 
     return tree_file.replace(".newick",
                              ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, \
            max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips, average_branch_length_inner, \
            min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs, \
-           skew_irs, kurtosis_irs,  betweenness, closeness, eigenvec
+           skew_irs, kurtosis_irs,  min_btw_sim, max_btw_sim, mean_btw_sim, std_btw_sim, sk_btw_sim, kur_btw_sim, min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim
 
 
 def height(node):
@@ -117,6 +117,12 @@ import networkx as nx
 from ete3 import Tree
 
 
+def calculate_summary_stats(centrality_dict):
+    values = list(centrality_dict.values())
+
+    return np.min(values), np.max(values), np.mean(values), np.std(values), skew(values), kurtosis(values, fisher=True)
+
+
 def calculate_all_centrality_measures(ete3_tree):
     # Create an empty directed graph
     G = nx.DiGraph()
@@ -136,7 +142,11 @@ def calculate_all_centrality_measures(ete3_tree):
     closeness_centrality = nx.closeness_centrality(G, distance='weight')
     eigenvector_centrality = nx.eigenvector_centrality_numpy(G, weight='weight')
 
-    return betweenness_centrality, closeness_centrality, eigenvector_centrality
+    min_btw_sim, max_btw_sim, mean_btw_sim, std_btw_sim, sk_btw_sim, kur_btw_sim = calculate_summary_stats(betweenness_centrality)
+    min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim = calculate_summary_stats(closeness_centrality)
+    min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim = calculate_summary_stats(eigenvector_centrality)
+
+    return min_btw_sim, max_btw_sim, mean_btw_sim, std_btw_sim, sk_btw_sim, kur_btw_sim, min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim
 
 if __name__ == '__main__':
 
@@ -181,5 +191,5 @@ if __name__ == '__main__':
                                "kurtosis_branch_length_tips", "average_branch_length_inner", "min_branch_length_inner",
                                "max_branch_length_inner", "std_branch_length_inner",
                                "skew_branch_length_inner", "kurtosis_branch_length_inner", "avg_irs", "std_irs",
-                               "max_irs", "skew_irs", "kurtosis_irs", "betweenness_sim", "closeness_sim", "eigenvector_sim"])
+                               "max_irs", "skew_irs", "kurtosis_irs", "min_btw_sim", "max_btw_sim", "mean_btw_sim", "std_btw_sim", "sk_btw_sim", "kur_btw_sim", "min_clo_sim", "max_clo_sim", "mean_clo_sim", "std_clo_sim", "sk_clo_sim", "kur_clo_sim", "min_eig_sim", "max_eig_sim", "mean_eig_sim", "std_eig_sim", "sk_eig_sim", "kur_eig_sim"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
