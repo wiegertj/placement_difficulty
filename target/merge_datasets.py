@@ -183,7 +183,9 @@ for loo_dataset in loo_datasets:
         file_path = loo_dataset + "_subst_freq_stats.csv"
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
-        print(df.shape)
+        if df.shape[1] != 7:
+            print("Found old mutation rates")
+            continue
         loo_resuls_dfs.append(df)
     except FileNotFoundError:
         print(file_path)
@@ -215,6 +217,13 @@ loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'da
 # final dataset
 # combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
 combined_df = loo_resuls_combined
+
+columns_with_nan = combined_df.columns[combined_df.isna().any()].tolist()
+
+for col in columns_with_nan:
+    num_nan = combined_df[col].isna().sum()
+    print(f"Column '{col}' contains {num_nan} NaN values.")
+
 print("Dropping NaN")
 print(combined_df.shape)
 print("After NaN")
