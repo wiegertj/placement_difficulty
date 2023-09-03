@@ -58,7 +58,7 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     skew_irs = skew(irs)
     kurtosis_irs = kurtosis(irs, fisher=True)
 
-    min_btw_sim, max_btw_sim, mean_btw_sim, std_btw_sim, sk_btw_sim, kur_btw_sim, min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim = calculate_all_centrality_measures(newick_tree)
+    min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim = calculate_all_centrality_measures(newick_tree)
 
     return tree_file.replace(".newick",
                              ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, \
