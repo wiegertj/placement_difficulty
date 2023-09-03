@@ -26,11 +26,14 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     tree_list = dendropy.TreeList()
     tree_list.read(data=newick_tree.write(format=1), schema="newick")
 
+
+
     tree_len_1 = sum(branch_lengths)
-    print(branch_lengths)
+    #print(branch_lengths)
     print(tree_len_1)
     branch_lengths = [b / tree_len_1 for b in branch_lengths]
-    print(branch_lengths)
+    #print(branch_lengths)
+    print("After nor")
     print(sum(branch_lengths))
 
     average_length = np.mean(branch_lengths)
@@ -50,7 +53,6 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     all_nodes = tree.traverse()
     inner_nodes = [node for node in all_nodes if not node.is_leaf()]
     inner_branch_lengths = [b.dist / tree_len_1 for b in inner_nodes]
-    print(len(inner_nodes))
     #inner_branch_lengths = [node.dist for node in inner_nodes]
     average_branch_length_inner = sum(inner_branch_lengths) / len(inner_nodes)
     min_branch_length_inner = min(inner_branch_lengths)
