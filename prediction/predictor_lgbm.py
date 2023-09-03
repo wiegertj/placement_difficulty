@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
-    df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", 'min_kernel', 'max_kernel', 'mean_kernel', 'std_kernel'], inplace=True)
+    df.drop(columns=["lwr_drop", "branch_dist_best_two_placements"], inplace=True)
     print("Median Entropy: ")
     print(df["entropy"].median())
     print(df.columns)
