@@ -226,7 +226,8 @@ for col in columns_with_nan:
 
 combined_df['kur_gaps_msa'].fillna(-1, inplace=True)
 combined_df['kur_gap_query'].fillna(-1, inplace=True)
-
+combined_df['sk_kmer_sim25'].fillna(-1, inplace=True)
+combined_df['kur_kmer_sim25'].fillna(-1, inplace=True)
 combined_df['sk_dist_hu'].fillna(-1, inplace=True)
 combined_df['sk_dist_lbp'].fillna(-1, inplace=True)
 combined_df['kur_dist_lbp'].fillna(-1, inplace=True)
