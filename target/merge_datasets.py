@@ -34,85 +34,6 @@ print("Tree feature count: " + str(tree_features.shape))
 merged_df = query_features.merge(msa_features, on='dataset', how='inner')
 merged_df = merged_df.merge(tree_features, on="dataset", how="inner")
 
-# add kmer features neotrop
-neotrop = merged_df[merged_df['dataset'] == 'neotrop']
-file_paths = ['neotrop_5000.csv']
-dataframes = []
-
-for file_path in file_paths:
-    file_path = os.path.join(os.pardir, "data/processed/features", file_path)
-    df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
-    dataframes.append(df)
-
-kmer_features = pd.concat(dataframes, ignore_index=True)
-
-neotrop = neotrop.merge(kmer_features, on=["sampleId", "dataset"], how="inner")
-neotrop_distances = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "neotrop_msa_dist.csv"),
-                                index_col=False, usecols=lambda column: column != 'Unnamed: 0')
-neotrop = neotrop.merge(neotrop_distances, on=["sampleId", "dataset"], how="inner")
-neotrop_entropies = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "neotrop_10k_epa_result_entropy.csv"),
-                                index_col=False, usecols=lambda column: column != 'Unnamed: 0')
-neotrop = neotrop.merge(neotrop_entropies, on="sampleId", how="inner")
-
-# add percetual hashing distances neotrop
-file_path_hash = os.path.join(os.pardir, "data/processed/features", "neotrop_msa_perc_hash_dist.csv")
-df = pd.read_csv(file_path_hash, usecols=lambda column: column != 'Unnamed: 0')
-neotrop = neotrop.merge(df, on=["sampleId", "dataset"], how="inner")
-
-# add kmer features bv
-
-bv = merged_df[merged_df['dataset'] == 'bv']
-file_paths = ['bv_5000.csv']
-dataframes = []
-
-for file_path in file_paths:
-    file_path = os.path.join(os.pardir, "data/processed/features", file_path)
-    df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
-    dataframes.append(df)
-
-kmer_features = pd.concat(dataframes, ignore_index=True)
-
-bv = bv.merge(kmer_features, on=["sampleId", "dataset"], how="inner")
-bv_distances = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "bv_msa_dist.csv"), index_col=False,
-                           usecols=lambda column: column != 'Unnamed: 0')
-bv = bv.merge(bv_distances, on=["sampleId", "dataset"], how="inner")
-bv_entropies = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "bv_epa_result_entropy.csv"),
-                           index_col=False, usecols=lambda column: column != 'Unnamed: 0')
-bv = bv.merge(bv_entropies, on="sampleId", how="inner")
-
-# add percetual hashing bv
-file_path_hash = os.path.join(os.pardir, "data/processed/features", "bv_msa_perc_hash_dist.csv")
-df = pd.read_csv(file_path_hash, usecols=lambda column: column != 'Unnamed: 0')
-bv = bv.merge(df, on=["sampleId", "dataset"], how="inner")
-
-# add kmer features tara
-
-tara = merged_df[merged_df['dataset'] == 'tara']
-file_paths = ['tara_5000.csv']
-dataframes = []
-
-for file_path in file_paths:
-    file_path = os.path.join(os.pardir, "data/processed/features", file_path)
-    df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
-    dataframes.append(df)
-
-kmer_features = pd.concat(dataframes, ignore_index=True)
-
-tara = tara.merge(kmer_features, on=["sampleId", "dataset"], how="inner")
-tara_distances = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tara_msa_dist.csv"), index_col=False,
-                             usecols=lambda column: column != 'Unnamed: 0')
-tara = tara.merge(tara_distances, on=["sampleId", "dataset"], how="inner")
-tara_entropies = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "tara_epa_result_entropy.csv"),
-                             index_col=False, usecols=lambda column: column != 'Unnamed: 0')
-tara = tara.merge(tara_entropies, on="sampleId", how="inner")
-
-# add percetual hashing tara
-file_path_hash = os.path.join(os.pardir, "data/processed/features", "tara_msa_perc_hash_dist.csv")
-df = pd.read_csv(file_path_hash, usecols=lambda column: column != 'Unnamed: 0')
-tara = tara.merge(df, on=["sampleId", "dataset"], how="inner")
-
-# add kmer features loo
-
 loo_resuls_dfs = []
 elements_to_delete = ['tara', 'bv', "neotrop"]
 dataset_list = list(merged_df['dataset'].unique())
@@ -140,12 +61,16 @@ for loo_dataset in loo_datasets:
     loo_resuls_dfs.append(df)
 
 loo_resuls_combined = pd.concat(loo_resuls_dfs, ignore_index=True)
+print("LOO Shape before merging")
+print(loo_resuls_combined.shape)
 loo_resuls_dfs = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"),
                              index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 loo_resuls_combined = loo_resuls_combined.merge(loo_resuls_dfs, on=["sampleId", "dataset"], how="inner")
 loo_resuls_combined = loo_resuls_combined.merge(query_features, on=["sampleId", 'dataset'], how='inner')
 loo_resuls_combined = loo_resuls_combined.merge(tree_features, on='dataset', how='inner')
 loo_resuls_combined = loo_resuls_combined.merge(msa_features, on='dataset', how='inner')
+print("LOO Shape after merging")
+print(loo_resuls_combined.shape)
 
 # add perc hashing distance loo
 
