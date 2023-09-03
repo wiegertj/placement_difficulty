@@ -232,6 +232,8 @@ combined_df['sk_dist_lbp'].fillna(-1, inplace=True)
 combined_df['kur_dist_lbp'].fillna(-1, inplace=True)
 combined_df['sk_dist_pca'].fillna(-1, inplace=True)
 combined_df['kur_dist_pca'].fillna(-1, inplace=True)
+combined_df['skew_branch_length_tips'].fillna(-1, inplace=True)
+combined_df['kurtosis_branch_length_tips'].fillna(-1, inplace=True)
 
 print("Dropping NaN")
 print(combined_df.shape)
