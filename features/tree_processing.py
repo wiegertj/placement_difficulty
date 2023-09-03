@@ -5,7 +5,7 @@ import numpy as np
 import os
 import pandas as pd
 from scipy.stats import skew, kurtosis
-
+import dendropy
 
 def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     """
@@ -23,6 +23,16 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     if tree_file.replace(".newick", "") == "test":
         print(sum(branch_lengths))
 
+    tree_list = dendropy.TreeList()
+    tree_list.read(data=newick_tree.write(format=1), schema="newick")
+
+    tree_len_1 = sum(branch_lengths)
+    print(branch_lengths)
+    print(tree_len_1)
+    branch_lengths = [b / tree_len_1 for b in branch_lengths]
+    print(branch_lengths)
+    print(sum(branch_lengths))
+
     average_length = np.mean(branch_lengths)
     max_length = np.max(branch_lengths)
     min_length = np.min(branch_lengths)
@@ -30,14 +40,16 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     depth = tree.get_farthest_node()[1]
 
     tip_branch_lengths = [node.dist for node in tree.iter_leaves()]
+    tip_branch_lengths = [b / tree_len_1 for b in tip_branch_lengths]
     average_branch_length_tips = sum(tip_branch_lengths) / len(tip_branch_lengths)
     max_branch_length_tips = max(tip_branch_lengths)
     std_branch_length_tips = statistics.stdev(tip_branch_lengths)
     skew_branch_length_tips = skew(tip_branch_lengths)
-    kurtosis_branch_length_tips = kurtosis(tip_branch_lengths, fisher=False)
+    kurtosis_branch_length_tips = kurtosis(tip_branch_lengths, fisher=True)
 
     all_nodes = tree.traverse()
     inner_nodes = [node for node in all_nodes if not node.is_leaf()]
+    inner_nodes = [b / tree_len_1 for b in inner_nodes]
     print(len(inner_nodes))
     inner_branch_lengths = [node.dist for node in inner_nodes]
     average_branch_length_inner = sum(inner_branch_lengths) / len(inner_nodes)
@@ -45,14 +57,14 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     max_branch_length_inner = max(inner_branch_lengths)
     std_branch_length_inner = statistics.stdev(inner_branch_lengths)
     skew_branch_length_inner = skew(inner_branch_lengths)
-    kurtosis_branch_length_inner = kurtosis(inner_branch_lengths, fisher=False)
+    kurtosis_branch_length_inner = kurtosis(inner_branch_lengths, fisher=True)
 
     irs = compute_tree_imbalance(tree)
     avg_irs = sum(irs) / len(irs)
     std_irs = statistics.stdev(irs)
     max_irs = max(irs)
     skew_irs = skew(irs)
-    kurtosis_irs = kurtosis(irs, fisher=False)
+    kurtosis_irs = kurtosis(irs, fisher=True)
 
     return tree_file.replace(".newick",
                              ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, \
