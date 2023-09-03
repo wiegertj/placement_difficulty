@@ -62,29 +62,47 @@ loo_entropies = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "lo
 
 print("LOO Entropies SHAPE:")
 print(loo_entropies.shape)
-loo_resuls_combined = loo_entropies.merge(loo_kmer_distances, on=["sampleId", "dataset"], how="inner")
+loo_resuls_combined1 = loo_entropies.merge(loo_kmer_distances, on=["sampleId", "dataset"], how="inner")
 
 
 
-loo_resuls_combined.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_KMER_ENTROPY_MERGE.csv"), index=False)
+loo_resuls_combined1.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_KMER_ENTROPY_MERGE.csv"), index=False)
 
 
 
 
 
 print("LOO Entropies After Merging")
-print(loo_resuls_combined.shape)
-loo_resuls_combined = loo_resuls_combined.merge(query_features, on=["sampleId", 'dataset'], how='inner')
-loo_resuls_combined.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_QUERY.csv"), index=False)
+print(loo_resuls_combined1.shape)
+loo_resuls_combined2 = loo_resuls_combined1.merge(query_features, on=["sampleId", 'dataset'], how='inner')
+loo_resuls_combined2.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_QUERY.csv"), index=False)
+
+
+
+# Extract unique values of "dataset" and "sampleId" columns from both DataFrames
+unique_values_combined1 = set(loo_resuls_combined1[['dataset', 'sampleId']].itertuples(index=False, name=None))
+unique_values_combined2 = set(loo_resuls_combined2[['dataset', 'sampleId']].itertuples(index=False, name=None))
+
+# Find values that are in loo_results_combined2 but not in loo_results_combined1
+values_in_combined2_not_in_combined1 = unique_values_combined2 - unique_values_combined1
+
+# Print the values
+for dataset, sampleId in values_in_combined2_not_in_combined1:
+    print(f"Dataset: {dataset}, SampleID: {sampleId}")
+
+
+
+
+
 
 print("LOO Entropies After Merging Query Features")
-print(loo_resuls_combined.shape)
-loo_resuls_combined = loo_resuls_combined.merge(tree_features, on='dataset', how='inner')
+print(loo_resuls_combined2.shape)
+loo_resuls_combined3 = loo_resuls_combined2.merge(tree_features, on='dataset', how='inner')
 print("LOO Entropies After Merging Tree Features")
-print(loo_resuls_combined.shape)
-loo_resuls_combined = loo_resuls_combined.merge(msa_features, on='dataset', how='inner')
+print(loo_resuls_combined3.shape)
+loo_resuls_combined4 = loo_resuls_combined3.merge(msa_features, on='dataset', how='inner')
 print("LOO Shape after merging MSA Features")
-print(loo_resuls_combined.shape)
+print(loo_resuls_combined4.shape)
 
 # add perc hashing distance loo
 
@@ -108,7 +126,7 @@ for loo_dataset in loo_datasets:
 
 loo_hash_perc = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fasta", "")
-loo_resuls_combined = loo_resuls_combined.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
+loo_resuls_combined = loo_resuls_combined4.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
 
 # add mutation rates
 
