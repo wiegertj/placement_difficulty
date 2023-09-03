@@ -221,6 +221,7 @@ if __name__ == '__main__':
         exec(code, feature_config.__dict__)
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    loo_selection = loo_selection.drop_duplicates(subset=["verbose_name"], keep="first")
     filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
     filenames.remove("11226_0_reference.fasta")
     filenames.remove("15849_4_reference.fasta")
