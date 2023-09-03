@@ -8,19 +8,27 @@ import pandas as pd
 
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
+difficulties_df = difficulties_df.drop_duplicates(subset=['dataset'], keep='first')
 difficulties_df["verbose_name"] = difficulties_df["verbose_name"].str.replace(".phy", "")
 
 msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features",
                                         "msa_features.csv"), index_col=False,
                            usecols=lambda column: column != 'Unnamed: 0')
+msa_features = msa_features.drop_duplicates(subset=['dataset'], keep='first')
+
 print("MSA feature count: " + str(msa_features.shape))
 query_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
+query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 print("Query feature count: " + str(query_features.shape))
 tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), index_col=False,
                             usecols=lambda column: column != 'Unnamed: 0')
+tree_features = tree_features.drop_duplicates(subset=['dataset'], keep='first')
+
 tree_features_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index_col=False,
                                         usecols=lambda column: column != 'Unnamed: 0')
+tree_features_uncertainty = tree_features_uncertainty.drop_duplicates(subset=['dataset'], keep='first')
+
 tree_features_uncertainty["dataset"] = tree_features_uncertainty["dataset"].str.replace(".newick", "")
 tree_features = tree_features.merge(tree_features_uncertainty, on="dataset", how="inner")
 tree_features = tree_features.merge(difficulties_df[["verbose_name", "difficult"]], left_on="dataset",
@@ -54,11 +62,14 @@ for loo_dataset in loo_datasets:
     df = df.merge(loo_distances, on=["sampleId", "dataset"], how="inner")
     loo_resuls_dfs.append(df)
 
+
 loo_kmer_distances = pd.concat(loo_resuls_dfs, ignore_index=True)
+loo_kmer_distances = loo_kmer_distances.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 print("Kmer Disances SHAPE:")
 print(loo_kmer_distances.shape)
 loo_entropies = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"),
                              index_col=False, usecols=lambda column: column != 'Unnamed: 0')
+loo_entropies = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 
 print("LOO Entropies SHAPE:")
 print(loo_entropies.shape)
@@ -132,6 +143,8 @@ for loo_dataset in loo_datasets:
         print("Not found Hash Perc: " + loo_dataset)
 
 loo_hash_perc = pd.concat(loo_resuls_dfs, ignore_index=True)
+loo_hash_perc = loo_hash_perc.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
+
 loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fasta", "")
 loo_resuls_combined = loo_resuls_combined4.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
 
@@ -156,6 +169,7 @@ for loo_dataset in loo_datasets:
         print("Not found Mutation Stats: " + loo_dataset)
 
 loo_subst = pd.concat(loo_resuls_dfs, ignore_index=True)
+loo_subst = loo_subst.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 loo_resuls_combined = loo_resuls_combined.merge(loo_subst, on=["sampleId", 'dataset'], how='inner')
 
 # add image comp
@@ -176,6 +190,7 @@ for loo_dataset in loo_datasets:
         print("Not found Image Comp Stats: " + loo_dataset)
 
 loo_im_comp = pd.concat(loo_resuls_dfs, ignore_index=True)
+loo_im_comp = loo_im_comp.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'dataset'], how='inner')
 
 # final dataset
