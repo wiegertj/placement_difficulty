@@ -31,7 +31,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=
     X = df.drop(axis=1, columns=target)
     y = df[target]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=12)
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
@@ -61,7 +61,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=
     #selected_feats = FS.fit_transform(X_train, y_train)
     #print(selected_feats)
 
-    tuner = LGBMTuner(metric='mse', trials=100, visualization=True, verbostity=2)
+    tuner = LGBMTuner(metric='rmse', trials=100, visualization=True, verbostity=2)
     tuner.fit(X_train, y_train)
     y_pred = tuner.predict(X_test)
 
