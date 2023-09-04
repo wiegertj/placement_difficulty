@@ -31,7 +31,7 @@ def compute_hamming_distance(msa_file, query_file) -> list:
             if record_msa.id != record_query.id:
                 distance = sum(ch1 != ch2 for ch1, ch2 in zip(record_query.seq, record_msa.seq))
                 print(record_query.seq)
-                lcs = pylcs.lcs_sequence_length(record_query.seq, record_msa.seq)
+                lcs = pylcs.lcs_sequence_length(str(record_query.seq), str(record_msa.seq))
                 lcss.append(lcs)
                 distances.append(distance)
 
