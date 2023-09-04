@@ -30,6 +30,7 @@ def compute_hamming_distance(msa_file, query_file) -> list:
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if record_msa.id != record_query.id:
                 distance = sum(ch1 != ch2 for ch1, ch2 in zip(record_query.seq, record_msa.seq))
+                print(record_query.seq)
                 lcs = pylcs.lcs_sequence_length(record_query.seq, record_msa.seq)
                 lcss.append(lcs)
                 distances.append(distance)
