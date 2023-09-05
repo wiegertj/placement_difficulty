@@ -246,7 +246,7 @@ for msa_name in filtered_filenames:
                         output = subprocess.check_output(command, stderr=subprocess.STDOUT,
                                                          text=True)
                         lines = output.strip().split('\n')
-
+                        print(lines)
                         # Assuming the fourth value is on the second line (adjust index if needed)
                         fourth_value = float(lines[1].split()[3])
 
