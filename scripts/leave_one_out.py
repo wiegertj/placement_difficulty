@@ -231,7 +231,7 @@ for msa_name in filtered_filenames:
                     leaf_node.delete()
 
                     results_distance = original_tree.compare(tree, unrooted=True)
-                    original_tree.write(os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"), format=1)
+                    original_tree.write(outfile=os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"), format=1)
                     print("Started quartet computation")
                     print(os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"))
                     print(os.path.abspath(tree_path))
