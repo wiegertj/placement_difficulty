@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import types
 import random
+import tqdist
 from Bio import AlignIO, SeqIO
 from dendropy.calculate import treecompare
 
@@ -36,12 +37,6 @@ def calculate_bsd_aligned(tree1, tree2):
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
-
-
-
-
-
-
 
 current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
 dataset_set = set(current_loo_targets['dataset'])
@@ -155,7 +150,8 @@ for msa_name in filtered_filenames:
                 with open(aligned_output_file, "w") as output_file:
                     output_file.write(mafft_output)
 
-                command = ["mafft", "--preservecase", "--keeplength", "--add", output_file_query_disaligned, "--reorder",
+                command = ["mafft", "--preservecase", "--keeplength", "--add", output_file_query_disaligned,
+                           "--reorder",
                            output_file_disaligned.replace("_disaligned.fasta", "_aligned.fasta")]
                 result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
 
@@ -174,7 +170,7 @@ for msa_name in filtered_filenames:
                           'w') as output_file:
                     SeqIO.write(extracted_query, output_file, 'fasta')
                 query_path_epa = output_file_disaligned.replace("_disaligned.fasta", "_query_realigned.fasta")
-                print("MAFFT Reestimation of " + msa_name + to_query +" was successful!")
+                print("MAFFT Reestimation of " + msa_name + to_query + " was successful!")
 
             except subprocess.CalledProcessError as e:
                 print("Error running MAFFT:")
@@ -234,6 +230,7 @@ for msa_name in filtered_filenames:
                     leaf_node.delete()
 
                     results_distance = original_tree.compare(tree, unrooted=True)
+                    quartet_distance = tqdist.quartet_distance(original_tree_path, file)
 
                     # BSD distance
 
@@ -262,18 +259,17 @@ for msa_name in filtered_filenames:
 
                     print("MSA " + str(msa_name + " query " + str(to_query)))
                     print("RF distance is %s over a total of" % (results_distance["norm_rf"]))
+                    print("Quartet Distance: " + quartet_distance)
                     rf_distances.append(
-                        (msa_name + "_" + to_query, results_distance["norm_rf"], bsd_aligned))
-                    df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd"])
+                        (msa_name + "_" + to_query, results_distance["norm_rf"], bsd_aligned, quartet_distance))
+                    df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
 
                     if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv")):
-                        # Create the file if it doesn't exist
-                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv"), index=False,
-                                     columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd"])
+                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"), index=False,
+                                     columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
                     else:
-                        # Append to the file if it exists
-                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv"), index=False,
-                                     mode='a', header=False, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd"])
+                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"), index=False,
+                                     mode='a', header=False, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
                     rf_distances = []
                     msa_path_epa = aligned_output_file
         else:
