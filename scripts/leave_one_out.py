@@ -269,7 +269,7 @@ for msa_name in filtered_filenames:
 
                     print("MSA " + str(msa_name + " query " + str(to_query)))
                     print("RF distance is %s over a total of" % (results_distance["norm_rf"]))
-                    print("Quartet Distance: " + quartet_distance)
+                    print("Quartet Distance: " + str(quartet_distance))
                     rf_distances.append(
                         (msa_name + "_" + to_query, results_distance["norm_rf"], bsd_aligned, quartet_distance))
                     df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist",
