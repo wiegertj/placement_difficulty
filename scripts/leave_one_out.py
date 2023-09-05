@@ -231,7 +231,7 @@ for msa_name in filtered_filenames:
                     leaf_node.delete()
 
                     results_distance = original_tree.compare(tree, unrooted=True)
-                    quartet_distance = tqdist.quartet_distance(original_tree_path, file)
+                    quartet_distance = tqdist.quartet_distance(original_tree_path, tree_path)
 
                     # BSD distance
 
