@@ -1,7 +1,6 @@
 import math
 import shap
 import lightgbm as lgb
-from sklearn.decomposition import PCA
 from verstack import FeatureSelector
 from verstack import LGBMTuner
 import os
@@ -16,7 +15,7 @@ from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 
-def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=[]):
+def light_gbm_regressor(rfe=False, rfe_feature_n=5, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements"], inplace=True)
     print("Median Entropy: ")
@@ -61,31 +60,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=
     #FS = FeatureSelector(objective='regression', auto=True)
     #selected_feats = FS.fit_transform(X_train, y_train)
     #print(selected_feats)
-    n_components = 10
-    pca = PCA(n_components=n_components)
-
-    X_pca = pca.fit_transform(X_train)
-    num_components = X_pca.shape[1]  # Number of PCA components
-    column_names = [f'PC{i + 1}' for i in range(num_components)]  # Naming the columns PC1, PC2, ...
-
-    # Create a DataFrame using the PCA results and column names
-    X_pca = pd.DataFrame(data=X_pca, columns=column_names)
-    pca = PCA(n_components=n_components)
-
-    X_pca_test = pca.fit_transform(X_test)
-    num_components = X_pca_test.shape[1]  # Number of PCA components
-    column_names = [f'PC{i + 1}' for i in range(num_components)]  # Naming the columns PC1, PC2, ...
-
-    # Create a DataFrame using the PCA results and column names
-    X_pca_test = pd.DataFrame(data=X_pca_test, columns=column_names)
-
-    explained_variance_ratio = pca.explained_variance_ratio_
-    print("Explained Variance Ratio of Each Component:")
-    print(explained_variance_ratio)
 
     tuner = LGBMTuner(metric='rmse', trials=100, visualization=True, verbostity=2)
-    tuner.fit(X_pca, y_train)
-    y_pred = tuner.predict(X_pca_test)
+    tuner.fit(X_train, y_train)
+    y_pred = tuner.predict(X_test)
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
@@ -183,5 +161,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=
         plt.savefig("waterfall_plot_2500treeholdout.png")
 
 
-light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
+light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
 
