@@ -244,7 +244,7 @@ for msa_name in filtered_filenames:
                         # Print the command string
                         print("Command as String:", command_string)
                         process = subprocess.check_output(command, stderr=subprocess.STDOUT,
-                                                          shell=True, text=True)
+                                                         text=True)
                         print(process)
 
 
