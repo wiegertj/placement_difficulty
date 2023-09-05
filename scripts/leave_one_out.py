@@ -231,10 +231,11 @@ for msa_name in filtered_filenames:
                     leaf_node.delete()
 
                     results_distance = original_tree.compare(tree, unrooted=True)
+                    original_tree.write(os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"), format=1)
                     print("Started quartet computation")
-                    print(os.path.abspath(original_tree_path))
+                    print(os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"))
                     print(os.path.abspath(tree_path))
-                    command = ["./home/wiegerjs/tqDist-1.0.2/bin/quartet_distance", tree_path, os.path.abspath(original_tree_path)]
+                    command = ["./home/wiegerjs/tqDist-1.0.2/bin/quartet_distance", tree_path, os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick")]
                     try:
                         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                         stdout, stderr = process.communicate()
