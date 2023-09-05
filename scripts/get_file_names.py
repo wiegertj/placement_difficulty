@@ -6,6 +6,7 @@ import numpy as np
 
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
+difficulties_df.drop_duplicates(subset=["verbose_name"], keep="first", inplace=True)
 
 # Filter out already used LOO-files
 if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
@@ -25,7 +26,7 @@ for i in range(len(difficulty_ranges) - 1):
 
     subset = difficulties_df[
         (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound) & (
-                    difficulties_df['data_type'] != 'AA')].sample(50)
+                    difficulties_df['data_type'] != 'AA')].sample(10)
     print("Subset size " + str(lower_bound) + " - " + str(upper_bound))
     print(subset.shape)
     samples.append(subset)
