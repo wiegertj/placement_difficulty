@@ -248,7 +248,8 @@ for msa_name in filtered_filenames:
                         lines = output.strip().split('\n')
                         print(lines)
                         # Assuming the fourth value is on the second line (adjust index if needed)
-                        fourth_value = float(lines[1].split()[3])
+                        values = lines[0].split()
+                        fourth_value = float(values[3])
 
                         print("Fourth value as a float:", fourth_value)
 
