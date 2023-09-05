@@ -243,9 +243,14 @@ for msa_name in filtered_filenames:
 
                         # Print the command string
                         print("Command as String:", command_string)
-                        process = subprocess.check_output(command, stderr=subprocess.STDOUT,
+                        output = subprocess.check_output(command, stderr=subprocess.STDOUT,
                                                          text=True)
-                        print(process)
+                        lines = output.strip().split('\n')
+
+                        # Assuming the fourth value is on the second line (adjust index if needed)
+                        fourth_value = float(lines[1].split()[3])
+
+                        print("Fourth value as a float:", fourth_value)
 
 
 
