@@ -236,7 +236,7 @@ for msa_name in filtered_filenames:
                     print("Started quartet computation")
                     print(os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"))
                     print(tree_path)
-                    command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", tree_path,
+                    command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist","-v" ,tree_path,
                                os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick")]
                     try:
                         command_string = " ".join(command)
