@@ -275,7 +275,7 @@ for msa_name in filtered_filenames:
                     df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist",
                                                                 "norm_quartet_dist"])
 
-                    if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv")):
+                    if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv")):
                         df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"),
                                      index=False,
                                      columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
