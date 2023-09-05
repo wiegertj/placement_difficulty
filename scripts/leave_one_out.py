@@ -277,7 +277,8 @@ for msa_name in filtered_filenames:
                             print("Error Output:")
                             print(stderr)
                             continue
-
+                    except FileNotFoundError:
+                        "Quartet File not found"
 
 
 
