@@ -209,7 +209,6 @@ for msa_name in filtered_filenames:
             tree_path = os.path.abspath(rel_tree_path)
             tree_path_epa = tree_path
 
-            # Calculate RF-statistics
             with open(tree_path, 'r') as file:
                 newick_tree = file.read()
                 tree = ete3.Tree(newick_tree)
@@ -220,14 +219,9 @@ for msa_name in filtered_filenames:
                     original_newick_tree = original_file.read()
                     original_tree = ete3.Tree(original_newick_tree)
 
-                    # Get the leaf names
                     leaf_names = original_tree.get_leaf_names()
-
-                    # Get the leaf count
                     leaf_count = len(leaf_names)
                     leaf_node = original_tree.search_nodes(name=to_query)[0]
-
-                    # Delete the leaf node
                     leaf_node.delete()
 
                     results_distance = original_tree.compare(tree, unrooted=True)
@@ -240,20 +234,10 @@ for msa_name in filtered_filenames:
                                os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick")]
                     try:
                         command_string = " ".join(command)
-
-                        # Print the command string
-                        print("Command as String:", command_string)
-                        output = subprocess.check_output(command, stderr=subprocess.STDOUT,
-                                                         text=True)
+                        output = subprocess.check_output(command, stderr=subprocess.STDOUT, text=True)
                         lines = output.strip().split('\n')
-                        print(lines)
-                        # Assuming the fourth value is on the second line (adjust index if needed)
                         values = lines[0].split()
-                        fourth_value = float(values[3])
-
-                        print("Fourth value as a float:", fourth_value)
-
-
+                        quartet_distance = float(values[3])
 
                     except FileNotFoundError:
                         "Quartet File not found"
@@ -311,23 +295,12 @@ for msa_name in filtered_filenames:
                 newick_tree = file.read()
                 tree = ete3.Tree(newick_tree)
 
-                # Get the leaf names
                 leaf_names = tree.get_leaf_names()
-
-                # Get the leaf count
                 leaf_count = len(leaf_names)
-                print(leaf_count)
-
                 leaf_node = tree.search_nodes(name=to_query)[0]
-
-                # Delete the leaf node
                 leaf_node.delete()
-
                 leaf_names = tree.get_leaf_names()
-
-                # Get the leaf count
                 leaf_count = len(leaf_names)
-                print(leaf_count)
 
                 original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree_tmp",
                                                   msa_name + "_" + to_query + ".newick")
