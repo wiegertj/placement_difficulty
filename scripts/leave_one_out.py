@@ -271,19 +271,19 @@ for msa_name in filtered_filenames:
                     print("RF distance is %s over a total of" % (results_distance["norm_rf"]))
                     print("Quartet Distance: " + str(quartet_distance))
                     rf_distances.append(
-                        (msa_name + "_" + to_query, results_distance["norm_rf"], bsd_aligned, quartet_distance))
-                    df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist",
+                        (msa_name, to_query, results_distance["norm_rf"], bsd_aligned, quartet_distance))
+                    df_rf = pd.DataFrame(rf_distances, columns=["dataset","sampleId", "norm_rf_dist", "norm_bsd_dist",
                                                                 "norm_quartet_dist"])
 
                     if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv")):
                         df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"),
-                                     index=False,
-                                     columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
+                                     index=False, header=True,
+                                     columns=["dataset","sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
                     else:
                         df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"),
                                      index=False,
                                      mode='a', header=False,
-                                     columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
+                                     columns=["dataset","sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
                     rf_distances = []
                     msa_path_epa = aligned_output_file
         else:
