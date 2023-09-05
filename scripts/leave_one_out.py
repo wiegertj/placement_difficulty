@@ -238,25 +238,12 @@ for msa_name in filtered_filenames:
                     command = ["./home/wiegerjs/tqDist-1.0.2/bin/quartet_distance", "-v",tree_path, os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick")]
                     try:
                         print(command)
-                        process = subprocess.check_output(command)
+                        process = subprocess.check_output(command,stderr=subprocess.STDOUT,
+    shell=True)
                         print(process)
 
 
-                        if process.returncode == 0:
-                            print("Quartet process completed successfully.")
-                            print("Output:")
-                            print(stdout)
 
-
-                            model_path_epa = os.path.join(os.pardir, "data/processed/loo",
-                                                          msa_name + "_msa_" + str(
-                                                              to_query) + "_aligned.fasta.raxml.bestModel")
-
-                        else:
-                            print("Quartet Error")
-                            print("Error Output:")
-                            print(stderr)
-                            continue
                     except FileNotFoundError:
                         "Quartet File not found"
 
