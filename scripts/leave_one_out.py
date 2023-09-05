@@ -234,7 +234,30 @@ for msa_name in filtered_filenames:
                     print("Started quartet computation")
                     print(original_tree_path)
                     print(tree_path)
-                    quartet_distance = tqdist.quartet_distance(original_tree_path, tree_path)
+                    command = ["./home/wiegerjs/tqDist-1.0.2/bin/quartet_distance", original_tree_path, tree_path]
+                    try:
+                        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                        stdout, stderr = process.communicate()
+
+                        if process.returncode == 0:
+                            print("Quartet process completed successfully.")
+                            print("Output:")
+                            print(stdout)
+
+                            model_path_epa = os.path.join(os.pardir, "data/processed/loo",
+                                                          msa_name + "_msa_" + str(
+                                                              to_query) + "_aligned.fasta.raxml.bestModel")
+
+                        else:
+                            print("Quartet Error")
+                            print("Error Output:")
+                            print(stderr)
+                            continue
+
+                    except FileNotFoundError:
+                        print("RAxML-ng executable not found. Please make sure RAxML-ng is installed and in the system")
+                    #quartet_distance = tqdist.quartet_distance(original_tree_path, tree_path)
+
 
                     # BSD distance
 
