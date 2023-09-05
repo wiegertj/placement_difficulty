@@ -38,11 +38,11 @@ def calculate_bsd_aligned(tree1, tree2):
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 
-#current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
-#dataset_set = set(current_loo_targets['dataset'])
-#print(len(filenames))
-#filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
-#print(len(filtered_filenames))
+# current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
+# dataset_set = set(current_loo_targets['dataset'])
+# print(len(filenames))
+# filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
+# print(len(filtered_filenames))
 filtered_filenames = filenames
 msa_counter = 0
 for msa_name in filtered_filenames:
@@ -79,16 +79,16 @@ for msa_name in filtered_filenames:
 
     for to_query in sequence_ids_sample:
 
-        #if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
-         #   if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
-          #                                 msa_name + "_" + to_query)):  # if folder empty
-           #     print("Empty folder found for " + msa_name + " " + to_query + " filling it")
-            #    os.rmdir(os.path.join(os.pardir, "data/processed/loo_results",
-             #                         msa_name + "_" + to_query))  # delete empty folder
-            #else:
-             #   if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
-              #      print("Skipping " + msa_name + " " + to_query + " result already exists")
-               #     continue
+        # if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
+        #   if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
+        #                                 msa_name + "_" + to_query)):  # if folder empty
+        #     print("Empty folder found for " + msa_name + " " + to_query + " filling it")
+        #    os.rmdir(os.path.join(os.pardir, "data/processed/loo_results",
+        #                         msa_name + "_" + to_query))  # delete empty folder
+        # else:
+        #   if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
+        #      print("Skipping " + msa_name + " " + to_query + " result already exists")
+        #     continue
 
         counter += 1
         print(to_query)
@@ -231,26 +231,26 @@ for msa_name in filtered_filenames:
                     leaf_node.delete()
 
                     results_distance = original_tree.compare(tree, unrooted=True)
-                    original_tree.write(outfile=os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"), format=1)
+                    original_tree.write(
+                        outfile=os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"), format=1)
                     print("Started quartet computation")
                     print(os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"))
                     print(tree_path)
-                    command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", tree_path, os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick")]
+                    command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", tree_path,
+                               os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick")]
                     try:
                         command_string = " ".join(command)
 
                         # Print the command string
                         print("Command as String:", command_string)
-                        process = subprocess.check_output(command,stderr=subprocess.STDOUT,
-    shell=True)
+                        process = subprocess.check_output(command, stderr=subprocess.STDOUT,
+                                                          shell=True, text=True)
                         print(process)
 
 
 
                     except FileNotFoundError:
                         "Quartet File not found"
-
-
 
                     # BSD distance
 
@@ -282,14 +282,18 @@ for msa_name in filtered_filenames:
                     print("Quartet Distance: " + quartet_distance)
                     rf_distances.append(
                         (msa_name + "_" + to_query, results_distance["norm_rf"], bsd_aligned, quartet_distance))
-                    df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
+                    df_rf = pd.DataFrame(rf_distances, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist",
+                                                                "norm_quartet_dist"])
 
                     if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "norm_rf_loo.csv")):
-                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"), index=False,
+                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"),
+                                     index=False,
                                      columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
                     else:
-                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"), index=False,
-                                     mode='a', header=False, columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
+                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"),
+                                     index=False,
+                                     mode='a', header=False,
+                                     columns=["dataset_sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
                     rf_distances = []
                     msa_path_epa = aligned_output_file
         else:
