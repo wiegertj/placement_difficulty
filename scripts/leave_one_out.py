@@ -234,7 +234,7 @@ for msa_name in filtered_filenames:
                     original_tree.write(outfile=os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"), format=1)
                     print("Started quartet computation")
                     print(os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"))
-                    print(os.path.abspath(tree_path))
+                    print(tree_path)
                     command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", tree_path, os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick")]
                     try:
                         print(command)
