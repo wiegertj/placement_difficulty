@@ -232,9 +232,9 @@ for msa_name in filtered_filenames:
 
                     results_distance = original_tree.compare(tree, unrooted=True)
                     print("Started quartet computation")
-                    print(original_tree_path)
+                    print(os.path.abspath(original_tree_path))
                     print(os.path.abspath(tree_path))
-                    command = ["./home/wiegerjs/tqDist-1.0.2/bin/quartet_distance", original_tree_path, os.path.abspath(tree_path)]
+                    command = ["./home/wiegerjs/tqDist-1.0.2/bin/quartet_distance", tree_path, os.path.abspath(original_tree_path)]
                     try:
                         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                         stdout, stderr = process.communicate()
