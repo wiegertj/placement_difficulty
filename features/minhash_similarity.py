@@ -96,9 +96,11 @@ if __name__ == '__main__':
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
-
+    counter = 0
     for file in filenames:
-
+        counter += 1
+        print(counter)
+        print(len(filenames))
         potential_path = os.path.join(os.pardir, "data/processed/features",
                                       file.replace("_reference.fasta", "") + "_minhash_0".replace("0.",
                                                                                                   "") + "_1000" + ".csv")
