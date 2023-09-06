@@ -77,6 +77,8 @@ for msa_name in filtered_filenames:
     else:
         sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
 
+    sequence_ids_sample = sequence_ids
+
     for to_query in sequence_ids_sample:
 
         # if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
