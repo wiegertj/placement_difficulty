@@ -36,7 +36,7 @@ for i in range(len(difficulty_ranges) - 1):
     samples.append(subset)
 print(samples)
 if len(samples) == 1:
-    result = samples
+    result = samples[0]
 else:
     result = pd.concat(samples)
 
