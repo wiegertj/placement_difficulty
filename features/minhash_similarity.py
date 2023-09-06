@@ -104,8 +104,7 @@ if __name__ == '__main__':
         # Skip already processed
         potential_path = os.path.join(os.pardir, "data/processed/features",
                                    msa_file.replace("_reference.fasta", "") + "_minhash_0".replace("0.",
-                                                                                        "") + "_" + str(
-                                       interval_start) + ".csv")
+                                                                                        "") + "_1000" + ".csv")
         if os.path.exists(potential_path):
             print("Skipped: " + msa_file + " already processed")
             continue
