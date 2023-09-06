@@ -32,7 +32,7 @@ for i in range(len(difficulty_ranges) - 1):
     print("Subset size " + str(lower_bound) + " - " + str(upper_bound))
     print(subset.shape)
     samples.append(subset)
-
+print(samples)
 if len(samples) == 1:
     result = samples
 else:
