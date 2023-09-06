@@ -118,7 +118,7 @@ def extract_jplace_info(directory):
     # Now you have the complete file list
     print("Finished creating filelist ... ")
     leakage_selection = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"))
-    if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
+    if not os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
         #current_df = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
         filtered_file_list = []
 
@@ -135,7 +135,6 @@ def extract_jplace_info(directory):
 
         print("Finished filtering filelist ... ")
         file_list = filtered_file_list
-    print(file_list)
     targets = []
 
     pool = multiprocessing.Pool()
