@@ -20,10 +20,10 @@ difficulty_ranges = np.arange(0.9, 1.1, 0.1)
 print(difficulties_df.shape)
 samples = []
 for i in range(len(difficulty_ranges) - 1):
-    if upper_bound == 1.1:
-        break
     lower_bound = difficulty_ranges[i]
     upper_bound = difficulty_ranges[i + 1]
+    if upper_bound == 1.1:
+        break
     print("Subset size " + str(lower_bound) + " - " + str(upper_bound))
     print(difficulties_df[
         (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound) & (
