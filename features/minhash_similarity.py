@@ -105,8 +105,6 @@ if __name__ == '__main__':
         if os.path.exists(potential_path):
             print("Found, Skipped")
             continue
-        multiprocess_minhash_similarity(file)
-
 
     pool = multiprocessing.Pool()
     results = pool.imap(multiprocess_minhash_similarity, filenames)
@@ -125,4 +123,3 @@ if __name__ == '__main__':
 
     pool.close()
     pool.join()
-
