@@ -33,7 +33,10 @@ for i in range(len(difficulty_ranges) - 1):
     print(subset.shape)
     samples.append(subset)
 
-result = pd.concat(samples)
+if len(samples) == 1:
+    result = samples
+else:
+    result = pd.concat(samples)
 
 if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     # Append to the existing file without writing the header again
