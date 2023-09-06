@@ -15,7 +15,7 @@ from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 
-def light_gbm_regressor(rfe=False, rfe_feature_n=5, shapley_calc=True, targets=[]):
+def light_gbm_regressor(rfe=False, rfe_feature_n=1, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements"], inplace=True)
     print("Median Entropy: ")
