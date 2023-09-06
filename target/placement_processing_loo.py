@@ -117,20 +117,20 @@ def extract_jplace_info(directory):
     file_list = [item for sublist in results for item in sublist]
     # Now you have the complete file list
     print("Finished creating filelist ... ")
-    leakage_selection = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"))
-    if not os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
-        #current_df = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
+
+    if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
+        current_df = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
         filtered_file_list = []
 
         for file_entry in file_list:
             dataset = file_entry[0].split('/')[4].split('_taxon')[0]
-            dataset_match = leakage_selection['dataset'].str.contains(dataset).any()
+            dataset_match = current_df['dataset'].str.contains(dataset).any()
             if dataset_match:
-                print("Found in df, added to list")
-                filtered_file_list.append(file_entry)
+                print("Found in df")
                 print(file_entry)
             if not dataset_match:
-                print("Not found in df, not added")
+                filtered_file_list.append(file_entry)
+                print("Not found in df")
                 print(file_entry)
 
         print("Finished filtering filelist ... ")
