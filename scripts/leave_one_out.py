@@ -67,8 +67,8 @@ for msa_name in filtered_filenames:
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
     MSA = AlignIO.read(filepath, 'fasta')
 
-    if len(MSA[0].seq) >= feature_config.SEQUENCE_LEN_THRESHOLD:  # if too large, skip
-        continue
+    #if len(MSA[0].seq) >= feature_config.SEQUENCE_LEN_THRESHOLD:  # if too large, skip
+     #   continue
     counter = 0
 
     # Create random sample
@@ -79,16 +79,15 @@ for msa_name in filtered_filenames:
 
     for to_query in sequence_ids_sample:
 
-        # if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
-        #   if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
-        #                                 msa_name + "_" + to_query)):  # if folder empty
-        #     print("Empty folder found for " + msa_name + " " + to_query + " filling it")
-        #    os.rmdir(os.path.join(os.pardir, "data/processed/loo_results",
-        #                         msa_name + "_" + to_query))  # delete empty folder
-        # else:
-        #   if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
-        #      print("Skipping " + msa_name + " " + to_query + " result already exists")
-        #     continue
+        if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
+            if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
+                                         msa_name + "_" + to_query)):  # if folder empty
+                print("Empty folder found for " + msa_name + " " + to_query + " filling it")
+                os.rmdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query))  # delete empty folder
+        else:
+            if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
+                print("Skipping " + msa_name + " " + to_query + " result already exists")
+                continue
 
         counter += 1
         print(to_query)
