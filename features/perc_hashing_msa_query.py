@@ -481,7 +481,7 @@ if __name__ == '__main__':
 
     for result in results:
         if result != 0:
-            print("Finished processing: " + result[1] + "with query file")
+            print("Finished processing: " + result[1] + "with query file CV")
             df = pd.DataFrame(result[0],
                               columns=['dataset', 'sampleId', "max_dist_hu", "min_dist_hu", "avg_dist_hu",
                                        "std_dist_hu", "sk_dist_hu", "kur_dist_hu",
