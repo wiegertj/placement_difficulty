@@ -117,10 +117,10 @@ if __name__ == '__main__':
     #filenames = filenames[:2]
     for msa_file in filenames:
         print(msa_file)
-        if os.path.isfile(os.path.join(os.pardir, "data/processed/features",
-                                       msa_file.replace("reference.fasta", "msa_dist.csv"))):
-            print("Found " + msa_file + " skipped")
-            continue
+        #if os.path.isfile(os.path.join(os.pardir, "data/processed/features",
+         #                              msa_file.replace("reference.fasta", "msa_dist.csv"))):
+          #  print("Found " + msa_file + " skipped")
+           # continue
         #if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 15000:
          #   print("Skipped " + msa_file + " too large")
           #  continue
