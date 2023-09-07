@@ -253,7 +253,6 @@ def compute_image_distances(msa_file):
              max_dist_pca, min_dist_pca, avg_dist_pca, std_dist_pca))
     return results, msa_file
 
-
 def compute_perceptual_hash_distance(msa_file):
     if msa_file == "neotrop_reference.fasta":
         query_file = msa_file.replace("_reference.fasta", "_query_10k.fasta")
@@ -280,12 +279,15 @@ def compute_perceptual_hash_distance(msa_file):
         lcs_values = []
         coeff_dists = []
         hash_query, normalized_query_dct_coeff = compute_dct_sign_only_hash(record_query.seq)
-
+        current_closest_taxon = ""
+        current_min_distance = float("inf")
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if record_msa.id != record_query.id:
                 hash_msa, normalized_msa_dct_coeff = compute_dct_sign_only_hash(record_msa.seq)
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
+                    if distance < current_min_distance:
+                        current_closest_taxon = record_msa.id
                     lcs = pylcs.lcs_sequence_length(hash_msa, hash_query)
                     distances.append(distance)
                     kmer_sim10 = fraction_shared_kmers(hash_msa, hash_query, 10)
@@ -305,6 +307,10 @@ def compute_perceptual_hash_distance(msa_file):
         min_ham = min(distances)
         avg_ham = sum(distances) / len(distances)
         std_ham = statistics.stdev(distances)
+
+        print(current_closest_taxon)
+        print(current_min_distance)
+        print(min_ham)
 
         sk_ham = skew(distances)
         kur_ham = kurtosis(distances, fisher=True)
@@ -385,7 +391,7 @@ def compute_perceptual_hash_distance(msa_file):
         else:
             name = msa_file.replace("_reference.fasta", "")
 
-        results.append((name, record_query.id, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham,
+        results.append((name, current_closest_taxon, record_query.id, current_closest_taxon,rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham,
                         sk_kmer_sim10, kur_kmer_sim10, rel_max_kmer_sim10, rel_min_kmer_sim10, rel_avg_kmer_sim10,
                         rel_std_kmer_sim10,
                         sk_kmer_sim15, kur_kmer_sim15, rel_max_kmer_sim15, rel_min_kmer_sim15, rel_avg_kmer_sim15,
@@ -435,7 +441,7 @@ if __name__ == '__main__':
         if result != 0:
             print("Finished processing: " + result[1] + "with query file")
             df = pd.DataFrame(result[0],
-                              columns=['dataset', 'sampleId', 'min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
+                              columns=['dataset', 'sampleId', 'current_closest_taxon_perc_ham','min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
                                        'avg_perc_hash_ham_dist',
                                        'std_perc_hash_ham_dist', 'sks_perc_hash_ham_dist',
                                        'kur_perc_hash_ham_dist', "sk_kmer_sim10", "kur_kmer_sim10",
