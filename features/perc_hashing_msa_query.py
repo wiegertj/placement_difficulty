@@ -312,10 +312,6 @@ def compute_perceptual_hash_distance(msa_file):
         avg_ham = sum(distances) / len(distances)
         std_ham = statistics.stdev(distances)
 
-        print(current_closest_taxon)
-        print(current_min_distance)
-        print(min_ham)
-
         sk_ham = skew(distances)
         kur_ham = kurtosis(distances, fisher=True)
 
