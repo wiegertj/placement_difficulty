@@ -187,8 +187,9 @@ if __name__ == '__main__':
         exec(code, feature_config.__dict__)
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    filenames = loo_selection['verbose_name'].str.replace(".phy", "_query.fasta").tolist()
+    filenames = loo_selection['verbose_name'].str.replace(".phy", "_query.fasta")
     filenames = filenames.drop_duplicates(subset=['verbose_name'], keep='first')
+    filenames = filenames["verbose_name"].to_list()
 
     if feature_config.INCUDE_TARA_BV_NEO:
         filenames = filenames + ["bv_query.fasta", "neotrop_query_10k.fasta", "tara_query.fasta"]
