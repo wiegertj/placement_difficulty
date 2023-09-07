@@ -25,7 +25,8 @@ tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "
                             usecols=lambda column: column != 'Unnamed: 0')
 tree_features = tree_features.drop_duplicates(subset=['dataset'], keep='first')
 
-tree_features_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index_col=False,
+tree_features_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"),
+                                        index_col=False,
                                         usecols=lambda column: column != 'Unnamed: 0')
 tree_features_uncertainty = tree_features_uncertainty.drop_duplicates(subset=['dataset'], keep='first')
 
@@ -53,7 +54,7 @@ for loo_dataset in loo_datasets:
             print("shape " + str(df.shape))
             continue
     except FileNotFoundError:
-        print("Not found kmer: " + file_path + " skipped " )
+        print("Not found kmer: " + file_path + " skipped ")
         continue
 
     loo_distances = pd.read_csv(os.path.join(os.pardir, "data/processed/features", loo_dataset + "_msa_dist.csv"),
@@ -62,33 +63,25 @@ for loo_dataset in loo_datasets:
     df = df.merge(loo_distances, on=["sampleId", "dataset"], how="inner")
     loo_resuls_dfs.append(df)
 
-
 loo_kmer_distances = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_kmer_distances = loo_kmer_distances.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 print("Kmer Disances SHAPE:")
 print(loo_kmer_distances.shape)
 loo_entropies = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"),
-                             index_col=False, usecols=lambda column: column != 'Unnamed: 0')
+                            index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 loo_entropies = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 
 print("LOO Entropies SHAPE:")
 print(loo_entropies.shape)
 loo_resuls_combined1 = loo_entropies.merge(loo_kmer_distances, on=["sampleId", "dataset"], how="inner")
 
-
-
-loo_resuls_combined1.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_KMER_ENTROPY_MERGE.csv"), index=False)
-
-
-
-
+loo_resuls_combined1.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_KMER_ENTROPY_MERGE.csv"),
+                            index=False)
 
 print("LOO Entropies After Merging")
 print(loo_resuls_combined1.shape)
 loo_resuls_combined2 = loo_resuls_combined1.merge(query_features, on=["sampleId", 'dataset'], how='inner')
 loo_resuls_combined2.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_QUERY.csv"), index=False)
-
-
 
 # Extract unique values of "dataset" and "sampleId" columns from both DataFrames
 unique_values_combined1 = set(loo_resuls_combined1[['dataset', 'sampleId']].itertuples(index=False, name=None))
@@ -107,11 +100,6 @@ duplicate_values_list = unique_duplicates.values.tolist()
 print("List of Duplicate Values:")
 for dataset, sampleId in duplicate_values_list:
     print(f"Dataset: {dataset}, SampleID: {sampleId}")
-
-
-
-
-
 
 print("LOO Entropies After Merging Query Features")
 print(loo_resuls_combined2.shape)
@@ -134,7 +122,7 @@ for loo_dataset in loo_datasets:
         file_path = loo_dataset + "16p_msa_perc_hash_dist.csv"
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
-        if df.shape[1] != 38:
+        if df.shape[1] != 39:
             print("Found old hash perc, skipped ")
             continue
         loo_resuls_dfs.append(df)
@@ -228,6 +216,29 @@ print(combined_df.shape)
 
 print("Create uniform sample")
 combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
+combined_df["avg_perc_ham_dist_msa"] = 0
+combined_df["std_perc_ham_dist_msa"] = 0
+combined_df["min_perc_ham_dist_msa"] = 0
+combined_df["max_perc_ham_dist_msa"] = 0
+
+dataset_counter = 0
+for dataset in combined_df['dataset'].unique():
+    dataset_counter += 1
+    print(dataset_counter)
+    subset = combined_df[combined_df['dataset'] == dataset]
+    for index_aim, row_aim in subset.iterrows():
+        row_set = []
+        for index, row in subset.iterrows():
+            if index != index_aim:
+                row_set.append(row)
+        avg_perc_ham_dist_msa = pd.DataFrame(row_set)['avg_perc_hash_ham_dist'].mean()
+        std_perc_ham_dist_msa = pd.DataFrame(row_set)['std_perc_hash_ham_dist'].std()
+        min_perc_ham_dist_msa = pd.DataFrame(row_set)['min_perc_hash_ham_dist'].min()
+        max_perc_ham_dist_msa = pd.DataFrame(row_set)['max_perc_hash_ham_dist'].max()
+        combined_df.at[index_aim, "avg_perc_ham_dist_msa"] = avg_perc_ham_dist_msa
+        combined_df.at[index_aim, "std_perc_ham_dist_msa"] = std_perc_ham_dist_msa
+        combined_df.at[index_aim, "min_perc_ham_dist_msa"] = min_perc_ham_dist_msa
+        combined_df.at[index_aim, "max_perc_ham_dist_msa"] = max_perc_ham_dist_msa
 
 
 def sample_rows(group):
