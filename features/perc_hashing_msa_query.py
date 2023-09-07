@@ -280,13 +280,17 @@ def compute_perceptual_hash_distance(msa_file):
         coeff_dists = []
         hash_query, normalized_query_dct_coeff = compute_dct_sign_only_hash(record_query.seq)
         current_closest_taxon = ""
-        current_min_distance = float("inf")
+        current_min_distance = 10000000000000000000000000
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if record_msa.id != record_query.id:
                 hash_msa, normalized_msa_dct_coeff = compute_dct_sign_only_hash(record_msa.seq)
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
+                    if current_min_distance == 10000000000000000000000000:
+                        current_min_distance = distance
+                        current_closest_taxon = record_msa.id
                     if distance < current_min_distance:
+                        current_min_distance = distance
                         current_closest_taxon = record_msa.id
                     lcs = pylcs.lcs_sequence_length(hash_msa, hash_query)
                     distances.append(distance)
