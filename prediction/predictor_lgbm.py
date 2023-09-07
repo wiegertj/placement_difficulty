@@ -31,7 +31,33 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     X = df.drop(axis=1, columns=target)
     y = df[target]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=12, stratify=X['dataset'])
+    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=12, stratify=X['dataset'])
+    # Assuming X is your feature DataFrame and y is your target variable
+    unique_datasets = X['dataset'].unique()
+
+    # Randomly shuffle the unique dataset values
+    np.random.shuffle(unique_datasets)
+
+    # Define the proportion of unique datasets to include in the training set
+    train_proportion = 0.8  # You can adjust this as needed
+
+    # Calculate the number of datasets to include in the training set
+    num_datasets_train = int(train_proportion * len(unique_datasets))
+
+    # Split the unique datasets into training and testing sets
+    datasets_train = unique_datasets[:num_datasets_train]
+    datasets_test = unique_datasets[num_datasets_train:]
+
+    # Create masks to filter the rows in X and y based on dataset values
+    train_mask = X['dataset'].isin(datasets_train)
+    test_mask = X['dataset'].isin(datasets_test)
+
+    # Split the data into training and testing sets
+    X_train = X[train_mask]
+    y_train = y[train_mask]
+    X_test = X[test_mask]
+    y_test = y[test_mask]
+
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
