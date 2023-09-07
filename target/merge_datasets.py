@@ -243,6 +243,7 @@ for dataset in combined_df['dataset'].unique():
         std_kmer_sim_msa = pd.DataFrame(row_set)['std_kmer_sim'].std()
         min_kmer_sim_msa = pd.DataFrame(row_set)['min_kmer_sim'].min()
         max_kmer_sim_msa = pd.DataFrame(row_set)['max_kmer_sim'].max()
+        print(max_kmer_sim_msa)
         combined_df.at[index_aim, "avg_perc_ham_dist_msa"] = avg_perc_ham_dist_msa
         combined_df.at[index_aim, "std_perc_ham_dist_msa"] = std_perc_ham_dist_msa
         combined_df.at[index_aim, "min_perc_ham_dist_msa"] = min_perc_ham_dist_msa
