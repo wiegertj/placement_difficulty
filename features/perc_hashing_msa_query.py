@@ -461,8 +461,7 @@ if __name__ == '__main__':
     pool.close()
     pool.join()
 
-    sys.exit()
-
+    print("Finished Perc Hash, starting CV")
     pool = multiprocessing.Pool(multiprocessing.cpu_count())
     results = pool.imap_unordered(compute_image_distances, filenames_comp)
 
