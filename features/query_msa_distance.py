@@ -114,7 +114,7 @@ if __name__ == '__main__':
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
     counter_msa = 0
-    filenames = filenames[:2]
+    #filenames = filenames[:2]
     for msa_file in filenames:
         print(msa_file)
         if os.path.isfile(os.path.join(os.pardir, "data/processed/features",
