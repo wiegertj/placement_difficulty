@@ -395,7 +395,7 @@ def compute_perceptual_hash_distance(msa_file):
         else:
             name = msa_file.replace("_reference.fasta", "")
 
-        results.append((name, current_closest_taxon, record_query.id, current_closest_taxon,rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham,
+        results.append((name, record_query.id, current_closest_taxon,rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham,
                         sk_kmer_sim10, kur_kmer_sim10, rel_max_kmer_sim10, rel_min_kmer_sim10, rel_avg_kmer_sim10,
                         rel_std_kmer_sim10,
                         sk_kmer_sim15, kur_kmer_sim15, rel_max_kmer_sim15, rel_min_kmer_sim15, rel_avg_kmer_sim15,
