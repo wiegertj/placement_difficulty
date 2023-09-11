@@ -8,14 +8,24 @@ from Bio import Phylo
 from scipy.stats import entropy
 from joblib import Parallel, delayed
 from multiprocessing import Pool
-import re
 
 
-def get_min_max(list):
+def get_min_max(list) -> (float, float):
+    """
+    Function to return min/max of a list
+    :param list: list to return the min/max of
+    :return: min and max of values
+    """
     return min(list), max(list)
 
 
-def calculate_distance(tree, clade):
+def calculate_distance(tree, clade) -> list:
+    """
+    Function to calculate the distance of a clade and every other clade in a tree
+    :param tree: tree in Biopython format
+    :param clade: clade-identifier
+    :return: list of distance values
+    """
     clades = tree.find_clades()
     distances = []
     for clade_tmp in clades:
@@ -26,6 +36,11 @@ def calculate_distance(tree, clade):
 
 
 def extract_targets(*args):
+    """
+    Function to process one single jplace-file and return targets
+    :param args: (, (root directory of the file, filename))
+    :return: name of the tree, name of the sample, normalized placement entropy, drop of lwr between two best placements, branch length distance between two best placements
+    """
     root, file = args[0]
     file_path = os.path.join(root, file)
 
@@ -41,9 +56,6 @@ def extract_targets(*args):
         folder_name = os.path.basename(os.path.dirname(file_path))
         tree_name = '_'.join(folder_name.split('_')[:2])
 
-        # Get branch count for normalization
-        tree = Phylo.read(os.path.join(os.pardir, "data/raw/reference_tree", tree_name + ".newick"),
-                          "newick")
         newick_string = data["tree"]
         num_branches = newick_string.count(":")
 
@@ -98,12 +110,25 @@ def extract_targets(*args):
             return tree_name, sample_name, entropy_val, drop, branch_distance
 
 
-def get_files_with_extension(directory):
+def get_files_with_extension(directory) -> list:
+    """
+    Function to get all jplace-files in a directory
+    :param directory: directory to search in
+    :return: file-list with results
+    """
     file_list = [(root, file) for root, dirs, files in os.walk(directory) for file in files if file.endswith('.jplace')]
     return file_list
 
 
 def extract_jplace_info(directory):
+    """
+    1. Create file-list of all jplace-files in directory in parallel
+    2. Filter for already processed files by looking at results in "data/processed/target/loo_result_entropy.csv"
+    3. Calculate targets for not found elements in parallel
+    4. Store results in "data/processed/target/loo_result_entropy.csv" or append if exists
+    :param directory: directory with EPA-ng results
+    :return:
+    """
     counter = 0
 
     print("Start creating filelist ... ")
