@@ -28,8 +28,7 @@ def nearest_sequence_features(support_file_path, taxon_name):
         tree_str = support_file.read()
         phylo_tree = Tree(tree_str)
 
-    farthest_leaf = phylo_tree.get_farthest_leaf(topology_only=True)
-    tree_depth = phylo_tree.get_distance(farthest_leaf[0], topology_only=True)
+    farthest_leaf, tree_depth = phylo_tree.get_tree_root().get_farthest_leaf(topology_only=True)
 
     target_node = phylo_tree.search_nodes(name=taxon_name)[0]
     support_values = []
