@@ -45,29 +45,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     # Assuming X is your feature DataFrame and y is your target variable
     unique_datasets = X['dataset'].unique()
 
-    # Randomly shuffle the unique dataset values
-    np.random.shuffle(unique_datasets)
-
-    # Define the proportion of unique datasets to include in the training set
-    train_proportion = 0.8  # You can adjust this as needed
-
-    # Calculate the number of datasets to include in the training set
-    num_datasets_train = int(train_proportion * len(unique_datasets))
-
-    # Split the unique datasets into training and testing sets
-    datasets_train = unique_datasets[:num_datasets_train]
-    datasets_test = unique_datasets[num_datasets_train:]
-
-    # Create masks to filter the rows in X and y based on dataset values
-    train_mask = X['dataset'].isin(datasets_train)
-    test_mask = X['dataset'].isin(datasets_test)
-
-    # Split the data into training and testing sets
-    # X_train = X[train_mask]
-    # y_train = y[train_mask]
-    # X_test = X[test_mask]
-    # y_test = y[test_mask]
-
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
@@ -100,6 +77,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 50),
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
+            'max_depth': trial.suggest_int('max_depth', 3, 20),
+            'min_child_samples': trial.suggest_int('min_child_samples', 1, 20),
+            'subsample': trial.suggest_uniform('subsample', 0.5, 1.0),
+            'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
+            'lambda_l1': trial.suggest_loguniform('lambda_l1', 1e-5, 1.0),
+            'lambda_l2': trial.suggest_loguniform('lambda_l2', 1e-5, 1.0),
+            'min_split_gain': trial.suggest_loguniform('min_split_gain', 1e-5, 0.1),
+            'bagging_freq': trial.suggest_int('bagging_freq', 1, 10),
+            'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
         }
 
         val_scores = []
