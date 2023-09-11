@@ -71,28 +71,23 @@ for msa_name in filtered_filenames:
      #   continue
     counter = 0
 
-    df_taxa = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
-    filtered_samples = df_taxa[df_taxa['dataset'] == msa_name]
-    sequence_ids_sample = filtered_samples["sampleId"].tolist()
-    # Extract the "sampleId" column from the filtered DataFrame
-
     # Create random sample
-    #if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
-     #   sequence_ids_sample = sequence_ids
-    #else:
-     #   sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
+    if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
+        sequence_ids_sample = sequence_ids
+    else:
+        sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
 
     for to_query in sequence_ids_sample:
 
-        #if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
-         #   if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
-          #                               msa_name + "_" + to_query)):  # if folder empty
-           #     print("Empty folder found for " + msa_name + " " + to_query + " filling it")
-            #    os.rmdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query))  # delete empty folder
-        #else:
-         #   if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
-          #      print("Skipping " + msa_name + " " + to_query + " result already exists")
-                #continue
+        if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
+            if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
+                                         msa_name + "_" + to_query)):  # if folder empty
+                print("Empty folder found for " + msa_name + " " + to_query + " filling it")
+                os.rmdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query))  # delete empty folder
+        else:
+            if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
+                print("Skipping " + msa_name + " " + to_query + " result already exists")
+                continue
 
         counter += 1
         print(to_query)
@@ -291,8 +286,7 @@ for msa_name in filtered_filenames:
                     rf_distances = []
                     msa_path_epa = aligned_output_file
         else:
-            original_tree_path = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference_aligned_mafft_bias.fasta.raxml.bestTree")
-
+            original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick")
             tree_path = original_tree_path  # use original tree without reestimation
 
             with open(tree_path, 'r') as file:
@@ -314,8 +308,7 @@ for msa_name in filtered_filenames:
                 tree_path = original_tree_path
                 tree_path_epa = tree_path
                 msa_path_epa = output_file
-
-                model_path_epa = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference_aligned_mafft_bias.fasta.raxml.bestModel")
+                model_path_epa = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt")
                 query_path_epa = output_file_query
 
         # ------------------------------------ run epa-ng with new RAxML-ng tree ---------------------------------------
