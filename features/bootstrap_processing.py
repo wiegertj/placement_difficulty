@@ -134,13 +134,13 @@ for file in filenames:
         results_df_nearest = results_df_nearest.append({
             'sampleId': sampleId,
             'dataset': datset,
-            'min_support': min_support,
-            'max_support': max_support,
-            'mean_support': mean_support,
-            'std_support': std_support,
-            'skewness': skewness,
-            'kurtosis': kurtosis,
-            'depth': depth
+            'min_support_nearest': min_support,
+            'max_support_nearest': max_support,
+            'mean_support_nearest': mean_support,
+            'std_support_nearest': std_support,
+            'skewness_nearest': skewness,
+            'kurtosis_nearest': kurtosis,
+            'depth_nearest': depth
         }, ignore_index=True)
 
     results_df_nearest.to_csv(os.path.join(os.pardir, "data/processed/features",
