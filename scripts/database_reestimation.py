@@ -58,10 +58,12 @@ for msa_name in filenames:
             try:
                 result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
                 mafft_output = result.stdout
+                print(mafft_output)
                 aligned_output_file = output_file_disaligned.replace("_disaligned.fasta", "_aligned_mafft_bias.fasta")
 
                 with open(aligned_output_file, "w") as output_file:
                     output_file.write(mafft_output)
+
 
                 with open(output_file_disaligned.replace("_disaligned.fasta", "_added_query.fasta"),
                           "w") as output_file:
