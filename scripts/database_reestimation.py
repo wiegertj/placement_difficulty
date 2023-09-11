@@ -42,7 +42,7 @@ for msa_name in filenames:
     MSA = AlignIO.read(filepath, 'fasta')
     print(msa_counter)
 
-    output_file_disaligned = output_file.replace(".fasta", "_disaligned.fasta")
+    output_file_disaligned = filepath.replace(".fasta", "_disaligned.fasta")
     with open(filepath, "r") as input_handle, open(output_file_disaligned, "w") as output_handle:
         for line in input_handle:
             if line.startswith('>'):
