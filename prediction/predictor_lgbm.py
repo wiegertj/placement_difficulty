@@ -86,63 +86,71 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
-    #FS = FeatureSelector(objective='regression', auto=True)
-    #selected_feats = FS.fit_transform(X_train, y_train)
-    #print(selected_feats)
-
-    train_data = lgb.Dataset(X_train, label=y_train, group=groups_train)
-
-    # Define your LightGBM parameters and train the model
-    params = {
-        'objective': 'binary',
-        'metric': 'binary_logloss',
-        'boosting_type': 'gbdt',
-        'num_iterations': 100,
-        'learning_rate': 0.1,
-    }
-
-    #model = lgb.train(params, train_data)
+    import optuna
+    import lightgbm as lgb
+    import numpy as np
+    from sklearn.metrics import mean_squared_error
+    from sklearn.model_selection import GroupKFold
 
 
 
-    #tuner = LGBMTuner(metric='rmse', trials=100, visualization=True, verbostity=2)
-    #tuner.fit(X_train, y_train)
+    def objective(trial):
+        params = {
+            'objective': 'regression',
+            'metric': 'mse',
+            'boosting_type': 'gbdt',
+            'num_leaves': trial.suggest_int('num_leaves', 2, 50),
+            'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
+        }
 
-    from verstack import Stacker
+        val_scores = []
 
-    # Create a Stacker object
-    stacker = Stacker(objective = 'regression')
+        gkf = GroupKFold(n_splits=10)
+        for train_idx, val_idx in gkf.split(X, y, groups=groups):
+            X_train, y_train = X.iloc[train_idx], y.iloc[train_idx]
+            X_val, y_val = X.iloc[val_idx], y.iloc[val_idx]
 
-    # Add your LightGBM model to the stacker
-    stacker.add_model(model, 'lightgbm')
+            train_data = lgb.Dataset(X_train, label=y_train)
+            val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
-    # Add other base models to the stacker if needed
-    # For example, you can add Random Forest and XGBoost as well
-    # stacker.add_model(random_forest_model, 'random_forest')
-    # stacker.add_model(xgboost_model, 'xgboost')
+            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000, early_stopping_rounds=10,
+                              verbose_eval=False)
 
-    # Train the stacker on your data
-    stacker.fit(X_train, y_train)
+            val_preds = model.predict(X_val)
+            val_score = mean_squared_error(y_val, val_preds)
+            val_scores.append(val_score)
 
-    # Make predictions using the stacker
-    stacker_predictions = stacker.predict(X_test)
-    tuner = stacker
-    y_pred = tuner.predict(X_test)
+        # Optimize the mean validation score across all folds
+        return sum(val_scores) / len(val_scores)
+
+    study = optuna.create_study(direction='minimize')
+    study.optimize(objective, n_trials=100)
+
+    best_params = study.best_params
+    best_score = study.best_value
+
+    print(f"Best Params: {best_params}")
+    print(f"Best MSE training: {best_score}")
+
+    # Create a LightGBM Dataset object with the entire training data
+    train_data = lgb.Dataset(X, label=y)
+
+    # Train the final model with the best parameters
+    final_model = lgb.train(best_params, train_data, num_boost_round=1000, verbose_eval=False)
+
+    # Make predictions on the test set
+    y_pred = final_model.predict(X_test)
+
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
-    model = tuner.fitted_model
-    feature_importance = tuner.feature_importances
+    feature_importance = final_model.feature_importances
 
     for feature, importance in zip(X_train.columns, feature_importance):
         print(f'{feature}: {importance}')
 
-    tuner.plot_importances()
-    tuner.plot_intermediate_values()
-    tuner.plot_optimization_history()
-    tuner.plot_param_importances()
 
     scaler = MinMaxScaler()
     #normalized_importances = scaler.fit_transform(feature_importance.reshape(-1, 1)).flatten()
