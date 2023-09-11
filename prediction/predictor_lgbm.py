@@ -109,7 +109,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
 
-            train_data = lgb.Dataset(X_train_tmp.drop(axis=1, columns=['group']), label=y_train_tmp)
+            train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
             model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000)
