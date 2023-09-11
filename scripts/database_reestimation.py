@@ -52,45 +52,45 @@ for msa_name in filenames:
                 disaligned_sequence = remove_gaps(sequence)
                 output_handle.write(disaligned_sequence + '\n')
 
-            # Use MAFFT to realign MSA without query sequence then realign query to new MSA
-            command = ["mafft", "--preservecase", output_file_disaligned]
+        # Use MAFFT to realign MSA without query sequence then realign query to new MSA
+        command = ["mafft", "--preservecase", output_file_disaligned]
 
-            try:
-                result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
-                mafft_output = result.stdout
-                print(mafft_output)
-                aligned_output_file = output_file_disaligned.replace("_disaligned.fasta", "_aligned_mafft_bias.fasta")
+        try:
+            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+            mafft_output = result.stdout
+            print(mafft_output)
+            aligned_output_file = output_file_disaligned.replace("_disaligned.fasta", "_aligned_mafft_bias.fasta")
 
-                with open(aligned_output_file, "w") as output_file:
-                    output_file.write(mafft_output)
+            with open(aligned_output_file, "w") as output_file:
+                output_file.write(mafft_output)
 
 
-                with open(output_file_disaligned.replace("_disaligned.fasta", "_added_query.fasta"),
-                          "w") as output_file:
-                    output_file.write(mafft_output)
+            with open(output_file_disaligned.replace("_disaligned.fasta", "_added_query.fasta"),
+                      "w") as output_file:
+                output_file.write(mafft_output)
 
-            except subprocess.CalledProcessError as e:
-                print("Error running MAFFT:")
-                print(e.stderr)
+        except subprocess.CalledProcessError as e:
+            print("Error running MAFFT:")
+            print(e.stderr)
 
-            # ------------------------------------------ run RAxML-ng with LOO MSA ------------------------------------------
+        # ------------------------------------------ run RAxML-ng with LOO MSA ------------------------------------------
 
-            command = ["raxml-ng", "--search", "--msa", aligned_output_file, "--model",
-                       "GTR+G", "tree", "pars{50}, rand{50}", "--redo"]
-            print(command)
+        command = ["raxml-ng", "--search", "--msa", aligned_output_file, "--model",
+                   "GTR+G", "tree", "pars{50}, rand{50}", "--redo"]
+        print(command)
 
-            try:
-                process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                stdout, stderr = process.communicate()
+        try:
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = process.communicate()
 
-                if process.returncode == 0:
-                    print("RAxML-ng process completed successfully.")
-                    print("Output:")
-                    print(stdout)
-                else:
-                    print("RAxML-ng process failed with an error.")
-                    print("Error Output:")
-                    print(stderr)
-                    continue
-            except:
-                print("problem occured RAXML")
+            if process.returncode == 0:
+                print("RAxML-ng process completed successfully.")
+                print("Output:")
+                print(stdout)
+            else:
+                print("RAxML-ng process failed with an error.")
+                print("Error Output:")
+                print(stderr)
+                continue
+        except:
+            print("problem occured RAXML")
