@@ -23,6 +23,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     print(df.columns)
     print(df.shape)
 
+    # Create a list of group IDs based on the "dataset" column
+    groups = df['dataset'].astype('category').cat.codes.tolist()
+
     if targets == []:
         target = "entropy"
     else:
@@ -31,7 +34,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     X = df.drop(axis=1, columns=target)
     y = df[target]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=12)
+    X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, groups, test_size=0.2, random_state=12)
     # Assuming X is your feature DataFrame and y is your target variable
     unique_datasets = X['dataset'].unique()
 
@@ -87,8 +90,43 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     #selected_feats = FS.fit_transform(X_train, y_train)
     #print(selected_feats)
 
-    tuner = LGBMTuner(metric='rmse', trials=100, visualization=True, verbostity=2)
-    tuner.fit(X_train, y_train)
+    train_data = lgb.Dataset(X_train, label=y_train, group=groups_train)
+
+    # Define your LightGBM parameters and train the model
+    params = {
+        'objective': 'binary',
+        'metric': 'binary_logloss',
+        'boosting_type': 'gbdt',
+        'num_iterations': 100,
+        'learning_rate': 0.1,
+    }
+
+    #model = lgb.train(params, train_data)
+
+
+
+    #tuner = LGBMTuner(metric='rmse', trials=100, visualization=True, verbostity=2)
+    #tuner.fit(X_train, y_train)
+
+    from verstack import Stacker
+
+    # Create a Stacker object
+    stacker = Stacker()
+
+    # Add your LightGBM model to the stacker
+    stacker.add_model(model, 'lightgbm')
+
+    # Add other base models to the stacker if needed
+    # For example, you can add Random Forest and XGBoost as well
+    # stacker.add_model(random_forest_model, 'random_forest')
+    # stacker.add_model(xgboost_model, 'xgboost')
+
+    # Train the stacker on your data
+    stacker.fit(X_train, y_train)
+
+    # Make predictions using the stacker
+    stacker_predictions = stacker.predict(X_test)
+    tuner = stacker
     y_pred = tuner.predict(X_test)
 
     mse = mean_squared_error(y_test, y_pred)
