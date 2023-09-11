@@ -151,11 +151,10 @@ def extract_jplace_info(directory):
             dataset = file_entry[0].split('/')[4].split('_taxon')[0]
             dataset_match = current_df['dataset'].str.contains(dataset).any()
             if dataset_match:
-                filtered_file_list.append(file_entry)
                 print("Found in df")
                 print(file_entry)
             if not dataset_match:
-
+                filtered_file_list.append(file_entry)
                 print("Not found in df")
                 print(file_entry)
 
@@ -178,11 +177,11 @@ def extract_jplace_info(directory):
 
     df = pd.DataFrame(targets,
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
-    if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_mafft_bias.csv")):
+    if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
         df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), header=False,
                   mode='a', index=False)
     else:
-        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_mafft_bias.csv"), header=True)
+        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), header=True)
 
 
 if __name__ == '__main__':
