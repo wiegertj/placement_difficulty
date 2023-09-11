@@ -137,7 +137,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     final_model = lgb.train(best_params, train_data, num_boost_round=1000)
 
     # Make predictions on the test set
-    y_pred = final_model.predict(X_test.drop(axis=1, columns=['dataset', 'sampleId', "group"]))
+    y_pred = final_model.predict(X_test.drop(axis=1, columns=[ "group"]))
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
