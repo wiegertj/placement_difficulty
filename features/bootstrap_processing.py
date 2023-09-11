@@ -111,7 +111,7 @@ for file in filenames:
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
 
     distance_file = os.path.join(os.pardir, "data/processed/features",
-                                 file.replace("_reference.fasta", "") + "16p_msa_perc_hash_dist.csv")
+                                 file.replace(".newick", "") + "_16p_msa_perc_hash_dist.csv")
     df_distances = pd.read_csv(distance_file)
 
     result_columns_nearest = ['sampleId', 'dataset', 'min_support_nearest', 'max_support_nearest', 'mean_support_nearest', 'std_support_nearest', 'skewness_nearest',
