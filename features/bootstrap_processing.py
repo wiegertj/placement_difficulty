@@ -131,7 +131,7 @@ for file in filenames:
         min_support, max_support, mean_support, std_support, skewness, kurt, depth = nearest_sequence_features(
             bootstrap_path,
             taxon_name)
-        results_df = results_df.append({
+        results_df = results_df_nearest.append({
             'sampleId': sampleId,
             'dataset': datset,
             'min_support': min_support,
@@ -144,7 +144,7 @@ for file in filenames:
         }, ignore_index=True)
 
     results_df_nearest.to_csv(os.path.join(os.pardir, "data/processed/features",
-                                 file.replace("_reference.fasta", "") +"nearest_bootstrap.csv"))
+                                 file.replace(".newick", "") +"_nearest_bootstrap.csv"))
 
     #min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_path,
                                                                                                  #  tree_path)
