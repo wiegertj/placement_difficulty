@@ -4,6 +4,10 @@ import lightgbm as lgb
 from verstack import FeatureSelector
 from verstack import LGBMTuner
 import os
+import optuna
+import numpy as np
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import GroupKFold
 import numpy as np
 import pandas as pd
 from statistics import mean
@@ -85,13 +89,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     if not rfe:
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
-
-    import optuna
-    import lightgbm as lgb
-    import numpy as np
-    from sklearn.metrics import mean_squared_error
-    from sklearn.model_selection import GroupKFold
-
 
 
     def objective(trial):
