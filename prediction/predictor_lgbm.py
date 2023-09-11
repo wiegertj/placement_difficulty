@@ -29,7 +29,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     print(df.shape)
 
     # Create a list of group IDs based on the "dataset" column
-    groups = df['dataset'].astype('category').cat.codes.tolist()
+    df["group"] = df['dataset'].astype('category').cat.codes.tolist()
+    #groups = df['dataset'].astype('category').cat.codes.tolist()
 
     if targets == []:
         target = "entropy"
@@ -39,7 +40,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     X = df.drop(axis=1, columns=target)
     y = df[target]
 
-    X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, groups, test_size=0.2,
+    X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, df["group"], test_size=0.2,
                                                                                    random_state=12)
     # Assuming X is your feature DataFrame and y is your target variable
     unique_datasets = X['dataset'].unique()
@@ -104,11 +105,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         val_scores = []
 
         gkf = GroupKFold(n_splits=10)
-        for train_idx, val_idx in gkf.split(X_train, y_train, groups=groups):
+        for train_idx, val_idx in gkf.split(X_train, y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X.iloc[train_idx], y.iloc[train_idx]
             X_val, y_val = X.iloc[val_idx], y.iloc[val_idx]
 
-            train_data = lgb.Dataset(X_train_tmp.drop(axis=1, columns=['dataset', 'sampleId']), label=y_train_tmp)
+            train_data = lgb.Dataset(X_train_tmp.drop(axis=1, columns=['dataset', 'sampleId', 'group']), label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
             model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000)
@@ -130,13 +131,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     print(f"Best MSE training: {best_score}")
 
     # Create a LightGBM Dataset object with the entire training data
-    train_data = lgb.Dataset(X_train.drop(axis=1, columns=['dataset', 'sampleId']), label=y_train)
+    train_data = lgb.Dataset(X_train.drop(axis=1, columns=['dataset', 'sampleId', "group"]), label=y_train)
 
     # Train the final model with the best parameters
     final_model = lgb.train(best_params, train_data, num_boost_round=1000, verbose_eval=False)
 
     # Make predictions on the test set
-    y_pred = final_model.predict(X_test.drop(axis=1, columns=['dataset', 'sampleId']))
+    y_pred = final_model.predict(X_test.drop(axis=1, columns=['dataset', 'sampleId', "group"]))
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
