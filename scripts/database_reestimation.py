@@ -42,6 +42,9 @@ for msa_name in filenames:
     MSA = AlignIO.read(filepath, 'fasta')
     counter = 0
 
+    output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_mafft_bias" + ".fasta")
+    output_file = os.path.abspath(output_file)
+
     output_file_disaligned = output_file.replace(".fasta", "_disaligned.fasta")
     with open(output_file, "r") as input_handle, open(output_file_disaligned, "w") as output_handle:
         for line in input_handle:
