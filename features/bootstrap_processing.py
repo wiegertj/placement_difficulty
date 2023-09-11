@@ -31,9 +31,6 @@ def nearest_sequence_features(support_file_path, taxon_name):
     farthest_leaf = phylo_tree.get_farthest_leaf()
     tree_depth = phylo_tree.get_distance(farthest_leaf[0], topology_only=True)
 
-    # Print or use the depth value as needed
-    print("Tree Depth:", tree_depth)
-
     target_node = phylo_tree.search_nodes(name=taxon_name)[0]
     support_values = []
 
@@ -42,16 +39,17 @@ def nearest_sequence_features(support_file_path, taxon_name):
         if current_node.support is not None:
             support_values.append(current_node.support)
         current_node = current_node.up
+    print(support_values)
 
-    min_support = min(support_values) / 100
-    max_support = max(support_values) / 100
-    mean_support = np.mean(support_values)
-    std_support = np.std(support_values)
-    skewness = skew(support_values)
-    kurt = kurtosis(support_values, fisher=True)
-    depth = len(support_values) / tree_depth
+    min_support_ = min(support_values) / 100
+    max_support_ = max(support_values) / 100
+    mean_support_ = np.mean(support_values)
+    std_support_ = np.std(support_values)
+    skewness_ = skew(support_values)
+    kurt_ = kurtosis(support_values, fisher=True)
+    depth_ = len(support_values) / tree_depth
 
-    return min_support, max_support, mean_support, std_support, skewness, kurt, depth
+    return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_
 
 
 def calculate_support_statistics(support_file_path):
