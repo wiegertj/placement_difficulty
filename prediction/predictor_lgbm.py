@@ -134,7 +134,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
     # Train the final model with the best parameters
-    final_model = lgb.train(best_params, train_data, num_boost_round=1000, verbose_eval=False)
+    final_model = lgb.train(best_params, train_data, num_boost_round=1000)
 
     # Make predictions on the test set
     y_pred = final_model.predict(X_test.drop(axis=1, columns=['dataset', 'sampleId', "group"]))
