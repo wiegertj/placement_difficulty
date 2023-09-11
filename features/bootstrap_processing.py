@@ -38,7 +38,6 @@ def nearest_sequence_features(support_file_path, taxon_name):
         if current_node.support is not None:
             support_values.append(current_node.support)
         current_node = current_node.up
-    print(support_values)
 
     min_support_ = min(support_values) / 100
     max_support_ = max(support_values) / 100
@@ -46,7 +45,7 @@ def nearest_sequence_features(support_file_path, taxon_name):
     std_support_ = np.std(support_values)
     skewness_ = skew(support_values)
     kurt_ = kurtosis(support_values, fisher=True)
-    depth_ = len(support_values) - 1 / tree_depth
+    depth_ = (len(support_values) - 1) / tree_depth
 
     return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_
 
