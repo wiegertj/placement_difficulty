@@ -1,9 +1,12 @@
 import statistics
+import warnings
 
 from ete3 import Tree
 import numpy as np
 from scipy.stats import skew, kurtosis
 import pandas as pd
+warnings.filterwarnings("ignore", category=RuntimeWarning)
+
 import os
 
 
