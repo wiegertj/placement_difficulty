@@ -111,7 +111,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     from verstack import Stacker
 
     # Create a Stacker object
-    stacker = Stacker()
+    stacker = Stacker(objective = 'regression')
 
     # Add your LightGBM model to the stacker
     stacker.add_model(model, 'lightgbm')
