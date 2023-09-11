@@ -27,17 +27,6 @@ for msa_name in filenames:
     print(str(msa_counter) + "/" + str(len(filenames)))
     print(msa_name)
 
-    rf_distances = []
-    bsd_distances = []
-
-    sequence_ids = []
-    try:
-        for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta"), "fasta"):
-            sequence_ids.append(record.id)
-    except FileNotFoundError:
-        print("Reference MSA not found: " + msa_name)
-        continue
-
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
     MSA = AlignIO.read(filepath, 'fasta')
     print(msa_counter)
@@ -52,45 +41,40 @@ for msa_name in filenames:
                 disaligned_sequence = remove_gaps(sequence)
                 output_handle.write(disaligned_sequence + '\n')
 
-        # Use MAFFT to realign MSA without query sequence then realign query to new MSA
-        command = ["mafft", "--preservecase", output_file_disaligned]
+    # Use MAFFT to realign MSA without query sequence then realign query to new MSA
+    command = ["mafft", "--preservecase", output_file_disaligned]
 
-        try:
-            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
-            mafft_output = result.stdout
-            print(mafft_output)
-            aligned_output_file = output_file_disaligned.replace("_disaligned.fasta", "_aligned_mafft_bias.fasta")
+    try:
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+        mafft_output = result.stdout
+        print(mafft_output)
+        aligned_output_file = output_file_disaligned.replace("_disaligned.fasta", "_aligned_mafft_bias.fasta")
 
-            with open(aligned_output_file, "w") as output_file:
-                output_file.write(mafft_output)
+        with open(aligned_output_file, "w") as output_file:
+            output_file.write(mafft_output)
 
+    except subprocess.CalledProcessError as e:
+        print("Error running MAFFT:")
+        print(e.stderr)
 
-            with open(output_file_disaligned.replace("_disaligned.fasta", "_added_query.fasta"),
-                      "w") as output_file:
-                output_file.write(mafft_output)
+    # ------------------------------------------ run RAxML-ng with LOO MSA ------------------------------------------
 
-        except subprocess.CalledProcessError as e:
-            print("Error running MAFFT:")
-            print(e.stderr)
+    command = ["raxml-ng", "--search", "--msa", aligned_output_file, "--model",
+               "GTR+G", "tree", "pars{50}, rand{50}", "--redo"]
+    print(command)
 
-        # ------------------------------------------ run RAxML-ng with LOO MSA ------------------------------------------
+    try:
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        stdout, stderr = process.communicate()
 
-        command = ["raxml-ng", "--search", "--msa", aligned_output_file, "--model",
-                   "GTR+G", "tree", "pars{50}, rand{50}", "--redo"]
-        print(command)
-
-        try:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, stderr = process.communicate()
-
-            if process.returncode == 0:
-                print("RAxML-ng process completed successfully.")
-                print("Output:")
-                print(stdout)
-            else:
-                print("RAxML-ng process failed with an error.")
-                print("Error Output:")
-                print(stderr)
-                continue
-        except:
-            print("problem occured RAXML")
+        if process.returncode == 0:
+            print("RAxML-ng process completed successfully.")
+            print("Output:")
+            print(stdout)
+        else:
+            print("RAxML-ng process failed with an error.")
+            print("Error Output:")
+            print(stderr)
+            continue
+    except:
+        print("problem occured RAXML")
