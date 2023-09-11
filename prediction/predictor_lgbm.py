@@ -31,7 +31,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     X = df.drop(axis=1, columns=target)
     y = df[target]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=12, stratify=X['dataset'])
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=12)
     # Assuming X is your feature DataFrame and y is your target variable
     unique_datasets = X['dataset'].unique()
 
