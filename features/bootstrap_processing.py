@@ -28,7 +28,7 @@ def nearest_sequence_features(support_file_path, taxon_name):
     farthest_leaf = phylo_tree.get_farthest_leaf()
 
     # Calculate the depth of the tree as the distance from the root to the farthest leaf
-    depth = phylo_tree.get_distance(farthest_leaf.name, topology_only=True)
+    depth = phylo_tree.get_distance(farthest_leaf[0], topology_only=True)
 
     # Print or use the depth value as needed
     print("Tree Depth:", depth)
