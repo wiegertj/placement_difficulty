@@ -40,13 +40,10 @@ for msa_name in filenames:
 
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
     MSA = AlignIO.read(filepath, 'fasta')
-    counter = 0
-
-    output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_mafft_bias" + ".fasta")
-    output_file = os.path.abspath(output_file)
+    print(msa_counter)
 
     output_file_disaligned = output_file.replace(".fasta", "_disaligned.fasta")
-    with open(output_file, "r") as input_handle, open(output_file_disaligned, "w") as output_handle:
+    with open(filepath, "r") as input_handle, open(output_file_disaligned, "w") as output_handle:
         for line in input_handle:
             if line.startswith('>'):
                 output_handle.write(line)
