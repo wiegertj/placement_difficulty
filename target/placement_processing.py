@@ -10,13 +10,10 @@ from Bio import Phylo
 
 def calculate_distance(tree, clade) -> list:
     """
-    Computes the distance between a node in a tree and all other nodes
-
-            Parameters:
-                    :param tree: tree in Biopython format
-
-            Returns:
-                    :return list:
+    Function for calculating the distances between a clade and all other ones
+    :param tree: Biopython tree
+    :param clade: Clade to compute the distances for in the tree
+    :return:
     """
     clades = tree.find_clades()
     distances = []
@@ -27,19 +24,17 @@ def calculate_distance(tree, clade) -> list:
     return distances
 
 
-def process_placements(*args):
+def process_placements(*args) -> (str, float, float, float):
     """
-    Computes targets (entropy, lwr_drop, branch length distance between best palcements)
-
-            Parameters:
-                    :param *args[1]: (placement from jplace-file, tree as newick string, max-dist nodes, min-dist nodes, number of branches
+    Function for processing a single placement
+    :param args: (, (jplace placement, tree in newick format string, max-dist int, min-dist int, no. of branches))
+    :return: (sample_name, normalized entropy of placements, drop of lwr between best two placements, branch distance between best two placement)
     """
-    # calculate entropy of placements
     placement, tree, max_distance, min_distance, num_branches = args[0]
     sample_name = placement['n'][0]
     probabilities = placement['p']
     like_weight_ratios = [tup[2] for tup in probabilities]
-    entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)
+    entropy_val = entropy(like_weight_ratios, base=2) / math.log2(num_branches)  # normalized entropy
 
     # calculate drop in lwr between best two branches
     drop = 0
@@ -71,14 +66,10 @@ def process_placements(*args):
 
 def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
     """
-    Extractrs all targets from bv, tara and neotrop
-
-            Parameters:
-                    :param jplace_file: file path to the placements
-                    :param tree_file: file path to the newick tree
-
-            Returns:
-                    :return pd.DataFrame: result dataframe
+    Function to process Neotrop, BV and Tara placements
+    :param jplace_file: Jplace-file name for either neotrop, BV or Tara in data/raw/placements
+    :param tree_file: Name of the tree-file in data/raw/reference_tree
+    :return: Dataframe with the targets
     """
     tree_file_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_file)
 
@@ -93,7 +84,7 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
         print("Calculated list of distances ... start finding min/max")
 
         if tree_file == "neotrop.newick":
-            max_distance = 4.668786892515589
+            max_distance = 4.668786892515589  # precalculated values
             min_distance = 0.014107303220626066
         elif tree_file == "bv.newick":
             max_distance = 3.5175978763653024
