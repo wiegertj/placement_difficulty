@@ -143,7 +143,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
-    feature_importance = final_model.feature_importances
+    feature_importance = final_model.feature_importance(importance_type='gain')  # You can also use 'gain'
+
 
     for feature, importance in zip(X_train.columns, feature_importance):
         print(f'{feature}: {importance}')
