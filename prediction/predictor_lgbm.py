@@ -104,11 +104,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         val_scores = []
 
         gkf = GroupKFold(n_splits=10)
-        for train_idx, val_idx in gkf.split(X, y, groups=groups):
-            X_train, y_train = X.iloc[train_idx], y.iloc[train_idx]
+        for train_idx, val_idx in gkf.split(X_train, y_train, groups=groups):
+            X_train_tmp, y_train_tmp = X.iloc[train_idx], y.iloc[train_idx]
             X_val, y_val = X.iloc[val_idx], y.iloc[val_idx]
 
-            train_data = lgb.Dataset(X_train.drop(axis=1, columns=['dataset', 'sampleId']), label=y_train)
+            train_data = lgb.Dataset(X_train_tmp.drop(axis=1, columns=['dataset', 'sampleId']), label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
             model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000)
