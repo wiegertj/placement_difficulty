@@ -21,7 +21,8 @@ import matplotlib.pyplot as plt
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
-    df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "current_closest_taxon_perc_ham", "difficult"], inplace=True)
+    df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "current_closest_taxon_perc_ham", "difficult"],
+            inplace=True)
     print("Median Entropy: ")
     print(df["entropy"].median())
     print(df.columns)
@@ -38,7 +39,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     X = df.drop(axis=1, columns=target)
     y = df[target]
 
-    X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, groups, test_size=0.2, random_state=12)
+    X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, groups, test_size=0.2,
+                                                                                   random_state=12)
     # Assuming X is your feature DataFrame and y is your target variable
     unique_datasets = X['dataset'].unique()
 
@@ -60,10 +62,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     test_mask = X['dataset'].isin(datasets_test)
 
     # Split the data into training and testing sets
-    #X_train = X[train_mask]
-    #y_train = y[train_mask]
-    #X_test = X[test_mask]
-    #y_test = y[test_mask]
+    # X_train = X[train_mask]
+    # y_train = y[train_mask]
+    # X_test = X[test_mask]
+    # y_test = y[test_mask]
 
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
@@ -90,7 +92,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
-
     def objective(trial):
         params = {
             'objective': 'regression',
@@ -107,7 +108,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             X_train, y_train = X.iloc[train_idx], y.iloc[train_idx]
             X_val, y_val = X.iloc[val_idx], y.iloc[val_idx]
 
-            train_data = lgb.Dataset(X_train, label=y_train)
+            train_data = lgb.Dataset(X_train.drop(axis=1, columns=['dataset', 'sampleId']), label=y_train)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
             model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000)
@@ -129,14 +130,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     print(f"Best MSE training: {best_score}")
 
     # Create a LightGBM Dataset object with the entire training data
-    train_data = lgb.Dataset(X, label=y)
+    train_data = lgb.Dataset(X_train.drop(axis=1, columns=['dataset', 'sampleId']), label=y_train)
 
     # Train the final model with the best parameters
     final_model = lgb.train(best_params, train_data, num_boost_round=1000, verbose_eval=False)
 
     # Make predictions on the test set
-    y_pred = final_model.predict(X_test)
-
+    y_pred = final_model.predict(X_test.drop(axis=1, columns=['dataset', 'sampleId']))
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
@@ -147,9 +147,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     for feature, importance in zip(X_train.columns, feature_importance):
         print(f'{feature}: {importance}')
 
-
     scaler = MinMaxScaler()
-    #normalized_importances = scaler.fit_transform(feature_importance.reshape(-1, 1)).flatten()
+    # normalized_importances = scaler.fit_transform(feature_importance.reshape(-1, 1)).flatten()
     importance_df = pd.DataFrame({'Feature': X_train.columns, 'Importance': feature_importance})
     importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
@@ -230,4 +229,3 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
 
 
 light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
-
