@@ -28,7 +28,7 @@ def nearest_sequence_features(support_file_path, taxon_name):
         tree_str = support_file.read()
         phylo_tree = Tree(tree_str)
 
-    farthest_leaf = phylo_tree.get_farthest_leaf()
+    farthest_leaf = phylo_tree.get_farthest_leaf(topology_only=True)
     tree_depth = phylo_tree.get_distance(farthest_leaf[0], topology_only=True)
 
     target_node = phylo_tree.search_nodes(name=taxon_name)[0]
@@ -140,7 +140,7 @@ for file in filenames:
             'mean_support_nearest': mean_support,
             'std_support_nearest': std_support,
             'skewness_nearest': skewness,
-            'kurtosis_nearest': kurtosis,
+            'kurtosis_nearest': kurt,
             'depth_nearest': depth
         }, ignore_index=True)
 
