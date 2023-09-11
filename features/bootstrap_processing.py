@@ -130,7 +130,7 @@ for file in filenames:
         sampleId = row['sampleId']
         datset = row['dataset']
         min_support, max_support, mean_support, std_support, skewness, kurt, depth = nearest_sequence_features(
-            bootstrap_path,
+            support_path,
             taxon_name)
         results_df_nearest = results_df_nearest.append({
             'sampleId': sampleId,
