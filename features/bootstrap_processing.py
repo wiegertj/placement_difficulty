@@ -131,7 +131,7 @@ for file in filenames:
         min_support, max_support, mean_support, std_support, skewness, kurt, depth = nearest_sequence_features(
             bootstrap_path,
             taxon_name)
-        results_df = results_df_nearest.append({
+        results_df_nearest = results_df_nearest.append({
             'sampleId': sampleId,
             'dataset': datset,
             'min_support': min_support,
