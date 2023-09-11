@@ -25,6 +25,14 @@ def nearest_sequence_features(support_file_path, taxon_name):
         tree_str = support_file.read()
         phylo_tree = Tree(tree_str)
 
+    farthest_leaf = phylo_tree.get_farthest_leaf()
+
+    # Calculate the depth of the tree as the distance from the root to the farthest leaf
+    depth = phylo_tree.get_distance(farthest_leaf, topology_only=True)
+
+    # Print or use the depth value as needed
+    print("Tree Depth:", depth)
+
     target_node = phylo_tree.search_nodes(name=taxon_name)[0]
     support_values = []
 
