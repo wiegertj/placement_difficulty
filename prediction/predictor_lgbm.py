@@ -109,7 +109,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             X_train_tmp, y_train_tmp = X_train.iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.iloc[val_idx], y_train.iloc[val_idx]
 
-            train_data = lgb.Dataset(X_train_tmp.drop(axis=1, columns=['dataset', 'sampleId', 'group']), label=y_train_tmp)
+            train_data = lgb.Dataset(X_train_tmp.drop(axis=1, columns=['group']), label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
             model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000)
@@ -131,7 +131,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     print(f"Best MSE training: {best_score}")
 
     # Create a LightGBM Dataset object with the entire training data
-    train_data = lgb.Dataset(X_train.drop(axis=1, columns=['dataset', 'sampleId', "group"]), label=y_train)
+    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
     # Train the final model with the best parameters
     final_model = lgb.train(best_params, train_data, num_boost_round=1000, verbose_eval=False)
