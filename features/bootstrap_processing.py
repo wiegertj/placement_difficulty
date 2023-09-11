@@ -141,7 +141,7 @@ for file in filenames:
                                  file.replace("_reference.fasta", "") +"nearest_bootstrap.csv"))
 
     #min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_path,
-                                                                                                   tree_path)
+                                                                                                 #  tree_path)
 
     #results.append(
      #   (file, min_support, max_support, mean_support, std_support, skewness, kurt, min_rf, max_rf, mean_rf, std_dev_rf,
