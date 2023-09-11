@@ -6,11 +6,18 @@ import math
 import io
 from scipy.stats import entropy
 from Bio import Phylo
-from joblib import Parallel, delayed
-from multiprocessing import Pool
 
 
-def calculate_distance(tree, clade):
+def calculate_distance(tree, clade) -> list:
+    """
+    Computes the distance between a node in a tree and all other nodes
+
+            Parameters:
+                    :param tree: tree in Biopython format
+
+            Returns:
+                    :return list:
+    """
     clades = tree.find_clades()
     distances = []
     for clade_tmp in clades:
@@ -20,11 +27,14 @@ def calculate_distance(tree, clade):
     return distances
 
 
-def get_min_max(list):
-    return min(list), max(list)
-
-
 def process_placements(*args):
+    """
+    Computes targets (entropy, lwr_drop, branch length distance between best palcements)
+
+            Parameters:
+                    :param *args[1]: (placement from jplace-file, tree as newick string, max-dist nodes, min-dist nodes, number of branches
+    """
+    # calculate entropy of placements
     placement, tree, max_distance, min_distance, num_branches = args[0]
     sample_name = placement['n'][0]
     probabilities = placement['p']
@@ -60,8 +70,16 @@ def process_placements(*args):
 
 
 def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
-    # Get branch count for normalization
-    tree = Phylo.read(os.path.join(os.pardir, "data/raw/reference_tree", tree_file), "newick")
+    """
+    Extractrs all targets from bv, tara and neotrop
+
+            Parameters:
+                    :param jplace_file: file path to the placements
+                    :param tree_file: file path to the newick tree
+
+            Returns:
+                    :return pd.DataFrame: result dataframe
+    """
     tree_file_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_file)
 
     with open(tree_file_path, 'r') as file:
@@ -72,23 +90,7 @@ def extract_targets(jplace_file, tree_file) -> pd.DataFrame:
     with open(jplace_file, 'r') as f:
         jplace_data = json.load(f)
 
-        #num_jobs = -1  # Set to the number of CPU cores; -1 means using all available cores
-
-        #all_clades = [(tree, clade1) for clade1 in tree.find_clades()]
-
-        #distances = Parallel(n_jobs=num_jobs)(delayed(calculate_distance)(*args) for args in all_clades)
-
         print("Calculated list of distances ... start finding min/max")
-
-        #with Pool(processes=os.cpu_count()) as pool:
-         #   results = pool.map(get_min_max, distances)
-
-        # Extract the minimum and maximum values from the results
-        #min_distance = min(result[0] for result in results)
-        #max_distance = max(result[1] for result in results)
-
-        #print("Calculated max distance: " + str(max_distance))
-        #print("Calculated min distance: " + str(min_distance))
 
         if tree_file == "neotrop.newick":
             max_distance = 4.668786892515589
