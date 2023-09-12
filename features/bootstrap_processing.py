@@ -154,20 +154,26 @@ for file in filenames:
 
     results_df_nearest[float_columns] = results_df_nearest[float_columns].astype(float)
 
+    # Initialize an empty list to store dictionaries
+    results_data = []
+
     for index, row in df_distances.iterrows():
         taxon_name = row['current_closest_taxon_perc_ham']
         sampleId = row['sampleId']
         datset = row['dataset']
 
-        min_support, max_support, mean_support, std_support, skewness, kurt, depth, min_branch_len_nearest,max_branch_len_nearest,mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest = nearest_sequence_features(
+        min_support, max_support, mean_support, std_support, skewness, kurt, depth, min_branch_len_nearest, max_branch_len_nearest, mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest = nearest_sequence_features(
             support_path,
             taxon_name)
+
         if datset == "20736_0" and sampleId == "taxon78":
             print(mean_support)
             print("--------------------------------------------------------------------------------------------")
             print("For row: " + sampleId)
             print("Nearest: " + taxon_name)
-        results_df_nearest = results_df_nearest.append({
+
+        # Append a dictionary to the list
+        results_data.append({
             'sampleId': sampleId,
             'dataset': datset,
             'min_support_nearest': min_support,
@@ -183,7 +189,10 @@ for file in filenames:
             "std_branch_len_nearest": std_branch_len_nearest,
             "sk_branch_len_nearest": sk_branch_len_nearest,
             "kurt_branch_len_nearest": kurt_branch_len_nearest
-        }, ignore_index=True)
+        })
+
+    # Create a DataFrame from the list of dictionaries
+    results_df_nearest = pd.DataFrame(results_data)
 
     results_df_nearest.to_csv(os.path.join(os.pardir, "data/processed/features",
                                  file.replace(".newick", "") +"_nearest_bootstrap.csv"))
