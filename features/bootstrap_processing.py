@@ -134,6 +134,15 @@ for file in filenames:
     result_columns_nearest = ['sampleId', 'dataset', 'min_support_nearest', 'max_support_nearest', 'mean_support_nearest', 'std_support_nearest', 'skewness_nearest',
                       'kurtosis_nearest', 'depth_nearest', "min_branch_len_nearest","max_branch_len_nearest","mean_branch_len_nearest", "std_branch_len_nearest", "sk_branch_len_nearest", "kurt_branch_len_nearest"]
     results_df_nearest = pd.DataFrame(columns=result_columns_nearest)
+    float_columns = [
+        'min_support_nearest', 'max_support_nearest', 'mean_support_nearest',
+        'std_support_nearest', 'skewness_nearest', 'kurtosis_nearest',
+        'depth_nearest', 'min_branch_len_nearest', 'max_branch_len_nearest',
+        'mean_branch_len_nearest', 'std_branch_len_nearest', 'sk_branch_len_nearest',
+        'kurt_branch_len_nearest'
+    ]
+
+    results_df_nearest[float_columns] = results_df_nearest[float_columns].astype(float)
 
     for index, row in df_distances.iterrows():
         taxon_name = row['current_closest_taxon_perc_ham']
