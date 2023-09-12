@@ -29,25 +29,36 @@ def nearest_sequence_features(support_file_path, taxon_name):
         phylo_tree = Tree(tree_str)
 
     farthest_leaf, tree_depth = phylo_tree.get_tree_root().get_farthest_leaf(topology_only=True)
+    total_tree_length = sum(node.dist for node in phylo_tree.traverse())
 
     target_node = phylo_tree.search_nodes(name=taxon_name)[0]
     support_values = []
+    branch_lengths = []
 
     current_node = target_node
     while current_node:
         if current_node.support is not None:
             support_values.append(current_node.support)
+        branch_lengths.append(current_node.dist / total_tree_length)
         current_node = current_node.up
 
     min_support_ = min(support_values) / 100
     max_support_ = max(support_values) / 100
-    mean_support_ = np.mean(support_values)
-    std_support_ = np.std(support_values)
+    mean_support_ = np.mean(support_values) / 100
+    std_support_ = np.std(support_values) / 100
     skewness_ = skew(support_values)
     kurt_ = kurtosis(support_values, fisher=True)
     depth_ = (len(support_values) - 1) / tree_depth
 
-    return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_
+    min_branch_len_nearest = min(branch_lengths)
+    max_branch_len_nearest = max(branch_lengths)
+    mean_branch_len_nearest = np.mean(branch_lengths)
+    std_branch_len_nearest = np.std(branch_lengths)
+    sk_branch_len_nearest = skew(branch_lengths)
+    kurt_branch_len_nearest = kurtosis(branch_lengths, fisher=True)
+
+    return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_,min_branch_len_nearest,max_branch_len_nearest,mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest
+
 
 
 def calculate_support_statistics(support_file_path):
@@ -120,14 +131,14 @@ for file in filenames:
     df_distances = pd.read_csv(distance_file)
 
     result_columns_nearest = ['sampleId', 'dataset', 'min_support_nearest', 'max_support_nearest', 'mean_support_nearest', 'std_support_nearest', 'skewness_nearest',
-                      'kurtosis_nearest', 'depth_nearest']
+                      'kurtosis_nearest', 'depth_nearest', "min_branch_len_nearest","max_branch_len_nearest","mean_branch_len_nearest", "std_branch_len_nearest", "sk_branch_len_nearest", "kurt_branch_len_nearest"]
     results_df_nearest = pd.DataFrame(columns=result_columns_nearest)
 
     for index, row in df_distances.iterrows():
         taxon_name = row['current_closest_taxon_perc_ham']
         sampleId = row['sampleId']
         datset = row['dataset']
-        min_support, max_support, mean_support, std_support, skewness, kurt, depth = nearest_sequence_features(
+        min_support, max_support, mean_support, std_support, skewness, kurt, depth, min_branch_len_nearest,max_branch_len_nearest,mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest = nearest_sequence_features(
             support_path,
             taxon_name)
         results_df_nearest = results_df_nearest.append({
@@ -139,7 +150,13 @@ for file in filenames:
             'std_support_nearest': std_support,
             'skewness_nearest': skewness,
             'kurtosis_nearest': kurt,
-            'depth_nearest': depth
+            'depth_nearest': depth,
+            "min_branch_len_nearest": min_branch_len_nearest,
+            "max_branch_len_nearest": max_branch_len_nearest,
+            "mean_branch_len_nearest": mean_branch_len_nearest,
+            "std_branch_len_nearest": std_branch_len_nearest,
+            "sk_branch_len_nearest": sk_branch_len_nearest,
+            "kurt_branch_len_nearest": kurt_branch_len_nearest
         }, ignore_index=True)
 
     results_df_nearest.to_csv(os.path.join(os.pardir, "data/processed/features",
