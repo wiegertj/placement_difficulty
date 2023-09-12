@@ -30,7 +30,7 @@ for i in range(len(difficulty_ranges) - 1):
     print(difficulties_df[
         (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)].shape)
     subset = difficulties_df[
-        (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)].sample(10)
+        (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)].sample(8)
     print("Subset size " + str(lower_bound) + " - " + str(upper_bound))
     print(subset.shape)
     samples.append(subset)
