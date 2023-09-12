@@ -297,6 +297,7 @@ if __name__ == '__main__':
         # Create bloom filters for each sequence in the MSA
         print(msa_file)
         for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
+            print(str(record.seq))
             kmers = filter_gapped_kmers(str(record.seq), feature_config.K_MER_LENGTH,
                                         feature_config.K_MER_MAX_GAP_PERCENTAGE, isAA)
             kmers = set(kmers)
