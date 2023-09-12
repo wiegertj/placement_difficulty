@@ -20,7 +20,7 @@ with open(module_path, 'rb') as module_file:
 
 def filter_gapped_kmers(sequence, isAA, k=feature_config.K_MER_LENGTH,
                         max_gap_percent=feature_config.K_MER_MAX_GAP_PERCENTAGE,
-                        max_n_percentage=feature_config.K_MER_MAX_N_PERCENTAGE) -> list:
+                        max_n_percentage=feature_config.K_MER_MAX_N_PERCENTAGE):
     """
     Returns a list of k-mers for the given sequence considering a max_gap_percentage.
     Ambiguity code gets resolved on the fly by considering each possible k-mer.
