@@ -76,9 +76,8 @@ def filter_gapped_kmers(sequence, isAA, k=feature_config.K_MER_LENGTH,
                     else:
                         kmer_list.append(kmer)
     else:
-        print(len(sequence))
-        for i in range(int(len(sequence)) - k + 1):
-            kmer = sequence[i:i + k]
+        for i in range(len(sequence) - int(k) + 1):
+            kmer = sequence[i:i + int(k)]
             gap_count = kmer.count('-')
             if gap_count / k <= max_gap_percent:
                 kmer_list.append(kmer)
