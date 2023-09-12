@@ -246,7 +246,7 @@ if __name__ == '__main__':
     counter_msa = 0
     for msa_file in filenames:
         isAA = False
-        datatype = loo_selection[loo_selection["data_type"] == msa_file.replace("_reference.fasta", ".phy")][0]["data_type"]
+        datatype = loo_selection[loo_selection["data_type"] == msa_file.replace("_reference.fasta", ".phy")].iloc[0]["data_type"]
         if datatype == "AA" or datatype == "DataType.AA":
             isAA = True
         print(isAA)
