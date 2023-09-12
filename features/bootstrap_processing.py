@@ -53,7 +53,7 @@ def nearest_sequence_features(support_file_path, taxon_name):
     min_support_ = min(support_values) / 100
     max_support_ = max(support_values) / 100
     mean_support_ = statistics.mean(support_values) / 100
-    std_support_ = statistics.std(support_values) / 100
+    std_support_ = statistics.stdev(support_values) / 100
     skewness_ = skew(support_values)
     kurt_ = kurtosis(support_values, fisher=True)
     depth_ = (len(support_values) - 1) / tree_depth
@@ -61,7 +61,7 @@ def nearest_sequence_features(support_file_path, taxon_name):
     min_branch_len_nearest = min(branch_lengths)
     max_branch_len_nearest = max(branch_lengths)
     mean_branch_len_nearest = statistics.mean(branch_lengths)
-    std_branch_len_nearest = statistics.std(branch_lengths)
+    std_branch_len_nearest = statistics.stdev(branch_lengths)
     sk_branch_len_nearest = skew(branch_lengths)
     kurt_branch_len_nearest = kurtosis(branch_lengths, fisher=True)
 
