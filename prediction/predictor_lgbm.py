@@ -76,7 +76,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
 
 
     def objective(trial):
-        pruning_callback = LightGBMPruningCallback(trial, 'auc', 'valid')
+        callbacks = [LightGBMPruningCallback(trial, 'rmse')]
 
         params = {
             'objective': 'regression',
@@ -105,7 +105,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
-            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000, callbacks=pruning_callback)
+            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000, callbacks=callbacks)
 
             val_preds = model.predict(X_val)
             val_score = mean_squared_error(y_val, val_preds)
