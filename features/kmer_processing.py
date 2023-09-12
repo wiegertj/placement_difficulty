@@ -249,6 +249,7 @@ if __name__ == '__main__':
         datatype = loo_selection[loo_selection["data_type"] == msa_file.replace("_reference.fasta", ".phy")][0]["data_type"]
         if datatype == "AA" or datatype == "DataType.AA":
             isAA = True
+        print(isAA)
         print(str(counter_msa) + "/" + str(len(filenames)))
         counter_msa += 1
         print("started: " + msa_file)
