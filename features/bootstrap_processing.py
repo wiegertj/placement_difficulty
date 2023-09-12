@@ -53,8 +53,10 @@ def nearest_sequence_features(support_file_path, taxon_name):
     min_support_ = min(support_values) / 100
     max_support_ = max(support_values) / 100
     mean_support_ = statistics.mean(support_values) / 100
-    print(mean_support_)
     std_support_ = statistics.stdev(support_values) / 100
+    if support_file_path.__contains__("20736_0"):
+        print(mean_support_)
+
     skewness_ = skew(support_values)
     kurt_ = kurtosis(support_values, fisher=True)
     depth_ = (len(support_values) - 1) / tree_depth
