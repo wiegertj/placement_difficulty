@@ -267,7 +267,7 @@ if __name__ == '__main__':
                                           1000) + ".csv")
         if os.path.exists(potential_path):
             print("Skipped: " + msa_file + " already processed")
-            continue
+            #continue
 
         results = []
 
@@ -300,6 +300,7 @@ if __name__ == '__main__':
             kmers = filter_gapped_kmers(str(record.seq), feature_config.K_MER_LENGTH,
                                         feature_config.K_MER_MAX_GAP_PERCENTAGE, isAA)
             kmers = set(kmers)
+            print(kmers)
             if len(kmers) == 0:
                 print("Skipped")
                 continue
