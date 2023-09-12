@@ -15,8 +15,9 @@ if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     print(names_used)
     print(len(names_used))
     difficulties_df = difficulties_df[~difficulties_df["verbose_name"].isin(names_used)]
+    difficulties_df = difficulties_df[difficulties_df["data_type"] == "AA" or difficulties_df["DataType"] == "AA"]
 
-difficulty_ranges = np.arange(0.1, 1.1, 0.1)
+difficulty_ranges = np.arange(0.1, 1.0, 0.1)
 print(difficulties_df.shape)
 samples = []
 for i in range(len(difficulty_ranges) - 1):
