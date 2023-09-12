@@ -276,6 +276,7 @@ def compute_perceptual_hash_distance(msa_file):
         kmer_sims10 = []
         kmer_sims15 = []
         kmer_sims25 = []
+        kmer_sims50 = []
         lcs_values = []
         coeff_dists = []
         hash_query, normalized_query_dct_coeff = compute_dct_sign_only_hash(record_query.seq)
@@ -297,9 +298,11 @@ def compute_perceptual_hash_distance(msa_file):
                     kmer_sim10 = fraction_shared_kmers(hash_msa, hash_query, 10)
                     kmer_sim15 = fraction_shared_kmers(hash_msa, hash_query, 15)
                     kmer_sim25 = fraction_shared_kmers(hash_msa, hash_query, 25)
+                    kmer_sim50 = fraction_shared_kmers(hash_msa, hash_query, 50)
                     kmer_sims15.append(kmer_sim15)
                     kmer_sims10.append(kmer_sim10)
                     kmer_sims25.append(kmer_sim25)
+                    kmer_sims50.append(kmer_sim50)
                     lcs_values.append(lcs)
                     difference = normalized_msa_dct_coeff.flatten() - normalized_query_dct_coeff.flatten()
                     coeff_dist = np.linalg.norm(difference)
@@ -367,6 +370,19 @@ def compute_perceptual_hash_distance(msa_file):
         rel_avg_kmer_sim25 = avg_kmer_sim25
         rel_std_kmer_sim25 = std_kmer_sim25
 
+        max_kmer_sim50 = max(kmer_sims50)
+        min_kmer_sim50 = min(kmer_sims50)
+        avg_kmer_sim50 = sum(kmer_sims50) / len(kmer_sims50)
+        std_kmer_sim50 = statistics.stdev(kmer_sims50)
+
+        sk_kmer_sim50 = skew(kmer_sims50)
+        kur_kmer_sim50 = kurtosis(kmer_sims50, fisher=True)
+
+        rel_max_kmer_sim50 = max_kmer_sim50
+        rel_min_kmer_sim50 = min_kmer_sim50
+        rel_avg_kmer_sim50 = avg_kmer_sim50
+        rel_std_kmer_sim50 = std_kmer_sim50
+
         max_ham_lcs = max(lcs_values)
         min_ham_lcs = min(lcs_values)
         avg_ham_lcs = sum(lcs_values) / len(lcs_values)
@@ -398,6 +414,8 @@ def compute_perceptual_hash_distance(msa_file):
                         rel_std_kmer_sim15,
                         sk_kmer_sim25, kur_kmer_sim25, rel_max_kmer_sim25, rel_min_kmer_sim25, rel_avg_kmer_sim25,
                         rel_std_kmer_sim25,
+                        sk_kmer_sim50, kur_kmer_sim50, rel_max_kmer_sim50, rel_min_kmer_sim50, rel_avg_kmer_sim50,
+                        rel_std_kmer_sim50,
                         sk_ham_lcs,
                         kur_ham_lcs, rel_max_ham_lcs, rel_min_ham_lcs, rel_avg_ham_lcs, rel_std_ham_lcs,
                         max_dist_coeff, min_dist_coeff, std_dist_coeff, avg_dist_coeff, sk_dist_coeff, kur_dist_coeff))
@@ -453,6 +471,9 @@ if __name__ == '__main__':
                                        "sk_kmer_sim25", "kur_kmer_sim25", "rel_max_kmer_sim25", "rel_min_kmer_sim25",
                                        "rel_avg_kmer_sim25",
                                        "rel_std_kmer_sim25",
+                                       "sk_kmer_sim50", "kur_kmer_sim50", "rel_max_kmer_sim50", "rel_min_kmer_sim50",
+                                       "rel_avg_kmer_sim50",
+                                       "rel_std_kmer_sim50",
                                        "sk_perc_hash_lcs",
                                        "kur_perc_hash_lcs", "max_perc_hash_lcs", "min_perc_hash_lcs",
                                        "avg_perc_hash_lcs",
@@ -474,7 +495,7 @@ if __name__ == '__main__':
         if os.path.exists(os.path.join(os.pardir, "data/processed/features",
                                    file.replace("_reference.fasta", "") + "_msa_im_comp.csv")):
             print("Found existing one ... ")
-            filenames_comp.remove(file)
+            #filenames_comp.remove(file)
     print(len(filenames_comp))
     pool = multiprocessing.Pool(multiprocessing.cpu_count())
     results = pool.imap_unordered(compute_image_distances, filenames_comp)
