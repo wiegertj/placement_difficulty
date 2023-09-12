@@ -6,6 +6,7 @@ import numpy as np
 from scipy.stats import skew, kurtosis
 import pandas as pd
 warnings.filterwarnings("ignore", category=RuntimeWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 import os
 
