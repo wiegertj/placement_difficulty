@@ -93,7 +93,7 @@ def compute_hamming_distance(hash_value_1, hash_value_2):
 
 def compute_dct_sign_only_hash(sequence, isAA):
     numeric_sequence = dna_to_numeric(sequence, isAA)
-    image = encode_dna_as_image(numeric_sequence, isAA)
+    image = encode_dna_as_image(numeric_sequence)
 
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
