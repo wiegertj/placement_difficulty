@@ -162,8 +162,9 @@ for file in filenames:
         min_support, max_support, mean_support, std_support, skewness, kurt, depth, min_branch_len_nearest,max_branch_len_nearest,mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest = nearest_sequence_features(
             support_path,
             taxon_name)
-        if datset == "20736_0":
+        if datset == "20736_0" and sampleId == "taxon78":
             print(mean_support)
+            print("--------------------------------------------------------------------------------------------")
             print("For row: " + sampleId)
             print("Nearest: " + taxon_name)
         results_df_nearest = results_df_nearest.append({
