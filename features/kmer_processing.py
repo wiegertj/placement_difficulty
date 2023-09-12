@@ -18,7 +18,7 @@ with open(module_path, 'rb') as module_file:
     exec(code, feature_config.__dict__)
 
 
-def filter_gapped_kmers(sequence, k=feature_config.K_MER_LENGTH,
+def filter_gapped_kmers(sequence, isAA, k=feature_config.K_MER_LENGTH,
                         max_gap_percent=feature_config.K_MER_MAX_GAP_PERCENTAGE,
                         max_n_percentage=feature_config.K_MER_MAX_N_PERCENTAGE) -> list:
     """
@@ -52,27 +52,37 @@ def filter_gapped_kmers(sequence, k=feature_config.K_MER_LENGTH,
         'N': ['A', 'C', 'G', 'T']
     }
 
-    for i in range(len(sequence) - k + 1):
+    if not isAA:
 
-        kmer = sequence[i:i + k]
-        gap_count = kmer.count('-')
-        if (kmer != ('N' * k)) and (kmer.count('N') / k <= max_n_percentage):
-            if gap_count / k <= max_gap_percent:
+        for i in range(len(sequence) - k + 1):
 
-                ambiguous_positions = [i for i, char in enumerate(kmer) if char in nucleotide_ambiguity_code]
+            kmer = sequence[i:i + k]
+            gap_count = kmer.count('-')
+            if (kmer != ('N' * k)) and (kmer.count('N') / k <= max_n_percentage):
+                if gap_count / k <= max_gap_percent:
 
-                expanded_kmers = []
-                if ambiguous_positions:
-                    combinations = product(
-                        *(nucleotide_ambiguity_code[char] for char in kmer if char in nucleotide_ambiguity_code))
-                    for combination in combinations:
-                        expanded_kmer = list(kmer)
-                        for position, nucleotide in zip(ambiguous_positions, combination):
-                            expanded_kmer[position] = nucleotide
-                        expanded_kmers.append(''.join(expanded_kmer))
-                    kmer_list.extend(expanded_kmers)
-                else:
+                    ambiguous_positions = [i for i, char in enumerate(kmer) if char in nucleotide_ambiguity_code]
+
+                    expanded_kmers = []
+                    if ambiguous_positions:
+                        combinations = product(
+                            *(nucleotide_ambiguity_code[char] for char in kmer if char in nucleotide_ambiguity_code))
+                        for combination in combinations:
+                            expanded_kmer = list(kmer)
+                            for position, nucleotide in zip(ambiguous_positions, combination):
+                                expanded_kmer[position] = nucleotide
+                            expanded_kmers.append(''.join(expanded_kmer))
+                        kmer_list.extend(expanded_kmers)
+                    else:
+                        kmer_list.append(kmer)
+        else:
+
+            for i in range(len(sequence) - k + 1):
+                kmer = sequence[i:i + k]
+                gap_count = kmer.count('-')
+                if gap_count / k <= max_gap_percent:
                     kmer_list.append(kmer)
+
     return kmer_list
 
 
@@ -235,6 +245,10 @@ if __name__ == '__main__':
 
     counter_msa = 0
     for msa_file in filenames:
+        isAA = False
+        datatype = loo_selection[loo_selection["data_type"] == msa_file.replace("_reference.fasta", ".phy")][0]["data_type"]
+        if datatype == "AA" or datatype == "DataType.AA":
+            isAA = True
         print(str(counter_msa) + "/" + str(len(filenames)))
         counter_msa += 1
         print("started: " + msa_file)
@@ -270,20 +284,20 @@ if __name__ == '__main__':
         bound = feature_config.KMER_PROCESSING_COUNT  # how many sequences
 
         # Check if too large
-        #if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
-         #   print("Skipped " + msa_file + " too large")
-          #  continue
+        # if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
+        #   print("Skipped " + msa_file + " too large")
+        #  continue
         num_sequences = sum(1 for _ in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'))
 
-        #if num_sequences > 150:
-         #   print("Skipped " + msa_file + " too large")
-          #  continue
+        # if num_sequences > 150:
+        #   print("Skipped " + msa_file + " too large")
+        #  continue
 
         # Create bloom filters for each sequence in the MSA
         print(msa_file)
         for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             kmers = filter_gapped_kmers(str(record.seq), feature_config.K_MER_LENGTH,
-                                        feature_config.K_MER_MAX_GAP_PERCENTAGE)
+                                        feature_config.K_MER_MAX_GAP_PERCENTAGE, isAA)
             kmers = set(kmers)
             if len(kmers) == 0:
                 print("Skipped")
