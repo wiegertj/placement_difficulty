@@ -3,6 +3,8 @@ import shap
 import lightgbm as lgb
 from verstack import FeatureSelector
 from verstack import LGBMTuner
+from optuna.integration import LightGBMPruningCallback
+
 import os
 import optuna
 import numpy as np
@@ -72,7 +74,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
+
     def objective(trial):
+        pruning_callback = LightGBMPruningCallback(trial, 'auc', 'valid')
+
         params = {
             'objective': 'regression',
             'metric': 'rmse',
@@ -100,7 +105,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
-            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000)
+            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000, callbacks=pruning_callback)
 
             val_preds = model.predict(X_val)
             val_score = mean_squared_error(y_val, val_preds)
