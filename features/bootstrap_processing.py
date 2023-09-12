@@ -5,6 +5,7 @@ from ete3 import Tree
 import numpy as np
 from scipy.stats import skew, kurtosis
 import pandas as pd
+
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -36,7 +37,6 @@ def nearest_sequence_features(support_file_path, taxon_name):
     support_values = []
     branch_lengths = []
 
-
     current_node = target_node
     while current_node:
         if current_node.support is not None:
@@ -44,18 +44,10 @@ def nearest_sequence_features(support_file_path, taxon_name):
         branch_lengths.append(current_node.dist / total_tree_length)
         current_node = current_node.up
 
-
-    if support_file_path.__contains__("20736_0"):
-        print(taxon_name)
-        print(support_values)
-        print(branch_lengths)
-
     min_support_ = min(support_values) / 100
     max_support_ = max(support_values) / 100
     mean_support_ = statistics.mean(support_values) / 100
     std_support_ = statistics.stdev(support_values) / 100
-    if support_file_path.__contains__("20736_0"):
-        print(mean_support_)
 
     skewness_ = skew(support_values)
     kurt_ = kurtosis(support_values, fisher=True)
@@ -68,8 +60,7 @@ def nearest_sequence_features(support_file_path, taxon_name):
     sk_branch_len_nearest = skew(branch_lengths)
     kurt_branch_len_nearest = kurtosis(branch_lengths, fisher=True)
 
-    return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_,min_branch_len_nearest,max_branch_len_nearest,mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest
-
+    return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_, min_branch_len_nearest, max_branch_len_nearest, mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest
 
 
 def calculate_support_statistics(support_file_path):
@@ -141,8 +132,11 @@ for file in filenames:
                                  file.replace(".newick", "") + "16p_msa_perc_hash_dist.csv")
     df_distances = pd.read_csv(distance_file)
 
-    result_columns_nearest = ['sampleId', 'dataset', 'min_support_nearest', 'max_support_nearest', 'mean_support_nearest', 'std_support_nearest', 'skewness_nearest',
-                      'kurtosis_nearest', 'depth_nearest', "min_branch_len_nearest","max_branch_len_nearest","mean_branch_len_nearest", "std_branch_len_nearest", "sk_branch_len_nearest", "kurt_branch_len_nearest"]
+    result_columns_nearest = ['sampleId', 'dataset', 'min_support_nearest', 'max_support_nearest',
+                              'mean_support_nearest', 'std_support_nearest', 'skewness_nearest',
+                              'kurtosis_nearest', 'depth_nearest', "min_branch_len_nearest", "max_branch_len_nearest",
+                              "mean_branch_len_nearest", "std_branch_len_nearest", "sk_branch_len_nearest",
+                              "kurt_branch_len_nearest"]
     results_df_nearest = pd.DataFrame(columns=result_columns_nearest)
     float_columns = [
         'min_support_nearest', 'max_support_nearest', 'mean_support_nearest',
@@ -165,12 +159,6 @@ for file in filenames:
         min_support, max_support, mean_support, std_support, skewness, kurt, depth, min_branch_len_nearest, max_branch_len_nearest, mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest = nearest_sequence_features(
             support_path,
             taxon_name)
-
-        if datset == "20736_0" and sampleId == "taxon78":
-            print(mean_support)
-            print("--------------------------------------------------------------------------------------------")
-            print("For row: " + sampleId)
-            print("Nearest: " + taxon_name)
 
         # Append a dictionary to the list
         results_data.append({
@@ -195,18 +183,18 @@ for file in filenames:
     results_df_nearest = pd.DataFrame(results_data)
 
     results_df_nearest.to_csv(os.path.join(os.pardir, "data/processed/features",
-                                 file.replace(".newick", "") +"_nearest_bootstrap.csv"))
+                                           file.replace(".newick", "") + "_nearest_bootstrap.csv"))
 
-    #min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_path,
-                                                                                                 #  tree_path)
+    # min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_path,
+    #  tree_path)
 
-    #results.append(
-     #   (file, min_support, max_support, mean_support, std_support, skewness, kurt, min_rf, max_rf, mean_rf, std_dev_rf,
-      #   skewness_rf, kurtosis_rf))
+    # results.append(
+    #   (file, min_support, max_support, mean_support, std_support, skewness, kurt, min_rf, max_rf, mean_rf, std_dev_rf,
+    #   skewness_rf, kurtosis_rf))
 
-#df = pd.DataFrame(results,
- #                 columns=["dataset", "min_sup_tree", "max_sup_tree", "mean_sup_tree", "std_sup_tree", "sk_sup_tree",
-  #                         "kurt_support",
-   #                        "min_rf_tree", "max_rf_tree", "mean_rf_tree", "std_rf_tree", "sk_rf_tree", "kur_rf_tree"
-    #                       ])
-#df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
+# df = pd.DataFrame(results,
+#                 columns=["dataset", "min_sup_tree", "max_sup_tree", "mean_sup_tree", "std_sup_tree", "sk_sup_tree",
+#                         "kurt_support",
+#                        "min_rf_tree", "max_rf_tree", "mean_rf_tree", "std_rf_tree", "sk_rf_tree", "kur_rf_tree"
+#                       ])
+# df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
