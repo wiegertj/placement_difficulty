@@ -109,7 +109,7 @@ for loo_dataset in loo_datasets:
         file_path = loo_dataset + "16p_msa_perc_hash_dist.csv"
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
-        if df.shape[1] != 39:
+        if df.shape[1] != 45:
             print("Found old hash perc, skipped ")
             continue
         loo_resuls_dfs.append(df)
@@ -263,7 +263,6 @@ for dataset in combined_df['dataset'].unique():
         combined_df.at[index_aim, "std_kmer_simt_msa"] = std_kmer_sim_msa
         combined_df.at[index_aim, "min_kmer_simt_msa"] = min_kmer_sim_msa
         combined_df.at[index_aim, "max_kmer_simt_msa"] = max_kmer_sim_msa
-
 
 
 def sample_rows(group):
