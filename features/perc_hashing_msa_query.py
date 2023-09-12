@@ -39,7 +39,11 @@ def fraction_shared_kmers(binary_string1, binary_string2, k):
 
     shared_kmers = set_kmers1.intersection(set_kmers2)
 
-    fraction_shared = len(shared_kmers) / (len(set_kmers1) + len(set_kmers2) - len(shared_kmers))
+    try:
+
+        fraction_shared = len(shared_kmers) / (len(set_kmers1) + len(set_kmers2) - len(shared_kmers))
+    except ZeroDivisionError:
+        fraction_shared = 0
 
     return fraction_shared
 
