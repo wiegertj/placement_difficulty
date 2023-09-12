@@ -65,9 +65,16 @@ def calculate_shape_similarity(hu_moments1, hu_moments2):
     return np.linalg.norm(hu_moments1 - hu_moments2)
 
 
-def dna_to_numeric(sequence):
-    mapping = {'A': 63, 'C': 127, 'G': 191, 'T': 255, '-': 0, 'N': 0}
-    mapping = defaultdict(lambda: 0, mapping)
+def dna_to_numeric(sequence, isAA):
+    if not isAA:
+        mapping = {'A': 63, 'C': 127, 'G': 191, 'T': 255, '-': 0, 'N': 0}
+        mapping = defaultdict(lambda: 0, mapping)
+    else:
+        amino_acids = "ACDEFGHIKLMNPQRSTVWY"
+        step = 256 // len(amino_acids)
+        # Create a linear mapping with evenly distributed grayscale values
+        mapping = {aa: i * step for i, aa in enumerate(amino_acids)}
+        mapping = defaultdict(lambda: 0, mapping)
     numeric_sequence = [mapping[base] for base in sequence]
     return np.array(numeric_sequence)
 
@@ -84,9 +91,9 @@ def compute_hamming_distance(hash_value_1, hash_value_2):
     return distance
 
 
-def compute_dct_sign_only_hash(sequence):
-    numeric_sequence = dna_to_numeric(sequence)
-    image = encode_dna_as_image(numeric_sequence)
+def compute_dct_sign_only_hash(sequence, isAA):
+    numeric_sequence = dna_to_numeric(sequence, isAA)
+    image = encode_dna_as_image(numeric_sequence, isAA)
 
     dct_coeffs = dct(dct(image, axis=0), axis=1)
     sign_only_sequence = np.sign(dct_coeffs)
@@ -265,7 +272,12 @@ def compute_perceptual_hash_distance(msa_file):
     results = []
     counter = 0
     print(msa_file)
-    # Skip already processed
+    isAA = False
+    datatype = loo_selection[loo_selection["verbose_name"] == msa_file.replace("_reference.fasta", ".phy")].iloc[0][
+        "data_type"]
+    if datatype == "AA" or datatype == "DataType.AA":
+        isAA = True
+    print(isAA)    # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
                                   msa_file.replace("_reference.fasta", "") + "16p_msa_perc_hash_dist" + ".csv")
     #if os.path.exists(potential_path):
@@ -283,12 +295,12 @@ def compute_perceptual_hash_distance(msa_file):
         kmer_sims50 = []
         lcs_values = []
         coeff_dists = []
-        hash_query, normalized_query_dct_coeff = compute_dct_sign_only_hash(record_query.seq)
+        hash_query, normalized_query_dct_coeff = compute_dct_sign_only_hash(record_query.seq, isAA)
         current_closest_taxon = ""
         current_min_distance = 10000000000000000000000000
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if record_msa.id != record_query.id:
-                hash_msa, normalized_msa_dct_coeff = compute_dct_sign_only_hash(record_msa.seq)
+                hash_msa, normalized_msa_dct_coeff = compute_dct_sign_only_hash(record_msa.seq, isAA)
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
                     if current_min_distance == 10000000000000000000000000:
@@ -495,14 +507,13 @@ if __name__ == '__main__':
     pool.close()
     pool.join()
 
-    sys.exit()
 
     print("Finished Perc Hash, starting CV")
     for file in filenames_comp:
         if os.path.exists(os.path.join(os.pardir, "data/processed/features",
                                    file.replace("_reference.fasta", "") + "_msa_im_comp.csv")):
             print("Found existing one ... ")
-            #filenames_comp.remove(file)
+            filenames_comp.remove(file)
     print(len(filenames_comp))
     pool = multiprocessing.Pool(multiprocessing.cpu_count())
     results = pool.imap_unordered(compute_image_distances, filenames_comp)
