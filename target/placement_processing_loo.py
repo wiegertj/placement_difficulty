@@ -134,13 +134,10 @@ def extract_jplace_info(directory):
     print("Start creating filelist ... ")
 
     with Pool(processes=80) as pool:
-        # Split the directories for each process
         directories = [os.path.join(directory, subdir) for subdir in os.listdir(directory)]
         results = pool.map(get_files_with_extension, directories)
 
-        # Merge the results from all processes into a single file list
     file_list = [item for sublist in results for item in sublist]
-    # Now you have the complete file list
     print("Finished creating filelist ... ")
 
     if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
