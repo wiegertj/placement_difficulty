@@ -264,9 +264,9 @@ def compute_perceptual_hash_distance(msa_file):
     # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
                                   msa_file.replace("_reference.fasta", "") + "16p_msa_perc_hash_dist" + ".csv")
-    if os.path.exists(potential_path):
-        print("Skipped: " + msa_file + " already processed")
-        return 0
+    #if os.path.exists(potential_path):
+       # print("Skipped: " + msa_file + " already processed")
+        #return 0
 
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
@@ -442,8 +442,8 @@ if __name__ == '__main__':
     for file in filenames:
         if not os.path.exists(os.path.join(os.pardir, "data/raw/msa", file)):
             print("File not found: " + file)
-            filenames.remove(file)
-            continue
+            #filenames.remove(file)
+            #continue
 
         # if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
         #   filenames.remove(file)
@@ -488,7 +488,7 @@ if __name__ == '__main__':
     pool.close()
     pool.join()
 
-
+    sys.exit()
 
     print("Finished Perc Hash, starting CV")
     for file in filenames_comp:
