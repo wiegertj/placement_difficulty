@@ -126,6 +126,13 @@ def compute_image_distances(msa_file):
     results = []
     counter = 0
     print(msa_file)
+    isAA = False
+    datatype = loo_selection[loo_selection["verbose_name"] == msa_file.replace("_reference.fasta", ".phy")].iloc[0][
+        "data_type"]
+    if datatype == "AA" or datatype == "DataType.AA":
+        isAA = True
+    print(isAA)  # Skip already processed
+    print(msa_file)
     # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
                                   msa_file.replace("_reference.fasta", "") + "_msa_im_comp" + ".csv")
@@ -141,7 +148,7 @@ def compute_image_distances(msa_file):
         distances_lbp = []
         distances_pca = []
 
-        numeric_query = dna_to_numeric(record_query.seq)
+        numeric_query = dna_to_numeric(record_query.seq, isAA)
         image_query = encode_dna_as_image(numeric_query)
         image_query = image_query.astype(np.uint8)
         image_query_hu = image_query
@@ -150,7 +157,7 @@ def compute_image_distances(msa_file):
 
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if record_msa.id != record_query.id:
-                numeric_req = dna_to_numeric(record_msa.seq)
+                numeric_req = dna_to_numeric(record_msa.seq, isAA)
                 image_msa_req = encode_dna_as_image(numeric_req)
                 image_msa_req = image_msa_req.astype(np.uint8)
 
