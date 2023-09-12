@@ -86,8 +86,7 @@ def filter_gapped_kmers(sequence, isAA, k=feature_config.K_MER_LENGTH,
 
 
 def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
-                                     max_gap_percent=feature_config.K_MER_MAX_GAP_PERCENTAGE) -> (
-        str, str, float, float, float, float):
+                                     max_gap_percent=feature_config.K_MER_MAX_GAP_PERCENTAGE):
     """
     Computes string kernel using a bloom filter of the query and all the bloom filters of the MSA sequences.
     Then summary statistics for a hash kernels are computed.
@@ -101,7 +100,7 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
             Returns:
                      :return tuple: (dataset, sampleId, min_kernel, max_kernel, mean_kernel, std_kernel)
     """
-    kmers_query = filter_gapped_kmers(str(query.seq), k, max_gap_percent)
+    kmers_query = filter_gapped_kmers(str(query.seq), isAA, k, max_gap_percent)
     query_bf = bloom_filter(set(kmers_query), len(kmers_query), feature_config.BLOOM_FILTER_FP_RATE)
 
     result_string_kernels = []
@@ -160,11 +159,13 @@ def combine_partial_files(dataset):
     print("Done")
 
 
-def initializer(bloom_filters_MSA_, msa_file_):
+def initializer(bloom_filters_MSA_, msa_file_, isAA_):
     global bloom_filters_MSA
     global msa_file
+    global isAA
     bloom_filters_MSA = bloom_filters_MSA_
     msa_file = msa_file_
+    isAA = isAA_
 
 
 def monitor_progress(results):
@@ -193,7 +194,7 @@ def monitor_progress(results):
         time.sleep(feature_config.KMER_PROCESSING_VERBOSE)
 
 
-def multiprocess_string_kernel(query_filename, bloom_filters_MSA_, msa_file_, interval):
+def multiprocess_string_kernel(query_filename, isAA, bloom_filters_MSA_, msa_file_, interval):
     data = []
     counter = 0
     for query_record in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_filename), 'fasta'):
@@ -203,7 +204,7 @@ def multiprocess_string_kernel(query_filename, bloom_filters_MSA_, msa_file_, in
         if counter > interval:
             break
 
-    pool = multiprocessing.Pool(initializer=initializer, initargs=(bloom_filters_MSA_, msa_file_))
+    pool = multiprocessing.Pool(initializer=initializer, initargs=(bloom_filters_MSA_, msa_file_, isAA))
     results_async = [pool.apply_async(compute_string_kernel_statistics, (item,)) for item in data]
     monitor_progress(results_async)
     output = [result_.get() for result_ in results_async]
@@ -297,7 +298,7 @@ if __name__ == '__main__':
         print(msa_file)
         for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             print(str(record.seq))
-            kmers = filter_gapped_kmers(str(record.seq), feature_config.K_MER_LENGTH,
+            kmers = filter_gapped_kmers(str(record.seq), isAA, feature_config.K_MER_LENGTH,
                                         feature_config.K_MER_MAX_GAP_PERCENTAGE, isAA)
             kmers = set(kmers)
             print(kmers)
@@ -312,7 +313,7 @@ if __name__ == '__main__':
         # Parallel code to compute and store blocks of defined stepsize query samples
         while True:
             interval_start += feature_config.KMER_PROCESSING_STEPSIZE
-            result_tmp = multiprocess_string_kernel(query_file, bloom_filters_MSA, msa_file, interval_start)
+            result_tmp = multiprocess_string_kernel(query_file, isAA, bloom_filters_MSA, msa_file, interval_start)
 
             results.extend(result_tmp)
             df = pd.DataFrame(results,
