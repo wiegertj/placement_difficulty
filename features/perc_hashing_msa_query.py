@@ -444,10 +444,13 @@ if __name__ == '__main__':
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
     for file in filenames:
+        print(file)
         if not os.path.exists(os.path.join(os.pardir, "data/raw/msa", file)):
             print("File not found: " + file)
             #filenames.remove(file)
             #continue
+        if file == "11274_2":
+            filenames.remove(file)
 
         # if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
         #   filenames.remove(file)
