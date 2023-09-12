@@ -88,7 +88,7 @@ for msa_name in filtered_filenames:
         else:
             if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
                 print("Skipping " + msa_name + " " + to_query + " result already exists")
-                continue
+                #continue
 
         counter += 1
         print(to_query)
