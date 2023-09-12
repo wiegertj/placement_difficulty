@@ -1,30 +1,34 @@
 import os
-import sys
+import pandas as pd
 import warnings
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-import pandas as pd
-
+# Get difficulties
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 difficulties_df = difficulties_df.drop_duplicates(subset=['verbose_name'], keep='first')
 difficulties_df["verbose_name"] = difficulties_df["verbose_name"].str.replace(".phy", "")
 
+# Get MSA features
 msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features",
                                         "msa_features.csv"), index_col=False,
                            usecols=lambda column: column != 'Unnamed: 0')
 msa_features = msa_features.drop_duplicates(subset=['dataset'], keep='first')
 
+# Get query features
 print("MSA feature count: " + str(msa_features.shape))
 query_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
 query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 print("Query feature count: " + str(query_features.shape))
+
+# Get tree features
 tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), index_col=False,
                             usecols=lambda column: column != 'Unnamed: 0')
 tree_features = tree_features.drop_duplicates(subset=['dataset'], keep='first')
 
+# Get tree uncertainty features
 tree_features_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"),
                                         index_col=False,
                                         usecols=lambda column: column != 'Unnamed: 0')
@@ -38,6 +42,7 @@ tree_features = tree_features.merge(difficulties_df[["verbose_name", "difficult"
 merged_df = query_features.merge(msa_features, on='dataset', how='inner')
 merged_df = merged_df.merge(tree_features, on="dataset", how="inner")
 
+# Get kmer features
 loo_resuls_dfs = []
 elements_to_delete = ['tara', 'bv', "neotrop"]
 dataset_list = list(merged_df['dataset'].unique())
@@ -65,52 +70,34 @@ for loo_dataset in loo_datasets:
 
 loo_kmer_distances = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_kmer_distances = loo_kmer_distances.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
-print("Kmer Disances SHAPE:")
-print(loo_kmer_distances.shape)
+print("Kmer similarities shape: " + str(loo_kmer_distances.shape))
+
+# Get entropies for leave one out
 loo_entropies = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"),
                             index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 loo_entropies = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 
-print("LOO Entropies SHAPE:")
-print(loo_entropies.shape)
+print("LOO entropies shape:" + str(loo_entropies.shape))
 loo_resuls_combined1 = loo_entropies.merge(loo_kmer_distances, on=["sampleId", "dataset"], how="inner")
 
-loo_resuls_combined1.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_KMER_ENTROPY_MERGE.csv"),
-                            index=False)
-
-print("LOO Entropies After Merging")
-print(loo_resuls_combined1.shape)
 loo_resuls_combined2 = loo_resuls_combined1.merge(query_features, on=["sampleId", 'dataset'], how='inner')
 loo_resuls_combined2.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_QUERY.csv"), index=False)
 
-# Extract unique values of "dataset" and "sampleId" columns from both DataFrames
+# Check for duplicates and print them if found
 unique_values_combined1 = set(loo_resuls_combined1[['dataset', 'sampleId']].itertuples(index=False, name=None))
 unique_values_combined2 = set(loo_resuls_combined2[['dataset', 'sampleId']].itertuples(index=False, name=None))
-
-# Find duplicate values based on the "dataset" and "sampleId" columns
 duplicates = loo_resuls_combined2[loo_resuls_combined2.duplicated(['dataset', 'sampleId'], keep=False)]
-
-# Extract the unique duplicate values
 unique_duplicates = duplicates[['dataset', 'sampleId']].drop_duplicates()
-
-# Convert the unique duplicates to a list
 duplicate_values_list = unique_duplicates.values.tolist()
-
-# Print the list of duplicate values
 print("List of Duplicate Values:")
 for dataset, sampleId in duplicate_values_list:
     print(f"Dataset: {dataset}, SampleID: {sampleId}")
 
-print("LOO Entropies After Merging Query Features")
-print(loo_resuls_combined2.shape)
+print("LOO shape after merging query features" + str(loo_resuls_combined2.shape))
 loo_resuls_combined3 = loo_resuls_combined2.merge(tree_features, on='dataset', how='inner')
-print("LOO Entropies After Merging Tree Features")
-print(loo_resuls_combined3.shape)
+print("LOO shape after merging tree features" + str(loo_resuls_combined3.shape))
 loo_resuls_combined4 = loo_resuls_combined3.merge(msa_features, on='dataset', how='inner')
-print("LOO Shape after merging MSA Features")
-print(loo_resuls_combined4.shape)
-
-# add perc hashing distance loo
+print("LOO shape after merging MSA features" + str(loo_resuls_combined4.shape))
 
 loo_resuls_dfs = []
 elements_to_delete = ['tara', 'bv', "neotrop"]
@@ -181,6 +168,27 @@ loo_im_comp = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_im_comp = loo_im_comp.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'dataset'], how='inner')
 
+# add nearest sequence support
+
+loo_resuls_dfs = []
+elements_to_delete = ['tara', 'bv', "neotrop"]
+dataset_list = list(merged_df['dataset'].unique())
+loo_datasets = [value for value in dataset_list if value not in elements_to_delete]
+
+for loo_dataset in loo_datasets:
+    try:
+        file_path = loo_dataset + "_nearest_bootstrap.csv"
+        file_path = os.path.join(os.pardir, "data/processed/features", file_path)
+        df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
+        loo_resuls_dfs.append(df)
+    except FileNotFoundError:
+        print(file_path)
+        print("Not found nearest sequence features: " + loo_dataset)
+
+loo_nearest = pd.concat(loo_resuls_dfs, ignore_index=True)
+loo_nearest = loo_nearest.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
+loo_resuls_combined = loo_resuls_combined.merge(loo_nearest, on=["sampleId", 'dataset'], how='inner')
+
 # final dataset
 # combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
 combined_df = loo_resuls_combined
@@ -202,6 +210,10 @@ combined_df['sk_dist_pca'].fillna(-1, inplace=True)
 combined_df['kur_dist_pca'].fillna(-1, inplace=True)
 combined_df['skew_branch_length_tips'].fillna(-1, inplace=True)
 combined_df['kurtosis_branch_length_tips'].fillna(-1, inplace=True)
+combined_df['skewness_nearest'].fillna(-1, inplace=True)
+combined_df['kurtosis_nearest'].fillna(-1, inplace=True)
+combined_df['sk_branch_len_nearest'].fillna(-1, inplace=True)
+combined_df['kurt_branch_len_nearest'].fillna(-1, inplace=True)
 
 print("Dropping NaN")
 print(combined_df.shape)
