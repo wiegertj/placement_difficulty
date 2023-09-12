@@ -54,12 +54,12 @@ def filter_gapped_kmers(sequence, isAA, k=feature_config.K_MER_LENGTH,
 
     if not isAA:
 
-        for i in range(len(sequence) - k + 1):
+        for i in range(len(sequence) - int(k) + 1):
 
-            kmer = sequence[i:i + k]
+            kmer = sequence[i:i + int(k)]
             gap_count = kmer.count('-')
-            if (kmer != ('N' * k)) and (kmer.count('N') / k <= max_n_percentage):
-                if gap_count / k <= max_gap_percent:
+            if (kmer != ('N' * int(k))) and (kmer.count('N') / int(k) <= max_n_percentage):
+                if gap_count / int(k) <= max_gap_percent:
 
                     ambiguous_positions = [i for i, char in enumerate(kmer) if char in nucleotide_ambiguity_code]
 
