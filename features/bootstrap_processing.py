@@ -36,12 +36,19 @@ def nearest_sequence_features(support_file_path, taxon_name):
     support_values = []
     branch_lengths = []
 
+
     current_node = target_node
     while current_node:
         if current_node.support is not None:
             support_values.append(current_node.support)
         branch_lengths.append(current_node.dist / total_tree_length)
         current_node = current_node.up
+
+
+    if support_file_path.__contains__("20736_0"):
+        print(taxon_name)
+        print(support_values)
+        print(branch_lengths)
 
     min_support_ = min(support_values) / 100
     max_support_ = max(support_values) / 100
