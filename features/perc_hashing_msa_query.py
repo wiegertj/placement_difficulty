@@ -449,7 +449,7 @@ if __name__ == '__main__':
             print("File not found: " + file)
             #filenames.remove(file)
             #continue
-        if file == "11274_2":
+        if file == "11274_2_reference.fasta":
             filenames.remove(file)
 
         # if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
