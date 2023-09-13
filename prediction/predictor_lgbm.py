@@ -115,7 +115,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=100)
+    study.optimize(objective, n_trials=20)
 
     best_params = study.best_params
     best_score = study.best_value
@@ -175,12 +175,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         #       (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
         X_test = X_test_
         X_test = X_test.sort_values(by="entropy")
-        explainer = shap.Explainer(model, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]),
+        explainer = shap.Explainer(final_model, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId", "group"]),
                                    check_additivity=False)
-        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]),
+        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId", "group"]),
                                 check_additivity=False)
 
-        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId"]),
+        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId", "group"]),
                           plot_type="bar")
         plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
@@ -195,7 +195,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         plt.xticks(fontsize=12)  # Adjust x-axis tick font size
         plt.yticks(fontsize=12)  # Adjust y-axis tick font size
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
-        plt.savefig("waterfall_plot_0_treeholdout.png")
+        plt.savefig("lgbm_0.png")
 
         plt.figure(figsize=(10, 6))  # Adjust width and height as needed
 
@@ -207,7 +207,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         plt.xticks(fontsize=12)  # Adjust x-axis tick font size
         plt.yticks(fontsize=12)  # Adjust y-axis tick font size
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
-        plt.savefig("waterfall_plot_1500_treeholdout.png")
+        plt.savefig("lgbm_1500.png")
 
         plt.figure(figsize=(10, 6))  # Adjust width and height as needed
 
@@ -220,7 +220,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         plt.xticks(fontsize=12)  # Adjust x-axis tick font size
         plt.yticks(fontsize=12)  # Adjust y-axis tick font size
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
-        plt.savefig("waterfall_plot_2500treeholdout.png")
+        plt.savefig("lgbm-300.png")
 
 
-light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
+light_gbm_regressor(rfe=False, shapley_calc=True, targets=[])
