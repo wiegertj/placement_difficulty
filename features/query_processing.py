@@ -35,7 +35,7 @@ def query_statistics(query_filepath) -> list:
         isAA = True
         print("Found AA")
     print(isAA)  # Skip already processed
-    print(file)
+    print(query_filepath)
     for record in alignment:
 
         sequence = str(record.seq)
