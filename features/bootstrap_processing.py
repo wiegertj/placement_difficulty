@@ -133,7 +133,13 @@ for file in filenames:
     if not os.path.exists(distance_file):
         print("Distance file not found ... " + file)
         continue
-    df_distances = pd.read_csv(distance_file)
+
+    try:
+        df_distances = pd.read_csv(distance_file)
+    except pd.errors.EmptyDataError:
+        print("Empty distance dataframe found ... skipped")
+        continue
+
 
     result_columns_nearest = ['sampleId', 'dataset', 'min_support_nearest', 'max_support_nearest',
                               'mean_support_nearest', 'std_support_nearest', 'skewness_nearest',
