@@ -1,6 +1,8 @@
 import json
 import math
 import shap
+import lightgbm as lgb
+
 import os
 import pickle
 import numpy as np
