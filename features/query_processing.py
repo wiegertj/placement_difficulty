@@ -76,7 +76,7 @@ def query_statistics(query_filepath) -> list:
             max_value = max(mean_values_list)
             std_deviation = statistics.stdev(mean_values_list)
             mean_value = statistics.mean(mean_values_list)
-            stats_aa = [min_value, max_value, std_deviation, mean_value]
+            aa_stats = [min_value, max_value, std_deviation, mean_value]
             mean_values = [0, 0, 0, 0, 0]
 
         gap_count = sequence.count('-')
