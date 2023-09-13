@@ -291,8 +291,6 @@ if __name__ == '__main__':
 
     results = []
 
-    filenames = random.sample(filenames, 50)
-
     for file in filenames:
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
         isAA = False
