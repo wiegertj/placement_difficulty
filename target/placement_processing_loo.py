@@ -146,7 +146,7 @@ def extract_jplace_info(directory):
 
         for file_entry in file_list:
             dataset = file_entry[0].split('/')[4].split('_taxon')[0]
-            if dataset == "15861_1" or dataset =="15861_0" or dataset == "14688_29":
+            if dataset == "15861_1" or dataset == "15861_0" or dataset == "14688_29":
                 continue
             dataset_match = current_df['dataset'].str.contains(dataset).any()
             if dataset_match:
@@ -158,23 +158,22 @@ def extract_jplace_info(directory):
                 print(file_entry)
 
         print("Finished filtering filelist ... ")
-        filtered_file_list = filtered_file_list[:-50]
 
         file_list = filtered_file_list
-    targets = []
 
-    pool = multiprocessing.Pool()
-    results = pool.imap_unordered(extract_targets, file_list)
-
-    for result in results:
-        counter += 1
-        print(str(counter) + "/" + str(len(file_list)))
-        if result != 0:
-            print(result)
-            targets.append(result)
+    completed_processes = []
+    for file in file_list:
+        try:
+            result = pool.apply_async(extract_targets, (file,), timeout=120)
+            result_value = result.get()
+            completed_processes.append(result_value)
+        except multiprocessing.TimeoutError:
+            print(f"Process for {file} took too long and was terminated.")
 
     pool.close()
     pool.join()
+
+    targets = [result for result in completed_processes if result is not None]
 
     df = pd.DataFrame(targets,
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
