@@ -60,16 +60,13 @@ def query_statistics(query_filepath) -> list:
             amino_acid_counts = {aa: 0 for aa in amino_acids}
             amino_acid_statistics = []
 
-            for seq_record in alignment:
-                sequence = seq_record.seq.upper()
+            for aa in amino_acids:
+                aa_count = sequence.count(aa)
+                amino_acid_counts[aa] += aa_count
 
-                for aa in amino_acids:
-                    aa_count = sequence.count(aa)
-                    amino_acid_counts[aa] += aa_count
-
-                total_aa_count = sum(amino_acid_counts.values())
-                aa_fractions = {aa: count / total_aa_count for aa, count in amino_acid_counts.items()}
-                amino_acid_statistics.append(aa_fractions)
+            total_aa_count = sum(amino_acid_counts.values())
+            aa_fractions = {aa: count / total_aa_count for aa, count in amino_acid_counts.items()}
+            amino_acid_statistics.append(aa_fractions)
 
             mean_values = {aa: statistics.mean([stats[aa] for stats in amino_acid_statistics]) for aa in amino_acids}
             mean_values_list = list(mean_values.values())
