@@ -94,7 +94,7 @@ def extract_targets(*args):
 
                 distances = Parallel(n_jobs=-1)(delayed(calculate_distance)(*args) for args in all_clades)
 
-                print("Calculates list of distances ... start finding min/max")
+                print("Calculates list of distances ... start finding min/max of " + tree_name)
 
                 results = Parallel(n_jobs=-1)(delayed(get_min_max)(distance) for distance in distances)
 
