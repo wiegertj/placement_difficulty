@@ -118,7 +118,7 @@ counter = 0
 for file in filenames:
     counter += 1
     print(counter)
-
+    print(file)
     bootstrap_path = os.path.join(os.pardir, "data/raw/msa",
                                   file.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")
     if not os.path.exists(bootstrap_path):
@@ -130,6 +130,9 @@ for file in filenames:
 
     distance_file = os.path.join(os.pardir, "data/processed/features",
                                  file.replace(".newick", "") + "16p_msa_perc_hash_dist.csv")
+    if not os.path.exists(distance_file):
+        print("Distance file not found ... " + file)
+        continue
     df_distances = pd.read_csv(distance_file)
 
     result_columns_nearest = ['sampleId', 'dataset', 'min_support_nearest', 'max_support_nearest',
