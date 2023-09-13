@@ -200,6 +200,8 @@ for file in filenames:
     min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_path,
     tree_path)
 
+    min_support, max_support, mean_support, std_support, skewness, kurt = calculate_support_statistics(support_path)
+
     results.append(
     (file, min_support, max_support, mean_support, std_support, skewness, kurt, min_rf, max_rf, mean_rf, std_dev_rf,
     skewness_rf, kurtosis_rf))
