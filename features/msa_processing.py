@@ -1,4 +1,5 @@
 import math
+import random
 import types
 import Bio
 import pandas as pd
@@ -289,6 +290,9 @@ if __name__ == '__main__':
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
     results = []
+
+    filenames = random.sample(filenames, 200)
+
     for file in filenames:
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
         isAA = False
