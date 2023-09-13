@@ -14,7 +14,7 @@ from scipy.stats import skew, kurtosis
 import statistics
 
 
-def query_statistics(query_filepath, isAA) -> list:
+def query_statistics(query_filepath) -> list:
     """
     Computes gap statistics, nucleotide fractions and randomness scores for each query in the query file.
 
@@ -27,6 +27,15 @@ def query_statistics(query_filepath, isAA) -> list:
     results = []
     filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
     alignment = AlignIO.read(filepath, 'fasta')
+    isAA = False
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    datatype = loo_selection[loo_selection["verbose_name"] == file.replace("_query.fasta", ".phy")].iloc[0][
+        "data_type"]
+    if datatype == "AA" or datatype == "DataType.AA":
+        isAA = True
+        print("Found AA")
+    print(isAA)  # Skip already processed
+    print(file)
     for record in alignment:
 
         sequence = str(record.seq)
