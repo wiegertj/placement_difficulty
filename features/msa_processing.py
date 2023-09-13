@@ -188,7 +188,7 @@ def compute_entropy(msa_filepath, isAA):
         std_deviation = statistics.stdev(mean_values_list)
         mean_value = statistics.mean(mean_values_list)
         stats_aa = [min_value, max_value, std_deviation, mean_value]
-        mean_values[0,0,0,0,0]
+        mean_values = [0,0,0,0,0]
 
     if isAA:
         for site in range(num_sites):
@@ -289,6 +289,7 @@ if __name__ == '__main__':
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
     results = []
+    filenames.
     for file in filenames:
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
         isAA = False
