@@ -158,6 +158,8 @@ def extract_jplace_info(directory):
                 print(file_entry)
 
         print("Finished filtering filelist ... ")
+        filtered_file_list = filtered_file_list[:-1]
+
         file_list = filtered_file_list
     targets = []
 
