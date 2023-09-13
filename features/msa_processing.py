@@ -82,7 +82,7 @@ def gap_statistics(msa_filepath) -> (float, float):
     return avg_gaps, cv_gaps, kur_gaps, sk_gaps
 
 
-def compute_entropy(msa_filepath):
+def compute_entropy(msa_filepath, isAA):
     """
     Computes the per site entropies of the MSA as well as the mean of fractions for each nucleotide in the sequuences.
 
@@ -98,6 +98,8 @@ def compute_entropy(msa_filepath):
     num_sites = alignment.get_alignment_length()
 
     nucleotides = ['A', 'C', 'T', 'G', '-']
+    amino_acids = ["A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"]
+
     ambiguous_chars = {'R': ['A', 'G'],
                        'Y': ['C', 'T'],
                        'S': ['G', 'C'],
@@ -149,54 +151,105 @@ def compute_entropy(msa_filepath):
     run_one_max = run_one[6]
 
     nucleotide_statistics = []
-    for seq_record in alignment:
-        nucleotide_counts = {nucleotide: seq_record.upper().count(nucleotide) for nucleotide in nucleotides}
+    if not isAA:
+        for seq_record in alignment:
+            nucleotide_counts = {nucleotide: seq_record.upper().count(nucleotide) for nucleotide in nucleotides}
 
-        if len(seq_record) != 0:
-            g_fraction = nucleotide_counts["G"] / len(seq_record)
-            c_fraction = nucleotide_counts["C"] / len(seq_record)
-            a_fraction = nucleotide_counts["A"] / len(seq_record)
-            t_fraction = nucleotide_counts["T"] / len(seq_record)
-            rest_fraction = 1 - (g_fraction + c_fraction + a_fraction + t_fraction)
+            if len(seq_record) != 0:
+                g_fraction = nucleotide_counts["G"] / len(seq_record)
+                c_fraction = nucleotide_counts["C"] / len(seq_record)
+                a_fraction = nucleotide_counts["A"] / len(seq_record)
+                t_fraction = nucleotide_counts["T"] / len(seq_record)
+                rest_fraction = 1 - (g_fraction + c_fraction + a_fraction + t_fraction)
 
-            nucleotide_statistics.append((g_fraction, c_fraction, a_fraction, t_fraction, rest_fraction))
-    transposed = list(zip(*nucleotide_statistics))
-    mean_values = [statistics.mean(values) for values in transposed]
+                nucleotide_statistics.append((g_fraction, c_fraction, a_fraction, t_fraction, rest_fraction))
+        transposed = list(zip(*nucleotide_statistics))
+        mean_values = [statistics.mean(values) for values in transposed]
+        stats_aa = [0,0,0,0]
+    else:
+        amino_acid_counts = {aa: 0 for aa in amino_acids}
+        amino_acid_statistics = []
 
-    for site in range(num_sites):
-        site_column = alignment[:, site]
+        for seq_record in alignment:
+            sequence = seq_record.seq.upper()
 
-        if site_column == len(site_column) * 'N':  # if only N column
-            continue
-        if site_column == len(site_column) * '-':  # if only - column
-            continue
+            for aa in amino_acids:
+                aa_count = sequence.count(aa)
+                amino_acid_counts[aa] += aa_count
 
-        nucleotide_counts = {nucleotide: site_column.count(nucleotide) for nucleotide in nucleotides}
-        total_count = sum(nucleotide_counts.values())
+            total_aa_count = sum(amino_acid_counts.values())
+            aa_fractions = {aa: count / total_aa_count for aa, count in amino_acid_counts.items()}
+            amino_acid_statistics.append(aa_fractions)
 
-        if total_count != 0:
-            probabilities = {}
-            for nucleotide in nucleotides:
-                count = nucleotide_counts[nucleotide]
-                probabilities[nucleotide] = count / total_count
+        mean_values = {aa: statistics.mean([stats[aa] for stats in amino_acid_statistics]) for aa in amino_acids}
+        mean_values_list = list(mean_values.values())
+        min_value = min(mean_values_list)
+        max_value = max(mean_values_list)
+        std_deviation = statistics.stdev(mean_values_list)
+        mean_value = statistics.mean(mean_values_list)
+        stats_aa = [min_value, max_value, std_deviation, mean_value]
+        mean_values[0,0,0,0,0]
 
-            for ambiguous_char, possible_nucleotides in ambiguous_chars.items():
-                count = site_column.count(ambiguous_char)
-                total_count += count
-                for nucleotide in possible_nucleotides:
-                    probabilities[nucleotide] += count / total_count
+    if isAA:
+        for site in range(num_sites):
+            site_column = alignment[:, site]
 
-                total_probability = sum(probabilities.values())
-                probabilities = {nucleotide: probability / total_probability for nucleotide, probability in
-                                 probabilities.items()}
+            if site_column == len(site_column) * 'N':  # if only N column
+                continue
+            if site_column == len(site_column) * '-':  # if only - column
+                continue
 
-            entropy = 0.0
-            for probability in probabilities.values():
-                if probability != 0:
-                    entropy -= probability * math.log(probability, 2)
+            nucleotide_counts = {nucleotide: site_column.count(nucleotide) for nucleotide in nucleotides}
+            total_count = sum(nucleotide_counts.values())
 
-            entropy = entropy / math.log2(len(site_column))
-            site_entropies.append(entropy)
+            if total_count != 0:
+                probabilities = {}
+                for nucleotide in nucleotides:
+                    count = nucleotide_counts[nucleotide]
+                    probabilities[nucleotide] = count / total_count
+
+                for ambiguous_char, possible_nucleotides in ambiguous_chars.items():
+                    count = site_column.count(ambiguous_char)
+                    total_count += count
+                    for nucleotide in possible_nucleotides:
+                        probabilities[nucleotide] += count / total_count
+
+                    total_probability = sum(probabilities.values())
+                    probabilities = {nucleotide: probability / total_probability for nucleotide, probability in
+                                     probabilities.items()}
+
+                entropy = 0.0
+                for probability in probabilities.values():
+                    if probability != 0:
+                        entropy -= probability * math.log(probability, 2)
+
+                entropy = entropy / math.log2(len(site_column))
+                site_entropies.append(entropy)
+    else:
+        for site in range(num_sites):
+            site_column = alignment[:, site]
+
+            if site_column == len(site_column) * 'N':  # if only N column
+                continue
+            if site_column == len(site_column) * '-':  # if only - column
+                continue
+
+            aa_counts = {aa: site_column.count(aa) for aa in amino_acids}
+            total_count = sum(aa_counts.values())
+
+            if total_count != 0:
+                probabilities = {}
+                for aa in amino_acids:
+                    count = aa_counts[aa]
+                    probabilities[aa] = count / total_count
+
+                entropy = 0.0
+                for probability in probabilities.values():
+                    if probability != 0:
+                        entropy -= probability * math.log(probability, 2)
+
+                entropy = entropy / math.log2(len(site_column))
+                site_entropies.append(entropy)
 
     max_entropy_ = np.max(site_entropies)
     avg_entropy_ = np.mean(site_entropies)
@@ -207,7 +260,7 @@ def compute_entropy(msa_filepath):
     return avg_entropy_, std_entropy_, max_entropy_, skw_entropy_, kurtosis_entropy_, mean_values[0], mean_values[1], \
            mean_values[2], \
            mean_values[3], mean_values[
-               4], approxEntropy_ape, cumSum_p, cumSum_abs_max, cumSum_mode, spec_p, spec_n1, spec_d, matrix_p, complex_p, \
+               4], stats_aa[0],  stats_aa[1], stats_aa[2], stats_aa[3], approxEntropy_ape, cumSum_p, cumSum_abs_max, cumSum_mode, spec_p, spec_n1, spec_d, matrix_p, complex_p, \
            complex_xObs, randex[0], randex[1], randex[2], randex[3], randex[4], randex[5], randex[6], randex[
                7], run_pi, run_vObs, run_one_p, run_one_x0bs, run_one_mean, \
            run_one_std, run_one_min, run_one_max
@@ -238,13 +291,20 @@ if __name__ == '__main__':
     results = []
     for file in filenames:
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
+        isAA = False
+        datatype = loo_selection[loo_selection["verbose_name"] == file.replace("_reference.fasta", ".phy")].iloc[0][
+            "data_type"]
+        if datatype == "AA" or datatype == "DataType.AA":
+            isAA = True
+        print(isAA)  # Skip already processed
+        print(file)
         avg_gaps, cv_gaps, kur_gaps, sk_gaps = gap_statistics(filepath)
 
         print(filepath)
-        avg_entropy, std_entropy, max_entropy, skw_entropy, kurtosis_entropy, g_fraction, c_fraction, a_fraction, t_fraction, rest_fraction, approxEntropy_ape_msa, cumSum_p_msa, cumSum_abs_max_msa, cumSum_mode_msa, spec_p_msa, spec_n1_msa, spec_d_msa, matrix_p_msa, complex_p_msa, \
+        avg_entropy, std_entropy, max_entropy, skw_entropy, kurtosis_entropy, g_fraction, c_fraction, a_fraction, t_fraction, rest_fraction, aa_stat_min,  aa_stat_max, aa_stat_std, aa_stat_mean ,approxEntropy_ape_msa, cumSum_p_msa, cumSum_abs_max_msa, cumSum_mode_msa, spec_p_msa, spec_n1_msa, spec_d_msa, matrix_p_msa, complex_p_msa, \
         complex_xObs_msa, randex_0_msa, randex_1_msa, randex_2_msa, randex_3_msa, randex_4_msa, randex_5_msa, randex_6_msa, randex_7_msa, run_pi, run_vObs, run_one_p, run_one_x0bs, run_one_mean, \
         run_one_std_msa, run_one_min_msa, run_one_max_msa = compute_entropy(
-            filepath)
+            filepath, isAA)
         num_seq, seq_length, site_taxa_ratio, percentage_invariant_sites = basic_msa_features(filepath)
 
         name = ""
@@ -262,7 +322,7 @@ if __name__ == '__main__':
             (name, avg_gaps, cv_gaps, kur_gaps, sk_gaps, avg_entropy, std_entropy, max_entropy, skw_entropy,
              kurtosis_entropy, num_seq,
              seq_length, g_fraction, c_fraction,
-             a_fraction, t_fraction, rest_fraction, approxEntropy_ape_msa, cumSum_p_msa, cumSum_abs_max_msa,
+             a_fraction, t_fraction, rest_fraction, aa_stat_min,  aa_stat_max, aa_stat_std, aa_stat_mean,approxEntropy_ape_msa, cumSum_p_msa, cumSum_abs_max_msa,
              cumSum_mode_msa, spec_p_msa, spec_n1_msa, spec_d_msa, matrix_p_msa, complex_p_msa, complex_xObs_msa,
              randex_0_msa, randex_1_msa, randex_2_msa, randex_3_msa, randex_4_msa, randex_5_msa,
              randex_6_msa, randex_7_msa, run_pi, run_vObs, run_one_p, run_one_x0bs, run_one_mean, run_one_std_msa,
@@ -272,7 +332,7 @@ if __name__ == '__main__':
                                "avg_entropy_msa", "std_entropy_msa",
                                "max_entropy_msa", "sk_entropy_msa", "kur_entropy_msa", "num_seq", "seq_length",
                                "g_fraction_msa", "c_fraction_msa",
-                               "a_fraction_msa", "t_fraction_msa", "rest_fraction_msa", "approxEntropy_ape_msa",
+                               "a_fraction_msa", "t_fraction_msa", "rest_fraction_msa", "aa_stat_min",  "aa_stat_max", "aa_stat_std", "aa_stat_mean","approxEntropy_ape_msa",
                                "cumSum_p_msa", "cumSum_abs_max_msa", "cumSum_mode_msa", "spec_p_msa",
                                "spec_n1_msa", "spec_d_msa", "matrix_p_msa", "complex_p_msa", "complex_xObs_msa",
                                "randex_0_msa", "randex_1_msa", "randex_2_msa",
