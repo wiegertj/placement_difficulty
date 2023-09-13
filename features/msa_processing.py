@@ -289,7 +289,6 @@ if __name__ == '__main__':
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
     results = []
-    filenames.
     for file in filenames:
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
         isAA = False
