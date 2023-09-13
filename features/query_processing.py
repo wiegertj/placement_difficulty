@@ -1,4 +1,5 @@
 import multiprocessing
+import random
 import types
 import pandas as pd
 import os
@@ -247,6 +248,8 @@ if __name__ == '__main__':
 
     results = []
     counter = 0
+    filenames = random.sample(filenames, 200)
+
     for result in pool.imap(query_statistics, filenames):
         results.append(result)
         print(counter)
