@@ -18,6 +18,9 @@ for tree_filename in filenames:
                                       tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
         print("Skipped, already found: " + tree_filename)
         continue
+    if file == "11762_1.newick":
+        print("skipped too large!")
+        continue
 
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
