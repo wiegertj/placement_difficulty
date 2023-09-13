@@ -115,7 +115,7 @@ filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist(
 results = []
 counter = 0
 
-filenames = filenames.reverse()
+filenames.reverse()
 filenames = filenames[:10]
 
 for file in filenames:
