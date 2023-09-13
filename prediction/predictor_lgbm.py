@@ -21,7 +21,7 @@ from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 
-def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=[]):
+def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "current_closest_taxon_perc_ham", "difficult"],
             inplace=True)
@@ -223,4 +223,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         plt.savefig("lgbm-300.png")
 
 
-light_gbm_regressor(rfe=False, shapley_calc=True, targets=[])
+light_gbm_regressor(rfe=True, shapley_calc=True, targets=[])
