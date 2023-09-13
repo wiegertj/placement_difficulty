@@ -245,7 +245,6 @@ if __name__ == '__main__':
 
     results = []
     counter = 0
-    filenames = random.sample(filenames, 50)
 
     for result in pool.imap(query_statistics, filenames):
         results.append(result)
