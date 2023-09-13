@@ -18,7 +18,7 @@ for tree_filename in filenames:
                                       tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
         print("Skipped, already found: " + tree_filename)
         continue
-    if tree_filename == "11762_1.newick" or tree_path == "11762_0.newick":
+    if tree_filename == "11762_1.newick" or tree_filename == "11762_0.newick":
         print("skipped too large!")
         continue
 
