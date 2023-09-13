@@ -146,7 +146,7 @@ def extract_jplace_info(directory):
 
         for file_entry in file_list:
             dataset = file_entry[0].split('/')[4].split('_taxon')[0]
-            if dataset == "15861_1" or dataset =="15861_1":
+            if dataset == "15861_1" or dataset =="15861_0":
                 continue
             dataset_match = current_df['dataset'].str.contains(dataset).any()
             if dataset_match:
