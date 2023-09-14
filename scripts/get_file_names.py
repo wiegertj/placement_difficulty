@@ -8,49 +8,43 @@ difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 difficulties_df.drop_duplicates(subset=["verbose_name"], keep="first", inplace=True)
 
-# Filter out already used LOO-files
 if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     df_used = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     names_used = df_used["verbose_name"].unique()
-    print(names_used)
-    print(len(names_used))
     difficulties_df = difficulties_df[~difficulties_df["verbose_name"].isin(names_used)]
-    difficulties_df = difficulties_df[
-        (difficulties_df["data_type"] == "AA") | (difficulties_df["data_type"] == "DataType.AA")]
 
-difficulty_ranges = np.arange(0.1, 1.0, 0.1)
-print(difficulties_df.shape)
+difficulty_ranges = np.arange(0.1, 1.1, 0.1)
 samples = []
 for i in range(len(difficulty_ranges) - 1):
     lower_bound = difficulty_ranges[i]
     upper_bound = difficulty_ranges[i + 1]
-    if upper_bound == 1.1:
-        break
     print("Subset size " + str(lower_bound) + " - " + str(upper_bound))
     print(difficulties_df[
         (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)].shape)
     subset = difficulties_df[
-        (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)].sample(8)
+        (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)]
+    if len(subset) < 20:
+        selected_subset = subset
+    else:
+        selected_subset = subset.sample(20)
     print("Subset size " + str(lower_bound) + " - " + str(upper_bound))
     print(subset.shape)
-    samples.append(subset)
-print(samples)
+    samples.append(selected_subset)
+
 if len(samples) == 1:
     result = samples[0]
 else:
     result = pd.concat(samples)
 
 if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
-    # Append to the existing file without writing the header again
-    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', header=False)
+    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', header=False, index=False)
 else:
-    # Write the data to a new file with the header
-    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), header=True)
+    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), header=True, index=False)
 
 # Create reference MSA
 for file in result["verbose_name"]:
     file_path = os.path.join(os.pardir, "data/TreeBASEMirror-main/trees/" + file)
-    tar_file = os.path.join(file_path, file + ".tar.gz")  # path of msa tar file
+    tar_file = os.path.join(file_path, file + ".tar.gz")
     print(file_path)
 
     if not os.path.exists(os.path.join(file_path, "tree_best.newick")):
@@ -71,10 +65,10 @@ for file in result["verbose_name"]:
     os.rename(extracted_path, new_name_msa)
 
     copy_to_path = os.path.join(os.pardir, "data/raw/msa")
-    shutil.copy(new_name_msa, copy_to_path)  # Copy to reference
+    shutil.copy(new_name_msa, copy_to_path)
 
     copy_to_path = os.path.join(os.pardir, "data/raw/query")
-    shutil.copy(new_name_msa, copy_to_path)  # Copy to query
+    shutil.copy(new_name_msa, copy_to_path)
     os.rename(copy_to_path + "/" + file.replace(".phy", "_reference.fasta"),
               copy_to_path + "/" + file.replace(".phy", "_query.fasta"))
 
@@ -92,4 +86,4 @@ for file in result["verbose_name"]:
     new_model_name = os.path.join(file_path, file.replace(".phy", "_msa_model.txt"))
     os.rename(model_path, new_model_name)
     copy_to_path_model = os.path.join(os.pardir, "data/processed/loo")
-    shutil.copy(new_model_name, copy_to_path_model)  # Copy to query
+    shutil.copy(new_model_name, copy_to_path_model)
