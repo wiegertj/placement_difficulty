@@ -28,6 +28,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     print(df.shape)
 
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
+    df = df.sample(frac=0.5, random_state=42)
 
     if targets == []:
         target = "entropy"
