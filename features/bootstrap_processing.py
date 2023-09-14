@@ -81,7 +81,7 @@ def calculate_support_statistics(support_file_path):
     skewness = skew(support_values)
     if skewness >= 2:
         import matplotlib.pyplot as plt
-
+        print("printed")
         # Assuming 'support_values' is your list of values
 
         # Create a histogram
