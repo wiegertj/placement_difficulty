@@ -1,24 +1,21 @@
 import math
 import shap
 import lightgbm as lgb
-from verstack import FeatureSelector
-from verstack import LGBMTuner
-from optuna.integration import LightGBMPruningCallback
-
 import os
 import optuna
 import numpy as np
-from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import GroupKFold
-import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from statistics import mean
 from sklearn.feature_selection import RFE
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_squared_error
-import matplotlib.pyplot as plt
+from sklearn.model_selection import GroupKFold
+from verstack import FeatureSelector
+from verstack import LGBMTuner
+from optuna.integration import LightGBMPruningCallback
 
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=[]):
@@ -30,9 +27,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     print(df.columns)
     print(df.shape)
 
-    # Create a list of group IDs based on the "dataset" column
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
-    #groups = df['dataset'].astype('category').cat.codes.tolist()
 
     if targets == []:
         target = "entropy"
@@ -44,9 +39,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
 
     X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, df["group"], test_size=0.2,
                                                                                    random_state=12)
-    # Assuming X is your feature DataFrame and y is your target variable
-    unique_datasets = X['dataset'].unique()
-
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
@@ -73,7 +65,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     if not rfe:
         X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
-
 
     def objective(trial):
         callbacks = [LightGBMPruningCallback(trial, 'rmse')]
@@ -111,7 +102,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             val_score = mean_squared_error(y_val, val_preds)
             val_scores.append(val_score)
 
-        # Optimize the mean validation score across all folds
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
@@ -123,29 +113,24 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     print(f"Best Params: {best_params}")
     print(f"Best MSE training: {best_score}")
 
-    # Create a LightGBM Dataset object with the entire training data
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    # Train the final model with the best parameters
     final_model = lgb.train(best_params, train_data, num_boost_round=1000)
 
-    # Make predictions on the test set
-    y_pred = final_model.predict(X_test.drop(axis=1, columns=[ "group"]))
+    y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
-    feature_importance = final_model.feature_importance(importance_type='gain')  # You can also use 'gain'
+    feature_importance = final_model.feature_importance(importance_type='gain')
 
-
-    for feature, importance in zip(X_train.columns, feature_importance):
-        print(f'{feature}: {importance}')
+    importance_df = pd.DataFrame(
+        {'Feature': X_train.drop(axis=1, columns=["group"]).columns, 'Importance': feature_importance})
+    importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
     scaler = MinMaxScaler()
-    # normalized_importances = scaler.fit_transform(feature_importance.reshape(-1, 1)).flatten()
-    importance_df = pd.DataFrame({'Feature': X_train.drop(axis=1, columns=["group"]).columns, 'Importance': feature_importance})
-    importance_df = importance_df.sort_values(by='Importance', ascending=False)
+    importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
 
     plt.figure(figsize=(10, 6))
     plt.bar(importance_df['Feature'], importance_df['Importance'])
@@ -175,7 +160,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         #       (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
         X_test = X_test_
         X_test = X_test.sort_values(by="entropy")
-        explainer = shap.Explainer(final_model, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId", "group"]),
+        explainer = shap.Explainer(final_model,
+                                   X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId", "group"]),
                                    check_additivity=False)
         shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId", "group"]),
                                 check_additivity=False)
@@ -184,8 +170,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
                           plot_type="bar")
         plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
-        # Create the waterfall plot for the sample with the highest prediction
-        plt.figure(figsize=(10, 6))  # Adjust width and height as needed
+        plt.figure(figsize=(10, 6))
 
         # Create the waterfall plot
         shap.initjs()  # Initialize JavaScript visualization
