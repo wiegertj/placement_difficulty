@@ -34,7 +34,6 @@ def calculate_bsd_aligned(tree1, tree2):
 
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-loo_selection = loo_selection[loo_selection["data_type"].isin(["AA", "DataType.AA"])]
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 
 print("Searching for already processed datasets ...")
