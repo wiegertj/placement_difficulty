@@ -278,7 +278,7 @@ for file in filenames:
 
 df = pd.DataFrame(results,
              columns=["dataset", "min_sup_tree", "max_sup_tree", "mean_sup_tree", "std_sup_tree", "sk_sup_tree",
-                     "kurt_support", "distance_major_modes_supp", "weighted_distance_major_modes_supp"
+                     "kurt_support", "distance_major_modes_supp", "abs_distance_major_modes_supp", "weighted_distance_major_modes_supp","abs_weighted_distance_major_modes_supp",
                     "min_rf_tree", "max_rf_tree", "mean_rf_tree", "std_rf_tree", "sk_rf_tree", "kur_rf_tree"
                    ])
 df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
