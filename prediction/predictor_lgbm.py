@@ -11,7 +11,7 @@ from sklearn.feature_selection import RFE
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import GroupKFold
 from verstack import FeatureSelector
 from verstack import LGBMTuner
@@ -122,6 +122,20 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
+
+    r_squared = r2_score(y_test, y_pred)
+    print(f"R-squared on test set: {r_squared:.2f}")
+
+    residuals = y_test - y_pred
+
+    plt.scatter(y_pred, residuals)
+    plt.xlabel("Predicted Values")
+    plt.ylabel("Residuals")
+    plt.title("Residual Plot")
+    plt.axhline(y=0, color='r', linestyle='--')  # Add a horizontal line at y=0 for reference
+
+    # Save the plot as an image file (e.g., PNG)
+    plt.savefig("residual_plot.png")
 
     feature_importance = final_model.feature_importance(importance_type='gain')
 
