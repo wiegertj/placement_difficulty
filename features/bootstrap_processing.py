@@ -92,7 +92,7 @@ def calculate_support_statistics(support_file_path):
         # Add labels and title
         plt.xlabel('Value')
         plt.ylabel('Frequency')
-        plt.title('Histogram of Support Values')
+        plt.title('Histogram of Support Values - Skewness large: ' + str(skewness))
 
         # Save the plot as a figure (e.g., 'fig.png')
         plt.savefig('sk_supp_big.png')
@@ -108,7 +108,7 @@ def calculate_support_statistics(support_file_path):
         # Add labels and title
         plt.xlabel('Value')
         plt.ylabel('Frequency')
-        plt.title('Histogram of Support Values')
+        plt.title('Histogram of Support Values - Skewness small: ' + str(skewness))
 
         # Save the plot as a figure (e.g., 'fig.png')
         plt.savefig('sk_supp_small.png')
