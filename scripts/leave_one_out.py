@@ -1,6 +1,5 @@
 import os
 import shutil
-import sys
 import dendropy
 import ete3
 import subprocess
@@ -9,7 +8,6 @@ import pandas as pd
 import numpy as np
 import types
 import random
-import tqdist
 from Bio import AlignIO, SeqIO
 from dendropy.calculate import treecompare
 
@@ -39,11 +37,12 @@ loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 loo_selection = loo_selection[loo_selection["data_type"].isin(["AA", "DataType.AA"])]
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 
-# current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
-# dataset_set = set(current_loo_targets['dataset'])
-# print(len(filenames))
-# filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
-# print(len(filtered_filenames))
+print("Searching for already processed datasets ...")
+current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
+dataset_set = set(current_loo_targets['dataset'])
+print("Before filterling" + str(len(filenames)))
+filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
+print("After filterling" + str(len(filtered_filenames)))
 filtered_filenames = filenames
 msa_counter = 0
 for msa_name in filtered_filenames:
@@ -59,7 +58,7 @@ for msa_name in filtered_filenames:
         for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta"), "fasta"):
             sequence_ids.append(record.id)
 
-        if len(sequence_ids) >= feature_config.SEQUENCE_COUNT_THRESHOLD:  # if too large, skip
+        if len(sequence_ids) >= feature_config.SEQUENCE_COUNT_THRESHOLD:
             continue
     except FileNotFoundError:
         print("Reference MSA not found: " + msa_name)
@@ -322,7 +321,7 @@ for msa_name in filtered_filenames:
         command = ["epa-ng", "--model", model_path_epa,
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
                    os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query), "--filter-max",
-                   "10000", "--filter-acc-lwr", "0.99"]
+                   "10000", "--filter-acc-lwr", "0.999"]
 
         try:
             process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
