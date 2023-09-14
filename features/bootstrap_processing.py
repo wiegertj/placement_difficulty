@@ -92,19 +92,23 @@ def calculate_support_statistics(support_file_path):
     top_intervals = np.argsort(interval_counts)[-2:]
 
     # Calculate the interval distance between the two most frequent intervals
-    distance_major_modes_supp = intervals[top_intervals[1]][1] - intervals[top_intervals[0]][0]
+    abs_distance_major_modes_supp = abs(intervals[top_intervals[1]][1] - intervals[top_intervals[0]][0])
+    distance_major_modes_supp
 
     # Calculate the percentage difference in value counts for both intervals
     percentage_difference = abs(interval_counts[top_intervals[0]] - interval_counts[top_intervals[1]]) / len(support_values)
 
     # Calculate the weighted interval distance using the percentage difference
     weighted_distance_major_modes_supp = distance_major_modes_supp / percentage_difference if percentage_difference > 0 else 1
+    abs_weighted_distance_major_modes_supp = abs_distance_major_modes_supp / percentage_difference if percentage_difference > 0 else 1
+
 
     print("Top Intervals with the Most Values:")
     for i in top_intervals:
         print(f"Interval Range: {intervals[i]}, Value Count: {interval_counts[i]}")
 
     print("Distance between modes:", distance_major_modes_supp)
+    print("Abs Distance between modes:", abs_distance_major_modes_supp)
     print("Percentage Difference in Data Points:", percentage_difference)
     print("Weighted Distance between modes:", weighted_distance_major_modes_supp)
 
@@ -143,7 +147,7 @@ def calculate_support_statistics(support_file_path):
 
     kurt = kurtosis(support_values, fisher=True)
 
-    return min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, weighted_distance_major_modes_supp
+    return min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, abs_distance_major_modes_supp, weighted_distance_major_modes_supp,abs_weighted_distance_major_modes_supp
 
 
 def compute_rf_distance_statistics(bootstrap_path, reference_tree_path):
@@ -262,10 +266,10 @@ for file in filenames:
     min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_path,
     tree_path)
 
-    min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, weighted_distance_major_modes_supp = calculate_support_statistics(support_path)
+    min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, abs_distance_major_modes_supp, weighted_distance_major_modes_supp,abs_weighted_distance_major_modes_supp = calculate_support_statistics(support_path)
 
     results.append(
-    (file, min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, weighted_distance_major_modes_supp, min_rf, max_rf, mean_rf, std_dev_rf,
+    (file, min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, abs_distance_major_modes_supp, weighted_distance_major_modes_supp,abs_weighted_distance_major_modes_supp, min_rf, max_rf, mean_rf, std_dev_rf,
     skewness_rf, kurtosis_rf))
 
 df = pd.DataFrame(results,
