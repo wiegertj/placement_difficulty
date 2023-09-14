@@ -85,7 +85,8 @@ def calculate_support_statistics(support_file_path):
     intervals = [(i * 10, (i + 1) * 10) for i in range(10)]
 
     # Calculate the values falling into each interval
-    interval_counts = [np.sum((support_values >= start) & (support_values <= end)) for start, end in intervals]
+    interval_counts = [np.sum((value >= start) & (value <= end) for value in support_values) for start, end in
+                       intervals]
 
     # Find the two intervals with the most values
     top_intervals = np.argsort(interval_counts)[-2:]
