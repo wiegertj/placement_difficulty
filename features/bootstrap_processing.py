@@ -111,6 +111,8 @@ def calculate_support_statistics(support_file_path):
     print(bins)
     print("Mode 1:", mode1)
     print("Mode 2:", mode2)
+    print("Points Mode 1:", points_mode1)
+    print("Points Mode 2:", points_mode2)
     print("Distance between modes:", distance_major_modes_supp)
     print("Percentage Difference in Data Points:", percentage_difference)
     print("Weighted Distance between modes:", weighted_distance_major_modes_supp)
