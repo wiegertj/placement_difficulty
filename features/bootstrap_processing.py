@@ -111,6 +111,8 @@ def calculate_support_statistics(support_file_path):
     print("Abs Distance between modes:", abs_distance_major_modes_supp)
     print("Percentage Difference in Data Points:", percentage_difference)
     print("Weighted Distance between modes:", weighted_distance_major_modes_supp)
+    print("Abs Weighted Distance between modes:", abs_weighted_distance_major_modes_supp)
+
 
     if (skewness >= 2) and (len(support_values) >= 50):
         import matplotlib.pyplot as plt
