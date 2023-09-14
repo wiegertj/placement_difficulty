@@ -106,7 +106,7 @@ def calculate_support_statistics(support_file_path):
     print("Top Intervals with the Most Values:")
     for i in top_intervals:
         print(f"Interval Range: {intervals[i]}, Value Count: {interval_counts[i]}")
-
+    print("Support number: " + str(len(support_values)))
     print("Distance between modes:", distance_major_modes_supp)
     print("Abs Distance between modes:", abs_distance_major_modes_supp)
     print("Percentage Difference in Data Points:", percentage_difference)
