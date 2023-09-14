@@ -104,7 +104,7 @@ def calculate_support_statistics(support_file_path):
     # Calculate the weighted distance using the percentage difference
 
     try:
-        weighted_distance_major_modes_supp = distance_major_modes_supp / percentage_difference
+        weighted_distance_major_modes_supp = distance_major_modes_supp / percentage_difference if percentage_difference > 0 else 1
     except ZeroDivisionError:
         weighted_distance_major_modes_supp = 0
     print(hist)
