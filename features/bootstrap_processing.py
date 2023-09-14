@@ -80,7 +80,7 @@ def calculate_support_statistics(support_file_path):
     std_support = np.std(support_values)
 
     skewness = skew(support_values)
-    if skewness >= 2:
+    if (skewness >= 2) and (len(support_values) >= 50):
         import matplotlib.pyplot as plt
         print("printed")
         # Assuming 'support_values' is your list of values
@@ -96,7 +96,7 @@ def calculate_support_statistics(support_file_path):
 
         # Save the plot as a figure (e.g., 'fig.png')
         plt.savefig('sk_supp_big.png')
-    if skewness <= 0.2:
+    if (skewness <= 0.2) and len(support_values) >= 50:
         import matplotlib.pyplot as plt
         print("printed")
         # Assuming 'support_values' is your list of values
