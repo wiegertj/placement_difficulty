@@ -100,6 +100,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
 
             val_preds = model.predict(X_val)
             val_score = mean_squared_error(y_val, val_preds)
+            val_score = math.sqrt(val_score)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
