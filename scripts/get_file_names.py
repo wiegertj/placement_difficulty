@@ -13,7 +13,7 @@ if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     names_used = df_used["verbose_name"].unique()
     difficulties_df = difficulties_df[~difficulties_df["verbose_name"].isin(names_used)]
 
-difficulty_ranges = np.arange(0.1, 1.1, 0.1)
+difficulty_ranges = np.arange(0.5, 1.1, 0.1)
 samples = []
 for i in range(len(difficulty_ranges) - 1):
     lower_bound = difficulty_ranges[i]
