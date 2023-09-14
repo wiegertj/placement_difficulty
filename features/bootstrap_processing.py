@@ -93,7 +93,7 @@ def calculate_support_statistics(support_file_path):
 
     # Calculate the interval distance between the two most frequent intervals
     abs_distance_major_modes_supp = abs(intervals[top_intervals[1]][1] - intervals[top_intervals[0]][0])
-    distance_major_modes_supp
+    distance_major_modes_supp = intervals[top_intervals[1]][1] - intervals[top_intervals[0]][0]
 
     # Calculate the percentage difference in value counts for both intervals
     percentage_difference = abs(interval_counts[top_intervals[0]] - interval_counts[top_intervals[1]]) / len(support_values)
