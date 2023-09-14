@@ -84,6 +84,7 @@ def calculate_support_statistics(support_file_path):
         import matplotlib.pyplot as plt
         print("printed")
         # Assuming 'support_values' is your list of values
+        plt.figure(figsize=(8, 4))  # Create a new figure
 
         # Create a histogram
         plt.hist(support_values, bins=10, edgecolor='k')  # You can adjust the number of bins as needed
@@ -99,6 +100,7 @@ def calculate_support_statistics(support_file_path):
         import matplotlib.pyplot as plt
         print("printed")
         # Assuming 'support_values' is your list of values
+        plt.figure(figsize=(8, 4))  # Create a new figure
 
         # Create a histogram
         plt.hist(support_values, bins=10, edgecolor='k')  # You can adjust the number of bins as needed
