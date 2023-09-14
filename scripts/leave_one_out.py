@@ -42,7 +42,6 @@ dataset_set = set(current_loo_targets['dataset'])
 print("Before filterling" + str(len(filenames)))
 filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
 print("After filterling" + str(len(filtered_filenames)))
-filtered_filenames = filenames
 msa_counter = 0
 for msa_name in filtered_filenames:
     msa_counter += 1
