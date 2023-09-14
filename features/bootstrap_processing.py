@@ -82,37 +82,27 @@ def calculate_support_statistics(support_file_path):
     skewness = skew(support_values)
     import matplotlib.pyplot as plt
 
-    # Create a histogram
-    hist, bins, _ = plt.hist(support_values, bins=10, density=True)
+    intervals = [(i * 10, (i + 1) * 10) for i in range(10)]
 
-    # Find the two major modes (bin centers)
-    bin_centers = (bins[:-1] + bins[1:]) / 2
-    mode1 = bin_centers[np.argmax(hist)]
-    hist[np.argmax(hist)] = 0  # Remove the first mode
-    mode2 = bin_centers[np.argmax(hist)]
+    # Calculate the values falling into each interval
+    interval_counts = [np.sum((support_values >= start) & (support_values <= end)) for start, end in intervals]
 
-    # Calculate the distance between modes (bin-based)
-    distance_major_modes_supp = abs(mode1 - mode2)
+    # Find the two intervals with the most values
+    top_intervals = np.argsort(interval_counts)[-2:]
 
-    # Calculate the number of points in each mode bin
-    points_mode1 = np.sum((support_values >= bins[np.argmax(hist)]) & (support_values < bins[np.argmax(hist) + 1]))
-    points_mode2 = np.sum((support_values >= bins[np.argmax(hist) + 1]) & (support_values < bins[np.argmax(hist) + 2]))
+    # Calculate the interval distance between the two most frequent intervals
+    distance_major_modes_supp = intervals[top_intervals[1]][1] - intervals[top_intervals[0]][0]
 
-    # Calculate the percentage difference in data points between mode bins
-    percentage_difference = abs(points_mode1 - points_mode2) / len(support_values)
+    # Calculate the percentage difference in value counts for both intervals
+    percentage_difference = abs(interval_counts[top_intervals[0]] - interval_counts[top_intervals[1]]) / len(support_values)
 
-    # Calculate the weighted distance using the percentage difference
+    # Calculate the weighted interval distance using the percentage difference
+    weighted_distance_major_modes_supp = distance_major_modes_supp / percentage_difference if percentage_difference > 0 else 1
 
-    try:
-        weighted_distance_major_modes_supp = distance_major_modes_supp / percentage_difference if percentage_difference > 0 else 1
-    except ZeroDivisionError:
-        weighted_distance_major_modes_supp = 0
-    print(hist)
-    print(bins)
-    print("Mode 1:", mode1)
-    print("Mode 2:", mode2)
-    print("Points Mode 1:", points_mode1)
-    print("Points Mode 2:", points_mode2)
+    print("Top Intervals with the Most Values:")
+    for i in top_intervals:
+        print(f"Interval Range: {intervals[i]}, Value Count: {interval_counts[i]}")
+
     print("Distance between modes:", distance_major_modes_supp)
     print("Percentage Difference in Data Points:", percentage_difference)
     print("Weighted Distance between modes:", weighted_distance_major_modes_supp)
