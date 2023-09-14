@@ -80,6 +80,41 @@ def calculate_support_statistics(support_file_path):
     std_support = np.std(support_values)
 
     skewness = skew(support_values)
+    import matplotlib.pyplot as plt
+
+    # Create a histogram
+    hist, bins, _ = plt.hist(support_values, bins=10, density=True)
+
+    # Find the two major modes (bin centers)
+    bin_centers = (bins[:-1] + bins[1:]) / 2
+    mode1 = bin_centers[np.argmax(hist)]
+    hist[np.argmax(hist)] = 0  # Remove the first mode
+    mode2 = bin_centers[np.argmax(hist)]
+
+    # Calculate the distance between modes (bin-based)
+    distance_major_modes_supp = abs(mode1 - mode2)
+
+    # Calculate the number of points in each mode bin
+    points_mode1 = np.sum((support_values >= bins[np.argmax(hist)]) & (support_values < bins[np.argmax(hist) + 1]))
+    points_mode2 = np.sum((support_values >= bins[np.argmax(hist)]) & (support_values < bins[np.argmax(hist) + 1]))
+
+    # Calculate the percentage difference in data points between mode bins
+    percentage_difference = abs(points_mode1 - points_mode2) / len(support_values)
+
+    # Calculate the weighted distance using the percentage difference
+
+    try:
+        weighted_distance_major_modes_supp = distance_major_modes_supp / percentage_difference
+    except ZeroDivisionError:
+        weighted_distance_major_modes_supp = 0
+    print(hist)
+    print(bins)
+    print("Mode 1:", mode1)
+    print("Mode 2:", mode2)
+    print("Distance between modes:", distance_major_modes_supp)
+    print("Percentage Difference in Data Points:", percentage_difference)
+    print("Weighted Distance between modes:", weighted_distance_major_modes_supp)
+
     if (skewness >= 2) and (len(support_values) >= 50):
         import matplotlib.pyplot as plt
         print("printed")
@@ -115,7 +150,7 @@ def calculate_support_statistics(support_file_path):
 
     kurt = kurtosis(support_values, fisher=True)
 
-    return min_support, max_support, mean_support, std_support, skewness, kurt
+    return min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, weighted_distance_major_modes_supp
 
 
 def compute_rf_distance_statistics(bootstrap_path, reference_tree_path):
@@ -234,15 +269,15 @@ for file in filenames:
     min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_path,
     tree_path)
 
-    min_support, max_support, mean_support, std_support, skewness, kurt = calculate_support_statistics(support_path)
+    min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, weighted_distance_major_modes_supp = calculate_support_statistics(support_path)
 
     results.append(
-    (file, min_support, max_support, mean_support, std_support, skewness, kurt, min_rf, max_rf, mean_rf, std_dev_rf,
+    (file, min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, weighted_distance_major_modes_supp, min_rf, max_rf, mean_rf, std_dev_rf,
     skewness_rf, kurtosis_rf))
 
 df = pd.DataFrame(results,
              columns=["dataset", "min_sup_tree", "max_sup_tree", "mean_sup_tree", "std_sup_tree", "sk_sup_tree",
-                     "kurt_support",
+                     "kurt_support", "distance_major_modes_supp", "weighted_distance_major_modes_supp"
                     "min_rf_tree", "max_rf_tree", "mean_rf_tree", "std_rf_tree", "sk_rf_tree", "kur_rf_tree"
                    ])
 df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
