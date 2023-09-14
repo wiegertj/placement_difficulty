@@ -96,7 +96,7 @@ def calculate_support_statistics(support_file_path):
 
     # Calculate the number of points in each mode bin
     points_mode1 = np.sum((support_values >= bins[np.argmax(hist)]) & (support_values < bins[np.argmax(hist) + 1]))
-    points_mode2 = np.sum((support_values >= bins[np.argmax(hist)]) & (support_values < bins[np.argmax(hist) + 1]))
+    points_mode2 = np.sum((support_values >= bins[np.argmax(hist) + 1]) & (support_values < bins[np.argmax(hist) + 2]))
 
     # Calculate the percentage difference in data points between mode bins
     percentage_difference = abs(points_mode1 - points_mode2) / len(support_values)
