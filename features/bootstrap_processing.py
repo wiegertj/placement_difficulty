@@ -64,6 +64,7 @@ def nearest_sequence_features(support_file_path, taxon_name):
 
 
 def calculate_support_statistics(support_file_path):
+    print("Calc support")
     with open(support_file_path, "r") as support_file:
         tree_str = support_file.read()
         phylo_tree = Tree(tree_str)
