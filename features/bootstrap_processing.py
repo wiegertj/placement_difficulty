@@ -93,7 +93,22 @@ def calculate_support_statistics(support_file_path):
         plt.title('Histogram of Support Values')
 
         # Save the plot as a figure (e.g., 'fig.png')
-        plt.savefig('sk_supp.png')
+        plt.savefig('sk_supp_big.png')
+    if skewness <= 0.2:
+        import matplotlib.pyplot as plt
+        print("printed")
+        # Assuming 'support_values' is your list of values
+
+        # Create a histogram
+        plt.hist(support_values, bins=10, edgecolor='k')  # You can adjust the number of bins as needed
+
+        # Add labels and title
+        plt.xlabel('Value')
+        plt.ylabel('Frequency')
+        plt.title('Histogram of Support Values')
+
+        # Save the plot as a figure (e.g., 'fig.png')
+        plt.savefig('sk_supp_small.png')
 
     kurt = kurtosis(support_values, fisher=True)
 
