@@ -243,8 +243,13 @@ def query_statistics(query_filepath) -> list:
         else:
             name = query_filepath.replace("_query.fasta", "")
 
+        if total_inv_sites >= 0:
+            match_rel = match_counter / total_inv_sites
+        else:
+            match_rel = 0
+
         results.append((name, record.id, gap_fraction, longest_gap_rel,
-                        match_counter / seq_length, match_counter / total_inv_sites,
+                        match_counter / seq_length, match_rel,
                         gap_fractions[0], gap_fractions[1], gap_fractions[2], gap_fractions[3], gap_fractions[4],
                         gap_fractions[5], gap_fractions[6],
                         gap_fractions[7], gap_fractions[8], gap_fractions[9],
