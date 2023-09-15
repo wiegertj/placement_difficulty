@@ -28,6 +28,8 @@ def calculate_site_entropies(msa_filepath):
 
     # Get the number of sequences and the length of each sequence
     num_sequences = len(alignment)
+    if num_sequences >= 500:
+        return 0
     sequence_length = alignment.get_alignment_length()
 
     # Initialize an array to store site entropies
@@ -57,6 +59,8 @@ def calculate_site_entropies(msa_filepath):
 
 def filter_by_entropy_interval(msa_filepath, low_bound, up_bound):
     site_entropies = calculate_site_entropies(msa_filepath)
+    if site_entropies == 0:
+        return 0
     alignment = AlignIO.read(msa_filepath, 'fasta')
 
     # Create a mask for sites within the specified entropy interval
@@ -137,6 +141,9 @@ if __name__ == '__main__':
             isAA = True
 
         filepath_modified = filter_by_entropy_interval(filepath, 0.4, 0.6)
+        if filepath_modified == 0:
+            print("Skipped, too large")
+            continue
         print(file)
         print("Start raxml")
 
