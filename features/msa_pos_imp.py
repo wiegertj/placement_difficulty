@@ -88,9 +88,9 @@ def filter_by_entropy_interval(msa_filepath, low_bound, up_bound):
     print(msa_filepath)
     print(mask)
     print(len(modified_alignment[0]))
-    AlignIO.write(modified_alignment, msa_filepath.replace("_reference.fasta", "_filtered_" + str(low_bound) + str(up_bound)), 'fasta')
+    AlignIO.write(modified_alignment, msa_filepath.replace("_reference.fasta", "_filtered_" + str(int(10*low_bound)) + str(int(10*up_bound))), 'fasta')
 
-    return msa_filepath.replace("_reference.fasta", "_filtered_" + str(low_bound) + str(up_bound))
+    return msa_filepath.replace("_reference.fasta", "_filtered_" + str(int(10*low_bound)) + str(int(10*up_bound)))
 
 
 if __name__ == '__main__':
