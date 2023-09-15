@@ -304,6 +304,7 @@ if __name__ == '__main__':
     results = [item for sublist in results for item in sublist]
 
     df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel",
+                                        "frac_inv_sites_msa", "inv_matches_frac",
                                         "gap_positions_0", "gap_positions_1", "gap_positions_2", "gap_positions_3",
                                         "gap_positions_4", "gap_positions_5", "gap_positions_6",
                                         "gap_positions_7", "gap_positions_8", "gap_positions_9",
