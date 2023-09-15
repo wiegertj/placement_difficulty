@@ -59,8 +59,11 @@ def calculate_site_entropies(msa_filepath):
 
 def filter_by_entropy_interval(msa_filepath, low_bound, up_bound):
     site_entropies = calculate_site_entropies(msa_filepath)
-    if site_entropies == 0:
-        return 0
+    try:
+        if site_entropies == 0:
+            return 0
+    except ValueError:
+        print("Processing ... ")
     alignment = AlignIO.read(msa_filepath, 'fasta')
 
     # Create a mask for sites within the specified entropy interval
