@@ -243,7 +243,7 @@ def query_statistics(query_filepath) -> list:
         else:
             name = query_filepath.replace("_query.fasta", "")
 
-        if total_inv_sites >= 0:
+        if total_inv_sites > 0:
             match_rel = match_counter / total_inv_sites
         else:
             match_rel = 0
