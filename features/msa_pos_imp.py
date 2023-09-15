@@ -125,8 +125,10 @@ if __name__ == '__main__':
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
 
     results = []
-
+    counter = 0
     for file in filenames:
+        counter += 1
+        print(str(counter) + "/" + str(len(filenames)))
         filepath = os.path.join(os.pardir, "data/raw/msa", file)
         isAA = False
         datatype = loo_selection[loo_selection["verbose_name"] == file.replace("_reference.fasta", ".phy")].iloc[0][
