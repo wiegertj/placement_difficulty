@@ -107,8 +107,8 @@ if __name__ == '__main__':
 
     # Perform random sampling within each bin
     for bin_label, group in loo_selection.groupby('difficult_bin'):
-        if len(group) >= 30:
-            sampled_group = group.sample(30, random_state=42)
+        if len(group) >= 20:
+            sampled_group = group.sample(20, random_state=42)
             sampled_data = pd.concat([sampled_data, sampled_group])
     sampled_data.reset_index(drop=True, inplace=True)
     print(sampled_data.head(10))
