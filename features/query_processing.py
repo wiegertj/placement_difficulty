@@ -1,6 +1,8 @@
 import multiprocessing
 import random
 import types
+from collections import Counter
+
 import pandas as pd
 import os
 from Bio import AlignIO
@@ -28,6 +30,43 @@ def query_statistics(query_filepath) -> list:
     results = []
     filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
     alignment = AlignIO.read(filepath, 'fasta')
+
+
+
+
+
+    analyzed_sites = []
+
+    # Iterate over each position in the alignment
+    for position in range(len(alignment[0])):
+        # Extract characters (residues) at the current position for all sequences
+        residues_at_position = [str(record.seq[position]) for record in alignment]
+
+        # Count the occurrences of each character
+        char_counts = Counter(residues_at_position)
+
+        # Calculate the most frequent character and its count
+        most_common_char, most_common_count = char_counts.most_common(1)[0]
+
+        # Calculate the total count of all characters excluding gaps and "N"s
+        total_count = sum(count for char, count in char_counts.items())
+
+        # Calculate the proportion of the most frequent character
+        proportion_most_common = most_common_count / total_count if total_count > 0 else 0
+
+
+        # Check if the proportion is below the threshold and the character is not a gap or "N"
+        if proportion_most_common < 0.9 or most_common_char in ['-', 'N']:
+            analyzed_sites.append((0, most_common_char))
+        else:
+            analyzed_sites.append((1, most_common_char))
+
+
+
+
+
+
+
     isAA = False
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     datatype = loo_selection[loo_selection["verbose_name"] == query_filepath.replace("_query.fasta", ".phy")].iloc[0][
@@ -36,8 +75,15 @@ def query_statistics(query_filepath) -> list:
         isAA = True
         print("Found AA")
     print(isAA)  # Skip already processed
-    print(query_filepath)
     for record in alignment:
+        match_counter = 0
+        total_inv_sites = 0
+        for i, (flag, char) in enumerate(analyzed_sites):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter += 1
 
         sequence = str(record.seq)
         seq_length = len(sequence)
@@ -198,6 +244,7 @@ def query_statistics(query_filepath) -> list:
             name = query_filepath.replace("_query.fasta", "")
 
         results.append((name, record.id, gap_fraction, longest_gap_rel,
+                        match_counter / seq_length, match_counter / total_inv_sites,
                         gap_fractions[0], gap_fractions[1], gap_fractions[2], gap_fractions[3], gap_fractions[4],
                         gap_fractions[5], gap_fractions[6],
                         gap_fractions[7], gap_fractions[8], gap_fractions[9],
