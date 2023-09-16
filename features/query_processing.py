@@ -220,6 +220,7 @@ def query_statistics(query_filepath) -> list:
                 else:
                     fraction_char_rest = 0
                 fraction_char_rests.append(fraction_char_rest)
+        print(fraction_char_rests)
 
         match_counter_7 = 0
         total_inv_sites_7 = 0
