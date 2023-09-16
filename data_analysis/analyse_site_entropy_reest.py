@@ -27,6 +27,8 @@ for type in ["46", "37", "28", "19"]:
 
                     # Extract the substring between the two substrings
                     desired_substring = pot_path.replace(".newick", "_filtered_" + "" + ".bestTree")[start_index:end_index]
+                    print(desired_substring)
+                    file_path = os.path.join(root, file)
                     original_newick_tree = file.read()
                     original_tree = ete3.Tree(original_newick_tree)
                     reest_tree = ete3.Tree(os.path.abspath(pot_path))
