@@ -125,8 +125,8 @@ def calculate_imp_site(support_file_path, msa_filepath):
         for counter in freqs_a + freqs_b:
             all_keys.update(counter.keys())
 
-        adjusted_freqs_a = [counter + Counter({key: 0 for key in all_keys - counter.keys()}) for counter in freqs_a]
-        adjusted_freqs_b = [counter + Counter({key: 0 for key in all_keys - counter.keys()}) for counter in freqs_b]
+        adjusted_freqs_a = [counter + Counter({key: 0 for key in all_keys - counter.keys()}) for counter in freqs_b]
+        adjusted_freqs_b = [counter + Counter({key: 0 for key in all_keys - counter.keys()}) for counter in freqs_a]
 
         for site_freq_a, site_freq_b in zip(adjusted_freqs_a, adjusted_freqs_b):
             total_count_a = sum(site_freq_a.values())
