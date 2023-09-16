@@ -8,6 +8,7 @@ from ete3 import Tree
 import numpy as np
 from scipy.stats import skew, kurtosis
 import pandas as pd
+from Bio.Align import AlignInfo
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -100,8 +101,11 @@ def calculate_imp_site(support_file_path, msa_filepath):
                 alignment_a.append(record)
             elif record.id in list_b:
                 alignment_b.append(record)
-        consensus_a = alignment_a.consensus()
-        consensus_b = alignment_b.consensus()
+        summary_align_a = AlignInfo.SummaryInfo(alignment_a)
+        consensus_a = summary_align_a.gap_consensus(threshold=0.8, ambiguous='X')
+        summary_align_b = AlignInfo.SummaryInfo(alignment_a)
+        consensus_b = summary_align_b.gap_consensus(threshold=0.8, ambiguous='X')
+
         print("Consensus Sequence for Alignment A:")
         print(consensus_a)
 
