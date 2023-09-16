@@ -121,14 +121,25 @@ def calculate_imp_site(support_file_path, msa_filepath):
         kl_divergence_results = []
         print(freqs_a)
         site_pairwise_differences = []
-        for site_freq_a, site_freq_b in zip(freqs_a, freqs_b):
+
+        all_keys = set()
+        for counter in freqs_a + freqs_b:
+            all_keys.update(counter.keys())
+
+        # Adjust freqs_a to contain all keys from freqs_b
+        adjusted_freqs_a = [counter + Counter({key: 0 for key in all_keys - counter.keys()}) for counter in freqs_a]
+
+        # Adjust freqs_b to contain all keys from freqs_a
+        adjusted_freqs_b = [counter + Counter({key: 0 for key in all_keys - counter.keys()}) for counter in freqs_b]
+
+        for site_freq_a, site_freq_b in zip(adjusted_freqs_a, adjusted_freqs_b):
             total_count_a = sum(site_freq_a.values())
             total_count_b = sum(site_freq_b.values())
             normalized_freq_a = {k: v / total_count_a for k, v in site_freq_a.items()}
             print(normalized_freq_a)
             normalized_freq_b = {k: v / total_count_b for k, v in site_freq_b.items()}
-            site_freq_a_array = np.array(list(site_freq_a.values()))
-            site_freq_b_array = np.array(list(site_freq_b.values()))
+            site_freq_a_array = np.array(list(normalized_freq_a.values()))
+            site_freq_b_array = np.array(list(normalized_freq_b.values()))
 
             # Compute KL divergence using scipy's entropy function
             kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
