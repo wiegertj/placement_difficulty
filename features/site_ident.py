@@ -126,7 +126,7 @@ def calculate_imp_site(support_file_path, msa_filepath):
             counter_b = Counter({key: counter_b[key] for key in sorted_keys})
 
             print("------x-------")
-            print(all_keys)
+            print(sorted_keys)
             print(counter_a)
             print(counter_b)
             print("-------------")
