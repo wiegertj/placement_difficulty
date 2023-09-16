@@ -1,5 +1,6 @@
 import os
 # Define the directory to search in
+import re
 import subprocess
 import dendropy
 import ete3
@@ -80,7 +81,15 @@ for type in ["46", "37", "28", "19"]:
                     print("RF distance is %s over a total of" % (results_distance["norm_rf"]))
                     print("Quartet Distance: " + str(quartet_distance))
 
-                    results.append((desired_substring, results_distance["norm_rf"], quartet_distance, bsd_aligned))
+                    match = re.search(r'/([^/]+)_filtered_(\d+)\.', desired_substring)
 
-df = pd.DataFrame(results, columns=["dataset", "norm_rf", "norm_quart", "norm_bld"])
+
+                    string_a = match.group(1)
+                    string_b = match.group(2)
+                    print("String a:", string_a)
+                    print("String b:", string_b)
+
+                    results.append((string_a, string_b, results_distance["norm_rf"], quartet_distance, bsd_aligned))
+
+df = pd.DataFrame(results, columns=["dataset", "entropy_parts" ,"norm_rf", "norm_quart", "norm_bld"])
 df.to_csv(os.path.join(os.pardir, "data/processed/final/site_ent_reest.csv"), index=False)
