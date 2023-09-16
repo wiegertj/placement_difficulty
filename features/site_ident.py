@@ -152,7 +152,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         # Normalize the list to the range [0, 1]
         normalized_kl_divergence_results = [(x - min_kl_divergence) / (max_kl_divergence - min_kl_divergence) for x in
                                             kl_divergence_results]
-        binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
+        binary_results = [1 if value > 0.2 else 0 for value in normalized_kl_divergence_results]
 
         threshold = sorted(normalized_kl_divergence_results)[-int(0.2 * len(normalized_kl_divergence_results))]
         #print(threshold)
