@@ -132,6 +132,7 @@ def calculate_imp_site(support_file_path, msa_filepath):
             print(counter_b.keys())
             print(counter_b.values())
             print(counter_a)
+            print(counter_b)
             print("-------------")
 
             freqs_a.append(counter_a)
