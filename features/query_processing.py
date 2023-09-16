@@ -39,6 +39,7 @@ def query_statistics(query_filepath) -> list:
     analyzed_sites_8 = []
     analyzed_sites_7 = []
     analyzed_sites_95 = []
+    analyzed_sites_3 = []
 
 
     # Iterate over each position in the alignment
@@ -64,6 +65,11 @@ def query_statistics(query_filepath) -> list:
             analyzed_sites_9.append((0, most_common_char))
         else:
             analyzed_sites_9.append((1, most_common_char))
+
+        if proportion_most_common < 0.3 or most_common_char in ['-', 'N']:
+            analyzed_sites_3.append((0, most_common_char))
+        else:
+            analyzed_sites_3.append((1, most_common_char))
 
         # Check if the proportion is below the threshold and the character is not a gap or "N"
         if proportion_most_common < 0.8 or most_common_char in ['-', 'N']:
@@ -133,6 +139,15 @@ def query_statistics(query_filepath) -> list:
                 total_inv_sites_95 += 1
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
                 match_counter_95 += 1
+
+        match_counter_3 = 0
+        total_inv_sites_3 = 0
+        for i, (flag, char) in enumerate(analyzed_sites_3):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_3 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_3 += 1
 
         sequence = str(record.seq)
         seq_length = len(sequence)
@@ -312,9 +327,14 @@ def query_statistics(query_filepath) -> list:
         else:
             match_rel_95 = 0
 
+        if total_inv_sites_3 > 0:
+            match_rel_3 = match_counter_3 / total_inv_sites_3
+        else:
+            match_rel_3 = 0
+
         results.append((name, record.id, gap_fraction, longest_gap_rel,
-                        match_counter_7 / seq_length, match_counter_8 / seq_length, match_counter_9 / seq_length, match_counter_95 / seq_length,
-                        match_rel_7, match_rel_8, match_rel_9, match_rel_95,
+                        match_counter_7 / seq_length, match_counter_8 / seq_length, match_counter_9 / seq_length, match_counter_95 / seq_length, match_counter_3 / seq_length,
+                        match_rel_7, match_rel_8, match_rel_9, match_rel_95,match_rel_3,
                         gap_fractions[0], gap_fractions[1], gap_fractions[2], gap_fractions[3], gap_fractions[4],
                         gap_fractions[5], gap_fractions[6],
                         gap_fractions[7], gap_fractions[8], gap_fractions[9],
