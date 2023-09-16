@@ -49,6 +49,7 @@ dataset_list = list(merged_df['dataset'].unique())
 loo_datasets = [value for value in dataset_list if value not in elements_to_delete]
 
 for loo_dataset in loo_datasets:
+    print(loo_dataset)
 
     file_path = loo_dataset + "_kmer15_03_1000.csv"
     try:
