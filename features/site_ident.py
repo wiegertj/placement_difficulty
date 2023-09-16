@@ -70,38 +70,27 @@ def calculate_imp_site(support_file_path):
 
         # Initialize variables to store the branch with the least support
         min_support = float('inf')  # Initialize with a high value
+        min_support_branch = None
 
-        with open(support_file_path, "r") as support_file:
-            tree_str = support_file.read()
-            phylo_tree = Tree(tree_str)
-
-            # Initialize variables to store the highest internal branch with support < 25%
-            highest_low_support_branch = None
-
-            # Iterate through all internal branches in the tree (excluding the root)
-            for node in phylo_tree.traverse("postorder"):
-                if not node.is_root() and node.support is not None and node.support < 25:
-                    highest_low_support_branch = node
-                    break  # Exit the loop after the first match is found
-
-            # If a branch with support < 25% is found, print its name and support
-            if highest_low_support_branch is not None:
-                print(f"Highest internal branch with support < 25%: {highest_low_support_branch.name}")
-                print(f"Support value: {highest_low_support_branch.support}")
-            else:
-                print("No internal branch with support < 25% found in the tree.")
+        # Iterate through all branches in the tree
+        for node in phylo_tree.traverse("postorder"):
+            if node.support is not None and not node.is_root() and not node.is_leaf():
+                if node.support < min_support:
+                    min_support = node.support
+                    min_support_branch = node
+        # Initialize lists to store the bipartition
         list_a = []
         list_b = []
 
         # Split the tree at the branch with the least support
-        if highest_low_support_branch is not None:
+        if min_support_branch is not None:
             for leaf in phylo_tree:
-                if leaf in highest_low_support_branch:
+                if leaf in min_support_branch:
                     list_a.append(leaf.name)
                 else:
                     list_b.append(leaf.name)
         print(min_support)
-        print(highest_low_support_branch)
+        print(min_support_branch)
         print(list_a)
         print(list_b)
 
