@@ -74,10 +74,10 @@ def calculate_imp_site(support_file_path):
 
         # Iterate through all branches in the tree
         for node in phylo_tree.traverse():
-            if node.support is not None and node.support < min_support:
-                min_support = node.support
-                min_support_branch = node
-
+            if node.support is not None and node != phylo_tree:
+                if node.support < min_support:
+                    min_support = node.support
+                    min_support_branch = node
         # Initialize lists to store the bipartition
         list_a = []
         list_b = []
