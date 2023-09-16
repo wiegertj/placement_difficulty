@@ -17,7 +17,8 @@ for type in ["46", "37", "28", "19"]:
     for root, dirs, files in os.walk(directory_reference):
         for file in files:
             if file.endswith(".newick"):
-                pot_path = directory_filtered + file.replace("tree", "msa").replace(".newick", "_filtered_" + type + "raxml.bestTree")
+                pot_path = directory_filtered + file.replace("tree", "msa").replace(".newick", "_filtered_" + type + ".raxml.bestTree")
+                pot_path = pot_path.replace("msa", "")
                 print(pot_path)
                 if os.path.exists(pot_path):
                     print("Found, started calculating")
