@@ -2,6 +2,7 @@ import statistics
 import sys
 import warnings
 
+from Bio import AlignIO
 from ete3 import Tree
 import numpy as np
 from scipy.stats import skew, kurtosis
@@ -63,7 +64,7 @@ def nearest_sequence_features(support_file_path, taxon_name):
 
     return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_, min_branch_len_nearest, max_branch_len_nearest, mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest
 
-def calculate_imp_site(support_file_path):
+def calculate_imp_site(support_file_path, msa_filepath):
     with open(support_file_path, "r") as support_file:
         tree_str = support_file.read()
         phylo_tree = Tree(tree_str)
@@ -89,10 +90,9 @@ def calculate_imp_site(support_file_path):
                     list_a.append(leaf.name)
                 else:
                     list_b.append(leaf.name)
-        print(min_support)
-        print(min_support_branch)
-        print(list_a)
-        print(list_b)
+
+        alignment = AlignIO.read(msa_filepath, 'fasta')
+
 
 def calculate_support_statistics(support_file_path):
     print("Calc support")
@@ -225,7 +225,8 @@ for file in filenames:
         continue
 
     support_path = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
-    calculate_imp_site(support_path)
+    msa_path = os.path.join(os.pardir, "data/raw/msa/") + file.replace(".newick", "_reference.fasta")
+    calculate_imp_site(support_path, msa_path)
     sys.exit()
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
 
