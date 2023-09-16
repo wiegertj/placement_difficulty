@@ -126,8 +126,9 @@ def calculate_imp_site(support_file_path, msa_filepath):
                 difference = abs(site_freq_a.get(nucleotide, 0) - site_freq_b.get(nucleotide, 0))
                 site_difference[nucleotide] = difference
             site_pairwise_differences.append(site_difference)
-        print(site_pairwise_differences)
-
+        #print(site_pairwise_differences)
+        site_sum_differences = [sum(site.values()) for site in site_pairwise_differences]
+        print(site_sum_differences)
 
 def calculate_support_statistics(support_file_path):
     print("Calc support")
