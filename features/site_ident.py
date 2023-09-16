@@ -104,38 +104,34 @@ def calculate_imp_site(support_file_path, msa_filepath):
                 alignment_a.append(record)
             elif record.id in list_b:
                 alignment_b.append(record)
-
-        # Calculate nucleotide frequencies for each site in alignment_a
-        freqs_a = []
-        for i in range(len(alignment_a[0])):
-            column = alignment_a[:, i]
-            freq = Counter(column)
-            freqs_a.append(freq)
-
-        # Calculate nucleotide frequencies for each site in alignment_b
         freqs_b = []
-        for i in range(len(alignment_b[0])):
-            column = alignment_b[:, i]
-            freq = Counter(column)
-            freqs_b.append(freq)
+        freqs_a = []
+
+        for i in range(len(alignment_a[0])):
+            column_a = alignment_a[:, i]
+            column_b = alignment_b[:, i]
+
+            combined_values = column_a + column_b
+            all_keys = set(combined_values)
+
+            counter_a = Counter({key: 0 for key in all_keys})
+            counter_b = Counter({key: 0 for key in all_keys})
+
+            counter_a.update(column_a)
+            counter_b.update(column_b)
+
+            print(counter_a)
+            print(column_b)
+
+            freqs_a.append(counter_a)
+            freqs_b.append(counter_b)
+
         kl_divergence_results = []
-        print(freqs_a)
-
-        all_keys = set()
-        for counter in freqs_a + freqs_b:
-            all_keys.update(counter.keys())
-        print(all_keys)
-
-        adjusted_freqs_a = [counter + Counter({key: 0 for key in all_keys - counter.keys()}) for counter in freqs_b]
-        adjusted_freqs_b = [counter + Counter({key: 0 for key in all_keys - counter.keys()}) for counter in freqs_a]
-
-        for site_freq_a, site_freq_b in zip(adjusted_freqs_a, adjusted_freqs_b):
+        for site_freq_a, site_freq_b in zip(freqs_a, freqs_b):
             total_count_a = sum(site_freq_a.values())
             total_count_b = sum(site_freq_b.values())
             normalized_freq_a = {k: v / total_count_a for k, v in site_freq_a.items()}
             normalized_freq_b = {k: v / total_count_b for k, v in site_freq_b.items()}
-            print(normalized_freq_a.values())
-            print(normalized_freq_b.values())
 
             site_freq_a_array = np.array(list(normalized_freq_a.values()))
             site_freq_b_array = np.array(list(normalized_freq_b.values()))
