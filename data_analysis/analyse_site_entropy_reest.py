@@ -39,7 +39,7 @@ for type in ["46", "37", "28", "19"]:
                     results_distance = original_tree.compare(reest_tree, unrooted=True)
 
                     command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", "-v", os.path.abspath(pot_path),
-                               file]
+                               file_path]
                     try:
                         command_string = " ".join(command)
                         output = subprocess.check_output(command, stderr=subprocess.STDOUT, text=True)
