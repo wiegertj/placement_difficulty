@@ -391,9 +391,10 @@ for file in filenames:
     support_path = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
     msa_path = os.path.join(os.pardir, "data/raw/msa/") + file.replace(".newick", "_reference.fasta")
     calculate_imp_site(support_path, msa_path, file.replace(".newick", ""))
-    sys.exit()
-    tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
 
+    tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
+    print("Finished " + file)
+    continue
     distance_file = os.path.join(os.pardir, "data/processed/features",
                                  file.replace(".newick", "") + "16p_msa_perc_hash_dist.csv")
     if not os.path.exists(distance_file):
