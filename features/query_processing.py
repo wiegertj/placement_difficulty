@@ -218,8 +218,8 @@ def query_statistics(query_filepath) -> list:
                 print(residues_at_position_del_most_common)
                 print("-------------------")
                 print(char)
-                if char in residues_at_position_del_most_common:
-                    count_char = residues_at_position_del_most_common.count(char)
+                if str(record.seq)[i] in residues_at_position_del_most_common:
+                    count_char = residues_at_position_del_most_common.count(str(record.seq)[i])
                     fraction_char_rest = count_char / len(residues_at_position_del_most_common)
                 else:
                     fraction_char_rest = 0
