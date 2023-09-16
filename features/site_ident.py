@@ -128,7 +128,10 @@ def calculate_imp_site(support_file_path, msa_filepath):
             site_pairwise_differences.append(site_difference)
         #print(site_pairwise_differences)
         site_sum_differences = [sum(site.values()) for site in site_pairwise_differences]
-        print(site_sum_differences)
+        total_sequences = len(alignment_a) + len(alignment_b)
+        site_normalized_differences = [value / total_sequences for value in site_sum_differences]
+
+        print(site_normalized_differences)
 
 def calculate_support_statistics(support_file_path):
     print("Calc support")
