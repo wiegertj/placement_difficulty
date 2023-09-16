@@ -140,17 +140,14 @@ def calculate_imp_site(support_file_path, msa_filepath):
 
             kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
 
-            min_kl_divergence = min(kl_divergence_results)
-            max_kl_divergence = max(kl_divergence_results)
+            kl_divergence_results.append(kl_divergence_value)
 
-            if max_kl_divergence == min_kl_divergence:
-                normalized_kl_divergence_value = 0.0  # Avoid division by zero
-            else:
-                normalized_kl_divergence_value = (kl_divergence_value - min_kl_divergence) / (
-                            max_kl_divergence - min_kl_divergence)
+        min_kl_divergence = min(kl_divergence_results)
+        max_kl_divergence = max(kl_divergence_results)
 
-            kl_divergence_results.append(normalized_kl_divergence_value)
-
+        # Normalize the list to the range [0, 1]
+        normalized_kl_divergence_results = [(x - min_kl_divergence) / (max_kl_divergence - min_kl_divergence) for x in
+                                            kl_divergence_results]
         print(kl_divergence_results)
 def kl_divergence(p, q):
     """
