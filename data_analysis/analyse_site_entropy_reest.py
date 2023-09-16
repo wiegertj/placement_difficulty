@@ -37,7 +37,9 @@ for type in ["46", "37", "28", "19"]:
                     reest_tree = ete3.Tree(os.path.abspath(pot_path))
 
                     results_distance = original_tree.compare(reest_tree, unrooted=True)
-
+                    print("Quartet paths")
+                    print(os.path.abspath(pot_path))
+                    print( os.path.abspath(file_path))
                     command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", "-v", os.path.abspath(pot_path),
                                os.path.abspath(file_path)]
                     try:
