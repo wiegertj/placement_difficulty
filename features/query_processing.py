@@ -214,20 +214,12 @@ def query_statistics(query_filepath) -> list:
                 residue_counts = Counter(residues_at_position)
                 most_common_residue, most_common_count = residue_counts.most_common(1)[0]
                 residues_at_position_del_most_common = [r for r in residues_at_position if r != most_common_residue]
-                print("-------------------")
-                print(char)
-                print(most_common_residue)
-                print(str(record.seq[i]))
-                print(residues_at_position)
-                print(residues_at_position_del_most_common)
-                print("-------------------")
                 if str(record.seq)[i] in residues_at_position_del_most_common:
                     count_char = residues_at_position_del_most_common.count(str(record.seq)[i])
                     fraction_char_rest = count_char / len(residues_at_position_del_most_common)
                 else:
                     fraction_char_rest = 0
                 fraction_char_rests.append(fraction_char_rest)
-        print(fraction_char_rests)
 
         match_counter_7 = 0
         total_inv_sites_7 = 0
