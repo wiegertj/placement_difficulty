@@ -73,8 +73,8 @@ def calculate_imp_site(support_file_path):
         min_support_branch = None
 
         # Iterate through all branches in the tree
-        for node in phylo_tree.traverse():
-            if node.support is not None and node != phylo_tree:
+        for node in phylo_tree.traverse("postorder"):
+            if node.support is not None and not node.is_root():
                 if node.support < min_support:
                     min_support = node.support
                     min_support_branch = node
