@@ -112,6 +112,13 @@ def calculate_imp_site(support_file_path, msa_filepath):
         print("\nConsensus Sequence for Alignment B:")
         print(consensus_b)
 
+        matching_sites = [1 if a == b else 0 for a, b in zip(consensus_a, consensus_b)]
+
+        # Print or use the matching sites list as needed
+        print("Matching Sites:")
+        print(matching_sites)
+
+
 def calculate_support_statistics(support_file_path):
     print("Calc support")
     with open(support_file_path, "r") as support_file:
