@@ -119,6 +119,12 @@ def calculate_imp_site(support_file_path, msa_filepath):
 
             counter_a.update(column_a)
             counter_b.update(column_b)
+
+            sorted_keys = sorted(all_keys)
+
+            counter_a = Counter({key: counter_a[key] for key in sorted_keys})
+            counter_b = Counter({key: counter_b[key] for key in sorted_keys})
+
             print("------x-------")
             print(counter_a)
             print(counter_b)
