@@ -204,8 +204,6 @@ loo_datasets = [value for value in dataset_list if value not in elements_to_dele
 for loo_dataset in loo_datasets:
     try:
         file_path = loo_dataset + "_diff_site_stats.csv"
-        print(file_path)
-
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
         loo_resuls_dfs.append(df)
@@ -214,7 +212,10 @@ for loo_dataset in loo_datasets:
         print("Not found diff site stats: " + loo_dataset)
 
 loo_diff = pd.concat(loo_resuls_dfs, ignore_index=True)
-loo_diff = loo_diff.rename(columns={'sampleId': 'temp', 'dataset': 'sampleId', 'temp': 'dataset'})
+loo_diff["temp"] = loo_diff["dataset"]
+loo_diff["dataset"] = loo_diff["sampleId"]
+loo_diff["sampleId"] = loo_diff["temp"]
+loo_diff.drop(columns=["temp"], inplace=True, axis=1)
 
 loo_diff = loo_diff.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 loo_resuls_combined = loo_resuls_combined.merge(loo_diff, on=["sampleId", 'dataset'], how='inner')
