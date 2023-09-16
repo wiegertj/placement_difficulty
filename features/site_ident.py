@@ -89,6 +89,8 @@ def calculate_imp_site(support_file_path):
                     list_a.append(leaf.name)
                 else:
                     list_b.append(leaf.name)
+        print(min_support)
+        print(min_support_branch)
         print(list_a)
         print(list_b)
 
