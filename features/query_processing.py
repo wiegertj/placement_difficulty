@@ -31,17 +31,12 @@ def query_statistics(query_filepath) -> list:
     filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
     alignment = AlignIO.read(filepath, 'fasta')
 
-
-
-
-
     analyzed_sites_9 = []
     analyzed_sites_8 = []
     analyzed_sites_7 = []
     analyzed_sites_95 = []
     analyzed_sites_3 = []
     analyzed_sites_1 = []
-
 
     # Iterate over each position in the alignment
     for position in range(len(alignment[0])):
@@ -59,7 +54,6 @@ def query_statistics(query_filepath) -> list:
 
         # Calculate the proportion of the most frequent character
         proportion_most_common = most_common_count / total_count if total_count > 0 else 0
-
 
         # Check if the proportion is below the threshold and the character is not a gap or "N"
         if proportion_most_common < 0.9 or most_common_char in ['-', 'N']:
@@ -95,12 +89,6 @@ def query_statistics(query_filepath) -> list:
         else:
             analyzed_sites_95.append((1, most_common_char))
 
-
-
-
-
-
-
     isAA = False
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     datatype = loo_selection[loo_selection["verbose_name"] == query_filepath.replace("_query.fasta", ".phy")].iloc[0][
@@ -134,9 +122,35 @@ def query_statistics(query_filepath) -> list:
         for i, (flag, char) in enumerate(analyzed_sites_8):
             # Check if the corresponding site in the query has a 1 and if the characters are equal
             if flag == 1:
+                total_inv_sites_9 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_8 += 1
+
+
+
+
+        transition_count = 0
+        transversion_count = 0
+        mut_count = 0
+        for i, (flag, char) in enumerate(analyzed_sites_8):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
                 total_inv_sites_8 += 1
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
                 match_counter_8 += 1
+            if flag == 1 and str(record.seq)[i] != char:
+                mut_count += 1
+                if char in ["C", "T", "U"]:
+                    if str(record.seq)[i] in ["A", "G"]:
+                        transversion_count += 1
+                elif char in ["A", "G"]:
+                    if str(record.seq)[i] in ["C", "T", "U"]:
+                        transversion_count += 1
+                else:
+                    transition_count += 1
+
+
+
 
         match_counter_7 = 0
         total_inv_sites_7 = 0
@@ -164,7 +178,6 @@ def query_statistics(query_filepath) -> list:
                 total_inv_sites_1 += 1
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
                 match_counter_1 += 1
-
 
         match_counter_3 = 0
         total_inv_sites_3 = 0
@@ -368,9 +381,17 @@ def query_statistics(query_filepath) -> list:
         else:
             match_rel_gap = 0
 
+        if mut_count > 0:
+            transition_count_rel = transition_count / mut_count
+            transversion_count_rel = transversion_count / mut_count
+        else:
+            transition_count_rel = 0
+            transversion_count_rel = 0
+
         results.append((name, record.id, gap_fraction, longest_gap_rel,
-                        match_counter_7 / seq_length, match_counter_8 / seq_length, match_counter_9 / seq_length, match_counter_95 / seq_length, match_counter_3 / seq_length, match_counter_1 / seq_length,
-                        match_rel_7, match_rel_8, match_rel_9, match_rel_95,match_rel_3,match_rel_1, match_rel_gap,
+                        match_counter_7 / seq_length, match_counter_8 / seq_length, match_counter_9 / seq_length,
+                        match_counter_95 / seq_length, match_counter_3 / seq_length, match_counter_1 / seq_length,
+                        match_rel_7, match_rel_8, match_rel_9, match_rel_95, match_rel_3, match_rel_1, match_rel_gap, transition_count_rel, transversion_count_rel,
                         gap_fractions[0], gap_fractions[1], gap_fractions[2], gap_fractions[3], gap_fractions[4],
                         gap_fractions[5], gap_fractions[6],
                         gap_fractions[7], gap_fractions[8], gap_fractions[9],
@@ -430,8 +451,10 @@ if __name__ == '__main__':
     results = [item for sublist in results for item in sublist]
 
     df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel",
-                                        "frac_inv_sites_msa7", "frac_inv_sites_msa8", "frac_inv_sites_msa9", "frac_inv_sites_msa95","frac_inv_sites_msa3","frac_inv_sites_msa1",
-                                        "match_rel_7", "match_rel_8", "match_rel_9", "match_rel_95","match_rel_3", "match_rel_1", "match_rel_gap",
+                                        "frac_inv_sites_msa7", "frac_inv_sites_msa8", "frac_inv_sites_msa9",
+                                        "frac_inv_sites_msa95", "frac_inv_sites_msa3", "frac_inv_sites_msa1",
+                                        "match_rel_7", "match_rel_8", "match_rel_9", "match_rel_95", "match_rel_3",
+                                        "match_rel_1", "match_rel_gap", "transition_count_rel", "transversion_count_rel",
                                         "gap_positions_0", "gap_positions_1", "gap_positions_2", "gap_positions_3",
                                         "gap_positions_4", "gap_positions_5", "gap_positions_6",
                                         "gap_positions_7", "gap_positions_8", "gap_positions_9",
@@ -447,6 +470,8 @@ if __name__ == '__main__':
                                         "randex1_query", "randex2_query",
                                         "randex3_query", "randex4_query", "g_fraction_query",
                                         "a_fraction_query", "t_fraction_query", "c_fraction_query",
-                                        "rest_fraction_query", "aa_stat_min_query","aa_stat_max_query","aa_stat_std_query", "aa_stat_mean_query","min_gap_query", "max_gap_query", "mean_gap_query",
+                                        "rest_fraction_query", "aa_stat_min_query", "aa_stat_max_query",
+                                        "aa_stat_std_query", "aa_stat_mean_query", "min_gap_query", "max_gap_query",
+                                        "mean_gap_query",
                                         "cv_gap_query", "sk_gap_query", "kur_gap_query"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"))
