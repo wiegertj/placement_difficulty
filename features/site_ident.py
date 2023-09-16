@@ -149,7 +149,7 @@ def calculate_imp_site(support_file_path, msa_filepath):
                 normalized_kl_divergence_value = (kl_divergence_value - min_kl_divergence) / (
                             max_kl_divergence - min_kl_divergence)
 
-            normalized_kl_divergence_results.append(normalized_kl_divergence_value)
+            kl_divergence_results.append(normalized_kl_divergence_value)
 
         print(kl_divergence_results)
 def kl_divergence(p, q):
