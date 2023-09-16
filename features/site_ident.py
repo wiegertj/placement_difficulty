@@ -125,16 +125,6 @@ def calculate_imp_site(support_file_path, msa_filepath):
             counter_a = Counter({key: counter_a[key] for key in sorted_keys})
             counter_b = Counter({key: counter_b[key] for key in sorted_keys})
 
-            print("------x-------")
-            print(sorted_keys)
-            print(counter_a.keys())
-            print(counter_a.values())
-            print(counter_b.keys())
-            print(counter_b.values())
-            print(counter_a)
-            print(counter_b)
-            print("-------------")
-
             freqs_a.append(counter_a)
             freqs_b.append(counter_b)
 
@@ -148,11 +138,18 @@ def calculate_imp_site(support_file_path, msa_filepath):
             site_freq_a_array = np.array(list(normalized_freq_a.values()))
             site_freq_b_array = np.array(list(normalized_freq_b.values()))
 
-            # Compute KL divergence using scipy's entropy function
             kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
 
-            # Append the result to the list
-            kl_divergence_results.append(kl_divergence_value)
+            min_kl_divergence = min(kl_divergence_results)
+            max_kl_divergence = max(kl_divergence_results)
+
+            if max_kl_divergence == min_kl_divergence:
+                normalized_kl_divergence_value = 0.0  # Avoid division by zero
+            else:
+                normalized_kl_divergence_value = (kl_divergence_value - min_kl_divergence) / (
+                            max_kl_divergence - min_kl_divergence)
+
+            normalized_kl_divergence_results.append(normalized_kl_divergence_value)
 
         print(kl_divergence_results)
 def kl_divergence(p, q):
