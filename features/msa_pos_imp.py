@@ -143,7 +143,7 @@ if __name__ == '__main__':
         if datatype == "AA" or datatype == "DataType.AA":
             isAA = True
 
-        filepath_modified = filter_by_entropy_interval(filepath, 0.1, 0.9)
+        filepath_modified = filter_by_entropy_interval(filepath, 0.0, 0.9)
         if filepath_modified == 0:
             print("Skipped, too large")
             continue
