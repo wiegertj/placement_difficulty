@@ -1,3 +1,4 @@
+import math
 import statistics
 import sys
 import warnings
@@ -117,21 +118,26 @@ def calculate_imp_site(support_file_path, msa_filepath):
             column = alignment_b[:, i]
             freq = Counter(column)
             freqs_b.append(freq)
-
+        kl_divergence_results = []
+        print(freqs_a)
         site_pairwise_differences = []
         for site_freq_a, site_freq_b in zip(freqs_a, freqs_b):
-            site_difference = {}
-            all_nucleotides = set(site_freq_a.keys()) | set(site_freq_b.keys())  # Combine keys from both counters
-            for nucleotide in all_nucleotides:
-                difference = abs(site_freq_a.get(nucleotide, 0) - site_freq_b.get(nucleotide, 0))
-                site_difference[nucleotide] = difference
-            site_pairwise_differences.append(site_difference)
-        #print(site_pairwise_differences)
-        site_sum_differences = [sum(site.values()) for site in site_pairwise_differences]
-        total_sequences = len(alignment_a) + len(alignment_b)
-        site_normalized_differences = [value / total_sequences for value in site_sum_differences]
+            total_count_a = sum(site_freq_a.values())
+            total_count_b = sum(site_freq_b.values())
+            normalized_freq_a = {k: v / total_count_a for k, v in site_freq_a.items()}
+            print(normalized_freq_a)
+            normalized_freq_b = {k: v / total_count_b for k, v in site_freq_b.items()}
+            kl_divergence_value = kl_divergence(list(normalized_freq_a.values()), list(normalized_freq_b.values()))
 
-        print(site_normalized_differences)
+            kl_divergence_results.append(kl_divergence_value)
+
+        print(kl_divergence_results)
+def kl_divergence(p, q):
+    """
+    Calculate the Kullback-Leibler divergence between two probability distributions p and q.
+    """
+    kl = sum(p[i] * math.log(p[i] / q[i]) for i in p)
+    return kl
 
 def calculate_support_statistics(support_file_path):
     print("Calc support")
