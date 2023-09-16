@@ -188,6 +188,34 @@ loo_nearest = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_nearest = loo_nearest.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 loo_resuls_combined = loo_resuls_combined.merge(loo_nearest, on=["sampleId", 'dataset'], how='inner')
 
+
+
+
+
+
+loo_resuls_dfs = []
+elements_to_delete = ['tara', 'bv', "neotrop"]
+dataset_list = list(merged_df['dataset'].unique())
+loo_datasets = [value for value in dataset_list if value not in elements_to_delete]
+
+for loo_dataset in loo_datasets:
+    try:
+        file_path = loo_dataset + "_diff_site_stats.csv"
+        file_path = os.path.join(os.pardir, "data/processed/features", file_path)
+        df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
+        loo_resuls_dfs.append(df)
+    except FileNotFoundError:
+        print(file_path)
+        print("Not found diff site stats: " + loo_dataset)
+
+loo_diff = pd.concat(loo_resuls_dfs, ignore_index=True)
+loo_diff = loo_diff.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
+loo_resuls_combined = loo_resuls_combined.merge(loo_diff, on=["sampleId", 'dataset'], how='inner')
+
+
+
+
+
 # final dataset
 # combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
 combined_df = loo_resuls_combined
