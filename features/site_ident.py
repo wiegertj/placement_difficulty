@@ -152,8 +152,14 @@ def calculate_imp_site(support_file_path, msa_filepath):
         # Normalize the list to the range [0, 1]
         normalized_kl_divergence_results = [(x - min_kl_divergence) / (max_kl_divergence - min_kl_divergence) for x in
                                             kl_divergence_results]
-        print(kl_divergence_results)
-        print(normalized_kl_divergence_results)
+
+        threshold = sorted(normalized_kl_divergence_results)[-int(0.2 * len(normalized_kl_divergence_results))]
+        print(threshold)
+        # Set values greater than or equal to the threshold to 1, and the rest to 0
+        binary_results = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
+        print(binary_results)
+        print(len(binary_results))
+        print(len(alignment_a[0]))
 def kl_divergence(p, q):
     """
     Calculate the Kullback-Leibler divergence between two probability distributions p and q.
