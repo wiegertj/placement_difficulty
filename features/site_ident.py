@@ -119,9 +119,10 @@ def calculate_imp_site(support_file_path, msa_filepath):
 
             counter_a.update(column_a)
             counter_b.update(column_b)
-
+            print("------x-------")
             print(counter_a)
             print(counter_b)
+            print("-------------")
 
             freqs_a.append(counter_a)
             freqs_b.append(counter_b)
