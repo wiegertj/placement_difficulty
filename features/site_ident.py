@@ -154,12 +154,12 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                                             kl_divergence_results]
         binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
 
-        #threshold = sorted(normalized_kl_divergence_results)[-int(0.1 * len(normalized_kl_divergence_results))]
+        threshold = sorted(normalized_kl_divergence_results)[-int(0.1 * len(normalized_kl_divergence_results))]
         #print(threshold)
         # Set values greater than or equal to the threshold to 1, and the rest to 0
-        #binary_results = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
+        binary_results_threshold = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
         support_kl_div_filtered_1_frac = sum(binary_results) / len(binary_results) # how much of the msa is difficult
-
+        support_kl_div_filtered_1_frac_thresh = sum(binary_results_threshold) / len(binary_results_threshold)  # how much of the msa is difficult
         results_final = []
 
         for record in alignment:
@@ -196,7 +196,42 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             else:
                 rel_gap_over_diff_sites = 0
 
-            results.append((name, record.id, support_kl_div_filtered_1_frac, gaps_over_diff_sites_frac, non_gaps_over_diff_sites_frac, rel_non_gap_over_diff_sites, rel_gap_over_diff_sites))
+
+
+
+
+
+
+            gap_match_counter_thresh = 0
+            non_gap_match_counter_thresh = 0
+
+
+            for i in range(len(alignment_a[0])):
+                if (binary_results_threshold[i] == 1) and (queryseq[i] in ["-", "N"]):
+                    gap_match_counter_thresh += 1
+                elif (binary_results_threshold[i] == 1) and (queryseq[i] not in ["-", "N"]):
+                    non_gap_match_counter_thresh += 1
+
+            if sum(binary_results_threshold) != 0:
+                gaps_over_diff_sites_frac_thresh = gap_match_counter_thresh / sum(binary_results_threshold) # how many of diff sites are gaps
+                non_gaps_over_diff_sites_frac_thresh = non_gap_match_counter_thresh / sum(binary_results_threshold) # how many of diff sites are non gaps
+            else:
+                gaps_over_diff_sites_frac_thresh = 0
+                non_gaps_over_diff_sites_frac_thresh = 0
+
+            if non_gap_count != 0:
+                rel_non_gap_over_diff_sites_thresh = non_gap_match_counter_thresh / non_gap_count # how much of the actual sequence without gaps lies over diff sites
+            else:
+                rel_non_gap_over_diff_sites_thresh = 0
+
+            if gap_count != 0:
+                rel_gap_over_diff_sites_thresh = gap_match_counter_thresh / gap_count # how much of the gaps lies over diff site
+            else:
+                rel_gap_over_diff_sites_thresh = 0
+
+
+            results.append((name, record.id, support_kl_div_filtered_1_frac, gaps_over_diff_sites_frac, non_gaps_over_diff_sites_frac, rel_non_gap_over_diff_sites, rel_gap_over_diff_sites,
+                            support_kl_div_filtered_1_frac_thresh, gaps_over_diff_sites_frac_thresh, non_gaps_over_diff_sites_frac_thresh, rel_non_gap_over_diff_sites_thresh, rel_gap_over_diff_sites_thresh))
 
         columns = [
             'sampleId',
@@ -205,7 +240,12 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             'gaps_over_diff_sites_frac',
             'non_gaps_over_diff_sites_frac',
             'rel_non_gap_over_diff_sites',
-            'rel_gap_over_diff_sites'
+            'rel_gap_over_diff_sites',
+            'support_kl_div_filtered_1_frac_thresh',
+            'gaps_over_diff_sites_frac_thresh',
+            'non_gaps_over_diff_sites_frac_thresh',
+            'rel_non_gap_over_diff_sites_thresh',
+            'rel_gap_over_diff_sites_thresh'
         ]
         df = pd.DataFrame(results, columns=columns)
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
