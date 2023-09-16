@@ -102,9 +102,9 @@ def calculate_imp_site(support_file_path, msa_filepath):
             elif record.id in list_b:
                 alignment_b.append(record)
         summary_align_a = AlignInfo.SummaryInfo(alignment_a)
-        consensus_a = summary_align_a.gap_consensus(threshold=0.8, ambiguous='X')
+        consensus_a = summary_align_a.gap_consensus(threshold=0.7, ambiguous='X')
         summary_align_b = AlignInfo.SummaryInfo(alignment_a)
-        consensus_b = summary_align_b.gap_consensus(threshold=0.8, ambiguous='X')
+        consensus_b = summary_align_b.gap_consensus(threshold=0.7, ambiguous='X')
 
         print("Consensus Sequence for Alignment A:")
         print(consensus_a)
