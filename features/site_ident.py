@@ -9,7 +9,7 @@ from Bio.Align import MultipleSeqAlignment
 from Bio import AlignIO
 from ete3 import Tree
 import numpy as np
-from scipy.stats import skew, kurtosis
+from scipy.stats import skew, kurtosis, entropy
 import pandas as pd
 from Bio.Align import AlignInfo
 
@@ -127,8 +127,13 @@ def calculate_imp_site(support_file_path, msa_filepath):
             normalized_freq_a = {k: v / total_count_a for k, v in site_freq_a.items()}
             print(normalized_freq_a)
             normalized_freq_b = {k: v / total_count_b for k, v in site_freq_b.items()}
-            kl_divergence_value = kl_divergence(list(normalized_freq_a.values()), list(normalized_freq_b.values()))
+            site_freq_a_array = np.array(list(site_freq_a.values()))
+            site_freq_b_array = np.array(list(site_freq_b.values()))
 
+            # Compute KL divergence using scipy's entropy function
+            kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
+
+            # Append the result to the list
             kl_divergence_results.append(kl_divergence_value)
 
         print(kl_divergence_results)
