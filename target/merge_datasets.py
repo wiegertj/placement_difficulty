@@ -27,12 +27,15 @@ print("Query feature count: " + str(query_features.shape))
 tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), index_col=False,
                             usecols=lambda column: column != 'Unnamed: 0')
 tree_features = tree_features.drop_duplicates(subset=['dataset'], keep='first')
+print(tree_features.shape)
 
 # Get tree uncertainty features
 tree_features_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"),
                                         index_col=False,
                                         usecols=lambda column: column != 'Unnamed: 0')
 tree_features_uncertainty = tree_features_uncertainty.drop_duplicates(subset=['dataset'], keep='first')
+print(tree_features_uncertainty.shape)
+
 
 tree_features_uncertainty["dataset"] = tree_features_uncertainty["dataset"].str.replace(".newick", "")
 tree_features = tree_features.merge(tree_features_uncertainty, on="dataset", how="inner")
@@ -49,7 +52,6 @@ dataset_list = list(merged_df['dataset'].unique())
 loo_datasets = [value for value in dataset_list if value not in elements_to_delete]
 
 for loo_dataset in loo_datasets:
-    print(loo_dataset)
 
     file_path = loo_dataset + "_kmer15_03_1000.csv"
     try:
