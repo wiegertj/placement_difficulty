@@ -35,7 +35,11 @@ def query_statistics(query_filepath) -> list:
 
 
 
-    analyzed_sites = []
+    analyzed_sites_9 = []
+    analyzed_sites_8 = []
+    analyzed_sites_7 = []
+    analyzed_sites_95 = []
+
 
     # Iterate over each position in the alignment
     for position in range(len(alignment[0])):
@@ -57,9 +61,27 @@ def query_statistics(query_filepath) -> list:
 
         # Check if the proportion is below the threshold and the character is not a gap or "N"
         if proportion_most_common < 0.9 or most_common_char in ['-', 'N']:
-            analyzed_sites.append((0, most_common_char))
+            analyzed_sites_9.append((0, most_common_char))
         else:
-            analyzed_sites.append((1, most_common_char))
+            analyzed_sites_9.append((1, most_common_char))
+
+        # Check if the proportion is below the threshold and the character is not a gap or "N"
+        if proportion_most_common < 0.8 or most_common_char in ['-', 'N']:
+            analyzed_sites_8.append((0, most_common_char))
+        else:
+            analyzed_sites_8.append((1, most_common_char))
+
+        # Check if the proportion is below the threshold and the character is not a gap or "N"
+        if proportion_most_common < 0.7 or most_common_char in ['-', 'N']:
+            analyzed_sites_7.append((0, most_common_char))
+        else:
+            analyzed_sites_7.append((1, most_common_char))
+
+        # Check if the proportion is below the threshold and the character is not a gap or "N"
+        if proportion_most_common < 0.95 or most_common_char in ['-', 'N']:
+            analyzed_sites_95.append((0, most_common_char))
+        else:
+            analyzed_sites_95.append((1, most_common_char))
 
 
 
@@ -76,14 +98,41 @@ def query_statistics(query_filepath) -> list:
         print("Found AA")
     print(isAA)  # Skip already processed
     for record in alignment:
-        match_counter = 0
-        total_inv_sites = 0
-        for i, (flag, char) in enumerate(analyzed_sites):
+        match_counter_9 = 0
+        total_inv_sites_9 = 0
+        for i, (flag, char) in enumerate(analyzed_sites_9):
             # Check if the corresponding site in the query has a 1 and if the characters are equal
             if flag == 1:
-                total_inv_sites += 1
+                total_inv_sites_9 += 1
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
-                match_counter += 1
+                match_counter_9 += 1
+
+        match_counter_8 = 0
+        total_inv_sites_8 = 0
+        for i, (flag, char) in enumerate(analyzed_sites_8):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_8 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_8 += 1
+
+        match_counter_7 = 0
+        total_inv_sites_7 = 0
+        for i, (flag, char) in enumerate(analyzed_sites_7):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_7 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_7 += 1
+
+        match_counter_95 = 0
+        total_inv_sites_95 = 0
+        for i, (flag, char) in enumerate(analyzed_sites_95):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_95 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_95 += 1
 
         sequence = str(record.seq)
         seq_length = len(sequence)
@@ -243,13 +292,29 @@ def query_statistics(query_filepath) -> list:
         else:
             name = query_filepath.replace("_query.fasta", "")
 
-        if total_inv_sites > 0:
-            match_rel = match_counter / total_inv_sites
+        if total_inv_sites_7 > 0:
+            match_rel_7 = match_counter_7 / total_inv_sites_7
         else:
-            match_rel = 0
+            match_rel_7 = 0
+
+        if total_inv_sites_8 > 0:
+            match_rel_8 = match_counter_8 / total_inv_sites_8
+        else:
+            match_rel_8 = 0
+
+        if total_inv_sites_9 > 0:
+            match_rel_9 = match_counter_9 / total_inv_sites_9
+        else:
+            match_rel_9 = 0
+
+        if total_inv_sites_95 > 0:
+            match_rel_95 = match_counter_95 / total_inv_sites_95
+        else:
+            match_rel_95 = 0
 
         results.append((name, record.id, gap_fraction, longest_gap_rel,
-                        match_counter / seq_length, match_rel,
+                        match_counter_7 / seq_length, match_counter_8 / seq_length, match_counter_9 / seq_length, match_counter_95 / seq_length,
+                        match_rel_7, match_rel_8, match_rel_9, match_rel_95,
                         gap_fractions[0], gap_fractions[1], gap_fractions[2], gap_fractions[3], gap_fractions[4],
                         gap_fractions[5], gap_fractions[6],
                         gap_fractions[7], gap_fractions[8], gap_fractions[9],
@@ -309,7 +374,8 @@ if __name__ == '__main__':
     results = [item for sublist in results for item in sublist]
 
     df = pd.DataFrame(results, columns=["dataset", "sampleId", "gap_fraction", "longest_gap_rel",
-                                        "frac_inv_sites_msa", "inv_matches_frac",
+                                        "frac_inv_sites_msa7", "frac_inv_sites_msa8", "frac_inv_sites_msa9", "frac_inv_sites_msa95",
+                                        "match_rel_7", "match_rel_8", "match_rel_9", "match_rel_95",
                                         "gap_positions_0", "gap_positions_1", "gap_positions_2", "gap_positions_3",
                                         "gap_positions_4", "gap_positions_5", "gap_positions_6",
                                         "gap_positions_7", "gap_positions_8", "gap_positions_9",
