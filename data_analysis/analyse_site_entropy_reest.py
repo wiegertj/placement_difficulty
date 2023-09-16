@@ -29,7 +29,10 @@ for type in ["46", "37", "28", "19"]:
                     desired_substring = pot_path.replace(".newick", "_filtered_" + "" + ".bestTree")[start_index:end_index]
                     print(desired_substring)
                     file_path = os.path.join(root, file)
-                    original_newick_tree = file.read()
+
+                    with open(file_path, "r") as f:
+                        original_newick_tree = f.read()
+                    #original_newick_tree = file_path.read()
                     original_tree = ete3.Tree(original_newick_tree)
                     reest_tree = ete3.Tree(os.path.abspath(pot_path))
 
