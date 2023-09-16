@@ -15,7 +15,8 @@ from uncertainty.RunTest import RunTest
 from uncertainty.Spectral import SpectralTest
 from scipy.stats import skew, kurtosis
 import statistics
-
+import numpy as np
+from scipy.stats import kurtosis, skew
 
 def query_statistics(query_filepath) -> list:
     """
@@ -116,7 +117,6 @@ def query_statistics(query_filepath) -> list:
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
                 match_counter_9 += 1
 
-
         match_counter_8 = 0
         total_inv_sites_8 = 0
         for i, (flag, char) in enumerate(analyzed_sites_8):
@@ -126,11 +126,10 @@ def query_statistics(query_filepath) -> list:
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
                 match_counter_8 += 1
 
-
-
         transition_count = 0
         transversion_count = 0
         mut_count = 0
+        fraction_char_rests = []
         for i, (flag, char) in enumerate(analyzed_sites_8):
             # Check if the corresponding site in the query has a 1 and if the characters are equal
             if flag == 1:
@@ -157,6 +156,7 @@ def query_statistics(query_filepath) -> list:
                     fraction_char_rest = count_char / len(residues_at_position_del_most_common)
                 else:
                     fraction_char_rest = 0
+                fraction_char_rests.append(fraction_char_rest)
 
         match_counter_7 = 0
         total_inv_sites_7 = 0
@@ -394,10 +394,28 @@ def query_statistics(query_filepath) -> list:
             transition_count_rel = 0
             transversion_count_rel = 0
 
+        if len(fraction_char_rests) > 0:
+            max_fraction_char_rests = np.max(fraction_char_rests)
+            min_fraction_char_rests = np.min(fraction_char_rests)
+            avg_fraction_char_rests = np.mean(fraction_char_rests)
+            std_fraction_char_rests = np.std(fraction_char_rests)
+            skw_fraction_char_rests = skew(fraction_char_rests)
+            kur_fraction_char_rests = kurtosis(fraction_char_rests, fisher=True)
+        else:
+            max_fraction_char_rests = 0.0
+            min_fraction_char_rests = 0.0
+            avg_fraction_char_rests = 0.0
+            std_fraction_char_rests = 0.0
+            skw_fraction_char_rests = 0.0
+            kur_fraction_char_rests = 0.0
+
         results.append((name, record.id, gap_fraction, longest_gap_rel,
                         match_counter_7 / seq_length, match_counter_8 / seq_length, match_counter_9 / seq_length,
                         match_counter_95 / seq_length, match_counter_3 / seq_length, match_counter_1 / seq_length,
-                        match_rel_7, match_rel_8, match_rel_9, match_rel_95, match_rel_3, match_rel_1, match_rel_gap, transition_count_rel, transversion_count_rel, fraction_char_rest,
+                        match_rel_7, match_rel_8, match_rel_9, match_rel_95, match_rel_3, match_rel_1, match_rel_gap,
+                        transition_count_rel, transversion_count_rel, max_fraction_char_rests,
+                        min_fraction_char_rests, avg_fraction_char_rests, std_fraction_char_rests,
+                        skw_fraction_char_rests, kur_fraction_char_rests,
                         gap_fractions[0], gap_fractions[1], gap_fractions[2], gap_fractions[3], gap_fractions[4],
                         gap_fractions[5], gap_fractions[6],
                         gap_fractions[7], gap_fractions[8], gap_fractions[9],
@@ -460,7 +478,10 @@ if __name__ == '__main__':
                                         "frac_inv_sites_msa7", "frac_inv_sites_msa8", "frac_inv_sites_msa9",
                                         "frac_inv_sites_msa95", "frac_inv_sites_msa3", "frac_inv_sites_msa1",
                                         "match_rel_7", "match_rel_8", "match_rel_9", "match_rel_95", "match_rel_3",
-                                        "match_rel_1", "match_rel_gap", "transition_count_rel", "transversion_count_rel", "fraction_char_rest",
+                                        "match_rel_1", "match_rel_gap", "transition_count_rel",
+                                        "transversion_count_rel", "max_fraction_char_rests",
+                                        "min_fraction_char_rests", "avg_fraction_char_rests", "std_fraction_char_rests",
+                                        "skw_fraction_char_rests", "kur_fraction_char_rests",
                                         "gap_positions_0", "gap_positions_1", "gap_positions_2", "gap_positions_3",
                                         "gap_positions_4", "gap_positions_5", "gap_positions_6",
                                         "gap_positions_7", "gap_positions_8", "gap_positions_9",
