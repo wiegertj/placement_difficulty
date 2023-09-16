@@ -154,11 +154,12 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                                             kl_divergence_results]
         binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
 
-        threshold = sorted(normalized_kl_divergence_results)[-int(0.1 * len(normalized_kl_divergence_results))]
+        threshold = sorted(normalized_kl_divergence_results)[-int(0.2 * len(normalized_kl_divergence_results))]
         #print(threshold)
         # Set values greater than or equal to the threshold to 1, and the rest to 0
         binary_results_threshold = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
         support_kl_div_filtered_1_frac = sum(binary_results) / len(binary_results) # how much of the msa is difficult
+        print(support_kl_div_filtered_1_frac)
         support_kl_div_filtered_1_frac_thresh = sum(binary_results_threshold) / len(binary_results_threshold)  # how much of the msa is difficult
         results_final = []
 
