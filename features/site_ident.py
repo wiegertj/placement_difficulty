@@ -1,6 +1,8 @@
 import statistics
 import sys
 import warnings
+from collections import Counter
+
 from Bio.Align import MultipleSeqAlignment
 
 from Bio import AlignIO
@@ -101,22 +103,30 @@ def calculate_imp_site(support_file_path, msa_filepath):
                 alignment_a.append(record)
             elif record.id in list_b:
                 alignment_b.append(record)
-        summary_align_a = AlignInfo.SummaryInfo(alignment_a)
-        consensus_a = summary_align_a.gap_consensus(threshold=0.95, ambiguous='X')
-        summary_align_b = AlignInfo.SummaryInfo(alignment_a)
-        consensus_b = summary_align_b.gap_consensus(threshold=0.95, ambiguous='X')
 
-        print("Consensus Sequence for Alignment A:")
-        print(consensus_a)
+        # Calculate nucleotide frequencies for each site in alignment_a
+        freqs_a = []
+        for i in range(len(alignment_a[0])):
+            column = alignment_a[:, i]
+            freq = Counter(column)
+            freqs_a.append(freq)
 
-        print("\nConsensus Sequence for Alignment B:")
-        print(consensus_b)
+        # Calculate nucleotide frequencies for each site in alignment_b
+        freqs_b = []
+        for i in range(len(alignment_b[0])):
+            column = alignment_b[:, i]
+            freq = Counter(column)
+            freqs_b.append(freq)
 
-        matching_sites = [1 if a == b else 0 for a, b in zip(consensus_a, consensus_b)]
-
-        # Print or use the matching sites list as needed
-        print("Matching Sites:")
-        print(matching_sites)
+        site_pairwise_differences = []
+        for site_freq_a, site_freq_b in zip(freqs_a, freqs_b):
+            site_difference = {}
+            all_nucleotides = set(site_freq_a.keys()) | set(site_freq_b.keys())  # Combine keys from both counters
+            for nucleotide in all_nucleotides:
+                difference = abs(site_freq_a.get(nucleotide, 0) - site_freq_b.get(nucleotide, 0))
+                site_difference[nucleotide] = difference
+            site_pairwise_differences.append(site_difference)
+        print(site_pairwise_differences)
 
 
 def calculate_support_statistics(support_file_path):
