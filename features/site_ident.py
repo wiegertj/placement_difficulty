@@ -69,7 +69,7 @@ def nearest_sequence_features(support_file_path, taxon_name):
 
     return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_, min_branch_len_nearest, max_branch_len_nearest, mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest
 
-def calculate_imp_site(support_file_path, msa_filepath):
+def calculate_imp_site(support_file_path, msa_filepath, name):
     with open(support_file_path, "r") as support_file:
         tree_str = support_file.read()
         phylo_tree = Tree(tree_str)
@@ -158,9 +158,59 @@ def calculate_imp_site(support_file_path, msa_filepath):
         #print(threshold)
         # Set values greater than or equal to the threshold to 1, and the rest to 0
         #binary_results = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
-        print(binary_results)
-        print(len(binary_results))
-        print(len(alignment_a[0]))
+        support_kl_div_filtered_1_frac = sum(binary_results) / len(binary_results) # how much of the msa is difficult
+
+        results_final = []
+
+        for record in alignment:
+            queryseq = record.seq
+            non_gap_count = 0
+            for char in queryseq:
+                if char not in ["-", "N"]:
+                    non_gap_count += 1
+            gap_count = len(queryseq) - non_gap_count
+
+            gap_match_counter = 0
+            non_gap_match_counter = 0
+
+            for i in range(len(alignment_a[0])):
+                if (binary_results[i] == 1) and (queryseq[i] in ["-", "N"]):
+                    gap_match_counter += 1
+                elif (binary_results[i] == 1) and (queryseq[i] not in ["-", "N"]):
+                    non_gap_match_counter += 1
+
+            if sum(binary_results) != 0:
+                gaps_over_diff_sites_frac = gap_match_counter / sum(binary_results) # how many of diff sites are gaps
+                non_gaps_over_diff_sites_frac = non_gap_match_counter / sum(binary_results) # how many of diff sites are non gaps
+            else:
+                gaps_over_diff_sites_frac = 0
+                non_gaps_over_diff_sites_frac = 0
+
+            if non_gap_count != 0:
+                rel_non_gap_over_diff_sites = non_gap_match_counter / non_gap_count # how much of the actual sequence without gaps lies over diff sites
+            else:
+                rel_non_gap_over_diff_sites = 0
+
+            if gap_count != 0:
+                rel_gap_over_diff_sites = gap_match_counter / gap_count # how much of the gaps lies over diff site
+            else:
+                rel_gap_over_diff_sites = 0
+
+            results.append((name, record.id, support_kl_div_filtered_1_frac, gaps_over_diff_sites_frac, non_gaps_over_diff_sites_frac, rel_non_gap_over_diff_sites, rel_gap_over_diff_sites))
+
+        columns = [
+            'sampleId',
+            "dataset",
+            'support_kl_div_filtered_1_frac',
+            'gaps_over_diff_sites_frac',
+            'non_gaps_over_diff_sites_frac',
+            'rel_non_gap_over_diff_sites',
+            'rel_gap_over_diff_sites'
+        ]
+        df = pd.DataFrame(results, columns=columns)
+        df.to_csv(os.path.join(os.pardir, "data/processed/features",
+                                name + "_diff_site_stats.csv"))
+        return
 def kl_divergence(p, q):
     """
     Calculate the Kullback-Leibler divergence between two probability distributions p and q.
@@ -300,7 +350,7 @@ for file in filenames:
 
     support_path = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
     msa_path = os.path.join(os.pardir, "data/raw/msa/") + file.replace(".newick", "_reference.fasta")
-    calculate_imp_site(support_path, msa_path)
+    calculate_imp_site(support_path, msa_path, file.replace(".newick", ""))
     sys.exit()
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
 
