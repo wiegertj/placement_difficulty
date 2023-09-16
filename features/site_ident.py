@@ -1,6 +1,7 @@
 import statistics
 import sys
 import warnings
+from Bio.Align import MultipleSeqAlignment
 
 from Bio import AlignIO
 from ete3 import Tree
@@ -92,7 +93,20 @@ def calculate_imp_site(support_file_path, msa_filepath):
                     list_b.append(leaf.name)
 
         alignment = AlignIO.read(msa_filepath, 'fasta')
+        alignment_a = MultipleSeqAlignment([])
+        alignment_b = MultipleSeqAlignment([])
+        for record in alignment:
+            if record.id in list_a:
+                alignment_a.append(record)
+            elif record.id in list_b:
+                alignment_b.append(record)
+        consensus_a = alignment_a.consensus()
+        consensus_b = alignment_b.consensus()
+        print("Consensus Sequence for Alignment A:")
+        print(consensus_a)
 
+        print("\nConsensus Sequence for Alignment B:")
+        print(consensus_b)
 
 def calculate_support_statistics(support_file_path):
     print("Calc support")
