@@ -82,6 +82,7 @@ def calculate_imp_site(support_file_path):
         # Initialize lists to store the bipartition
         list_a = []
         list_b = []
+        phylo_tree.show()
 
         # Split the tree at the branch with the least support
         if min_support_branch is not None:
