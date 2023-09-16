@@ -38,6 +38,12 @@ def query_statistics(query_filepath) -> list:
     analyzed_sites_95 = []
     analyzed_sites_3 = []
     analyzed_sites_1 = []
+    analyzed_sites_6 = []
+    analyzed_sites_5 = []
+    analyzed_sites_4 = []
+    analyzed_sites_2 = []
+
+
 
     # Iterate over each position in the alignment
     for position in range(len(alignment[0])):
@@ -61,6 +67,26 @@ def query_statistics(query_filepath) -> list:
             analyzed_sites_9.append((0, most_common_char))
         else:
             analyzed_sites_9.append((1, most_common_char))
+
+        if proportion_most_common < 0.6 or most_common_char in ['-', 'N']:
+            analyzed_sites_6.append((0, most_common_char))
+        else:
+            analyzed_sites_6.append((1, most_common_char))
+
+        if proportion_most_common < 0.5 or most_common_char in ['-', 'N']:
+            analyzed_sites_5.append((0, most_common_char))
+        else:
+            analyzed_sites_5.append((1, most_common_char))
+
+        if proportion_most_common < 0.4 or most_common_char in ['-', 'N']:
+            analyzed_sites_4.append((0, most_common_char))
+        else:
+            analyzed_sites_4.append((1, most_common_char))
+
+        if proportion_most_common < 0.2 or most_common_char in ['-', 'N']:
+            analyzed_sites_2.append((0, most_common_char))
+        else:
+            analyzed_sites_2.append((1, most_common_char))
 
         if proportion_most_common < 0.1 or most_common_char in ['-', 'N']:
             analyzed_sites_1.append((0, most_common_char))
@@ -116,6 +142,43 @@ def query_statistics(query_filepath) -> list:
                 total_inv_sites_9 += 1
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
                 match_counter_9 += 1
+
+        match_counter_6 = 0
+        total_inv_sites_6 = 0
+        for i, (flag, char) in enumerate(analyzed_sites_6):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_6 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_6 += 1
+
+        match_counter_5 = 0
+        total_inv_sites_5 = 0
+        for i, (flag, char) in enumerate(analyzed_sites_5):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_5 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_5 += 1
+
+        match_counter_4 = 0
+        total_inv_sites_4 = 0
+        for i, (flag, char) in enumerate(analyzed_sites_4):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_4 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_4 += 1
+
+        match_counter_2 = 0
+        total_inv_sites_2 = 0
+        for i, (flag, char) in enumerate(analyzed_sites_2):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_2 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_2 += 1
+
 
         match_counter_8 = 0
         total_inv_sites_8 = 0
@@ -377,6 +440,26 @@ def query_statistics(query_filepath) -> list:
         else:
             match_rel_3 = 0
 
+        if total_inv_sites_6 > 0:
+            match_rel_6 = match_counter_6 / total_inv_sites_6
+        else:
+            match_rel_6 = 0
+
+        if total_inv_sites_5 > 0:
+            match_rel_5 = match_counter_5 / total_inv_sites_5
+        else:
+            match_rel_5 = 0
+
+        if total_inv_sites_4 > 0:
+            match_rel_4 = match_counter_4 / total_inv_sites_4
+        else:
+            match_rel_4 = 0
+
+        if total_inv_sites_2 > 0:
+            match_rel_2 = match_counter_2 / total_inv_sites_2
+        else:
+            match_rel_2 = 0
+
         if total_inv_sites_1 > 0:
             match_rel_1 = match_counter_1 / total_inv_sites_1
         else:
@@ -413,6 +496,7 @@ def query_statistics(query_filepath) -> list:
                         match_counter_7 / seq_length, match_counter_8 / seq_length, match_counter_9 / seq_length,
                         match_counter_95 / seq_length, match_counter_3 / seq_length, match_counter_1 / seq_length,
                         match_rel_7, match_rel_8, match_rel_9, match_rel_95, match_rel_3, match_rel_1, match_rel_gap,
+                        match_rel_2, match_rel_4, match_rel_6, match_rel_5,
                         transition_count_rel, transversion_count_rel, max_fraction_char_rests,
                         min_fraction_char_rests, avg_fraction_char_rests, std_fraction_char_rests,
                         skw_fraction_char_rests, kur_fraction_char_rests,
@@ -478,7 +562,7 @@ if __name__ == '__main__':
                                         "frac_inv_sites_msa7", "frac_inv_sites_msa8", "frac_inv_sites_msa9",
                                         "frac_inv_sites_msa95", "frac_inv_sites_msa3", "frac_inv_sites_msa1",
                                         "match_rel_7", "match_rel_8", "match_rel_9", "match_rel_95", "match_rel_3",
-                                        "match_rel_1", "match_rel_gap", "transition_count_rel",
+                                        "match_rel_1", "match_rel_gap", "match_rel_2", "match_rel_4", "match_rel_6", "match_rel_5","transition_count_rel",
                                         "transversion_count_rel", "max_fraction_char_rests",
                                         "min_fraction_char_rests", "avg_fraction_char_rests", "std_fraction_char_rests",
                                         "skw_fraction_char_rests", "kur_fraction_char_rests",
