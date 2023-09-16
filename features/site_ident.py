@@ -129,11 +129,15 @@ def calculate_imp_site(support_file_path, msa_filepath):
             freqs_b.append(counter_b)
 
         kl_divergence_results = []
+        smoothing_value = 1e-10
+
         for site_freq_a, site_freq_b in zip(freqs_a, freqs_b):
             total_count_a = sum(site_freq_a.values())
             total_count_b = sum(site_freq_b.values())
-            normalized_freq_a = {k: v / total_count_a for k, v in site_freq_a.items()}
-            normalized_freq_b = {k: v / total_count_b for k, v in site_freq_b.items()}
+            normalized_freq_a = {k: (v + smoothing_value) / (total_count_a + smoothing_value * len(site_freq_a)) for
+                                 k, v in site_freq_a.items()}
+            normalized_freq_b = {k: (v + smoothing_value) / (total_count_b + smoothing_value * len(site_freq_b)) for
+                                 k, v in site_freq_b.items()}
 
             site_freq_a_array = np.array(list(normalized_freq_a.values()))
             site_freq_b_array = np.array(list(normalized_freq_b.values()))
