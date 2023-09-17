@@ -182,14 +182,14 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             site_freq_b_array = np.array(list(normalized_freq_b.values()))
 
             kl_divergence_value = abs(site_freq_a_array - site_freq_b_array)
-            kl_divergence_value = np.max(kl_divergence_value)
+            kl_divergence_value = np.mean(kl_divergence_value)
 
             #kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
 
             kl_divergence_results.append(kl_divergence_value)
 
         min_kl_divergence = min(kl_divergence_results)
-        max_kl_divergence = max(kl_divergence_results)
+        max_kl_divergence = np.mean(kl_divergence_results)
 
         # Normalize the list to the range [0, 1]
         normalized_kl_divergence_results = kl_divergence_results
@@ -366,7 +366,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                                   non_diff_match_counter_parta_thresh / (min_support / 100), non_diff_match_counter_partb_thresh / (min_support / 100),
                                   diff_match_counter_parta_thresh / (min_support / 100) , diff_match_counter_partb_thresh / (min_support / 100),
                                   non_diff_match_counter_parta / (min_support / 100), non_diff_match_counter_partb / (min_support / 100), diff_match_counter_parta / (min_support / 100),
-                                  diff_match_counter_partb / (min_support / 100), mean_a, max_a, min_a, std_a, mean_b, max_b, min_b, std_b, min_a_min_b, max_a_max_b, mean_a_mean_b
+                                  diff_match_counter_partb / (min_support / 100), mean_a, max_a, min_a, std_a, mean_b, max_b, min_b, std_b, min_a_min_b, max_a_max_b, mean_a_mean_b,
+                                  np.std(kl_divergence_results), np.mean(kl_divergence_results), max(kl_divergence_results), min(kl_divergence_results)
                                   ))
 
         columns = [
@@ -402,7 +403,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             "diff_match_counter_partb_thresh_w",
             "non_diff_match_counter_parta_w", "non_diff_match_counter_partb_w", "diff_match_counter_parta_w",
             "diff_match_counter_partb_w",
-            "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b","min_a_min_b", "max_a_max_b", "mean_a_mean_b"
+            "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b","min_a_min_b", "max_a_max_b", "mean_a_mean_b",
+            "divergence_results_std", "divergence_results_mean", "divergence_results_max", "divergence_results_min"
         ]
         df = pd.DataFrame(results_final, columns=columns)
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
