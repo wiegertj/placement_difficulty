@@ -68,9 +68,9 @@ def nearest_sequence_features(support_file_path, taxon_name):
     kurt_branch_len_nearest = kurtosis(branch_lengths, fisher=True)
 
     return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_, min_branch_len_nearest, max_branch_len_nearest, mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest
-def hamming_distance(seq1, seq2):
-    return sum(c1 != c2 for c1, c2 in zip(seq1, seq2))
 
+def hamming_distance(seq1, seq2):
+    return sum(c1 != c2 for c1, c2 in zip(seq1, seq2)) / len(seq1)
 def calculate_imp_site(support_file_path, msa_filepath, name):
     with open(support_file_path, "r") as support_file:
         tree_str = support_file.read()
@@ -179,16 +179,16 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             hamming_distances_b = [hamming_distance(queryseq, seq) for seq in alignment_b]
 
             # Calculate statistics for Hamming distances in alignment_a
-            mean_a = np.mean(hamming_distances_a) / len(queryseq)
-            std_a = np.std(hamming_distances_a) / mean_a
-            min_a = min(hamming_distances_a) / len(queryseq)
-            max_a = max(hamming_distances_a) / len(queryseq)
+            mean_a = np.mean(hamming_distances_a)
+            std_a = np.std(hamming_distances_a)
+            min_a = min(hamming_distances_a)
+            max_a = max(hamming_distances_a)
 
             # Calculate statistics for Hamming distances in alignment_b
-            mean_b = np.mean(hamming_distances_b) / len(queryseq)
-            std_b = np.std(hamming_distances_b) / mean_b
-            min_b = min(hamming_distances_b) / len(queryseq)
-            max_b = max(hamming_distances_b) / len(queryseq)
+            mean_b = np.mean(hamming_distances_b)
+            std_b = np.std(hamming_distances_b)
+            min_b = min(hamming_distances_b)
+            max_b = max(hamming_distances_b)
 
             non_gap_count = 0
             for char in queryseq:
