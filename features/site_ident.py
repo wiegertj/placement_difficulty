@@ -79,13 +79,42 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         # Initialize variables to store the branch with the least support
         min_support = float('inf')  # Initialize with a high value
         min_support_branch = None
+        min_support_branches10 = []
 
         # Iterate through all branches in the tree
         for node in phylo_tree.traverse("postorder"):
             if node.support is not None and not node.is_root() and not node.is_leaf():
-                if node.support < min_support:
+                if node.support < min_support and len(node.children) > (0.45 * phylo_tree.__len__()):
+                    print("matched 0.45")
                     min_support = node.support
                     min_support_branch = node
+
+        if min_support_branch == None:
+            for node in phylo_tree.traverse("postorder"):
+                if node.support is not None and not node.is_root() and not node.is_leaf():
+                    if node.support < min_support and len(node.children) > (0.33 * phylo_tree.__len__()):
+                        print("matched 0.33")
+                        min_support = node.support
+                        min_support_branch = node
+
+        if min_support_branch == None:
+            for node in phylo_tree.traverse("postorder"):
+                if node.support is not None and not node.is_root() and not node.is_leaf():
+                    if node.support < min_support and len(node.children) > (0.2 * phylo_tree.__len__()):
+                        print("matched 0.2")
+                        min_support = node.support
+                        min_support_branch = node
+
+        if min_support_branch == None:
+            for node in phylo_tree.traverse("postorder"):
+                if node.support is not None and not node.is_root() and not node.is_leaf():
+                    if node.support < min_support:
+                        print("matched None")
+                        min_support = node.support
+                        min_support_branch = node
+
+
+
         # Initialize lists to store the bipartition
         list_a = []
         list_b = []
@@ -139,15 +168,20 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         for site_freq_a, site_freq_b in zip(freqs_a, freqs_b):
             total_count_a = sum(site_freq_a.values())
             total_count_b = sum(site_freq_b.values())
-            normalized_freq_a = {k: (v + smoothing_value) / (total_count_a + smoothing_value * len(site_freq_a)) for
+            normalized_freq_a = {k: v / total_count_a for
                                  k, v in site_freq_a.items()}
-            normalized_freq_b = {k: (v + smoothing_value) / (total_count_b + smoothing_value * len(site_freq_b)) for
+            normalized_freq_b = {k: v / total_count_b for
                                  k, v in site_freq_b.items()}
 
             site_freq_a_array = np.array(list(normalized_freq_a.values()))
             site_freq_b_array = np.array(list(normalized_freq_b.values()))
 
-            kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
+            kl_divergence_value = abs(site_freq_a_array - site_freq_b_array)
+            print(kl_divergence_value)
+            kl_divergence_value = np.mean(kl_divergence_value)
+            print(kl_divergence_value)
+
+            #kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
 
             kl_divergence_results.append(kl_divergence_value)
 
@@ -155,9 +189,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         max_kl_divergence = max(kl_divergence_results)
 
         # Normalize the list to the range [0, 1]
-        normalized_kl_divergence_results = [(x - min_kl_divergence) / (max_kl_divergence - min_kl_divergence) for x in
-                                            kl_divergence_results]
-        binary_results = [1 if value > 0.2 else 0 for value in normalized_kl_divergence_results]
+        normalized_kl_divergence_results = kl_divergence_value
+        binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
 
         threshold = sorted(normalized_kl_divergence_results)[-int(0.3 * len(normalized_kl_divergence_results))]
         # print(threshold)
