@@ -120,7 +120,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         print("min_support: " + str(min_support))
         # Split the tree at the branch with the least support
         for leaf in phylo_tree.get_leaves():
-            if leaf in min_support_branch.get_leaves():
+            if leaf in min_support_branch.get_descendants():
                 list_a.append(leaf.name)
             else:
                 list_b.append(leaf.name)
