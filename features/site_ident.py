@@ -190,6 +190,11 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             min_b = min(hamming_distances_b)
             max_b = max(hamming_distances_b)
 
+            max_a_max_b = abs(max_a - max_b)
+            mean_a_mean_b = abs(mean_a - mean_b)
+            min_a_min_b = abs(min_a - min_b)
+
+
             non_gap_count = 0
             for char in queryseq:
                 if char not in ["-", "N"]:
@@ -325,7 +330,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                                   non_diff_match_counter_parta_thresh / (min_support / 100), non_diff_match_counter_partb_thresh / (min_support / 100),
                                   diff_match_counter_parta_thresh / (min_support / 100) , diff_match_counter_partb_thresh / (min_support / 100),
                                   non_diff_match_counter_parta / (min_support / 100), non_diff_match_counter_partb / (min_support / 100), diff_match_counter_parta / (min_support / 100),
-                                  diff_match_counter_partb / (min_support / 100), mean_a, max_a, min_a, std_a, mean_b, max_b, min_b, std_b
+                                  diff_match_counter_partb / (min_support / 100), mean_a, max_a, min_a, std_a, mean_b, max_b, min_b, std_b, min_a_min_b, max_a_max_b, mean_a_mean_b
                                   ))
 
         columns = [
@@ -361,7 +366,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             "diff_match_counter_partb_thresh_w",
             "non_diff_match_counter_parta_w", "non_diff_match_counter_partb_w", "diff_match_counter_parta_w",
             "diff_match_counter_partb_w",
-            "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b"
+            "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b","min_a_min_b", "max_a_max_b", "mean_a_mean_b"
         ]
         df = pd.DataFrame(results_final, columns=columns)
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
