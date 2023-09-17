@@ -81,9 +81,10 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         min_support_branch = None
         min_support_branches10 = []
         # Iterate through all branches in the tree
+        print(phylo_tree.is_root())
         for node in phylo_tree.traverse("postorder"):
             if node.support is not None and not node.is_root() and not node.is_leaf():
-                if node.support < min_support and (len(node.get_descendants()) > (0.45 * len(phylo_tree.get_leaves()))):
+                if node.support < min_support and (len(node.get_leaves()) > (0.45 * len(phylo_tree.get_leaves()))):
                     print("matched 0.45")
                     min_support = node.support
                     min_support_branch = node
@@ -91,7 +92,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         if min_support_branch == None:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
-                    if node.support < min_support and (len(node.children) > (0.33 * len(phylo_tree.get_leaves()))):
+                    if node.support < min_support and (len(node.get_leaves()) > (0.33 * len(phylo_tree.get_leaves()))):
                         print("matched 0.33")
                         min_support = node.support
                         min_support_branch = node
@@ -99,7 +100,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         if min_support_branch == None:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
-                    if node.support < min_support and (len(node.children) > (0.2 * len(phylo_tree.get_leaves()))):
+                    if node.support < min_support and (len(node.get_leaves()) > (0.2 * len(phylo_tree.get_leaves()))):
                         print("matched 0.2")
                         min_support = node.support
                         min_support_branch = node
