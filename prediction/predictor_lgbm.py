@@ -24,6 +24,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             inplace=True)
     print("Median Entropy: ")
     print(df["entropy"].median())
+    df.columns = df.columns.str.replace(':', '_')
+
     print(df.columns)
     print(df.shape)
 
