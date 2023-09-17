@@ -305,9 +305,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             else:
                 rel_gap_over_diff_sites_thresh = 0
 
-            non_diff_match_counter_parta_thresh = 0
-            non_diff_match_counter_partb_thresh = 0
-
             if min_support == 0:
                 min_support = 1
 
