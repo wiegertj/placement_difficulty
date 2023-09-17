@@ -90,7 +90,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                     min_support = node.support
                     min_support_branch = node
 
-        if min_support_branch == None:
+        if min_support_branch == None or min_support > 50:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
                     if node.support < min_support and (
@@ -100,7 +100,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                         min_support = node.support
                         min_support_branch = node
 
-        if min_support_branch == None:
+        if min_support_branch == None or min_support > 50:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
                     if node.support < min_support and (
@@ -110,7 +110,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                         min_support = node.support
                         min_support_branch = node
 
-        if min_support_branch == None:
+        if min_support_branch == None or min_support > 50:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
                     if node.support < min_support:
