@@ -80,11 +80,9 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         min_support = float('inf')  # Initialize with a high value
         min_support_branch = None
         min_support_branches10 = []
-        print(phylo_tree.__len__())
         # Iterate through all branches in the tree
         for node in phylo_tree.traverse("postorder"):
             if node.support is not None and not node.is_root() and not node.is_leaf():
-                print(len(node.get_descendants()))
                 if node.support < min_support and len(node.get_descendants()) > (0.45 * phylo_tree.__len__()):
                     print("matched 0.45")
                     min_support = node.support
@@ -189,7 +187,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         # Normalize the list to the range [0, 1]
         normalized_kl_divergence_results = kl_divergence_results
-        binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
+        binary_results = [1 if value > 0.3 else 0 for value in normalized_kl_divergence_results]
 
         threshold = sorted(normalized_kl_divergence_results)[-int(0.3 * len(normalized_kl_divergence_results))]
         # print(threshold)
