@@ -85,7 +85,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         for node in phylo_tree.traverse("postorder"):
             if node.support is not None and not node.is_root() and not node.is_leaf():
                 print(len(node.children))
-                if node.support < min_support and len(node.children) > (0.45 * phylo_tree.__len__()):
+                if node.support < min_support and len(node.get_descendants()) > (0.45 * phylo_tree.__len__()):
                     print("matched 0.45")
                     min_support = node.support
                     min_support_branch = node
