@@ -84,27 +84,28 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         print(phylo_tree.is_root())
         for node in phylo_tree.traverse("postorder"):
             if node.support is not None and not node.is_root() and not node.is_leaf():
-                if node.support < min_support and (len(node.get_leaves()) > (0.45 * len(phylo_tree.get_leaves()))):
-                    print(len(node.get_leaves()))
-                    print((0.45 * len(phylo_tree.get_leaves())))
-                    print("matched 0.45")
+                if node.support < min_support and (len(node.get_leaves()) > (0.35 * len(phylo_tree.get_leaves()))) and (len(node.get_leaves()) < (0.65 * len(phylo_tree.get_leaves()))):
+                    print("matched")
                     min_support = node.support
                     min_support_branch = node
 
         if min_support_branch == None:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
-
-                    if node.support < min_support and (len(node.get_leaves()) > (0.33 * len(phylo_tree.get_leaves()))):
-                        print("matched 0.33")
+                    if node.support < min_support and (
+                            len(node.get_leaves()) > (0.25 * len(phylo_tree.get_leaves()))) and (
+                            len(node.get_leaves()) < (0.75 * len(phylo_tree.get_leaves()))):
+                        print("matched larger")
                         min_support = node.support
                         min_support_branch = node
 
         if min_support_branch == None:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
-                    if node.support < min_support and (len(node.get_leaves()) > (0.2 * len(phylo_tree.get_leaves()))):
-                        print("matched 0.2")
+                    if node.support < min_support and (
+                            len(node.get_leaves()) > (0.15 * len(phylo_tree.get_leaves()))) and (
+                            len(node.get_leaves()) < (0.85 * len(phylo_tree.get_leaves()))):
+                        print("matched much larger")
                         min_support = node.support
                         min_support_branch = node
 
