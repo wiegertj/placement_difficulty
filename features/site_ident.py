@@ -75,7 +75,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
     with open(support_file_path, "r") as support_file:
         tree_str = support_file.read()
         phylo_tree = Tree(tree_str)
-
+        print(phylo_tree.get_leaves())
         # Initialize variables to store the branch with the least support
         min_support = float('inf')  # Initialize with a high value
         min_support_branch = None
@@ -83,7 +83,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         # Iterate through all branches in the tree
         for node in phylo_tree.traverse("postorder"):
             if node.support is not None and not node.is_root() and not node.is_leaf():
-                if node.support < min_support and (len(node.get_descendants()) > (0.45 * phylo_tree.__len__())):
+                if node.support < min_support and (len(node.get_descendants()) > (0.45 * phylo_tree.get_leaves())):
                     print("matched 0.45")
                     min_support = node.support
                     min_support_branch = node
@@ -91,7 +91,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         if min_support_branch == None:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
-                    if node.support < min_support and (len(node.children) > (0.33 * phylo_tree.__len__())):
+                    if node.support < min_support and (len(node.children) > (0.33 * phylo_tree.get_leaves())):
                         print("matched 0.33")
                         min_support = node.support
                         min_support_branch = node
@@ -99,7 +99,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         if min_support_branch == None:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
-                    if node.support < min_support and (len(node.children) > (0.2 * phylo_tree.__len__())):
+                    if node.support < min_support and (len(node.children) > (0.2 * phylo_tree.get_leaves())):
                         print("matched 0.2")
                         min_support = node.support
                         min_support_branch = node
