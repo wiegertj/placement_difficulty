@@ -75,7 +75,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
     with open(support_file_path, "r") as support_file:
         tree_str = support_file.read()
         phylo_tree = Tree(tree_str)
-        print(phylo_tree.get_leaves())
+        print(len(phylo_tree.get_leaves()))
         # Initialize variables to store the branch with the least support
         min_support = float('inf')  # Initialize with a high value
         min_support_branch = None
