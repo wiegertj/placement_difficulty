@@ -221,13 +221,11 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                     if (queryseq[i]) == alignment_b[0][i]:
                         diff_match_counter_partb += 1
             try:
-                non_diff_match_counter_parta = (non_diff_match_counter_parta / len(alignment_a)) / (1 - sum(binary_results))
-                non_diff_match_counter_partb = (non_diff_match_counter_partb / len(alignment_b)) / (
-                            1 - sum(binary_results))  # how many non diff sites match diff in avg on part b?
+                non_diff_match_counter_parta = (non_diff_match_counter_parta / len(alignment_a))
+                non_diff_match_counter_partb = (non_diff_match_counter_partb / len(alignment_b))   # how many non diff sites match diff in avg on part b?
 
-                diff_match_counter_parta = (diff_match_counter_parta / len(alignment_a)) / (1 - sum(binary_results))
-                diff_match_counter_partb = (diff_match_counter_partb / len(alignment_b)) / (
-                            1 - sum(binary_results))  # how many non diff sites match diff in avg on part b?
+                diff_match_counter_parta = (diff_match_counter_parta / len(alignment_a))
+                diff_match_counter_partb = (diff_match_counter_partb / len(alignment_b))  # how many non diff sites match diff in avg on part b?
             except ZeroDivisionError:
                 print("Div Error occured")
 
@@ -276,17 +274,12 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                         diff_match_counter_parta_thresh += 1
                     if (queryseq[i]) == alignment_b[0][i]:
                         diff_match_counter_partb_thresh += 1
-            if sum(binary_results_threshold) == 1:
             try:
-                non_diff_match_counter_parta_thresh = (non_diff_match_counter_parta_thresh / len(alignment_a)) / (
-                            1 - sum(binary_results_threshold))
-                non_diff_match_counter_partb_thresh = (non_diff_match_counter_partb_thresh / len(alignment_b)) / (
-                        1 - sum(binary_results_threshold))  # how many non diff sites match in avg on part b?
+                non_diff_match_counter_parta_thresh = (non_diff_match_counter_parta_thresh / len(alignment_a))
+                non_diff_match_counter_partb_thresh = (non_diff_match_counter_partb_thresh / len(alignment_b))  # how many non diff sites match in avg on part b?
 
-                diff_match_counter_parta_thresh = (diff_match_counter_parta_thresh / len(alignment_a)) / (
-                            1 - sum(binary_results_threshold))
-                diff_match_counter_partb_thresh = (diff_match_counter_partb_thresh / len(alignment_b)) / (
-                        1 - sum(binary_results_threshold))  # how many non diff sites match in avg on part b?
+                diff_match_counter_parta_thresh = (diff_match_counter_parta_thresh / len(alignment_a))
+                diff_match_counter_partb_thresh = (diff_match_counter_partb_thresh / len(alignment_b))   # how many non diff sites match in avg on part b?
             except ZeroDivisionError:
                 print("Div Error occured")
                 non_diff_match_counter_parta_thresh = 0
