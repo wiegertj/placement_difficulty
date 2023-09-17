@@ -301,6 +301,9 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             non_diff_match_counter_parta_thresh = 0
             non_diff_match_counter_partb_thresh = 0
 
+            if min_support == 0:
+                min_support = 1
+
             results_final.append((name, record.id, support_kl_div_filtered_1_frac, gaps_over_diff_sites_frac,
                                   non_gaps_over_diff_sites_frac, rel_non_gap_over_diff_sites, rel_gap_over_diff_sites,
                                   support_kl_div_filtered_1_frac_thresh, gaps_over_diff_sites_frac_thresh,
