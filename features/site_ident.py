@@ -68,6 +68,8 @@ def nearest_sequence_features(support_file_path, taxon_name):
     kurt_branch_len_nearest = kurtosis(branch_lengths, fisher=True)
 
     return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_, min_branch_len_nearest, max_branch_len_nearest, mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest
+def hamming_distance(seq1, seq2):
+    return sum(c1 != c2 for c1, c2 in zip(seq1, seq2))
 
 def calculate_imp_site(support_file_path, msa_filepath, name):
     with open(support_file_path, "r") as support_file:
@@ -87,7 +89,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         # Initialize lists to store the bipartition
         list_a = []
         list_b = []
-
+        print("min_support: " + str(min_support))
         # Split the tree at the branch with the least support
         if min_support_branch is not None:
             for leaf in phylo_tree:
@@ -95,6 +97,9 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                     list_a.append(leaf.name)
                 else:
                     list_b.append(leaf.name)
+        print("size part a: " + str(len(list_a)))
+        print("size part b: " + str(len(list_b)))
+
 
         alignment = AlignIO.read(msa_filepath, 'fasta')
         alignment_a = MultipleSeqAlignment([])
@@ -154,17 +159,35 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                                             kl_divergence_results]
         binary_results = [1 if value > 0.2 else 0 for value in normalized_kl_divergence_results]
 
-        threshold = sorted(normalized_kl_divergence_results)[-int(0.2 * len(normalized_kl_divergence_results))]
-        #print(threshold)
+        threshold = sorted(normalized_kl_divergence_results)[-int(0.3 * len(normalized_kl_divergence_results))]
+        # print(threshold)
         # Set values greater than or equal to the threshold to 1, and the rest to 0
         binary_results_threshold = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
-        support_kl_div_filtered_1_frac = sum(binary_results) / len(binary_results) # how much of the msa is difficult
+        support_kl_div_filtered_1_frac = sum(binary_results) / len(binary_results)  # how much of the msa is difficult
         print(support_kl_div_filtered_1_frac)
-        support_kl_div_filtered_1_frac_thresh = sum(binary_results_threshold) / len(binary_results_threshold)  # how much of the msa is difficult
+        support_kl_div_filtered_1_frac_thresh = sum(binary_results_threshold) / len(
+            binary_results_threshold)  # how much of the msa is difficult
         results_final = []
 
         for record in alignment:
             queryseq = record.seq
+
+            hamming_distances_a = [hamming_distance(queryseq, seq) for seq in alignment_a]
+
+            hamming_distances_b = [hamming_distance(queryseq, seq) for seq in alignment_b]
+
+            # Calculate statistics for Hamming distances in alignment_a
+            mean_a = np.mean(hamming_distances_a)
+            std_a = np.std(hamming_distances_a)
+            min_a = min(hamming_distances_a)
+            max_a = max(hamming_distances_a)
+
+            # Calculate statistics for Hamming distances in alignment_b
+            mean_b = np.mean(hamming_distances_b)
+            std_b = np.std(hamming_distances_b)
+            min_b = min(hamming_distances_b)
+            max_b = max(hamming_distances_b)
+
             non_gap_count = 0
             for char in queryseq:
                 if char not in ["-", "N"]:
@@ -174,65 +197,129 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             gap_match_counter = 0
             non_gap_match_counter = 0
 
+            non_diff_match_counter_parta = 0
+            non_diff_match_counter_partb = 0
+
+            diff_match_counter_parta = 0
+            diff_match_counter_partb = 0
+
             for i in range(len(alignment_a[0])):
                 if (binary_results[i] == 1) and (queryseq[i] in ["-", "N"]):
                     gap_match_counter += 1
-                elif (binary_results[i] == 1) and (queryseq[i] not in ["-", "N"]):
+                if (binary_results[i] == 1) and (queryseq[i] not in ["-", "N"]):
                     non_gap_match_counter += 1
+                if (binary_results[i] == 0):
+                    if (queryseq[i]) == alignment_a[0][i]:
+                        non_diff_match_counter_parta += 1
+                    if (queryseq[i]) == alignment_b[0][i]:
+                        non_diff_match_counter_partb += 1
+                if (binary_results[i] == 1):
+                    if (queryseq[i]) == alignment_a[0][i]:
+                        diff_match_counter_parta += 1
+                    if (queryseq[i]) == alignment_b[0][i]:
+                        diff_match_counter_partb += 1
+
+            non_diff_match_counter_parta = (non_diff_match_counter_parta / len(alignment_a)) / (1 - sum(binary_results))
+            non_diff_match_counter_partb = (non_diff_match_counter_partb / len(alignment_b)) / (
+                        1 - sum(binary_results))  # how many non diff sites match diff in avg on part b?
+
+            diff_match_counter_parta = (diff_match_counter_parta / len(alignment_a)) / (1 - sum(binary_results))
+            diff_match_counter_partb = (diff_match_counter_partb / len(alignment_b)) / (
+                        1 - sum(binary_results))  # how many non diff sites match diff in avg on part b?
 
             if sum(binary_results) != 0:
-                gaps_over_diff_sites_frac = gap_match_counter / sum(binary_results) # how many of diff sites are gaps
-                non_gaps_over_diff_sites_frac = non_gap_match_counter / sum(binary_results) # how many of diff sites are non gaps
+                gaps_over_diff_sites_frac = gap_match_counter / sum(binary_results)  # how many of diff sites are gaps
+                non_gaps_over_diff_sites_frac = non_gap_match_counter / sum(
+                    binary_results)  # how many of diff sites are non gaps
             else:
                 gaps_over_diff_sites_frac = 0
                 non_gaps_over_diff_sites_frac = 0
 
             if non_gap_count != 0:
-                rel_non_gap_over_diff_sites = non_gap_match_counter / non_gap_count # how much of the actual sequence without gaps lies over diff sites
+                rel_non_gap_over_diff_sites = non_gap_match_counter / non_gap_count  # how much of the actual sequence without gaps lies over diff sites
             else:
                 rel_non_gap_over_diff_sites = 0
 
             if gap_count != 0:
-                rel_gap_over_diff_sites = gap_match_counter / gap_count # how much of the gaps lies over diff site
+                rel_gap_over_diff_sites = gap_match_counter / gap_count  # how much of the gaps lies over diff site
             else:
                 rel_gap_over_diff_sites = 0
 
-
-
-
-
-
-
             gap_match_counter_thresh = 0
             non_gap_match_counter_thresh = 0
+            non_diff_match_counter_parta_thresh = 0
+            non_diff_match_counter_partb_thresh = 0
 
+            diff_match_counter_parta_thresh = 0
+            diff_match_counter_partb_thresh = 0
 
             for i in range(len(alignment_a[0])):
                 if (binary_results_threshold[i] == 1) and (queryseq[i] in ["-", "N"]):
                     gap_match_counter_thresh += 1
-                elif (binary_results_threshold[i] == 1) and (queryseq[i] not in ["-", "N"]):
+                if (binary_results_threshold[i] == 1) and (queryseq[i] not in ["-", "N"]):
                     non_gap_match_counter_thresh += 1
+                if (binary_results_threshold[i] == 0):
+                    if (queryseq[i]) == alignment_a[0][i]:
+                        non_diff_match_counter_parta_thresh += 1
+                    if (queryseq[i]) == alignment_b[0][i]:
+                        non_diff_match_counter_partb_thresh += 1
+                if (binary_results_threshold[i] == 1):
+                    if (queryseq[i]) == alignment_a[0][i]:
+                        diff_match_counter_parta_thresh += 1
+                    if (queryseq[i]) == alignment_b[0][i]:
+                        diff_match_counter_partb_thresh += 1
+
+            non_diff_match_counter_parta_thresh = (non_diff_match_counter_parta_thresh / len(alignment_a)) / (
+                        1 - sum(binary_results_threshold))
+            non_diff_match_counter_partb_thresh = (non_diff_match_counter_partb_thresh / len(alignment_b)) / (
+                    1 - sum(binary_results_threshold))  # how many non diff sites match in avg on part b?
+
+            diff_match_counter_parta_thresh = (diff_match_counter_parta_thresh / len(alignment_a)) / (
+                        1 - sum(binary_results_threshold))
+            diff_match_counter_partb_thresh = (diff_match_counter_partb_thresh / len(alignment_b)) / (
+                    1 - sum(binary_results_threshold))  # how many non diff sites match in avg on part b?
 
             if sum(binary_results_threshold) != 0:
-                gaps_over_diff_sites_frac_thresh = gap_match_counter_thresh / sum(binary_results_threshold) # how many of diff sites are gaps
-                non_gaps_over_diff_sites_frac_thresh = non_gap_match_counter_thresh / sum(binary_results_threshold) # how many of diff sites are non gaps
+                gaps_over_diff_sites_frac_thresh = gap_match_counter_thresh / sum(
+                    binary_results_threshold)  # how many of diff sites are gaps
+                non_gaps_over_diff_sites_frac_thresh = non_gap_match_counter_thresh / sum(
+                    binary_results_threshold)  # how many of diff sites are non gaps
             else:
                 gaps_over_diff_sites_frac_thresh = 0
                 non_gaps_over_diff_sites_frac_thresh = 0
 
             if non_gap_count != 0:
-                rel_non_gap_over_diff_sites_thresh = non_gap_match_counter_thresh / non_gap_count # how much of the actual sequence without gaps lies over diff sites
+                rel_non_gap_over_diff_sites_thresh = non_gap_match_counter_thresh / non_gap_count  # how much of the actual sequence without gaps lies over diff sites
             else:
                 rel_non_gap_over_diff_sites_thresh = 0
 
             if gap_count != 0:
-                rel_gap_over_diff_sites_thresh = gap_match_counter_thresh / gap_count # how much of the gaps lies over diff site
+                rel_gap_over_diff_sites_thresh = gap_match_counter_thresh / gap_count  # how much of the gaps lies over diff site
             else:
                 rel_gap_over_diff_sites_thresh = 0
 
+            non_diff_match_counter_parta_thresh = 0
+            non_diff_match_counter_partb_thresh = 0
 
-            results_final.append((name, record.id, support_kl_div_filtered_1_frac, gaps_over_diff_sites_frac, non_gaps_over_diff_sites_frac, rel_non_gap_over_diff_sites, rel_gap_over_diff_sites,
-                            support_kl_div_filtered_1_frac_thresh, gaps_over_diff_sites_frac_thresh, non_gaps_over_diff_sites_frac_thresh, rel_non_gap_over_diff_sites_thresh, rel_gap_over_diff_sites_thresh))
+            results_final.append((name, record.id, support_kl_div_filtered_1_frac, gaps_over_diff_sites_frac,
+                                  non_gaps_over_diff_sites_frac, rel_non_gap_over_diff_sites, rel_gap_over_diff_sites,
+                                  support_kl_div_filtered_1_frac_thresh, gaps_over_diff_sites_frac_thresh,
+                                  non_gaps_over_diff_sites_frac_thresh, rel_non_gap_over_diff_sites_thresh,
+                                  rel_gap_over_diff_sites_thresh,
+                                  non_diff_match_counter_parta_thresh, non_diff_match_counter_partb_thresh,
+                                  diff_match_counter_parta_thresh, diff_match_counter_partb_thresh,
+                                  non_diff_match_counter_parta, non_diff_match_counter_partb, diff_match_counter_parta,
+                                  diff_match_counter_partb, min_support,
+                                  support_kl_div_filtered_1_frac / (min_support / 100), gaps_over_diff_sites_frac / (min_support / 100),
+                                  non_gaps_over_diff_sites_frac / (min_support / 100), rel_non_gap_over_diff_sites / (min_support / 100), rel_gap_over_diff_sites / (min_support / 100),
+                                  support_kl_div_filtered_1_frac_thresh / (min_support / 100), gaps_over_diff_sites_frac_thresh / (min_support / 100),
+                                  non_gaps_over_diff_sites_frac_thresh / (min_support / 100), rel_non_gap_over_diff_sites_thresh / (min_support / 100),
+                                  rel_gap_over_diff_sites_thresh / (min_support / 100) ,
+                                  non_diff_match_counter_parta_thresh / (min_support / 100), non_diff_match_counter_partb_thresh / (min_support / 100),
+                                  diff_match_counter_parta_thresh / (min_support / 100) , diff_match_counter_partb_thresh / (min_support / 100),
+                                  non_diff_match_counter_parta / (min_support / 100), non_diff_match_counter_partb / (min_support / 100), diff_match_counter_parta / (min_support / 100),
+                                  diff_match_counter_partb / (min_support / 100), mean_a, max_a, min_a, std_a, mean_b, max_b, min_b, std_b
+                                  ))
 
         columns = [
             'sampleId',
@@ -246,18 +333,42 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             'gaps_over_diff_sites_frac_thresh',
             'non_gaps_over_diff_sites_frac_thresh',
             'rel_non_gap_over_diff_sites_thresh',
-            'rel_gap_over_diff_sites_thresh'
+            'rel_gap_over_diff_sites_thresh',
+            "non_diff_match_counter_parta_thresh", "non_diff_match_counter_partb_thresh",
+            "diff_match_counter_parta_thresh",
+            "diff_match_counter_partb_thresh",
+            "non_diff_match_counter_parta", "non_diff_match_counter_partb", "diff_match_counter_parta",
+            "diff_match_counter_partb", "min_support_split",
+            'support_kl_div_filtered_1_frac_w',
+            'gaps_over_diff_sites_frac_w',
+            'non_gaps_over_diff_sites_frac_w',
+            'rel_non_gap_over_diff_sites_w',
+            'rel_gap_over_diff_sites_w',
+            'support_kl_div_filtered_1_frac_thresh:w',
+            'gaps_over_diff_sites_frac_thresh_w',
+            'non_gaps_over_diff_sites_frac_thresh_w',
+            'rel_non_gap_over_diff_sites_thresh_w',
+            'rel_gap_over_diff_sites_thresh_w',
+            "non_diff_match_counter_parta_thresh_w", "non_diff_match_counter_partb_thresh_w",
+            "diff_match_counter_parta_thresh_w",
+            "diff_match_counter_partb_thresh_w",
+            "non_diff_match_counter_parta_w", "non_diff_match_counter_partb_w", "diff_match_counter_parta_w",
+            "diff_match_counter_partb_w",
+            "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b"
         ]
         df = pd.DataFrame(results_final, columns=columns)
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                                name + "_diff_site_stats.csv"))
+                               name + "_diff_site_stats.csv"))
         return
+
+
 def kl_divergence(p, q):
     """
     Calculate the Kullback-Leibler divergence between two probability distributions p and q.
     """
     kl = sum(p[i] * math.log(p[i] / q[i]) for i in p)
     return kl
+
 
 def calculate_support_statistics(support_file_path):
     print("Calc support")
@@ -292,12 +403,12 @@ def calculate_support_statistics(support_file_path):
     distance_major_modes_supp = intervals[top_intervals[1]][1] - intervals[top_intervals[0]][0]
 
     # Calculate the percentage difference in value counts for both intervals
-    percentage_difference = abs(interval_counts[top_intervals[0]] - interval_counts[top_intervals[1]]) / len(support_values)
+    percentage_difference = abs(interval_counts[top_intervals[0]] - interval_counts[top_intervals[1]]) / len(
+        support_values)
 
     # Calculate the weighted interval distance using the percentage difference
     weighted_distance_major_modes_supp = distance_major_modes_supp / percentage_difference if percentage_difference > 0 else 1
     abs_weighted_distance_major_modes_supp = abs_distance_major_modes_supp / percentage_difference if percentage_difference > 0 else 1
-
 
     print("Top Intervals with the Most Values:")
     for i in top_intervals:
@@ -308,7 +419,6 @@ def calculate_support_statistics(support_file_path):
     print("Percentage Difference in Data Points:", percentage_difference)
     print("Weighted Distance between modes:", weighted_distance_major_modes_supp)
     print("Abs Weighted Distance between modes:", abs_weighted_distance_major_modes_supp)
-
 
     if (skewness >= 2) and (len(support_values) >= 50):
         import matplotlib.pyplot as plt
@@ -345,7 +455,7 @@ def calculate_support_statistics(support_file_path):
 
     kurt = kurtosis(support_values, fisher=True)
 
-    return min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, abs_distance_major_modes_supp, weighted_distance_major_modes_supp,abs_weighted_distance_major_modes_supp
+    return min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, abs_distance_major_modes_supp, weighted_distance_major_modes_supp, abs_weighted_distance_major_modes_supp
 
 
 def compute_rf_distance_statistics(bootstrap_path, reference_tree_path):
@@ -409,10 +519,11 @@ for file in filenames:
         continue
 
     if not os.path.exists(os.path.join(os.pardir, "data/processed/features",
-                                           file.replace(".newick", "") + "_nearest_bootstrap.csv")):
+                                       file.replace(".newick", "") + "_nearest_bootstrap.csv")):
         result_columns_nearest = ['sampleId', 'dataset', 'min_support_nearest', 'max_support_nearest',
                                   'mean_support_nearest', 'std_support_nearest', 'skewness_nearest',
-                                  'kurtosis_nearest', 'depth_nearest', "min_branch_len_nearest", "max_branch_len_nearest",
+                                  'kurtosis_nearest', 'depth_nearest', "min_branch_len_nearest",
+                                  "max_branch_len_nearest",
                                   "mean_branch_len_nearest", "std_branch_len_nearest", "sk_branch_len_nearest",
                                   "kurt_branch_len_nearest"]
         results_df_nearest = pd.DataFrame(columns=result_columns_nearest)
@@ -466,17 +577,21 @@ for file in filenames:
         print("Found nearest bootstrap results for " + file)
 
     min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_path,
-    tree_path)
+                                                                                                   tree_path)
 
-    min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, abs_distance_major_modes_supp, weighted_distance_major_modes_supp,abs_weighted_distance_major_modes_supp = calculate_support_statistics(support_path)
+    min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, abs_distance_major_modes_supp, weighted_distance_major_modes_supp, abs_weighted_distance_major_modes_supp = calculate_support_statistics(
+        support_path)
 
     results.append(
-    (file, min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, abs_distance_major_modes_supp, weighted_distance_major_modes_supp,abs_weighted_distance_major_modes_supp, min_rf, max_rf, mean_rf, std_dev_rf,
-    skewness_rf, kurtosis_rf))
+        (file, min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp,
+         abs_distance_major_modes_supp, weighted_distance_major_modes_supp, abs_weighted_distance_major_modes_supp,
+         min_rf, max_rf, mean_rf, std_dev_rf,
+         skewness_rf, kurtosis_rf))
 
 df = pd.DataFrame(results,
-             columns=["dataset", "min_sup_tree", "max_sup_tree", "mean_sup_tree", "std_sup_tree", "sk_sup_tree",
-                     "kurt_support", "distance_major_modes_supp", "abs_distance_major_modes_supp", "weighted_distance_major_modes_supp","abs_weighted_distance_major_modes_supp",
-                    "min_rf_tree", "max_rf_tree", "mean_rf_tree", "std_rf_tree", "sk_rf_tree", "kur_rf_tree"
-                   ])
+                  columns=["dataset", "min_sup_tree", "max_sup_tree", "mean_sup_tree", "std_sup_tree", "sk_sup_tree",
+                           "kurt_support", "distance_major_modes_supp", "abs_distance_major_modes_supp",
+                           "weighted_distance_major_modes_supp", "abs_weighted_distance_major_modes_supp",
+                           "min_rf_tree", "max_rf_tree", "mean_rf_tree", "std_rf_tree", "sk_rf_tree", "kur_rf_tree"
+                           ])
 df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
