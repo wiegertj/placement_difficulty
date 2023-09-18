@@ -136,11 +136,7 @@ for msa_name in filtered_filenames:
         pythia_output = result.stdout
         pythia_output = result.stdout
         pythia_error = result.stderr  # Capture stderr
-        print("Standard Output:")
-        print(pythia_output)
-        print("\nError Output:")
-        print(pythia_error)
-        print(pythia_output)
+
 
         # Define a regular expression pattern to match float numbers
         # This pattern captures one or more digits, an optional decimal point, and more digits
@@ -151,27 +147,12 @@ for msa_name in filtered_filenames:
 
         # Extract the last float number
         if matches:
-            last_float = float(matches[-1])
-            print("Last float number:", last_float)
+            last_float_before = float(matches[-1])
+            print("Last float number:", last_float_before)
         else:
             print("No float numbers found in the string.")
-        print(pythia_output)
-        print(last_float)
 
-        pythia_non_reest.append(
-            (msa_name, to_query, last_float))
-        df_py = pd.DataFrame(pythia_non_reest, columns=["dataset", "sampleId", "difficult_new_no_reest"])
 
-        if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv")):
-            df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
-                         index=False, header=True,
-                         columns=["dataset", "sampleId", "difficult_new_no_reest"])
-        else:
-            df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
-                         index=False,
-                         mode='a', header=False,
-                         columns=["dataset", "sampleId", "difficult_new_no_reest"])
-        pythia_non_reest = []
 
 
 
@@ -208,6 +189,45 @@ for msa_name in filtered_filenames:
 
                 with open(aligned_output_file, "w") as output_file:
                     output_file.write(mafft_output)
+
+                command = ["pythia", "--msa", aligned_output_file, "--raxmlng", raxml_path]
+                result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+                pythia_output = result.stdout
+                pythia_output = result.stdout
+                pythia_error = result.stderr  # Capture stderr
+
+                # Define a regular expression pattern to match float numbers
+                # This pattern captures one or more digits, an optional decimal point, and more digits
+                pattern = r"[-+]?\d*\.\d+|\d+"
+
+                # Use re.findall to find all matches in the string
+                matches = re.findall(pattern, result.stderr)
+
+                # Extract the last float number
+                if matches:
+                    last_float_after = float(matches[-1])
+                    print("Last float number:", last_float_after)
+                else:
+                    print("No float numbers found in the string.")
+
+
+
+                pythia_non_reest.append(
+                    (msa_name, to_query, last_float_before, last_float_after))
+                df_py = pd.DataFrame(pythia_non_reest, columns=["dataset", "sampleId", "difficulty_loo_no_reest", "difficulty_loo_reest"])
+
+                if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv")):
+                    df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
+                                 index=False, header=True,
+                                 columns=["dataset", "sampleId", "difficulty_loo_no_reest", "difficulty_loo_reest"])
+                else:
+                    df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
+                                 index=False,
+                                 mode='a', header=False,
+                                 columns=["dataset", "sampleId", "difficulty_loo_no_reest", "difficulty_loo_reest"])
+                pythia_non_reest = []
+
+
 
                 command = ["mafft", "--preservecase", "--keeplength", "--add", output_file_query_disaligned,
                            "--reorder",
