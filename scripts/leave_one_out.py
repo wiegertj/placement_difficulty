@@ -54,7 +54,7 @@ for msa_name in filtered_filenames:
 
     rf_distances = []
     bsd_distances = []
-
+    pythia_non_reest = []
     sequence_ids = []
     try:
         for record in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta"), "fasta"):
@@ -158,6 +158,24 @@ for msa_name in filtered_filenames:
             print("No float numbers found in the string.")
         print(pythia_output)
         print(last_float)
+
+        pythia_non_reest.append(
+            (msa_name, to_query, last_float))
+        df_rf = pd.DataFrame(rf_distances, columns=["dataset", "sampleId", "difficult_new_no_reest"])
+
+        if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv")):
+            df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
+                         index=False, header=True,
+                         columns=["dataset", "sampleId", "difficult_new_no_reest"])
+        else:
+            df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
+                         index=False,
+                         mode='a', header=False,
+                         columns=["dataset", "sampleId", "difficult_new_no_reest"])
+        pythia_non_reest = []
+
+
+
         if feature_config.REESTIMATE_TREE == True:
 
             # Disalign msa
