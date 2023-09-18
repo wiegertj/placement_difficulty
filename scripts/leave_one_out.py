@@ -147,7 +147,7 @@ for msa_name in filtered_filenames:
         pattern = r"[-+]?\d*\.\d+|\d+"
 
         # Use re.findall to find all matches in the string
-        matches = re.findall(pattern, pythia_output)
+        matches = re.findall(pattern, result.stderr)
 
         # Extract the last float number
         if matches:
