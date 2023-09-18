@@ -36,7 +36,6 @@ def calculate_bsd_aligned(tree1, tree2):
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
-filenames = filenames[:1]
 
 # print("Searching for already processed datasets ...")
 # current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
@@ -161,14 +160,14 @@ for msa_name in filtered_filenames:
 
         pythia_non_reest.append(
             (msa_name, to_query, last_float))
-        df_rf = pd.DataFrame(rf_distances, columns=["dataset", "sampleId", "difficult_new_no_reest"])
+        df_py = pd.DataFrame(pythia_non_reest, columns=["dataset", "sampleId", "difficult_new_no_reest"])
 
         if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv")):
-            df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
+            df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
                          index=False, header=True,
                          columns=["dataset", "sampleId", "difficult_new_no_reest"])
         else:
-            df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
+            df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
                          index=False,
                          mode='a', header=False,
                          columns=["dataset", "sampleId", "difficult_new_no_reest"])
