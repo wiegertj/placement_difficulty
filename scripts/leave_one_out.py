@@ -134,7 +134,12 @@ for msa_name in filtered_filenames:
         command = ["pythia", "--msa", output_file, "--raxmlng", raxml_path]
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
         pythia_output = result.stdout
-
+        pythia_output = result.stdout
+        pythia_error = result.stderr  # Capture stderr
+        print("Standard Output:")
+        print(pythia_output)
+        print("\nError Output:")
+        print(pythia_error)
         print(pythia_output)
 
         # Define a regular expression pattern to match float numbers
