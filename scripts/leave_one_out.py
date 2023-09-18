@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import dendropy
 import ete3
@@ -36,12 +37,14 @@ def calculate_bsd_aligned(tree1, tree2):
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 
-print("Searching for already processed datasets ...")
-current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
-dataset_set = set(current_loo_targets['dataset'])
-print("Before filterling" + str(len(filenames)))
-filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
-print("After filterling" + str(len(filtered_filenames)))
+# print("Searching for already processed datasets ...")
+# current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
+# dataset_set = set(current_loo_targets['dataset'])
+# print("Before filterling" + str(len(filenames)))
+# filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
+# print("After filterling" + str(len(filtered_filenames)))
+loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
+filtered_filenames = filenames
 msa_counter = 0
 for msa_name in filtered_filenames:
     msa_counter += 1
@@ -65,23 +68,26 @@ for msa_name in filtered_filenames:
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
     MSA = AlignIO.read(filepath, 'fasta')
 
-    #if len(MSA[0].seq) >= feature_config.SEQUENCE_LEN_THRESHOLD:  # if too large, skip
-     #   continue
+    # if len(MSA[0].seq) >= feature_config.SEQUENCE_LEN_THRESHOLD:  # if too large, skip
+    #   continue
     counter = 0
 
     # Create random sample
-    if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
-        sequence_ids_sample = sequence_ids
-    else:
-        sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
+    # if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
+    #   sequence_ids_sample = sequence_ids
+    # else:
+    #   sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
+
+    sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
 
     for to_query in sequence_ids_sample:
 
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
             if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
-                                         msa_name + "_" + to_query)):  # if folder empty
+                                           msa_name + "_" + to_query)):  # if folder empty
                 print("Empty folder found for " + msa_name + " " + to_query + " filling it")
-                os.rmdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query))  # delete empty folder
+                os.rmdir(os.path.join(os.pardir, "data/processed/loo_results",
+                                      msa_name + "_" + to_query))  # delete empty folder
             else:
                 if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
                     print("Skipping " + msa_name + " " + to_query + " result already exists")
@@ -114,6 +120,25 @@ for msa_name in filtered_filenames:
 
         output_file_tree = output_file.replace(".fasta", ".newick")
 
+        command = ["pythia", "--msa", output_file]
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+        pythia_output = result.stdout
+
+        # Define a regular expression pattern to match float numbers
+        # This pattern captures one or more digits, an optional decimal point, and more digits
+        pattern = r"[-+]?\d*\.\d+|\d+"
+
+        # Use re.findall to find all matches in the string
+        matches = re.findall(pattern, pythia_output)
+
+        # Extract the last float number
+        if matches:
+            last_float = float(matches[-1])
+            print("Last float number:", last_float)
+        else:
+            print("No float numbers found in the string.")
+        print(pythia_output)
+        print(last_float)
         if feature_config.REESTIMATE_TREE == True:
 
             # Disalign msa
@@ -227,7 +252,7 @@ for msa_name in filtered_filenames:
                     print("Started quartet computation")
                     print(os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick"))
                     print(tree_path)
-                    command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist","-v" ,tree_path,
+                    command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", "-v", tree_path,
                                os.path.abspath(original_tree_path).replace(".newick", to_query + ".newick")]
                     try:
                         command_string = " ".join(command)
@@ -268,19 +293,21 @@ for msa_name in filtered_filenames:
                     print("RF distance is %s over a total of" % (results_distance["norm_rf"]))
                     print("Quartet Distance: " + str(quartet_distance))
                     rf_distances.append(
-                        (msa_name, to_query, results_distance["norm_rf"], bsd_aligned, quartet_distance))
-                    df_rf = pd.DataFrame(rf_distances, columns=["dataset","sampleId", "norm_rf_dist", "norm_bsd_dist",
-                                                                "norm_quartet_dist"])
+                        (msa_name, to_query, results_distance["norm_rf"], bsd_aligned, quartet_distance, last_float))
+                    df_rf = pd.DataFrame(rf_distances, columns=["dataset", "sampleId", "norm_rf_dist", "norm_bsd_dist",
+                                                                "norm_quartet_dist", "difficult_new"])
 
                     if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv")):
                         df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"),
                                      index=False, header=True,
-                                     columns=["dataset","sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
+                                     columns=["dataset", "sampleId", "norm_rf_dist", "norm_bsd_dist",
+                                              "norm_quartet_dist", "difficult_new"])
                     else:
                         df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"),
                                      index=False,
                                      mode='a', header=False,
-                                     columns=["dataset","sampleId", "norm_rf_dist", "norm_bsd_dist", "norm_quartet_dist"])
+                                     columns=["dataset", "sampleId", "norm_rf_dist", "norm_bsd_dist",
+                                              "norm_quartet_dist", "difficult_new"])
                     rf_distances = []
                     msa_path_epa = aligned_output_file
         else:
