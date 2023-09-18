@@ -130,7 +130,7 @@ for msa_name in filtered_filenames:
 
         output_file_tree = output_file.replace(".fasta", ".newick")
 
-        command = ["pythia", "--msa", output_file, "--r", "~/raxml-ng"]
+        command = ["pythia", "--msa", output_file, "--raxmlng", "~/raxml-ng"]
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
         pythia_output = result.stdout
 
