@@ -316,6 +316,7 @@ def sample_rows(group):
      #   max_sample_size = min(1800, len(group))
     #else:
      #   return group
+    print(group.shape)
     return group.sample(700)
 
 
