@@ -219,6 +219,16 @@ def query_statistics(query_filepath) -> list:
                     fraction_char_rest = 0
                 fraction_char_rests8.append(fraction_char_rest)
 
+
+        match_counter_7 = 0
+        total_inv_sites_7 = 0
+        for i, (flag, char) in enumerate(analyzed_sites_7):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_7 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_7 += 1
+
         transition_count7 = 0
         transversion_count7 = 0
         mut_count7 = 0
@@ -283,14 +293,6 @@ def query_statistics(query_filepath) -> list:
                     fraction_char_rest = 0
                 fraction_char_rests5.append(fraction_char_rest)
 
-        match_counter_7 = 0
-        total_inv_sites_7 = 0
-        for i, (flag, char) in enumerate(analyzed_sites_7):
-            # Check if the corresponding site in the query has a 1 and if the characters are equal
-            if flag == 1:
-                total_inv_sites_7 += 1
-            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
-                match_counter_7 += 1
 
         match_counter_95 = 0
         total_inv_sites_95 = 0
