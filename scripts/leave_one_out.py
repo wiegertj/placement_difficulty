@@ -210,6 +210,8 @@ for msa_name in filtered_filenames:
                 else:
                     print("No float numbers found in the string.")
 
+                print("Diff before: " + str(last_float_before))
+                print("Diff after: " + str(last_float_after))
 
 
                 pythia_non_reest.append(
