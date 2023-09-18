@@ -129,8 +129,9 @@ for msa_name in filtered_filenames:
         SeqIO.write(query_alignment, output_file_query, "fasta")
 
         output_file_tree = output_file.replace(".fasta", ".newick")
+        raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
 
-        command = ["pythia", "--msa", output_file, "--raxmlng", "~/raxml-ng"]
+        command = ["pythia", "--msa", output_file, "--raxmlng", raxml_path]
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
         pythia_output = result.stdout
 
