@@ -229,7 +229,7 @@ for msa_name in filtered_filenames:
                                  columns=["dataset", "sampleId", "difficulty_loo_no_reest", "difficulty_loo_reest"])
                 pythia_non_reest = []
 
-
+                continue
 
                 command = ["mafft", "--preservecase", "--keeplength", "--add", output_file_query_disaligned,
                            "--reorder",
