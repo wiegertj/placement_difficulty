@@ -255,6 +255,7 @@ for msa_name in filtered_filenames:
 
             except subprocess.CalledProcessError as e:
                 print("Error running MAFFT:")
+                continue
                 print(e.stderr)
 
             # ------------------------------------------ run RAxML-ng with LOO MSA ------------------------------------------
