@@ -114,13 +114,23 @@ for msa_name in filtered_filenames:
 
         output_file_query = os.path.join(os.pardir, "data/processed/loo", msa_name + "_query_" + to_query + ".fasta")
         output_file_query = os.path.abspath(output_file_query)
+        unique_sequences = set()
+        new_alignment_dup = []
+        for record in new_alignment:
+            # Convert the sequence to a string for comparison
+            sequence_str = str(record.seq)
 
-        SeqIO.write(new_alignment, output_file, "fasta")
+            # Check if the sequence is unique
+            if sequence_str not in unique_sequences:
+                unique_sequences.add(sequence_str)
+                new_alignment_dup.append(record)
+
+        SeqIO.write(new_alignment_dup, output_file, "fasta")
         SeqIO.write(query_alignment, output_file_query, "fasta")
 
         output_file_tree = output_file.replace(".fasta", ".newick")
 
-        command = ["pythia", "--msa", output_file]
+        command = ["pythia", "--msa", output_file, "--r", "~/raxml-ng"]
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
         pythia_output = result.stdout
 
