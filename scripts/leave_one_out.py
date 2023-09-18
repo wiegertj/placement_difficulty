@@ -135,6 +135,8 @@ for msa_name in filtered_filenames:
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
         pythia_output = result.stdout
 
+        print(pythia_output)
+
         # Define a regular expression pattern to match float numbers
         # This pattern captures one or more digits, an optional decimal point, and more digits
         pattern = r"[-+]?\d*\.\d+|\d+"
