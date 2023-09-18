@@ -316,7 +316,7 @@ def sample_rows(group):
      #   max_sample_size = min(1800, len(group))
     #else:
      #   return group
-    return group.sample(1000)
+    return group.sample(700)
 
 
 print(combined_df.shape)
