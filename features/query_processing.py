@@ -677,10 +677,20 @@ if __name__ == '__main__':
                                         "frac_inv_sites_msa95", "frac_inv_sites_msa3", "frac_inv_sites_msa1",
                                         "match_rel_7", "match_rel_8", "match_rel_9", "match_rel_95", "match_rel_3",
                                         "match_rel_1", "match_rel_gap", "match_rel_2", "match_rel_4", "match_rel_6",
-                                        "match_rel_5", "transition_count_rel",
-                                        "transversion_count_rel", "max_fraction_char_rests",
-                                        "min_fraction_char_rests", "avg_fraction_char_rests", "std_fraction_char_rests",
-                                        "skw_fraction_char_rests", "kur_fraction_char_rests",
+                                        "match_rel_5",
+
+                                        "transition_count_rel8", "transversion_count_rel8", "max_fraction_char_rests8",
+                                        "min_fraction_char_rests8", "avg_fraction_char_rests8", "std_fraction_char_rests8",
+                                        "skw_fraction_char_rests8", "kur_fraction_char_rests8",
+                                        "transition_count_rel7", "transversion_count_rel7", "max_fraction_char_rests7",
+                                        "min_fraction_char_rests7", "avg_fraction_char_rests7", "std_fraction_char_rests7",
+                                        "skw_fraction_char_rests7", "kur_fraction_char_rests7",
+                                        "transition_count_rel5", "transversion_count_rel5", "max_fraction_char_rests5",
+                                        "min_fraction_char_rests5", "avg_fraction_char_rests5", "std_fraction_char_rests5",
+                                        "skw_fraction_char_rests5", "kur_fraction_char_rests5",
+
+
+
                                         "gap_positions_0", "gap_positions_1", "gap_positions_2", "gap_positions_3",
                                         "gap_positions_4", "gap_positions_5", "gap_positions_6",
                                         "gap_positions_7", "gap_positions_8", "gap_positions_9",
