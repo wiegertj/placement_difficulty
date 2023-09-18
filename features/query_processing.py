@@ -18,6 +18,7 @@ import statistics
 import numpy as np
 from scipy.stats import kurtosis, skew
 
+
 def query_statistics(query_filepath) -> list:
     """
     Computes gap statistics, nucleotide fractions and randomness scores for each query in the query file.
@@ -42,8 +43,6 @@ def query_statistics(query_filepath) -> list:
     analyzed_sites_5 = []
     analyzed_sites_4 = []
     analyzed_sites_2 = []
-
-
 
     # Iterate over each position in the alignment
     for position in range(len(alignment[0])):
@@ -179,7 +178,6 @@ def query_statistics(query_filepath) -> list:
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
                 match_counter_2 += 1
 
-
         match_counter_8 = 0
         total_inv_sites_8 = 0
         for i, (flag, char) in enumerate(analyzed_sites_8):
@@ -189,10 +187,10 @@ def query_statistics(query_filepath) -> list:
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
                 match_counter_8 += 1
 
-        transition_count = 0
-        transversion_count = 0
-        mut_count = 0
-        fraction_char_rests = []
+        transition_count8 = 0
+        transversion_count8 = 0
+        mut_count8 = 0
+        fraction_char_rests8 = []
         for i, (flag, char) in enumerate(analyzed_sites_8):
             # Check if the corresponding site in the query has a 1 and if the characters are equal
             if flag == 1:
@@ -200,15 +198,15 @@ def query_statistics(query_filepath) -> list:
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
                 match_counter_8 += 1
             if flag == 1 and str(record.seq)[i] != char:
-                mut_count += 1
+                mut_count8 += 1
                 if char in ["C", "T", "U"]:
                     if str(record.seq)[i] in ["A", "G"]:
-                        transversion_count += 1
+                        transversion_count8 += 1
                 elif char in ["A", "G"]:
                     if str(record.seq)[i] in ["C", "T", "U"]:
-                        transversion_count += 1
+                        transversion_count8 += 1
                 else:
-                    transition_count += 1
+                    transition_count8 += 1
 
                 residues_at_position = [str(record.seq[i]) for record in alignment]
                 residue_counts = Counter(residues_at_position)
@@ -219,7 +217,71 @@ def query_statistics(query_filepath) -> list:
                     fraction_char_rest = count_char / len(residues_at_position_del_most_common)
                 else:
                     fraction_char_rest = 0
-                fraction_char_rests.append(fraction_char_rest)
+                fraction_char_rests8.append(fraction_char_rest)
+
+        transition_count7 = 0
+        transversion_count7 = 0
+        mut_count7 = 0
+        fraction_char_rests7 = []
+        for i, (flag, char) in enumerate(analyzed_sites_7):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_7 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_7 += 1
+            if flag == 1 and str(record.seq)[i] != char:
+                mut_count7 += 1
+                if char in ["C", "T", "U"]:
+                    if str(record.seq)[i] in ["A", "G"]:
+                        transversion_count7 += 1
+                elif char in ["A", "G"]:
+                    if str(record.seq)[i] in ["C", "T", "U"]:
+                        transversion_count7 += 1
+                else:
+                    transition_count7 += 1
+
+                residues_at_position = [str(record.seq[i]) for record in alignment]
+                residue_counts = Counter(residues_at_position)
+                most_common_residue, most_common_count = residue_counts.most_common(1)[0]
+                residues_at_position_del_most_common = [r for r in residues_at_position if r != most_common_residue]
+                if str(record.seq)[i] in residues_at_position_del_most_common:
+                    count_char = residues_at_position_del_most_common.count(str(record.seq)[i])
+                    fraction_char_rest = count_char / len(residues_at_position_del_most_common)
+                else:
+                    fraction_char_rest = 0
+                fraction_char_rests7.append(fraction_char_rest)
+
+        transition_count5 = 0
+        transversion_count5 = 0
+        mut_count5 = 0
+        fraction_char_rests5 = []
+        for i, (flag, char) in enumerate(analyzed_sites_5):
+            # Check if the corresponding site in the query has a 1 and if the characters are equal
+            if flag == 1:
+                total_inv_sites_5 += 1
+            if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+                match_counter_5 += 1
+            if flag == 1 and str(record.seq)[i] != char:
+                mut_count5 += 1
+                if char in ["C", "T", "U"]:
+                    if str(record.seq)[i] in ["A", "G"]:
+                        transversion_count5 += 1
+                elif char in ["A", "G"]:
+                    if str(record.seq)[i] in ["C", "T", "U"]:
+                        transversion_count5 += 1
+                else:
+                    transition_count5 += 1
+
+                residues_at_position = [str(record.seq[i]) for record in alignment]
+                residue_counts = Counter(residues_at_position)
+                most_common_residue, most_common_count = residue_counts.most_common(1)[0]
+                residues_at_position_del_most_common = [r for r in residues_at_position if r != most_common_residue]
+                if str(record.seq)[i] in residues_at_position_del_most_common:
+                    count_char = residues_at_position_del_most_common.count(str(record.seq)[i])
+                    fraction_char_rest = count_char / len(residues_at_position_del_most_common)
+                else:
+                    fraction_char_rest = 0
+                fraction_char_rests5.append(fraction_char_rest)
 
         match_counter_7 = 0
         total_inv_sites_7 = 0
@@ -470,36 +532,86 @@ def query_statistics(query_filepath) -> list:
         else:
             match_rel_gap = 0
 
-        if mut_count > 0:
-            transition_count_rel = transition_count / mut_count
-            transversion_count_rel = transversion_count / mut_count
+        if mut_count8 > 0:
+            transition_count_rel8 = transition_count8 / mut_count8
+            transversion_count_rel8 = transversion_count8 / mut_count8
         else:
-            transition_count_rel = 0
-            transversion_count_rel = 0
+            transition_count_rel8 = 0
+            transversion_count_rel8 = 0
 
-        if len(fraction_char_rests) > 0:
-            max_fraction_char_rests = np.max(fraction_char_rests)
-            min_fraction_char_rests = np.min(fraction_char_rests)
-            avg_fraction_char_rests = np.mean(fraction_char_rests)
-            std_fraction_char_rests = np.std(fraction_char_rests)
-            skw_fraction_char_rests = skew(fraction_char_rests)
-            kur_fraction_char_rests = kurtosis(fraction_char_rests, fisher=True)
+        if len(fraction_char_rests8) > 0:
+            max_fraction_char_rests8 = np.max(fraction_char_rests8)
+            min_fraction_char_rests8 = np.min(fraction_char_rests8)
+            avg_fraction_char_rests8 = np.mean(fraction_char_rests8)
+            std_fraction_char_rests8 = np.std(fraction_char_rests8)
+            skw_fraction_char_rests8 = skew(fraction_char_rests8)
+            kur_fraction_char_rests8 = kurtosis(fraction_char_rests8, fisher=True)
         else:
-            max_fraction_char_rests = 0.0
-            min_fraction_char_rests = 0.0
-            avg_fraction_char_rests = 0.0
-            std_fraction_char_rests = 0.0
-            skw_fraction_char_rests = 0.0
-            kur_fraction_char_rests = 0.0
+            max_fraction_char_rests8 = 0.0
+            min_fraction_char_rests8 = 0.0
+            avg_fraction_char_rests8 = 0.0
+            std_fraction_char_rests8 = 0.0
+            skw_fraction_char_rests8 = 0.0
+            kur_fraction_char_rests8 = 0.0
+
+        if mut_count7 > 0:
+            transition_count_rel7 = transition_count7 / mut_count7
+            transversion_count_rel7 = transversion_count7 / mut_count7
+        else:
+            transition_count_rel7 = 0
+            transversion_count_rel7 = 0
+
+        if len(fraction_char_rests7) > 0:
+            max_fraction_char_rests7 = np.max(fraction_char_rests7)
+            min_fraction_char_rests7 = np.min(fraction_char_rests7)
+            avg_fraction_char_rests7 = np.mean(fraction_char_rests7)
+            std_fraction_char_rests7 = np.std(fraction_char_rests7)
+            skw_fraction_char_rests7 = skew(fraction_char_rests7)
+            kur_fraction_char_rests7 = kurtosis(fraction_char_rests7, fisher=True)
+        else:
+            max_fraction_char_rests7 = 0.0
+            min_fraction_char_rests7 = 0.0
+            avg_fraction_char_rests7 = 0.0
+            std_fraction_char_rests7 = 0.0
+            skw_fraction_char_rests7 = 0.0
+            kur_fraction_char_rests7 = 0.0
+
+        if mut_count5 > 0:
+            transition_count_rel5 = transition_count5 / mut_count5
+            transversion_count_rel5 = transversion_count5 / mut_count5
+        else:
+            transition_count_rel5 = 0
+            transversion_count_rel5 = 0
+
+        if len(fraction_char_rests5) > 0:
+            max_fraction_char_rests5 = np.max(fraction_char_rests5)
+            min_fraction_char_rests5 = np.min(fraction_char_rests5)
+            avg_fraction_char_rests5 = np.mean(fraction_char_rests5)
+            std_fraction_char_rests5 = np.std(fraction_char_rests5)
+            skw_fraction_char_rests5 = skew(fraction_char_rests5)
+            kur_fraction_char_rests5 = kurtosis(fraction_char_rests5, fisher=True)
+        else:
+            max_fraction_char_rests5 = 0.0
+            min_fraction_char_rests5 = 0.0
+            avg_fraction_char_rests5 = 0.0
+            std_fraction_char_rests5 = 0.0
+            skw_fraction_char_rests5 = 0.0
+            kur_fraction_char_rests5 = 0.0
 
         results.append((name, record.id, gap_fraction, longest_gap_rel,
                         match_counter_7 / seq_length, match_counter_8 / seq_length, match_counter_9 / seq_length,
                         match_counter_95 / seq_length, match_counter_3 / seq_length, match_counter_1 / seq_length,
                         match_rel_7, match_rel_8, match_rel_9, match_rel_95, match_rel_3, match_rel_1, match_rel_gap,
                         match_rel_2, match_rel_4, match_rel_6, match_rel_5,
-                        transition_count_rel, transversion_count_rel, max_fraction_char_rests,
-                        min_fraction_char_rests, avg_fraction_char_rests, std_fraction_char_rests,
-                        skw_fraction_char_rests, kur_fraction_char_rests,
+                        transition_count_rel8, transversion_count_rel8, max_fraction_char_rests8,
+                        min_fraction_char_rests8, avg_fraction_char_rests8, std_fraction_char_rests8,
+                        skw_fraction_char_rests8, kur_fraction_char_rests8,
+                        transition_count_rel7, transversion_count_rel7, max_fraction_char_rests7,
+                        min_fraction_char_rests7, avg_fraction_char_rests7, std_fraction_char_rests7,
+                        skw_fraction_char_rests7, kur_fraction_char_rests7,
+                        transition_count_rel5, transversion_count_rel5, max_fraction_char_rests5,
+                        min_fraction_char_rests5, avg_fraction_char_rests5, std_fraction_char_rests5,
+                        skw_fraction_char_rests5, kur_fraction_char_rests5,
                         gap_fractions[0], gap_fractions[1], gap_fractions[2], gap_fractions[3], gap_fractions[4],
                         gap_fractions[5], gap_fractions[6],
                         gap_fractions[7], gap_fractions[8], gap_fractions[9],
@@ -562,7 +674,8 @@ if __name__ == '__main__':
                                         "frac_inv_sites_msa7", "frac_inv_sites_msa8", "frac_inv_sites_msa9",
                                         "frac_inv_sites_msa95", "frac_inv_sites_msa3", "frac_inv_sites_msa1",
                                         "match_rel_7", "match_rel_8", "match_rel_9", "match_rel_95", "match_rel_3",
-                                        "match_rel_1", "match_rel_gap", "match_rel_2", "match_rel_4", "match_rel_6", "match_rel_5","transition_count_rel",
+                                        "match_rel_1", "match_rel_gap", "match_rel_2", "match_rel_4", "match_rel_6",
+                                        "match_rel_5", "transition_count_rel",
                                         "transversion_count_rel", "max_fraction_char_rests",
                                         "min_fraction_char_rests", "avg_fraction_char_rests", "std_fraction_char_rests",
                                         "skw_fraction_char_rests", "kur_fraction_char_rests",
