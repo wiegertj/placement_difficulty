@@ -36,7 +36,7 @@ def calculate_bsd_aligned(tree1, tree2):
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
-filenames[:1]
+filenames = filenames[:1]
 
 # print("Searching for already processed datasets ...")
 # current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
