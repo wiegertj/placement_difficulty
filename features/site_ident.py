@@ -211,8 +211,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             if sequence_str not in unique_sequences:
                 unique_sequences.add(sequence_str)
                 new_alignment_dup.append(record)
-        SeqIO.write(new_alignment_dup, os.path.abspath(msa_filepath.replace("_reference", "_reference_dedup")), "fasta")
-        msa_filepath = msa_filepath.replace("_reference", "dedup_reference")
+        SeqIO.write(new_alignment_dup, os.path.abspath(msa_filepath.replace("_reference", "_dedup_reference")), "fasta")
+        msa_filepath = msa_filepath.replace("_reference", "_dedup_reference")
 
         modified_sequences = []
 
