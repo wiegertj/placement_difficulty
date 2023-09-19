@@ -298,12 +298,12 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             df_py = pd.DataFrame(results_pythia,
                                  columns=["dataset", "num_sites","num_sites_del", "old_diff", "new_diff", "diff_change" ,"theshold_max"])
 
-            if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter.csv")):
-                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter.csv"),
+            if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter_mean03.csv")):
+                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_mean03.csv"),
                              index=False, header=True,
                              columns=["dataset","num_sites","num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max"])
             else:
-                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter.csv"),
+                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_mean03.csv"),
                              index=False,
                              mode='a', header=False,
                              columns=["dataset", "num_sites", "num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max"])
