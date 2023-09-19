@@ -189,7 +189,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             site_freq_b_array = np.array(list(normalized_freq_b.values()))
 
             kl_divergence_value = abs(site_freq_a_array - site_freq_b_array)
-            kl_divergence_value = np.std(kl_divergence_value)
+            kl_divergence_value = np.mean(kl_divergence_value)
 
             # kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
 
@@ -197,7 +197,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         # Normalize the list to the range [0, 1]
         normalized_kl_divergence_results = kl_divergence_results
-        binary_results = [1 if value > 0.1 else 0 for value in normalized_kl_divergence_results]
+        binary_results = [1 if value > 0.2 else 0 for value in normalized_kl_divergence_results]
         ################################
         results_pythia = []
         new_alignment_dup = []
@@ -298,12 +298,12 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             df_py = pd.DataFrame(results_pythia,
                                  columns=["dataset", "num_sites","num_sites_del", "old_diff", "new_diff", "diff_change" ,"theshold_max", "min_support"])
 
-            if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter_std01.csv")):
-                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_std01.csv"),
+            if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter_mean02.csv")):
+                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_mean021.csv"),
                              index=False, header=True,
                              columns=["dataset","num_sites","num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max", "min_support"])
             else:
-                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_std01.csv"),
+                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_mean02.csv"),
                              index=False,
                              mode='a', header=False,
                              columns=["dataset", "num_sites", "num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max", "min_support"])
