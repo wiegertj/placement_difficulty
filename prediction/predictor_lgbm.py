@@ -148,6 +148,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
 
     scaler = MinMaxScaler()
     importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
+    importance_df = importance_df.nlargest(15, 'Importance')
 
     plt.figure(figsize=(10, 6))
     plt.bar(importance_df['Feature'], importance_df['Importance'])
@@ -157,7 +158,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     plt.title('Feature Importances')
     plt.tight_layout()
 
-    name = "rf_tree_holdout_20"
+    name = "8000"
     if rfe:
         name = name + "_rfe_" + str(rfe_feature_n)
 
