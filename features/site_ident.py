@@ -202,6 +202,9 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         ################################
         modified_sequences = []
 
+        print("Binary sum")
+        print(sum(binary_results))
+
         for record in alignment:
             # Convert the sequence to a list to modify it
             sequence_list = list(record.seq)
@@ -212,12 +215,12 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             for site, keep_site in zip(sequence_list, binary_results):
                 if keep_site == 1:
                     # If binary_results is 1, replace the site with a gap or another character as needed
-                    sequence_list[sequence_list.index(site)] = '_'
+                    sequence_list[sequence_list.index(site)] = '+'
 
             # Convert the modified list back to a sequence and add it to the list of modified sequences#
             modified_sequence = Seq(''.join(sequence_list))
             print(modified_sequence)
-            modified_sequence = modified_sequence.replace("_", "")
+            modified_sequence = modified_sequence.replace("+", "")
             print(modified_sequence)
             modified_record = record
             modified_record.seq = modified_sequence
