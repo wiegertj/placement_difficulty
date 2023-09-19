@@ -213,7 +213,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                 new_alignment_dup.append(record)
         SeqIO.write(new_alignment_dup, os.path.abspath(msa_filepath.replace("_reference", "_dedup_reference")), "fasta")
         msa_filepath = msa_filepath.replace("_reference", "_dedup_reference")
-        alignment = SeqIO.read(msa_filepath, format="fasta")
+        alignment = AlignIO.MultipleSeqAlignment(new_alignment_dup)
         modified_sequences = []
 
         print("Binary sum \n")
