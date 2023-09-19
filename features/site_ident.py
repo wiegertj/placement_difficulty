@@ -280,7 +280,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         matches_old = re.findall(pattern, result_old.stderr)
         last_float_old = float(matches_old[-1])
 
-        command = ["pythia", "--msa", aligned_output_file, "--raxmlng", raxml_path]
+        command = ["pythia", "--msa", os.path.abspath(aligned_output_file), "--raxmlng", raxml_path]
         result_new = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
 
         matches_new = re.findall(pattern, result_new.stderr)
