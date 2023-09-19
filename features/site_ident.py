@@ -273,39 +273,43 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             output_file.write(mafft_output)
         raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
 
-        command = ["pythia", "--msa", os.path.abspath(msa_filepath), "--raxmlng", raxml_path]
-        result_old = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+        try:
+            command = ["pythia", "--msa", os.path.abspath(msa_filepath), "--raxmlng", raxml_path]
+            result_old = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
 
-        pattern = r"[-+]?\d*\.\d+|\d+"
+            pattern = r"[-+]?\d*\.\d+|\d+"
 
-        matches_old = re.findall(pattern, result_old.stderr)
-        last_float_old = float(matches_old[-1])
+            matches_old = re.findall(pattern, result_old.stderr)
+            last_float_old = float(matches_old[-1])
 
-        command = ["pythia", "--msa", os.path.abspath(aligned_output_file), "--raxmlng", raxml_path]
-        result_new = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+            command = ["pythia", "--msa", os.path.abspath(aligned_output_file), "--raxmlng", raxml_path]
+            result_new = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
 
-        matches_new = re.findall(pattern, result_new.stderr)
-        last_float_new = float(matches_new[-1])
+            matches_new = re.findall(pattern, result_new.stderr)
+            last_float_new = float(matches_new[-1])
 
-        print("Old difficulty: " + str(last_float_old))
-        print("New difficulty: " + str(last_float_new))
+            print("Old difficulty: " + str(last_float_old))
+            print("New difficulty: " + str(last_float_new))
 
-        results_pythia.append((name, sum(binary_results), last_float_old, last_float_new, last_float_old - last_float_new,0.5))
+            results_pythia.append((name, sum(binary_results), last_float_old, last_float_new, last_float_old - last_float_new,0.5))
 
-        df_py = pd.DataFrame(results_pythia,
-                             columns=["dataset", "num_sites_del", "old_diff", "new_diff", "diff_change" ,"theshold_max"])
+            df_py = pd.DataFrame(results_pythia,
+                                 columns=["dataset", "num_sites_del", "old_diff", "new_diff", "diff_change" ,"theshold_max"])
 
-        if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter.csv")):
-            df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter.csv"),
-                         index=False, header=True,
-                         columns=["dataset","num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max"])
-        else:
-            df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter.csv"),
-                         index=False,
-                         mode='a', header=False,
-                         columns=["dataset", "num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max"])
+            if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter.csv")):
+                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter.csv"),
+                             index=False, header=True,
+                             columns=["dataset","num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max"])
+            else:
+                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter.csv"),
+                             index=False,
+                             mode='a', header=False,
+                             columns=["dataset", "num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max"])
 
-        return
+            return
+        except subprocess.CalledProcessError:
+            print("Called Process Error Occured ... " + name)
+            return
         ################################
 
 
