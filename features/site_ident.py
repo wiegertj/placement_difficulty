@@ -202,7 +202,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
         ################################
         new_alignment_dup = []
-        for record in new_alignment:
+        for record in alignment:
             # Convert the sequence to a string for comparison
             sequence_str = str(record.seq)
 
