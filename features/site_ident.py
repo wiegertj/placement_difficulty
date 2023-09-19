@@ -188,7 +188,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             site_freq_b_array = np.array(list(normalized_freq_b.values()))
 
             kl_divergence_value = abs(site_freq_a_array - site_freq_b_array)
-            kl_divergence_value = np.mean(kl_divergence_value)
+            kl_divergence_value = np.max(kl_divergence_value)
 
             # kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
 
@@ -211,7 +211,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         for record in alignment:
             # Convert the sequence to a list to modify it
             sequence_list = list(record.seq)
-            print(sequence_list)
 
 
             # Iterate over sites and binary_results together
@@ -221,10 +220,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                     sequence_list[sequence_list.index(site)] = '+'
 
             # Convert the modified list back to a sequence and add it to the list of modified sequences#
-            print(len(sequence_list))
 
             sequence_list.remove("+")
-            print(len(sequence_list))
 
             modified_sequence = Seq(''.join(sequence_list))
             modified_record = SeqRecord(modified_sequence, id=record.id, description=record.description)
