@@ -245,6 +245,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         filtered_alignment = AlignIO.MultipleSeqAlignment(modified_sequences)
         num_sequences = len(alignment)
         num_sites = alignment.get_alignment_length()
+        if num_sites >= 30000:
+            return
 
         # Print the shape of the alignment
         print(f"Number of Sequences now: {num_sequences}")
