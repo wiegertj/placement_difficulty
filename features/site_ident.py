@@ -198,7 +198,14 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         # Normalize the list to the range [0, 1]
         normalized_kl_divergence_results = kl_divergence_results
-        binary_results = [1 if value < 0.5 else 0 for value in normalized_kl_divergence_results]
+        #binary_results = [1 if value < 0.5 else 0 for value in normalized_kl_divergence_results]
+        mean_z = np.mean(normalized_kl_divergence_results)
+        std_dev_z = np.std(normalized_kl_divergence_results)
+        threshold = 2
+        binary_result = [1 if abs((value - mean) / std_dev) > threshold else 0 for value in kl_divergence_results]
+        #threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
+        #binary_results = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
+
         ################################
         results_pythia = []
         new_alignment_dup = []
@@ -320,7 +327,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
         # print(threshold)
         # Set values greater than or equal to the threshold to 1, and the rest to 0
-        binary_results_threshold = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
         support_kl_div_filtered_1_frac = sum(binary_results) / len(binary_results)  # how much of the msa is difficult
         print("support filtered: " + str(support_kl_div_filtered_1_frac))
         support_kl_div_filtered_1_frac_thresh = sum(binary_results_threshold) / len(
