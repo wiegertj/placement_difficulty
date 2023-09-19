@@ -220,7 +220,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                     sequence_list[sequence_list.index(site)] = '+'
 
             # Convert the modified list back to a sequence and add it to the list of modified sequences#
-            print(len(modified_sequence))
+            print(len(sequence_list))
 
             sequence_list = sequence_list.remove("+")
             print(len(sequence_list))
