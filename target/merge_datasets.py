@@ -317,7 +317,7 @@ def sample_rows(group):
     #else:
      #   return group
     print(group.shape)
-    return group.sample(700)
+    return group.sample(800)
 
 
 print(combined_df.shape)
