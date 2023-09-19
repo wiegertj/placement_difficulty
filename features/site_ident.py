@@ -253,7 +253,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         SeqIO.write(filtered_alignment, disaligned_path,
                     "fasta")
 
-        command = ["mafft", "--preservecase", disaligned_path.replace("_reference", "_reference_disaligned_site_filtered")]
+        command = ["mafft", "--preservecase", os.path.abspath(disaligned_path.replace("_reference", "_reference_disaligned_site_filtered"))]
 
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
         mafft_output = result.stdout
