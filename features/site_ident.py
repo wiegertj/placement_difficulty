@@ -196,7 +196,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             kl_divergence_results.append(kl_divergence_value)
 
         min_kl_divergence = min(kl_divergence_results)
-        max_kl_divergence = np.mean(kl_divergence_results)
+        max_kl_divergence = np.std(kl_divergence_results)
 
         # Normalize the list to the range [0, 1]
         normalized_kl_divergence_results = kl_divergence_results
