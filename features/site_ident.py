@@ -201,6 +201,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         normalized_kl_divergence_results = kl_divergence_results
         binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
         ################################
+        results_pythia = []
         new_alignment_dup = []
         unique_sequences = set()
         for record in alignment:
@@ -252,12 +253,12 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         print("Binary sum")
         print(sum(binary_results))
 
-        num_sequences = len(filtered_alignment)
-        num_sites = filtered_alignment.get_alignment_length()
+        num_sequence_new = len(filtered_alignment)
+        num_sites_new = filtered_alignment.get_alignment_length()
 
         # Print the shape of the alignment
-        print(f"Number of Sequences now: {num_sequences}")
-        print(f"Number of Sites now: {num_sites}")
+        print(f"Number of Sequences now: {num_sequences_new}")
+        print(f"Number of Sites now: {num_sites_new}")
         disaligned_path = msa_filepath.replace("_reference", "_reference_disaligned_site_filtered")
         SeqIO.write(filtered_alignment, disaligned_path,
                     "fasta")
@@ -288,6 +289,21 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         print("Old difficulty: " + str(last_float_old))
         print("New difficulty: " + str(last_float_new))
+
+        results_pythia.append((name, num_sites, num_sites_new, last_float_old, last_float_new, 0.5))
+
+        df_py = pd.DataFrame(results_pythia,
+                             columns=["dataset", "num_sites", "num_sites_new", "old_diff", "new_diff", "theshold_max"])
+
+        if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter.csv")):
+            df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter.csv"),
+                         index=False, header=True,
+                         columns=["dataset","num_sites", "num_sites_new", "old_diff", "new_diff", "theshold_max"])
+        else:
+            df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter.csv"),
+                         index=False,
+                         mode='a', header=False,
+                         columns=["dataset", "num_sites", "num_sites_new", "old_diff", "new_diff", "theshold_max"])
 
         return
         ################################
