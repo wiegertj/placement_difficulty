@@ -202,9 +202,11 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         ################################
         modified_sequences = []
 
-        print("Binary sum")
+        print("Binary sum \n")
         print(sum(binary_results))
-
+        print("\n")
+        print("\n")
+        print("\n")
         for record in alignment:
             # Convert the sequence to a list to modify it
             sequence_list = list(record.seq)
