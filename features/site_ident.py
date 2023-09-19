@@ -10,6 +10,7 @@ from Bio.Align import MultipleSeqAlignment
 
 from Bio import AlignIO, SeqIO
 from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 from ete3 import Tree
 import numpy as np
 from scipy.stats import skew, kurtosis, entropy
@@ -226,9 +227,9 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             print(len(sequence_list))
 
             modified_sequence = Seq(''.join(sequence_list))
-            #modified_sequence = modified_sequence.replace("+", "")
-            modified_record = record
-            modified_record.seq = modified_sequence
+            modified_record = SeqRecord(modified_sequence, id=record.id, description=record.description)
+
+            # Add the modified record to the list of modified sequences
             modified_sequences.append(modified_record)
 
         # Create a new alignment from the modified sequences
