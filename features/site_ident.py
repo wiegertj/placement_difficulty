@@ -1,12 +1,14 @@
 import math
+import re
 import statistics
+import subprocess
 import sys
 import warnings
 from collections import Counter
 
 from Bio.Align import MultipleSeqAlignment
 
-from Bio import AlignIO
+from Bio import AlignIO, SeqIO
 from ete3 import Tree
 import numpy as np
 from scipy.stats import skew, kurtosis, entropy
@@ -69,8 +71,11 @@ def nearest_sequence_features(support_file_path, taxon_name):
 
     return min_support_, max_support_, mean_support_, std_support_, skewness_, kurt_, depth_, min_branch_len_nearest, max_branch_len_nearest, mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest
 
+
 def hamming_distance(seq1, seq2):
     return sum(c1 != c2 for c1, c2 in zip(seq1, seq2)) / len(seq1)
+
+
 def calculate_imp_site(support_file_path, msa_filepath, name):
     with open(support_file_path, "r") as support_file:
         tree_str = support_file.read()
@@ -85,7 +90,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         for node in phylo_tree.traverse("postorder"):
             if node.support is not None and not node.is_root() and not node.is_leaf():
-                if node.support < min_support and (len(node.get_leaves()) > (0.35 * len(phylo_tree.get_leaves()))) and (len(node.get_leaves()) < (0.65 * len(phylo_tree.get_leaves()))):
+                if node.support < min_support and (len(node.get_leaves()) > (0.35 * len(phylo_tree.get_leaves()))) and (
+                        len(node.get_leaves()) < (0.65 * len(phylo_tree.get_leaves()))):
                     print("matched")
                     min_support = node.support
                     min_support_branch = node
@@ -118,8 +124,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                         min_support = node.support
                         min_support_branch = node
 
-
-
         # Initialize lists to store the bipartition
         list_a = []
         list_b = []
@@ -134,7 +138,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         print("size part a: " + str(len(list_a)))
         print("size part b: " + str(len(list_b)))
 
-
         alignment = AlignIO.read(msa_filepath, 'fasta')
         alignment_a = MultipleSeqAlignment([])
         alignment_b = MultipleSeqAlignment([])
@@ -143,6 +146,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                 alignment_a.append(record)
             elif record.id in list_b:
                 alignment_b.append(record)
+
         freqs_b = []
         freqs_a = []
 
@@ -184,7 +188,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             kl_divergence_value = abs(site_freq_a_array - site_freq_b_array)
             kl_divergence_value = np.mean(kl_divergence_value)
 
-            #kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
+            # kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
 
             kl_divergence_results.append(kl_divergence_value)
 
@@ -193,9 +197,61 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         # Normalize the list to the range [0, 1]
         normalized_kl_divergence_results = kl_divergence_results
-        binary_results = [1 if value > 0.3 else 0 for value in normalized_kl_divergence_results]
+        binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
+        ################################
+        filtered_alignment = alignment[:, [i for i, keep_site in enumerate(binary_results) if keep_site == 0]]
 
-        threshold = sorted(normalized_kl_divergence_results)[-int(0.2 * len(normalized_kl_divergence_results))]
+        num_sequences = len(alignment)
+        num_sites = alignment.get_alignment_length()
+
+        # Print the shape of the alignment
+        print(f"Number of Sequences now: {num_sequences}")
+        print(f"Number of Sites now: {num_sites}")
+
+        print("Binary sum")
+        print(sum(binary_results))
+
+        num_sequences = len(filtered_alignment)
+        num_sites = filtered_alignment.get_alignment_length()
+
+        # Print the shape of the alignment
+        print(f"Number of Sequences now: {num_sequences}")
+        print(f"Number of Sites now: {num_sites}")
+        disaligned_path = msa_filepath.replace("_reference", "_reference_disaligned_site_filtered")
+        SeqIO.write(filtered_alignment, disaligned_path,
+                    "fasta")
+
+        command = ["mafft", "--preservecase", disaligned_path.replace("_reference", "_reference_disaligned_site_filtered")]
+
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+        mafft_output = result.stdout
+        aligned_output_file = disaligned_path.replace("_disaligned", "_aligned")
+
+        with open(aligned_output_file, "w") as output_file:
+            output_file.write(mafft_output)
+        raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
+
+        command = ["pythia", "--msa", msa_filepath, "--raxmlng", raxml_path]
+        result_old = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+
+        pattern = r"[-+]?\d*\.\d+|\d+"
+
+        matches_old = re.findall(pattern, result_old.stderr)
+        last_float_old = float(matches_old[-1])
+
+        command = ["pythia", "--msa", aligned_output_file, "--raxmlng", raxml_path]
+        result_new = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+
+        matches_new = re.findall(pattern, result_new.stderr)
+        last_float_new = float(matches_new[-1])
+
+        print("Old difficulty: " + str(last_float_old))
+        print("New difficulty: " + str(last_float_new))
+
+        return
+        ################################
+
+        threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
         # print(threshold)
         # Set values greater than or equal to the threshold to 1, and the rest to 0
         binary_results_threshold = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
@@ -230,7 +286,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             mean_a_mean_b = abs(mean_a - mean_b)
             min_a_min_b = abs(min_a - min_b)
 
-
             non_gap_count = 0
             for char in queryseq:
                 if char not in ["-", "N"]:
@@ -262,11 +317,14 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                     if (queryseq[i]) == alignment_b[0][i]:
                         diff_match_counter_partb += 1
             try:
-                non_diff_match_counter_parta = (non_diff_match_counter_parta / len(alignment_a)) / (len(queryseq) - (sum(binary_results)))
-                non_diff_match_counter_partb = (non_diff_match_counter_partb / len(alignment_b))  / (len(queryseq) - (sum(binary_results)))# how many non diff sites match diff in avg on part b?
+                non_diff_match_counter_parta = (non_diff_match_counter_parta / len(alignment_a)) / (
+                            len(queryseq) - (sum(binary_results)))
+                non_diff_match_counter_partb = (non_diff_match_counter_partb / len(alignment_b)) / (len(queryseq) - (
+                    sum(binary_results)))  # how many non diff sites match diff in avg on part b?
 
                 diff_match_counter_parta = (diff_match_counter_parta / len(alignment_a)) / sum(binary_results)
-                diff_match_counter_partb = (diff_match_counter_partb / len(alignment_b)) / sum(binary_results) # how many non diff sites match diff in avg on part b?
+                diff_match_counter_partb = (diff_match_counter_partb / len(alignment_b)) / sum(
+                    binary_results)  # how many non diff sites match diff in avg on part b?
             except ZeroDivisionError:
                 print("Div Error occured")
 
@@ -316,11 +374,16 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                     if (queryseq[i]) == alignment_b[0][i]:
                         diff_match_counter_partb_thresh += 1
             try:
-                non_diff_match_counter_parta_thresh = (non_diff_match_counter_parta_thresh / len(alignment_a)) / (len(queryseq) - (sum(binary_results_threshold)))
-                non_diff_match_counter_partb_thresh = (non_diff_match_counter_partb_thresh / len(alignment_b)) / (len(queryseq) - (sum(binary_results_threshold)))# how many non diff sites match in avg on part b?
+                non_diff_match_counter_parta_thresh = (non_diff_match_counter_parta_thresh / len(alignment_a)) / (
+                            len(queryseq) - (sum(binary_results_threshold)))
+                non_diff_match_counter_partb_thresh = (non_diff_match_counter_partb_thresh / len(alignment_b)) / (
+                            len(queryseq) - (
+                        sum(binary_results_threshold)))  # how many non diff sites match in avg on part b?
 
-                diff_match_counter_parta_thresh = (diff_match_counter_parta_thresh / len(alignment_a)) / sum(binary_results_threshold)
-                diff_match_counter_partb_thresh = (diff_match_counter_partb_thresh / len(alignment_b)) / sum(binary_results_threshold)  # how many non diff sites match in avg on part b?
+                diff_match_counter_parta_thresh = (diff_match_counter_parta_thresh / len(alignment_a)) / sum(
+                    binary_results_threshold)
+                diff_match_counter_partb_thresh = (diff_match_counter_partb_thresh / len(alignment_b)) / sum(
+                    binary_results_threshold)  # how many non diff sites match in avg on part b?
             except ZeroDivisionError:
                 print("Div Error occured")
                 non_diff_match_counter_parta_thresh = 0
@@ -358,16 +421,27 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                                   diff_match_counter_parta_thresh, diff_match_counter_partb_thresh,
                                   non_diff_match_counter_parta, non_diff_match_counter_partb, diff_match_counter_parta,
                                   diff_match_counter_partb, min_support,
-                                  support_kl_div_filtered_1_frac / (min_support / 100), gaps_over_diff_sites_frac / (min_support / 100),
-                                  non_gaps_over_diff_sites_frac / (min_support / 100), rel_non_gap_over_diff_sites / (min_support / 100), rel_gap_over_diff_sites / (min_support / 100),
-                                  support_kl_div_filtered_1_frac_thresh / (min_support / 100), gaps_over_diff_sites_frac_thresh / (min_support / 100),
-                                  non_gaps_over_diff_sites_frac_thresh / (min_support / 100), rel_non_gap_over_diff_sites_thresh / (min_support / 100),
-                                  rel_gap_over_diff_sites_thresh / (min_support / 100) ,
-                                  non_diff_match_counter_parta_thresh / (min_support / 100), non_diff_match_counter_partb_thresh / (min_support / 100),
-                                  diff_match_counter_parta_thresh / (min_support / 100) , diff_match_counter_partb_thresh / (min_support / 100),
-                                  non_diff_match_counter_parta / (min_support / 100), non_diff_match_counter_partb / (min_support / 100), diff_match_counter_parta / (min_support / 100),
-                                  diff_match_counter_partb / (min_support / 100), mean_a, max_a, min_a, std_a, mean_b, max_b, min_b, std_b, min_a_min_b, max_a_max_b, mean_a_mean_b,
-                                  np.std(kl_divergence_results), np.mean(kl_divergence_results), max(kl_divergence_results), min(kl_divergence_results)
+                                  support_kl_div_filtered_1_frac / (min_support / 100),
+                                  gaps_over_diff_sites_frac / (min_support / 100),
+                                  non_gaps_over_diff_sites_frac / (min_support / 100),
+                                  rel_non_gap_over_diff_sites / (min_support / 100),
+                                  rel_gap_over_diff_sites / (min_support / 100),
+                                  support_kl_div_filtered_1_frac_thresh / (min_support / 100),
+                                  gaps_over_diff_sites_frac_thresh / (min_support / 100),
+                                  non_gaps_over_diff_sites_frac_thresh / (min_support / 100),
+                                  rel_non_gap_over_diff_sites_thresh / (min_support / 100),
+                                  rel_gap_over_diff_sites_thresh / (min_support / 100),
+                                  non_diff_match_counter_parta_thresh / (min_support / 100),
+                                  non_diff_match_counter_partb_thresh / (min_support / 100),
+                                  diff_match_counter_parta_thresh / (min_support / 100),
+                                  diff_match_counter_partb_thresh / (min_support / 100),
+                                  non_diff_match_counter_parta / (min_support / 100),
+                                  non_diff_match_counter_partb / (min_support / 100),
+                                  diff_match_counter_parta / (min_support / 100),
+                                  diff_match_counter_partb / (min_support / 100), mean_a, max_a, min_a, std_a, mean_b,
+                                  max_b, min_b, std_b, min_a_min_b, max_a_max_b, mean_a_mean_b,
+                                  np.std(kl_divergence_results), np.mean(kl_divergence_results),
+                                  max(kl_divergence_results), min(kl_divergence_results)
                                   ))
 
         columns = [
@@ -403,7 +477,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             "diff_match_counter_partb_thresh_w",
             "non_diff_match_counter_parta_w", "non_diff_match_counter_partb_w", "diff_match_counter_parta_w",
             "diff_match_counter_partb_w",
-            "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b","min_a_min_b", "max_a_max_b", "mean_a_mean_b",
+            "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b", "min_a_min_b", "max_a_max_b",
+            "mean_a_mean_b",
             "divergence_results_std", "divergence_results_mean", "divergence_results_max", "divergence_results_min"
         ]
         df = pd.DataFrame(results_final, columns=columns)
