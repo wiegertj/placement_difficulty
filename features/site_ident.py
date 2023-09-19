@@ -677,7 +677,7 @@ def compute_rf_distance_statistics(bootstrap_path, reference_tree_path):
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
-filenames = random.sample(filenames, 100)
+filenames = random.sample(filenames, 100, seed=42)
 results = []
 counter = 0
 
