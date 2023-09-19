@@ -202,7 +202,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         mean_z = np.mean(normalized_kl_divergence_results)
         std_dev_z = np.std(normalized_kl_divergence_results)
         threshold = 2
-        binary_result = [1 if abs((value - mean_z) / std_dev_z) > threshold else 0 for value in kl_divergence_results]
+        binary_results = [1 if abs((value - mean_z) / std_dev_z) > threshold else 0 for value in kl_divergence_results]
         #threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
         #binary_results = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
 
