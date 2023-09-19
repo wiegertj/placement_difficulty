@@ -201,6 +201,18 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         normalized_kl_divergence_results = kl_divergence_results
         binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
         ################################
+        new_alignment_dup = []
+        for record in new_alignment:
+            # Convert the sequence to a string for comparison
+            sequence_str = str(record.seq)
+
+            # Check if the sequence is unique
+            if sequence_str not in unique_sequences:
+                unique_sequences.add(sequence_str)
+                new_alignment_dup.append(record)
+        SeqIO.write(new_alignment_dup, os.path.abspath(msa_path.replace("_reference", "_reference_dedup")), "fasta")
+        msa_path = msa_path.replace("_reference", "_reference_dedup")
+
         modified_sequences = []
 
         print("Binary sum \n")
@@ -278,6 +290,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         return
         ################################
+
+
 
         threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
         # print(threshold)
