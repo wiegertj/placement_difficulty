@@ -259,7 +259,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             output_file.write(mafft_output)
         raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
 
-        command = ["pythia", "--msa", msa_filepath, "--raxmlng", raxml_path]
+        command = ["pythia", "--msa", os.path.abspath(msa_filepath), "--raxmlng", raxml_path]
         result_old = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
 
         pattern = r"[-+]?\d*\.\d+|\d+"
