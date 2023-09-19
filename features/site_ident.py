@@ -202,6 +202,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
         ################################
         new_alignment_dup = []
+        unique_sequences = set()
         for record in alignment:
             # Convert the sequence to a string for comparison
             sequence_str = str(record.seq)
@@ -210,8 +211,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             if sequence_str not in unique_sequences:
                 unique_sequences.add(sequence_str)
                 new_alignment_dup.append(record)
-        SeqIO.write(new_alignment_dup, os.path.abspath(msa_path.replace("_reference", "_reference_dedup")), "fasta")
-        msa_path = msa_path.replace("_reference", "_reference_dedup")
+        SeqIO.write(new_alignment_dup, os.path.abspath(msa_filepath.replace("_reference", "_reference_dedup")), "fasta")
+        msa_filepath = msa_filepath.replace("_reference", "dedup_reference")
 
         modified_sequences = []
 
