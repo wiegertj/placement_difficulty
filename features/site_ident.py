@@ -190,7 +190,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
             kl_divergence_value = abs(site_freq_a_array - site_freq_b_array)
             kl_divergence_value = np.mean(kl_divergence_value)
-            print(kl_divergence_value)
 
             # kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
 
