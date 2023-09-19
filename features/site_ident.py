@@ -221,7 +221,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
             # Convert the modified list back to a sequence and add it to the list of modified sequences#
 
-            sequence_list.remove("+")
+            sequence_list = [char for char in sequence_list if char != '+']
+
 
             modified_sequence = Seq(''.join(sequence_list))
             modified_record = SeqRecord(modified_sequence, id=record.id, description=record.description)
