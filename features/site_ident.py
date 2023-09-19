@@ -253,7 +253,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         print("Binary sum")
         print(sum(binary_results))
 
-        num_sequence_new = len(filtered_alignment)
+        num_sequences_new = len(filtered_alignment)
         num_sites_new = filtered_alignment.get_alignment_length()
 
         # Print the shape of the alignment
