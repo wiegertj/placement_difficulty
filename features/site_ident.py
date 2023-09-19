@@ -248,6 +248,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         num_sites = alignment.get_alignment_length()
         if num_sites >= 10000:
             return
+        if num_sequences >= 1000:
+            return
 
         # Print the shape of the alignment
         print(f"Number of Sequences now: {num_sequences}")
