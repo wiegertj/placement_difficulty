@@ -9,6 +9,7 @@ from collections import Counter
 from Bio.Align import MultipleSeqAlignment
 
 from Bio import AlignIO, SeqIO
+from Bio.Seq import Seq
 from ete3 import Tree
 import numpy as np
 from scipy.stats import skew, kurtosis, entropy
@@ -199,8 +200,31 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         normalized_kl_divergence_results = kl_divergence_results
         binary_results = [1 if value > 0.5 else 0 for value in normalized_kl_divergence_results]
         ################################
-        filtered_alignment = alignment[:, [i for i, keep_site in enumerate(binary_results) if keep_site == 0]]
+        modified_sequences = []
 
+        for record in alignment:
+            # Convert the sequence to a list to modify it
+            sequence_list = list(record.seq)
+            print(sequence_list)
+
+
+            # Iterate over sites and binary_results together
+            for site, keep_site in zip(sequence_list, binary_results):
+                if keep_site == 1:
+                    # If binary_results is 1, replace the site with a gap or another character as needed
+                    sequence_list[sequence_list.index(site)] = '_'
+
+            # Convert the modified list back to a sequence and add it to the list of modified sequences#
+            modified_sequence = Seq(''.join(sequence_list))
+            print(modified_sequence)
+            modified_sequence.replace("_", "", inplace=True)
+            print(modified_sequence)
+            modified_record = record
+            modified_record.seq = modified_sequence
+            modified_sequences.append(modified_record)
+
+        # Create a new alignment from the modified sequences
+        filtered_alignment = AlignIO.MultipleSeqAlignment(modified_sequences)
         num_sequences = len(alignment)
         num_sites = alignment.get_alignment_length()
 
