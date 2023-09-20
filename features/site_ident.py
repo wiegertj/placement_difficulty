@@ -157,6 +157,19 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             column_a = alignment_a[:, i]
             column_b = alignment_b[:, i]
 
+            most_common_a = np.argmax(np.bincount(column_a))
+
+            # Calculate the most common character in column_b
+            most_common_b = np.argmax(np.bincount(column_b))
+
+            # Delete the most common character in both columns
+            column_a = column_a[column_a != most_common_a]
+            column_b = column_b[column_b != most_common_b]
+
+            # If you want to convert them back to lists
+            column_a = column_a.tolist()
+            column_b = column_b.tolist()
+
             combined_values = column_a + column_b
             all_keys = set(combined_values)
 
@@ -308,12 +321,12 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             df_py = pd.DataFrame(results_pythia,
                                  columns=["dataset", "num_sites","num_sites_del", "old_diff", "new_diff", "diff_change" ,"theshold_max", "min_support"])
 
-            if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter_min01.csv")):
-                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_min01.csv"),
+            if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter_min01_rest.csv")):
+                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_min01_rest.csv"),
                              index=False, header=True,
                              columns=["dataset","num_sites","num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max", "min_support"])
             else:
-                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_min01.csv"),
+                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_min01_rest.csv"),
                              index=False,
                              mode='a', header=False,
                              columns=["dataset", "num_sites", "num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max", "min_support"])
