@@ -235,16 +235,19 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         num_values_top_10_percent = int(num_values * 0.1)
 
         # Sort the entropy values in ascending order
-        sorted_entropy_values = sorted(entropy_values)
+        sorted_entropy_values = sorted(enumerate(entropy_values), key=lambda x: x[1])
 
         # Create a list to store the 1s and 0s
         entropy_binary = [0] * num_values
 
         # Set the top 10% largest and smallest values to 1
         for i in range(num_values_top_10_percent):
-            entropy_binary[i] = 1
+            entropy_binary[sorted_entropy_values[i][0]] = 1
         for i in range(num_values - num_values_top_10_percent, num_values):
-            entropy_binary[i] = 1
+            entropy_binary[sorted_entropy_values[i][0]] = 1
+
+        # Print or use the entropy_binary list as needed
+        print(entropy_binary)
 
         #normalized_kl_divergence_results = entropy_values
         # binary_results = [1 if value < 0.5 else 0 for value in normalized_kl_divergence_results]
