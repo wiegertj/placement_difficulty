@@ -253,9 +253,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             # Convert the modified list back to a sequence and add it to the list of modified sequences#
 
             sequence_list = [char for char in sequence_list if char != '+']
-            sequence_list = [char for char in sequence_list if char != '-']
-            sequence_list = [char for char in sequence_list if char != 'N']
-
 
 
             modified_sequence = Seq(''.join(sequence_list))
@@ -285,16 +282,28 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         print(f"Number of Sites now: {num_sites_new}")
 
         # Write site filtered, dialigned alignment
-        disaligned_path = msa_filepath.replace("_reference", "_reference_disaligned_site_filtered")
+        disaligned_path = msa_filepath.replace("_reference", "_reference_aligned_site_filtered")
         SeqIO.write(filtered_alignment, disaligned_path,
                     "fasta")
 
+        filtered_aligned_msa_disalgined = disaligned_path.replace("aligned", "disaligned")
+        with open(os.path.abspath(msa_filepath), "r") as input_handle, open(filtered_aligned_msa_disalgined,
+                                                                            "w") as output_handle:
+            for line in input_handle:
+                if line.startswith('>'):
+                    output_handle.write(line)
+                else:
+                    sequence = line.strip()
+                    disaligned_sequence = remove_gaps(sequence)
+                    output_handle.write(disaligned_sequence + '\n')
+
+
         # Realigne site filtered alignment
-        command = ["mafft", "--preservecase", disaligned_path]
+        command = ["mafft", "--preservecase", filtered_aligned_msa_disalgined]
 
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
         mafft_output = result.stdout
-        aligned_output_file = disaligned_path.replace("_disaligned", "_aligned")
+        aligned_output_file = disaligned_path.replace("_disaligned", "_alignedmafft")
 
         with open(aligned_output_file, "w") as output_file:
             output_file.write(mafft_output)
