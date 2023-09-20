@@ -309,9 +309,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
 
         try:
-
             # Disalign old MSA again
-            output_file_disaligned_full = os.path.abspath(msa_filepath).replace(".fasta", "_disaligned.fasta")
+            output_file_disaligned_full = os.path.abspath(msa_filepath).replace(".fasta", "_disaligned.fasta").replace("_reference", "_dedup_reference")
             with open(os.path.abspath(msa_filepath), "r") as input_handle, open(output_file_disaligned_full, "w") as output_handle:
                 for line in input_handle:
                     if line.startswith('>'):
