@@ -157,10 +157,11 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             column_a = alignment_a[:, i]
             column_b = alignment_b[:, i]
 
-            most_common_a = np.argmax(np.bincount(column_a))
+            # Calculate the most common character in column_a
+            most_common_a = np.argmax(np.bincount(np.array(list(column_a))))
 
             # Calculate the most common character in column_b
-            most_common_b = np.argmax(np.bincount(column_b))
+            most_common_b = np.argmax(np.bincount(np.array(list(column_b))))
 
             # Delete the most common character in both columns
             column_a = column_a[column_a != most_common_a]
