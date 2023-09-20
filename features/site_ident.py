@@ -219,6 +219,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         #binary_results = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
 
         ################################
+        # Deduplicate original MSA, this is now reference
         results_pythia = []
         new_alignment_dup = []
         unique_sequences = set()
@@ -235,6 +236,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         alignment = AlignIO.MultipleSeqAlignment(new_alignment_dup)
         modified_sequences = []
 
+        # Calculate Sites to delete and disalign on the fly, create reference msa with deleted sites
         print("Binary sum \n")
         print(sum(binary_results))
         for record in alignment:
@@ -251,6 +253,9 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             # Convert the modified list back to a sequence and add it to the list of modified sequences#
 
             sequence_list = [char for char in sequence_list if char != '+']
+            sequence_list = [char for char in sequence_list if char != '-']
+            sequence_list = [char for char in sequence_list if char != 'N']
+
 
 
             modified_sequence = Seq(''.join(sequence_list))
@@ -259,7 +264,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             # Add the modified record to the list of modified sequences
             modified_sequences.append(modified_record)
 
-        # Create a new alignment from the modified sequences
         filtered_alignment = AlignIO.MultipleSeqAlignment(modified_sequences)
         num_sequences = len(alignment)
         num_sites = alignment.get_alignment_length()
@@ -268,7 +272,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         if num_sequences >= 1000:
             return
 
-        # Print the shape of the alignment
         print(f"Number of Sequences now: {num_sequences}")
         print(f"Number of Sites now: {num_sites}")
 
@@ -278,13 +281,15 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         num_sequences_new = len(filtered_alignment)
         num_sites_new = filtered_alignment.get_alignment_length()
 
-        # Print the shape of the alignment
         print(f"Number of Sequences now: {num_sequences_new}")
         print(f"Number of Sites now: {num_sites_new}")
+
+        # Write site filtered, dialigned alignment
         disaligned_path = msa_filepath.replace("_reference", "_reference_disaligned_site_filtered")
         SeqIO.write(filtered_alignment, disaligned_path,
                     "fasta")
 
+        # Realigne site filtered alignment
         command = ["mafft", "--preservecase", disaligned_path]
 
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
@@ -296,7 +301,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
 
         try:
-            # Disalign old MSA again
+            # Disalign old MSA again, to make sure the comparison is unbiased, get old Pythia score
             output_file_disaligned_full = os.path.abspath(msa_filepath).replace(".fasta", "_disaligned.fasta")
             with open(os.path.abspath(msa_filepath), "r") as input_handle, open(output_file_disaligned_full, "w") as output_handle:
                 for line in input_handle:
@@ -325,6 +330,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             matches_old = re.findall(pattern, result_old.stderr)
             last_float_old = float(matches_old[-1])
 
+            # Score new alignment with deleted sites
             command = ["pythia", "--msa", os.path.abspath(aligned_output_file), "--raxmlng", raxml_path]
             result_new = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
 
