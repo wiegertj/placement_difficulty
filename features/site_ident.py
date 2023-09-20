@@ -310,7 +310,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         try:
             # Disalign old MSA again
-            output_file_disaligned_full = os.path.abspath(msa_filepath).replace(".fasta", "_disaligned.fasta").replace("_reference", "_dedup_reference")
+            output_file_disaligned_full = os.path.abspath(msa_filepath).replace(".fasta", "_disaligned.fasta")
             with open(os.path.abspath(msa_filepath), "r") as input_handle, open(output_file_disaligned_full, "w") as output_handle:
                 for line in input_handle:
                     if line.startswith('>'):
@@ -319,6 +319,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                         sequence = line.strip()
                         disaligned_sequence = remove_gaps(sequence)
                         output_handle.write(disaligned_sequence + '\n')
+            print("Disaligned old one: " + output_file_disaligned_full)
 
 
             command = ["pythia", "--msa", output_file_disaligned_full, "--raxmlng", raxml_path]
