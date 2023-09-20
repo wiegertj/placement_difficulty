@@ -230,7 +230,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             column = alignment[:, i]
             entropy_val = column_entropy(column)
             entropy_values.append(entropy_val)
-
+        print(entropy_values)
         num_values = len(entropy_values)
         num_values_top_10_percent = int(num_values * 0.1)
 
