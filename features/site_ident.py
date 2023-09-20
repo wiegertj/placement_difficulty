@@ -242,8 +242,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         # Set the top 10% largest and smallest values to 1
         for i in range(num_values_top_10_percent):
             entropy_binary[sorted_entropy_values[i][0]] = 1
-        for i in range(num_values - num_values_top_10_percent, num_values):
-            entropy_binary[sorted_entropy_values[i][0]] = 1
+        #for i in range(num_values - num_values_top_10_percent, num_values):
+         #   entropy_binary[sorted_entropy_values[i][0]] = 1
 
         # Print or use the entropy_binary list as needed
 
