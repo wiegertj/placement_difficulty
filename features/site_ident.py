@@ -230,7 +230,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             column = alignment[:, i]
             entropy_val = column_entropy(column)
             entropy_values.append(entropy_val)
-        print(entropy_values)
         num_values = len(entropy_values)
         num_values_top_10_percent = int(num_values * 0.1)
 
@@ -247,7 +246,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             entropy_binary[sorted_entropy_values[i][0]] = 1
 
         # Print or use the entropy_binary list as needed
-        print(entropy_binary)
 
         #normalized_kl_divergence_results = entropy_values
         # binary_results = [1 if value < 0.5 else 0 for value in normalized_kl_divergence_results]
