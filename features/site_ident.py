@@ -23,7 +23,8 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 import os
 
-
+def remove_gaps(sequence):
+    return sequence.replace('-', '')
 def count_supporting_branches(tree_path, threshold):
     with open(tree_path, "r") as support_file:
         tree_str = support_file.read()
@@ -204,7 +205,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                 normalized_freq_b = {k: v / total_count_b for
                                      k, v in site_freq_b.items()}
             except:
-                normalized_freq_b = {0 for
+                normalized_freq_b = {k: 0 for
                                      k, v in site_freq_b.items()}
 
             site_freq_a_array = np.array(list(normalized_freq_a.values()))
@@ -308,7 +309,20 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
 
         try:
-            command = ["pythia", "--msa", os.path.abspath(msa_filepath), "--raxmlng", raxml_path]
+
+            # Disalign old MSA again
+            output_file_disaligned_full = os.path.abspath(msa_filepath).replace(".fasta", "_disaligned.fasta")
+            with open(os.path.abspath(msa_filepath), "r") as input_handle, open(output_file_disaligned_full, "w") as output_handle:
+                for line in input_handle:
+                    if line.startswith('>'):
+                        output_handle.write(line)
+                    else:
+                        sequence = line.strip()
+                        disaligned_sequence = remove_gaps(sequence)
+                        output_handle.write(disaligned_sequence + '\n')
+
+
+            command = ["pythia", "--msa", output_file_disaligned_full, "--raxmlng", raxml_path]
             result_old = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
 
             pattern = r"[-+]?\d*\.\d+|\d+"
