@@ -159,19 +159,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
             column_b = alignment_b[:, i]
 
-            counter_a = Counter(column_a)
-            most_common_a = counter_a.most_common(1)[0][0]
-
-            # Find the most common character in column_b using Counter
-            counter_b = Counter(column_b)
-            most_common_b = counter_b.most_common(1)[0][0]
-
-            # Remove occurrences of the most common character in both columns
-            column_a = column_a.replace(most_common_a, "")
-            column_b = column_b.replace(most_common_a, "")
-
-
-
             combined_values = column_a + column_b
             all_keys = set(combined_values)
 
@@ -214,7 +201,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
             entropy_a = entropy(site_freq_a_array)
             entropy_b = entropy(site_freq_b_array)
-            kl_divergence_value = abs(entropy_a - entropy_b)
+            kl_divergence_value = entropy_a - entropy_b
             #kl_divergence_value = np.std(kl_divergence_value)
 
             #kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
