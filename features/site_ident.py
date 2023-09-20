@@ -155,13 +155,11 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         for i in range(len(alignment_a[0])):
             column_a = alignment_a[:, i]
-            print("--------")
-            print(column_a)
+
             column_b = alignment_b[:, i]
 
             counter_a = Counter(column_a)
             most_common_a = counter_a.most_common(1)[0][0]
-            print("filter: " + most_common_a)
 
             # Find the most common character in column_b using Counter
             counter_b = Counter(column_b)
@@ -169,10 +167,9 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
             # Remove occurrences of the most common character in both columns
             column_a = column_a.replace(most_common_a, "")
-            column_b = column_b[column_b != most_common_b]
+            column_b = column_b.replace(most_common_a, "")
 
-            print(column_a)
-            print("--------")
+
 
             combined_values = column_a + column_b
             all_keys = set(combined_values)
@@ -197,10 +194,18 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         for site_freq_a, site_freq_b in zip(freqs_a, freqs_b):
             total_count_a = sum(site_freq_a.values())
             total_count_b = sum(site_freq_b.values())
-            normalized_freq_a = {k: v / total_count_a for
-                                 k, v in site_freq_a.items()}
-            normalized_freq_b = {k: v / total_count_b for
-                                 k, v in site_freq_b.items()}
+            try:
+                normalized_freq_a = {k: v / total_count_a for
+                                     k, v in site_freq_a.items()}
+            except ZeroDivisionError:
+                normalized_freq_a = {k: 0 for
+                                     k, v in site_freq_a.items()}
+            try:
+                normalized_freq_b = {k: v / total_count_b for
+                                     k, v in site_freq_b.items()}
+            except:
+                normalized_freq_b = {0 for
+                                     k, v in site_freq_b.items()}
 
             site_freq_a_array = np.array(list(normalized_freq_a.values()))
 
