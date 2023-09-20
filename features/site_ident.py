@@ -155,6 +155,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         for i in range(len(alignment_a[0])):
             column_a = alignment_a[:, i]
+            print(column_a)
             column_b = alignment_b[:, i]
 
             counter_a = Counter(column_a)
@@ -168,9 +169,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             column_a = column_a[column_a != most_common_a]
             column_b = column_b[column_b != most_common_b]
 
-            # If you want to convert them back to lists
-            column_a = column_a.tolist()
-            column_b = column_b.tolist()
+            print(counter_a)
 
             combined_values = column_a + column_b
             all_keys = set(combined_values)
