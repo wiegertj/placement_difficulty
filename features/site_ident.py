@@ -321,6 +321,14 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                         output_handle.write(disaligned_sequence + '\n')
             print("Disaligned old one: " + output_file_disaligned_full)
 
+            command = ["mafft", "--preservecase", output_file_disaligned_full]
+
+            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+            mafft_output = result.stdout
+            output_file_disaligned_full = disaligned_path.replace("_disaligned", "_aligned")
+            with open(aligned_output_file, "w") as output_file:
+                output_file.write(mafft_output)
+
 
             command = ["pythia", "--msa", output_file_disaligned_full, "--raxmlng", raxml_path]
             result_old = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
