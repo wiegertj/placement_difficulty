@@ -161,6 +161,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
             counter_a = Counter(column_a)
             most_common_a = counter_a.most_common(1)[0][0]
+            print("filter: " + most_common_a)
 
             # Find the most common character in column_b using Counter
             counter_b = Counter(column_b)
