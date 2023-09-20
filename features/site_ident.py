@@ -100,35 +100,35 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                 if node.support > max_support and (len(node.get_leaves()) > (0.35 * len(phylo_tree.get_leaves()))) and (
                         len(node.get_leaves()) < (0.65 * len(phylo_tree.get_leaves()))):
                     print("matched")
-                    min_support = node.support
+                    max_support = node.support
                     min_support_branch = node
 
-        if min_support_branch == None or min_support > 50:
+        if min_support_branch == None or max_support > 50:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
                     if node.support > max_support and (
                             len(node.get_leaves()) > (0.25 * len(phylo_tree.get_leaves()))) and (
                             len(node.get_leaves()) < (0.75 * len(phylo_tree.get_leaves()))):
                         print("matched larger")
-                        min_support = node.support
+                        max_support = node.support
                         min_support_branch = node
 
-        if min_support_branch == None or min_support > 50:
+        if min_support_branch == None or max_support > 50:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
                     if node.support > max_support and (
                             len(node.get_leaves()) > (0.15 * len(phylo_tree.get_leaves()))) and (
                             len(node.get_leaves()) < (0.85 * len(phylo_tree.get_leaves()))):
                         print("matched much larger")
-                        min_support = node.support
+                        max_support = node.support
                         min_support_branch = node
 
-        if min_support_branch == None or min_support > 50:
+        if min_support_branch == None or max_support > 50:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
                     if node.support > max_support:
                         print("matched None")
-                        min_support = node.support
+                        max_support = node.support
                         min_support_branch = node
         min_support = max_support
         # Initialize lists to store the bipartition
