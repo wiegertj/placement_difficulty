@@ -169,7 +169,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             column_a = column_a[column_a != most_common_a]
             column_b = column_b[column_b != most_common_b]
 
-            print(counter_a)
+            print(column_a)
 
             combined_values = column_a + column_b
             all_keys = set(combined_values)
