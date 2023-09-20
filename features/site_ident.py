@@ -168,7 +168,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             most_common_b = counter_b.most_common(1)[0][0]
 
             # Remove occurrences of the most common character in both columns
-            column_a = column_a[column_a != most_common_a]
+            column_a = column_a.replace(most_common_a, "")
             column_b = column_b[column_b != most_common_b]
 
             print(column_a)
