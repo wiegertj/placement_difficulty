@@ -23,8 +23,11 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 import os
 
+
 def remove_gaps(sequence):
-    return sequence.replace('-', '')
+    return sequence.replace("-", "").replace("N", "")
+
+
 def count_supporting_branches(tree_path, threshold):
     with open(tree_path, "r") as support_file:
         tree_str = support_file.read()
@@ -202,21 +205,21 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             entropy_a = entropy(site_freq_a_array)
             entropy_b = entropy(site_freq_b_array)
             kl_divergence_value = entropy_a - entropy_b
-            #kl_divergence_value = np.std(kl_divergence_value)
+            # kl_divergence_value = np.std(kl_divergence_value)
 
-            #kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
+            # kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
 
             kl_divergence_results.append(kl_divergence_value)
 
         # Normalize the list to the range [0, 1]
         normalized_kl_divergence_results = kl_divergence_results
-        #binary_results = [1 if value < 0.5 else 0 for value in normalized_kl_divergence_results]
+        # binary_results = [1 if value < 0.5 else 0 for value in normalized_kl_divergence_results]
         mean_z = np.mean(normalized_kl_divergence_results)
         std_dev_z = np.std(normalized_kl_divergence_results)
         threshold = 2
         binary_results = [1 if abs((value - mean_z) / std_dev_z) > threshold else 0 for value in kl_divergence_results]
-        #threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
-        #binary_results = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
+        # threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
+        # binary_results = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
 
         ################################
         # Deduplicate original MSA, this is now reference
@@ -243,7 +246,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             # Convert the sequence to a list to modify it
             sequence_list = list(record.seq)
 
-
             # Iterate over sites and binary_results together
             for site, keep_site in zip(sequence_list, binary_results):
                 if keep_site == 1:
@@ -253,7 +255,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             # Convert the modified list back to a sequence and add it to the list of modified sequences#
 
             sequence_list = [char for char in sequence_list if char != '+']
-
 
             modified_sequence = Seq(''.join(sequence_list))
             modified_record = SeqRecord(modified_sequence, id=record.id, description=record.description)
@@ -281,13 +282,13 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         print(f"Number of Sequences now: {num_sequences_new}")
         print(f"Number of Sites now: {num_sites_new}")
 
-        # Write site filtered, dialigned alignment
-        disaligned_path = msa_filepath.replace("_reference", "_reference_aligned_site_filtered")
-        SeqIO.write(filtered_alignment, disaligned_path,
+        # Write site filtered, aligned alignment
+        aligned_filtered_path = msa_filepath.replace("_reference", "_reference_aligned_site_filtered")
+        SeqIO.write(filtered_alignment, aligned_filtered_path,
                     "fasta")
 
-        filtered_aligned_msa_disalgined = disaligned_path.replace("aligned", "disaligned")
-        with open(os.path.abspath(msa_filepath), "r") as input_handle, open(filtered_aligned_msa_disalgined,
+        filtered_msa_disalgined = aligned_filtered_path.replace("aligned", "disaligned")
+        with open(os.path.abspath(aligned_filtered_path), "r") as input_handle, open(filtered_msa_disalgined,
                                                                             "w") as output_handle:
             for line in input_handle:
                 if line.startswith('>'):
@@ -297,22 +298,22 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                     disaligned_sequence = remove_gaps(sequence)
                     output_handle.write(disaligned_sequence + '\n')
 
-
         # Realigne site filtered alignment
-        command = ["mafft", "--preservecase", filtered_aligned_msa_disalgined]
+        command = ["mafft", "--preservecase", filtered_msa_disalgined]
 
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
         mafft_output = result.stdout
-        aligned_output_file = disaligned_path.replace("_disaligned", "_alignedmafft")
+        aligned_output_file_filtered = filtered_msa_disalgined.replace("_disaligned", "_alignedmafft")
 
-        with open(aligned_output_file, "w") as output_file:
+        with open(aligned_output_file_filtered, "w") as output_file:
             output_file.write(mafft_output)
         raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
 
         try:
             # Disalign old MSA again, to make sure the comparison is unbiased, get old Pythia score
             output_file_disaligned_full = os.path.abspath(msa_filepath).replace(".fasta", "_disaligned.fasta")
-            with open(os.path.abspath(msa_filepath), "r") as input_handle, open(output_file_disaligned_full, "w") as output_handle:
+            with open(os.path.abspath(msa_filepath), "r") as input_handle, open(output_file_disaligned_full,
+                                                                                "w") as output_handle:
                 for line in input_handle:
                     if line.startswith('>'):
                         output_handle.write(line)
@@ -326,12 +327,11 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
             result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
             mafft_output = result.stdout
-            output_file_disaligned_full = disaligned_path.replace("_disaligned", "_aligned")
-            with open(aligned_output_file, "w") as output_file:
+            output_file_aligned_full_mafft = output_file_disaligned_full.replace("_disaligned", "_realigned")
+            with open(output_file_aligned_full_mafft, "w") as output_file:
                 output_file.write(mafft_output)
 
-
-            command = ["pythia", "--msa", output_file_disaligned_full, "--raxmlng", raxml_path]
+            command = ["pythia", "--msa", output_file_aligned_full_mafft, "--raxmlng", raxml_path]
             result_old = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
 
             pattern = r"[-+]?\d*\.\d+|\d+"
@@ -340,7 +340,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             last_float_old = float(matches_old[-1])
 
             # Score new alignment with deleted sites
-            command = ["pythia", "--msa", os.path.abspath(aligned_output_file), "--raxmlng", raxml_path]
+            command = ["pythia", "--msa", os.path.abspath(aligned_output_file_filtered), "--raxmlng", raxml_path]
             result_new = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
 
             matches_new = re.findall(pattern, result_new.stderr)
@@ -349,28 +349,30 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             print("Old difficulty: " + str(last_float_old))
             print("New difficulty: " + str(last_float_new))
 
-            results_pythia.append((name, num_sites ,sum(binary_results), last_float_old, last_float_new, last_float_old - last_float_new,0.5, min_support))
+            results_pythia.append((name, num_sites, sum(binary_results), last_float_old, last_float_new,
+                                   last_float_old - last_float_new, 0.5, min_support))
 
             df_py = pd.DataFrame(results_pythia,
-                                 columns=["dataset", "num_sites","num_sites_del", "old_diff", "new_diff", "diff_change" ,"theshold_max", "min_support"])
+                                 columns=["dataset", "num_sites", "num_sites_del", "old_diff", "new_diff",
+                                          "diff_change", "theshold_max", "min_support"])
 
             if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter_min01_rest.csv")):
                 df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_min01_rest.csv"),
                              index=False, header=True,
-                             columns=["dataset","num_sites","num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max", "min_support"])
+                             columns=["dataset", "num_sites", "num_sites_del", "old_diff", "new_diff", "diff_change",
+                                      "theshold_max", "min_support"])
             else:
                 df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_min01_rest.csv"),
                              index=False,
                              mode='a', header=False,
-                             columns=["dataset", "num_sites", "num_sites_del", "old_diff", "new_diff", "diff_change","theshold_max", "min_support"])
+                             columns=["dataset", "num_sites", "num_sites_del", "old_diff", "new_diff", "diff_change",
+                                      "theshold_max", "min_support"])
 
             return
         except subprocess.CalledProcessError:
             print("Called Process Error Occured ... " + name)
             return
         ################################
-
-
 
         threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
         # print(threshold)
@@ -438,7 +440,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                         diff_match_counter_partb += 1
             try:
                 non_diff_match_counter_parta = (non_diff_match_counter_parta / len(alignment_a)) / (
-                            len(queryseq) - (sum(binary_results)))
+                        len(queryseq) - (sum(binary_results)))
                 non_diff_match_counter_partb = (non_diff_match_counter_partb / len(alignment_b)) / (len(queryseq) - (
                     sum(binary_results)))  # how many non diff sites match diff in avg on part b?
 
@@ -495,10 +497,10 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                         diff_match_counter_partb_thresh += 1
             try:
                 non_diff_match_counter_parta_thresh = (non_diff_match_counter_parta_thresh / len(alignment_a)) / (
-                            len(queryseq) - (sum(binary_results_threshold)))
+                        len(queryseq) - (sum(binary_results_threshold)))
                 non_diff_match_counter_partb_thresh = (non_diff_match_counter_partb_thresh / len(alignment_b)) / (
-                            len(queryseq) - (
-                        sum(binary_results_threshold)))  # how many non diff sites match in avg on part b?
+                        len(queryseq) - (
+                    sum(binary_results_threshold)))  # how many non diff sites match in avg on part b?
 
                 diff_match_counter_parta_thresh = (diff_match_counter_parta_thresh / len(alignment_a)) / sum(
                     binary_results_threshold)
