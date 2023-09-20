@@ -186,9 +186,12 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
                                  k, v in site_freq_b.items()}
 
             site_freq_a_array = np.array(list(normalized_freq_a.values()))
+
             site_freq_b_array = np.array(list(normalized_freq_b.values()))
 
-            kl_divergence_value = abs(site_freq_a_array - site_freq_b_array)
+            entropy_a = entropy(site_freq_a_array)
+            entropy_b = entropy(site_freq_b_array)
+            kl_divergence_value = entropy_a - entropy_b
             kl_divergence_value = np.std(kl_divergence_value)
 
             #kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
