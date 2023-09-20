@@ -24,6 +24,19 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 import os
 
 
+def column_entropy(column):
+    # Remove gaps from the column
+    column = [residue for residue in column]
+
+    # Count the occurrences of each residue in the column
+    unique_residues, counts = np.unique(column, return_counts=True)
+
+    # Calculate the probabilities of each residue
+    probabilities = counts / len(column)
+
+    # Calculate the entropy using SciPy's entropy function
+    return entropy(probabilities, base=2)
+
 def remove_gaps(sequence):
     return sequence.replace("-", "").replace("N", "")
 
@@ -212,15 +225,36 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             kl_divergence_results.append(kl_divergence_value)
 
         # Normalize the list to the range [0, 1]
-        normalized_kl_divergence_results = kl_divergence_results
+        entropy_values = []
+        for i in range(alignment.get_alignment_length()):
+            column = alignment[:, i]
+            entropy_val = column_entropy(column)
+            entropy_values.append(entropy_val)
+
+        num_values = len(entropy_values)
+        num_values_top_10_percent = int(num_values * 0.1)
+
+        # Sort the entropy values in ascending order
+        sorted_entropy_values = sorted(entropy_values)
+
+        # Create a list to store the 1s and 0s
+        entropy_binary = [0] * num_values
+
+        # Set the top 10% largest and smallest values to 1
+        for i in range(num_values_top_10_percent):
+            entropy_binary[i] = 1
+        for i in range(num_values - num_values_top_10_percent, num_values):
+            entropy_binary[i] = 1
+
+        #normalized_kl_divergence_results = entropy_values
         # binary_results = [1 if value < 0.5 else 0 for value in normalized_kl_divergence_results]
-        mean_z = np.mean(normalized_kl_divergence_results)
-        std_dev_z = np.std(normalized_kl_divergence_results)
-        threshold = 2
-        binary_results = [1 if abs((value - mean_z) / std_dev_z) > threshold else 0 for value in kl_divergence_results]
+        #mean_z = np.mean(normalized_kl_divergence_results)
+        #std_dev_z = np.std(normalized_kl_divergence_results)
+        #threshold = 2
+        #binary_results = [1 if abs((value - mean_z) / std_dev_z) > threshold else 0 for value in kl_divergence_results]
         # threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
         # binary_results = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
-
+        binary_results = entropy_binary
         ################################
         # Deduplicate original MSA, this is now reference
         results_pythia = []
