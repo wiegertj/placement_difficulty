@@ -10,8 +10,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
-difficulties_path = difficulties_path["verbose_name", "difficult"]
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
+difficulties_path = difficulties_path[["verbose_name", "difficult"]]
+
 difficulties_df = difficulties_df.drop_duplicates(subset=['verbose_name'], keep='first')
 difficulties_df["dataset"] = difficulties_df["verbose_name"].str.replace(".phy", "")
 
