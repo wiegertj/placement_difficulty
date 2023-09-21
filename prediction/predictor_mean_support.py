@@ -52,15 +52,7 @@ print(X.columns)
 y = df_merged["mean_support"]
 
 # Initialize the Random Forest regressor
-rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
 
-
-
-# Perform Recursive Feature Elimination (RFE) to select the top 10 features
-rfe = RFE(rf_regressor, n_features_to_select=10)
-X_rfe = rfe.fit_transform(X, y)
-X = X[rfe.support_]
-print(X.columns)
 # Define the objective function for Optuna
 def objective(trial):
     # Define hyperparameters to search
@@ -115,6 +107,22 @@ print("Best Hyperparameters:", best_params)
 # Train the final model using the best hyperparameters
 best_model = lgb.LGBMRegressor(**best_params)
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+
+rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
+
+
+
+# Perform Recursive Feature Elimination (RFE) to select the top 10 features
+rfe = RFE(rf_regressor, n_features_to_select=10)
+X_rfe = rfe.fit_transform(X_train, y_train)
+selected_features = X_train.columns[rfe.support_]
+X_train = X_train[rfe.support_]
+print(X_train.columns)
+X_val = X_val[rfe.support_]
+
+
 best_model.fit(X_train, y_train)
 
 # Evaluate on holdout set
