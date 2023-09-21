@@ -54,7 +54,7 @@ X = df_merged.drop(columns=["dataset","mean_support", "max_support","std_support
 print(X.columns)
 y = df_merged["mean_support"]
 
-X_train_full, X_holdout, y_train_full, y_holdout = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train_full, X_holdout, y_train_full, y_holdout = train_test_split(X, y, test_size=0.2)
 
 # Initialize the Random Forest regressor
 
@@ -78,7 +78,7 @@ def objective(trial):
     cv_rmse = 0.0
 
     # Perform k-fold cross-validation
-    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    kf = KFold(n_splits=5, shuffle=True)
     for train_idx, val_idx in kf.split(X_train_full):
         X_train, X_val = X_train_full.iloc[train_idx], X_train_full.iloc[val_idx]
         y_train, y_val = y_train_full.iloc[train_idx], y_train_full.iloc[val_idx]
