@@ -60,7 +60,7 @@ def objective(trial):
 
 # Run the optimization
 study = optuna.create_study(direction="minimize")
-study.optimize(objective, n_trials=100)
+study.optimize(objective, n_trials=10)
 
 # Get the best hyperparameters
 best_params = study.best_params
