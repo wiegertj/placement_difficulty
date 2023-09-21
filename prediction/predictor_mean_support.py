@@ -54,6 +54,8 @@ y = df_merged["mean_support"]
 # Initialize the Random Forest regressor
 rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
 
+df_merged.fillna(0, inplace=True)
+
 # Perform Recursive Feature Elimination (RFE) to select the top 10 features
 rfe = RFE(rf_regressor, n_features_to_select=10)
 X_rfe = rfe.fit_transform(X, y)
