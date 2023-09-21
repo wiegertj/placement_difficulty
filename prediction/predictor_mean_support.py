@@ -79,3 +79,18 @@ best_model.fit(X_train, y_train)
 y_pred_holdout = best_model.predict(X_val)
 rmse_holdout = mean_squared_error(y_val, y_pred_holdout, squared=False)
 print(f"RMSE on holdout set: {rmse_holdout}")
+
+# Print feature importances
+feature_importances = best_model.feature_importances_
+feature_names = X.columns
+
+# Create a dictionary to store feature names and their importances
+feature_importance_dict = dict(zip(feature_names, feature_importances))
+
+# Sort feature importances in descending order
+sorted_feature_importance = sorted(feature_importance_dict.items(), key=lambda x: x[1], reverse=True)
+
+# Print feature importances
+print("Feature Importances:")
+for feature, importance in sorted_feature_importance:
+    print(f"{feature}: {importance:.4f}")
