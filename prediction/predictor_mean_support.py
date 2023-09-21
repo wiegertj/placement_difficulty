@@ -10,10 +10,10 @@ difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda
 difficulties_df = difficulties_df.drop_duplicates(subset=['verbose_name'], keep='first')
 difficulties_df["verbose_name"] = difficulties_df["verbose_name"].str.replace(".phy", "")
 
-df_tree = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"))
-df_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"))
+df_tree = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), usecols=lambda column: column != 'Unnamed: 0')
+df_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), usecols=lambda column: column != 'Unnamed: 0')
 df_uncertainty["dataset"] = df_uncertainty["dataset"].str.replace(".newick","")
-df_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"))
+df_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"), usecols=lambda column: column != 'Unnamed: 0')
 df_merged = df_msa.merge(df_tree, on=["dataset"], how="inner")
 df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 #subst_stats = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "subst_freq_stats.csv"))
