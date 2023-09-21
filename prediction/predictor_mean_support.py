@@ -12,6 +12,10 @@ difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda
 difficulties_df = difficulties_df.drop_duplicates(subset=['verbose_name'], keep='first')
 difficulties_df["verbose_name"] = difficulties_df["verbose_name"].str.replace(".phy", "")
 
+import matplotlib.pyplot as plt
+
+
+
 df_tree = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), usecols=lambda column: column != 'Unnamed: 0')
 df_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), usecols=lambda column: column != 'Unnamed: 0')
 df_uncertainty["dataset"] = df_uncertainty["dataset"].str.replace(".newick","")
@@ -21,6 +25,17 @@ df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 #subst_stats = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "subst_freq_stats.csv"))
 #df_merged = df_merged.merge(subst_stats, on=["dataset"], how="inner")
 print(df_merged.shape)
+
+# Extract the "mean_support" column values
+mean_support_values = df_merged["mean_support"]
+
+# Create a histogram
+plt.hist(mean_support_values, bins=20, edgecolor='k')  # Adjust the number of bins as needed
+plt.xlabel("Mean Support")
+plt.ylabel("Frequency")
+plt.title("Histogram of Mean Support")
+plt.grid(True)
+plt.savefig("mean_sup.png")
 
 print(df_merged["mean_support"].mean())
 #df_merged.drop(columns=["dataset"], inplace=True, axis=1)
