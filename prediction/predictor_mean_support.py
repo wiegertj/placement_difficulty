@@ -21,8 +21,8 @@ subst_stats = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "su
 print(df_merged.shape)
 print(df_merged["mean_support"].mean())
 
-X = df.drop(columns=["mean_sup_tree"])
-y = df["mean_sup_tree"]
+X = df_merged.drop(columns=["mean_support"])
+y = df_merged["mean_support"]
 
 # Define the objective function for Optuna
 def objective(trial):
