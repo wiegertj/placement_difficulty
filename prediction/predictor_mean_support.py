@@ -56,20 +56,6 @@ y = df_merged["mean_support"]
 
 X_train_full, X_holdout, y_train_full, y_holdout = train_test_split(X, y, test_size=0.2, random_state=42)
 
-
-rf_regressor = RandomForestRegressor(n_estimators=100)
-
-
-
-# Perform Recursive Feature Elimination (RFE) to select the top 10 features
-rfe = RFE(rf_regressor, n_features_to_select=20)
-X_rfe = rfe.fit_transform(X_train_full, y_train_full)
-selected_features = X_train_full.columns[rfe.support_]
-X_train_full = X_train_full[selected_features]
-print(X_train_full.columns)
-X_holdout = X_holdout[selected_features]
-
-
 # Initialize the Random Forest regressor
 
 # Define the objective function for Optuna
@@ -117,7 +103,7 @@ def objective(trial):
 
 # Run the optimization
 study = optuna.create_study(direction="minimize")
-study.optimize(objective, n_trials=20)
+study.optimize(objective, n_trials=30)
 
 
 # Get the best hyperparameters
