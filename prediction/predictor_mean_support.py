@@ -27,15 +27,15 @@ df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 print(df_merged.shape)
 
 # Extract the "mean_support" column values
-mean_support_values = df_merged["mean_support"]
+mean_support_values = df_merged["skewness_support"]
 
 # Create a histogram
 plt.hist(mean_support_values, bins=20, edgecolor='k')  # Adjust the number of bins as needed
 plt.xlabel("Mean Support")
 plt.ylabel("Frequency")
-plt.title("Histogram of Mean Support")
+plt.title("Histogram of skewness_support")
 plt.grid(True)
-plt.savefig("mean_sup.png")
+plt.savefig("skewness_support.png")
 
 print(df_merged["mean_support"].mean())
 #df_merged.drop(columns=["dataset"], inplace=True, axis=1)
@@ -43,7 +43,7 @@ print(df_merged["mean_support"].mean())
 X = df_merged.drop(columns=["dataset","mean_support", "std_support", "skewness_support", "kurt_support", 'min_rf', 'max_rf', 'mean_rf', 'std_dev_rf', 'skewness_rf',
        'kurtosis_rf'])
 print(X.columns)
-y = df_merged["mean_support"]
+y = df_merged["skewness_support"]
 
 # Define the objective function for Optuna
 def objective(trial):
