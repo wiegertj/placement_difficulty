@@ -30,9 +30,6 @@ y = df_merged["mean_support"]
 
 # Define the objective function for Optuna
 def objective(trial):
-    # Split data into train and validation sets
-    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
-
     # Define hyperparameters to search
     params = {
         "objective": "regression",
@@ -47,20 +44,32 @@ def objective(trial):
         "min_child_samples": trial.suggest_int("min_child_samples", 1, 50),
     }
 
-    # Create dataset objects
-    train_data = lgb.Dataset(X_train, label=y_train)
-    val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
+    # Initialize CV RMSE
+    cv_rmse = 0.0
 
-    # Train the model
-    model = lgb.train(params, train_data, valid_sets=[train_data, val_data], verbose_eval=100)
+    # Perform k-fold cross-validation
+    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    for train_idx, val_idx in kf.split(X):
+        X_train, X_val = X.iloc[train_idx], X.iloc[val_idx]
+        y_train, y_val = y.iloc[train_idx], y.iloc[val_idx]
 
-    # Predict on validation set
-    y_pred = model.predict(X_val)
+        # Create dataset objects
+        train_data = lgb.Dataset(X_train, label=y_train)
+        val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
-    # Calculate RMSE
-    rmse = mean_squared_error(y_val, y_pred, squared=False)
+        # Train the model
+        model = lgb.train(params, train_data, valid_sets=[train_data, val_data], verbose_eval=100)
 
-    return rmse
+        # Predict on validation set
+        y_pred = model.predict(X_val)
+
+        # Calculate RMSE for this fold
+        fold_rmse = mean_squared_error(y_val, y_pred, squared=False)
+
+        # Update CV RMSE
+        cv_rmse += fold_rmse / 5  # Divide by the number of folds (5 in this case)
+
+    return cv_rmse
 
 # Run the optimization
 study = optuna.create_study(direction="minimize")
