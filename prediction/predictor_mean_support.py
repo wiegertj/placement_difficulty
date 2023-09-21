@@ -2,6 +2,8 @@ import pandas as pd
 import os
 import lightgbm as lgb
 import optuna
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.feature_selection import RFE
 from sklearn.model_selection import train_test_split, KFold
 
 from sklearn.model_selection import train_test_split
@@ -40,11 +42,23 @@ plt.savefig("mean_support.png")
 print(df_merged["mean_support"].mean())
 #df_merged.drop(columns=["dataset"], inplace=True, axis=1)
 
-X = df_merged.drop(columns=["dataset","mean_support", "std_support", "skewness_support", "kurt_support", 'min_rf', 'max_rf', 'mean_rf', 'std_dev_rf', 'skewness_rf',
+
+
+
+
+X = df_merged.drop(columns=["dataset","mean_support", "max_support","std_support", "skewness_support", "kurt_support", 'min_rf', 'max_rf', 'mean_rf', 'std_dev_rf', 'skewness_rf',
        'kurtosis_rf'])
 print(X.columns)
 y = df_merged["mean_support"]
 
+# Initialize the Random Forest regressor
+rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
+
+# Perform Recursive Feature Elimination (RFE) to select the top 10 features
+rfe = RFE(rf_regressor, n_features_to_select=10)
+X_rfe = rfe.fit_transform(X, y)
+X = X_rfe
+print(X.columns)
 # Define the objective function for Optuna
 def objective(trial):
     # Define hyperparameters to search
