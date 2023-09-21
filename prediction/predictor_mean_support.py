@@ -19,7 +19,7 @@ df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 #subst_stats = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "subst_freq_stats.csv"))
 #df_merged = df_merged.merge(subst_stats, on=["dataset"], how="inner")
 print(df_merged.shape)
-print(df.columns)
+print(df_merged.columns)
 print(df_merged["mean_support"].mean())
 
 X = df_merged.drop(columns=["mean_support"])
