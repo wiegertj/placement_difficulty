@@ -15,7 +15,7 @@ difficulties_df = difficulties_df[["verbose_name", "difficult"]]
 
 difficulties_df = difficulties_df.drop_duplicates(subset=['verbose_name'], keep='first')
 difficulties_df["dataset"] = difficulties_df["verbose_name"].str.replace(".phy", "")
-
+difficulties_df.drop(columns=["verbose_name"], axis=1, inplace=True)
 import matplotlib.pyplot as plt
 
 
