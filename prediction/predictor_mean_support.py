@@ -43,7 +43,7 @@ print(df_merged["mean_support"].mean())
 #df_merged.drop(columns=["dataset"], inplace=True, axis=1)
 
 
-
+df_merged.fillna(0, inplace=True)
 
 
 X = df_merged.drop(columns=["dataset","mean_support", "max_support","std_support", "skewness_support", "kurt_support", 'min_rf', 'max_rf', 'mean_rf', 'std_dev_rf', 'skewness_rf',
@@ -54,7 +54,7 @@ y = df_merged["mean_support"]
 # Initialize the Random Forest regressor
 rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
 
-df_merged.fillna(0, inplace=True)
+
 
 # Perform Recursive Feature Elimination (RFE) to select the top 10 features
 rfe = RFE(rf_regressor, n_features_to_select=10)
