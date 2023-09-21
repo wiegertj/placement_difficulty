@@ -51,6 +51,9 @@ X = df_merged.drop(columns=["dataset","mean_support", "max_support","std_support
 print(X.columns)
 y = df_merged["mean_support"]
 
+X_train_full, X_holdout, y_train_full, y_holdout = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
 # Initialize the Random Forest regressor
 
 # Define the objective function for Optuna
@@ -74,9 +77,9 @@ def objective(trial):
 
     # Perform k-fold cross-validation
     kf = KFold(n_splits=5, shuffle=True, random_state=42)
-    for train_idx, val_idx in kf.split(X):
-        X_train, X_val = X.iloc[train_idx], X.iloc[val_idx]
-        y_train, y_val = y.iloc[train_idx], y.iloc[val_idx]
+    for train_idx, val_idx in kf.split(X_train_full):
+        X_train, X_val = X_train_full.iloc[train_idx], X_train_full.iloc[val_idx]
+        y_train, y_val = y_train_full.iloc[train_idx], y_train_full.iloc[val_idx]
 
         # Create dataset objects
         train_data = lgb.Dataset(X_train, label=y_train)
@@ -100,34 +103,19 @@ def objective(trial):
 study = optuna.create_study(direction="minimize")
 study.optimize(objective, n_trials=20)
 
+
 # Get the best hyperparameters
 best_params = study.best_params
 print("Best Hyperparameters:", best_params)
 
 # Train the final model using the best hyperparameters
 best_model = lgb.LGBMRegressor(**best_params)
-X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
-
-
-rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
-
-
-
-# Perform Recursive Feature Elimination (RFE) to select the top 10 features
-rfe = RFE(rf_regressor, n_features_to_select=10)
-X_rfe = rfe.fit_transform(X_train, y_train)
-selected_features = X_train.columns[rfe.support_]
-X_train = X_train[rfe.support_]
-print(X_train.columns)
-X_val = X_val[rfe.support_]
-
-
-best_model.fit(X_train, y_train)
+best_model.fit(X_train_full, y_train_full)
 
 # Evaluate on holdout set
-y_pred_holdout = best_model.predict(X_val)
-rmse_holdout = mean_squared_error(y_val, y_pred_holdout, squared=False)
+y_pred_holdout = best_model.predict(X_holdout)
+rmse_holdout = mean_squared_error(y_holdout, y_pred_holdout, squared=False)
 print(f"RMSE on holdout set: {rmse_holdout}")
 
 # Print feature importances
