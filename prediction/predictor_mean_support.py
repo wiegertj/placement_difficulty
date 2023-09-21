@@ -21,9 +21,10 @@ df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 print(df_merged.shape)
 print(df_merged.columns)
 print(df_merged["mean_support"].mean())
-df_merged.drop(columns=["dataset"], inplace=True, axis=1)
+#df_merged.drop(columns=["dataset"], inplace=True, axis=1)
 
-X = df_merged.drop(columns=["mean_support"])
+X = df_merged.drop(columns=["dataset","mean_support", "std_support", "skewness_support", "kurt_support", 'min_rf', 'max_rf', 'mean_rf', 'std_dev_rf', 'skewness_rf',
+       'kurtosis_rf'])
 y = df_merged["mean_support"]
 
 # Define the objective function for Optuna
