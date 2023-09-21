@@ -60,7 +60,7 @@ rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
 rfe = RFE(rf_regressor, n_features_to_select=10)
 X_rfe = rfe.fit_transform(X, y)
 X = X_rfe
-print(X.columns)
+print(X_rfe)
 # Define the objective function for Optuna
 def objective(trial):
     # Define hyperparameters to search
