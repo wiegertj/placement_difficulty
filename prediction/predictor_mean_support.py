@@ -10,9 +10,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
+difficulties_path = difficulties_path[["verbose_name", "difficult"]]
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 difficulties_df = difficulties_df.drop_duplicates(subset=['verbose_name'], keep='first')
-difficulties_df["verbose_name"] = difficulties_df["verbose_name"].str.replace(".phy", "")
+difficulties_df["dataset"] = difficulties_df["verbose_name"].str.replace(".phy", "")
 
 import matplotlib.pyplot as plt
 
@@ -26,6 +27,7 @@ df_merged = df_msa.merge(df_tree, on=["dataset"], how="inner")
 df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 #subst_stats = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "subst_freq_stats.csv"))
 #df_merged = df_merged.merge(subst_stats, on=["dataset"], how="inner")
+df_merged = df_merged.merge(difficulties_df, on=["dataset"], how="inner")
 print(df_merged.shape)
 
 # Extract the "mean_support" column values
@@ -54,12 +56,12 @@ y = df_merged["mean_support"]
 X_train_full, X_holdout, y_train_full, y_holdout = train_test_split(X, y, test_size=0.2, random_state=42)
 
 
-rf_regressor = RandomForestRegressor(n_estimators=250, random_state=42)
+rf_regressor = RandomForestRegressor(n_estimators=100)
 
 
 
 # Perform Recursive Feature Elimination (RFE) to select the top 10 features
-rfe = RFE(rf_regressor, n_features_to_select=15)
+rfe = RFE(rf_regressor, n_features_to_select=20)
 X_rfe = rfe.fit_transform(X_train_full, y_train_full)
 selected_features = X_train_full.columns[rfe.support_]
 X_train_full = X_train_full[selected_features]
