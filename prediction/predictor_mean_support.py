@@ -21,6 +21,7 @@ df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 print(df_merged.shape)
 print(df_merged.columns)
 print(df_merged["mean_support"].mean())
+df_merged.drop(columns=["dataset"], inplace=True, axis=1)
 
 X = df_merged.drop(columns=["mean_support"])
 y = df_merged["mean_support"]
