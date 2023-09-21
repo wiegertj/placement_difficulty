@@ -59,8 +59,8 @@ rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
 # Perform Recursive Feature Elimination (RFE) to select the top 10 features
 rfe = RFE(rf_regressor, n_features_to_select=10)
 X_rfe = rfe.fit_transform(X, y)
-X = X_rfe
-print(X_rfe)
+X = X[rfe.support_]
+print(X.columns)
 # Define the objective function for Optuna
 def objective(trial):
     # Define hyperparameters to search
