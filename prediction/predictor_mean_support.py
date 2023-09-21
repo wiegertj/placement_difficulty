@@ -59,7 +59,7 @@ rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
 
 
 # Perform Recursive Feature Elimination (RFE) to select the top 10 features
-rfe = RFE(rf_regressor, n_features_to_select=10)
+rfe = RFE(rf_regressor, n_features_to_select=15)
 X_rfe = rfe.fit_transform(X_train_full, y_train_full)
 selected_features = X_train_full.columns[rfe.support_]
 X_train_full = X_train_full[selected_features]
