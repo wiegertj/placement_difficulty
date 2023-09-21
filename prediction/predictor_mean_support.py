@@ -54,7 +54,7 @@ y = df_merged["mean_support"]
 X_train_full, X_holdout, y_train_full, y_holdout = train_test_split(X, y, test_size=0.2, random_state=42)
 
 
-rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
+rf_regressor = RandomForestRegressor(n_estimators=250, random_state=42)
 
 
 
