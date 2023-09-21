@@ -28,7 +28,7 @@ df_merged = df_msa.merge(df_tree, on=["dataset"], how="inner")
 df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 #subst_stats = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "subst_freq_stats.csv"))
 #df_merged = df_merged.merge(subst_stats, on=["dataset"], how="inner")
-df_merged = df_merged.merge(difficulties_df, on=["dataset"], how="inner")
+#df_merged = df_merged.merge(difficulties_df, on=["dataset"], how="inner")
 print(df_merged.shape)
 
 # Extract the "mean_support" column values
