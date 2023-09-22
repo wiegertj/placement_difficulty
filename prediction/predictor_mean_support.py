@@ -61,17 +61,17 @@ for column2 in df_merged.drop(columns=["dataset","mean_support", "max_support","
 
 
 # Extract the "mean_support" column values
-mean_support_values = df_merged["skewness_support"]
+mean_support_values = df_merged["mean_support"]
 
 # Create a histogram
 plt.hist(mean_support_values, bins=20, edgecolor='k')  # Adjust the number of bins as needed
-plt.xlabel("skewness_support")
+plt.xlabel("mean_support")
 plt.ylabel("Frequency")
 plt.title("Histogram of skewness_support")
 plt.grid(True)
-plt.savefig("skewness_support.png")
+plt.savefig("mean_support.png")
 
-print(df_merged["skewness_support"].mean())
+print(df_merged["mean_support"].mean())
 #df_merged.drop(columns=["dataset"], inplace=True, axis=1)
 
 
@@ -81,7 +81,7 @@ df_merged.fillna(0, inplace=True)
 X = df_merged.drop(columns=["dataset","mean_support", "max_support","std_support", "skewness_support", "kurt_support", 'min_rf', 'max_rf', 'mean_rf', 'std_dev_rf', 'skewness_rf',
        'kurtosis_rf'])
 print(X.columns)
-y = df_merged["skewness_support"]
+y = df_merged["mean_support"]
 
 X_train_full, X_holdout, y_train_full, y_holdout = train_test_split(X, y, test_size=0.2)
 
@@ -132,7 +132,7 @@ def objective(trial):
 
 # Run the optimization
 study = optuna.create_study(direction="minimize")
-study.optimize(objective, n_trials=50)
+study.optimize(objective, n_trials=100)
 
 
 # Get the best hyperparameters
