@@ -107,7 +107,7 @@ def objective(trial):
     cv_rmse = 0.0
 
     # Perform k-fold cross-validation
-    kf = KFold(n_splits=5, shuffle=True)
+    kf = KFold(n_splits=3, shuffle=True)
     for train_idx, val_idx in kf.split(X_train_full):
         X_train, X_val = X_train_full.iloc[train_idx], X_train_full.iloc[val_idx]
         y_train, y_val = y_train_full.iloc[train_idx], y_train_full.iloc[val_idx]
@@ -126,13 +126,13 @@ def objective(trial):
         fold_rmse = mean_squared_error(y_val, y_pred, squared=False)
 
         # Update CV RMSE
-        cv_rmse += fold_rmse / 5  # Divide by the number of folds (5 in this case)
+        cv_rmse += fold_rmse / 3  # Divide by the number of folds (5 in this case)
 
     return cv_rmse
 
 # Run the optimization
 study = optuna.create_study(direction="minimize")
-study.optimize(objective, n_trials=100)
+study.optimize(objective, n_trials=20)
 
 
 # Get the best hyperparameters
