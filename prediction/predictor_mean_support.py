@@ -2,7 +2,6 @@ import pandas as pd
 import os
 import lightgbm as lgb
 import optuna
-import sns as sns
 from scipy.stats import spearmanr
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.feature_selection import RFE
