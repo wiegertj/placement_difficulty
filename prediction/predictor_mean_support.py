@@ -35,7 +35,7 @@ print(df_merged.shape)
 for column2 in df_merged.columns:
     column = "mean_support"
     correlation, p_value = spearmanr(df_merged[column2], df_merged["mean_support"])
-    if abs(correlation) >= 0.7:
+    if abs(correlation) >= 0.6:
         plt.figure(figsize=(8, 6))
         sns.scatterplot(x=column2, y="mean_support", data=df_merged)
         print(column2 + "_" + "mean_support" + "_" + str(correlation))
