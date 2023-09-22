@@ -2,6 +2,8 @@ import pandas as pd
 import os
 import lightgbm as lgb
 import optuna
+import sns as sns
+from scipy.stats import spearmanr
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.feature_selection import RFE
 from sklearn.model_selection import train_test_split, KFold
@@ -17,7 +19,7 @@ difficulties_df = difficulties_df.drop_duplicates(subset=['verbose_name'], keep=
 difficulties_df["dataset"] = difficulties_df["verbose_name"].str.replace(".phy", "")
 difficulties_df.drop(columns=["verbose_name"], axis=1, inplace=True)
 import matplotlib.pyplot as plt
-
+import seaborn as sns
 
 
 df_tree = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), usecols=lambda column: column != 'Unnamed: 0')
@@ -30,6 +32,33 @@ df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 #df_merged = df_merged.merge(subst_stats, on=["dataset"], how="inner")
 #df_merged = df_merged.merge(difficulties_df, on=["dataset"], how="inner")
 print(df_merged.shape)
+
+for column2 in df_merged.columns:
+    column = "mean_support"
+    correlation, p_value = spearmanr(df_merged[column2], df_merged["mean_support"])
+    if abs(correlation) >= 0.7:
+        plt.figure(figsize=(8, 6))
+        sns.scatterplot(x=column2, y="mean_support", data=df_merged)
+        print(column2 + "_" + "mean_support" + "_" + str(correlation))
+        # Calculate Spearman rank correlation and p-value
+        correlation = round(correlation, 4)
+        p_value = round(p_value, 8)
+
+         #Add Spearman rank correlation and p-value to the title
+        plt.title(f'{column2} and {column}\nSpearman Correlation: {correlation:.4f}, p-value:{p_value:.4f}')
+
+
+
+    # Add a trendline with confidence
+    #sns.regplot(x=column2, y=column, data=df, scatter=False, ci=95, color='red', order=4)
+
+        plt.xlabel(column2)
+        plt.ylabel(column)
+        plt.savefig(f'feature_corr/1111111{column2}_vs_{column}.png')  # Save the figure
+        print("Saved")
+
+
+
 
 # Extract the "mean_support" column values
 mean_support_values = df_merged["mean_support"]
