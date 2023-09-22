@@ -53,7 +53,7 @@ for column2 in df_merged.columns:
 
         plt.xlabel(column2)
         plt.ylabel(column)
-        plt.savefig(f'feature_corr/1111111{column2}_vs_{column}.png')  # Save the figure
+        plt.savefig(f'1111111{column2}_vs_{column}.png')  # Save the figure
         print("Saved")
 
 
