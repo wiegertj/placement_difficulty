@@ -29,7 +29,7 @@ df_merged = df_msa.merge(df_tree, on=["dataset"], how="inner")
 df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 #subst_stats = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "subst_freq_stats.csv"))
 #df_merged = df_merged.merge(subst_stats, on=["dataset"], how="inner")
-#df_merged = df_merged.merge(difficulties_df, on=["dataset"], how="inner")
+df_merged = df_merged.merge(difficulties_df, on=["dataset"], how="inner")
 print(df_merged.shape)
 
 for column2 in df_merged.drop(columns=["dataset","mean_support", "max_support","std_support", "skewness_support", "kurt_support", 'min_rf', 'max_rf', 'mean_rf', 'std_dev_rf', 'skewness_rf',
