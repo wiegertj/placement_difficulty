@@ -32,10 +32,11 @@ df_merged = df_merged.merge(df_uncertainty, on=["dataset"], how="inner")
 #df_merged = df_merged.merge(difficulties_df, on=["dataset"], how="inner")
 print(df_merged.shape)
 
-for column2 in df_merged.columns:
+for column2 in df_merged.drop(columns=["dataset","mean_support", "max_support","std_support", "skewness_support", "kurt_support", 'min_rf', 'max_rf', 'mean_rf', 'std_dev_rf', 'skewness_rf',
+       'kurtosis_rf']).columns:
     column = "mean_support"
     correlation, p_value = spearmanr(df_merged[column2], df_merged["mean_support"])
-    if abs(correlation) >= 0.6:
+    if abs(correlation) >= 0.5:
         plt.figure(figsize=(8, 6))
         sns.scatterplot(x=column2, y="mean_support", data=df_merged)
         print(column2 + "_" + "mean_support" + "_" + str(correlation))
