@@ -29,7 +29,7 @@ for tree_filename in filenames:
     t = Tree(tree_path)
     num_leaves = len(t.get_leaves())
 
-    if num_leaves >= 800:
+    if num_leaves >= 500:
         print("Too large, skipped")
         continue
 
