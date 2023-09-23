@@ -11,7 +11,7 @@ from sklearn.feature_selection import RFE
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, mean_absolute_percentage_error
 from sklearn.model_selection import GroupKFold
 from verstack import FeatureSelector
 from verstack import LGBMTuner
@@ -73,7 +73,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
 
         params = {
             'objective': 'regression',
-            'metric': 'rmse',
+            'metric': 'mae',
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 50),
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
@@ -128,6 +128,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
 
     r_squared = r2_score(y_test, y_pred)
     print(f"R-squared on test set: {r_squared:.2f}")
+
+    mae = mean_absolute_error(y_test, y_pred)
+    print(f"MAE on test set: {mae:.2f}")
+
+    mape = mean_absolute_percentage_error(y_test, y_pred)
+    print(f"MAPE on test set: {mape:.2f}")
+
 
     residuals = y_test - y_pred
 
