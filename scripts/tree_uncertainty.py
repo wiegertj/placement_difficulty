@@ -33,7 +33,7 @@ for tree_filename in filenames:
         "raxml-ng",
         "--bootstrap",
         f"--model {model_path}",
-        f"--bs-trees {100}",
+        f"--bs-trees {1000}",
         f"--msa {msa_filepath}",
         "--redo"
     ]
