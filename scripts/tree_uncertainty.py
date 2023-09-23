@@ -16,10 +16,10 @@ counter = 0
 for tree_filename in filenames:
     counter += 1
     print(counter)
-    if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
-                                      tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
-        print("Skipped, already found: " + tree_filename)
-        continue
+    #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
+    #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
+    #    print("Skipped, already found: " + tree_filename)
+    #    continue
     if tree_filename == "11762_1.newick" or tree_filename == "11762_0.newick":
         print("skipped too large!")
         continue
