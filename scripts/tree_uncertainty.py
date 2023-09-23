@@ -40,7 +40,7 @@ for tree_filename in filenames:
         sequence_length = len(record.seq)
         break
 
-    if sequence_length >= 8000:
+    if sequence_length >= 5000:
         print("Too large, skipped")
 
 
