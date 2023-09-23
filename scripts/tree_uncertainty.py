@@ -1,6 +1,8 @@
 import subprocess
 import pandas as pd
 import os
+from ete3 import Tree
+from Bio import SeqIO
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
@@ -23,7 +25,25 @@ for tree_filename in filenames:
         continue
 
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
+
+    t = Tree(tree_path)
+    num_leaves = len(t.get_leaves())
+
+    if num_leaves >= 800:
+        print("Too large, skipped")
+        continue
+
+
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
+
+    for record in SeqIO.parse(msa_filepath, "fasta"):
+        sequence_length = len(record.seq)
+        break
+
+    if sequence_length >= 8000:
+        print("Too large, skipped")
+
+
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
     bootstrap_filepath = os.path.join(os.pardir, "data/raw/msa",
                                       tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")
