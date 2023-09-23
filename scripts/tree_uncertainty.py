@@ -46,7 +46,7 @@ for tree_filename in filenames:
 
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
     bootstrap_filepath = os.path.join(os.pardir, "data/raw/msa",
-                                      tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")
+                                      tree_filename.replace(".newick", "_reference1000.fasta") + ".raxml.bootstraps")
     output_prefix = tree_filename.split(".")[0] + "_x"  # Using the filename as the prefix
 
     raxml_command = [
