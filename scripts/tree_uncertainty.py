@@ -68,6 +68,7 @@ for tree_filename in filenames:
                      "--support",
                      f"--tree {tree_path}",
                      f"--bs-trees {bootstrap_filepath}",
-                     "--redo"]
+                     "--redo",
+                     f"--prefix {output_prefix}"]
 
     subprocess.run(" ".join(raxml_command), shell=True)
