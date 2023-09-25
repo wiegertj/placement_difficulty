@@ -18,8 +18,6 @@ from optuna.integration import LightGBMPruningCallback
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
-    df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "current_closest_taxon_perc_ham", "difficult"],
-            inplace=True)
     print("Median Support: ")
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
@@ -49,9 +47,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
                                       min_samples_leaf=10)
         rfe = RFE(estimator=model, n_features_to_select=rfe_feature_n)  # Adjust the number of features as needed
-        rfe.fit(X_train.drop(axis=1, columns=['dataset', 'sampleId', 'group']), y_train)
+        rfe.fit(X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']), y_train)
         print(rfe.support_)
-        selected_features = X_train.drop(axis=1, columns=['dataset', 'sampleId', 'group']).columns[rfe.support_]
+        selected_features = X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']).columns[rfe.support_]
         selected_features = selected_features.append(pd.Index(['group']))
 
         print("Selected features for RFE: ")
@@ -61,8 +59,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     X_test_ = X_test
     if not rfe:
-        X_train = X_train.drop(axis=1, columns=['dataset', 'sampleId'])
-        X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
+        X_train = X_train.drop(axis=1, columns=['dataset', 'branchId'])
+        X_test = X_test.drop(axis=1, columns=['dataset', 'branchId'])
 
     def objective(trial):
         callbacks = [LightGBMPruningCallback(trial, 'l1')]
