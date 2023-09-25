@@ -104,11 +104,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
     def objective(trial):
-        callbacks = [LightGBMPruningCallback(trial, 'mape')]
+        callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
             'objective': 'regression',
-            'metric': 'mape',
+            'metric': 'l1',
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 50),
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
@@ -137,7 +137,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
             #val_score = math.sqrt(val_score)
-            val_score = mean_absolute_percentage_error(y_val, val_preds)
+            val_score = mean_absolute_error(y_val, val_preds)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
