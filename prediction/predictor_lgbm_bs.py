@@ -229,4 +229,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         plt.savefig("lgbm-300.png")
 
 
-light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
+light_gbm_regressor(rfe=True, shapley_calc=False)
