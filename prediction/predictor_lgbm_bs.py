@@ -91,7 +91,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
-            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=5000, callbacks=callbacks)
+            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=200, callbacks=callbacks)
 
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
@@ -102,7 +102,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=50)
+    study.optimize(objective, n_trials=100)
 
     best_params = study.best_params
     best_score = study.best_value
