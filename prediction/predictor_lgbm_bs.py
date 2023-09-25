@@ -13,8 +13,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, mean_absolute_percentage_error
 from sklearn.model_selection import GroupKFold
-from verstack import FeatureSelector
-from verstack import LGBMTuner
 from optuna.integration import LightGBMPruningCallback
 
 
