@@ -69,11 +69,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
     def objective(trial):
-        callbacks = [LightGBMPruningCallback(trial, 'l1')]
+        callbacks = [LightGBMPruningCallback(trial, 'mape')]
 
         params = {
             'objective': 'regression',
-            'metric': 'l1',
+            'metric': 'mape',
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 50),
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
@@ -102,7 +102,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
             #val_score = math.sqrt(val_score)
-            val_score = mean_absolute_error(y_val, val_preds)
+            val_score = mean_absolute_percentage_error(y_val, val_preds)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
@@ -114,7 +114,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     best_score = study.best_value
 
     print(f"Best Params: {best_params}")
-    print(f"Best MAE training: {best_score}")
+    print(f"Best MAPE training: {best_score}")
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
@@ -133,7 +133,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     print(f"MAE on test set: {mae:.2f}")
 
     mape = mean_absolute_percentage_error(y_test, y_pred)
-    print(f"MAPE on test set: {mape:.2f}")
+    print(f"MAPE on test set: {mape}")
 
 
     residuals = y_test - y_pred
