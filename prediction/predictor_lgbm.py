@@ -79,7 +79,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
             'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 20),
-            'subsample': trial.suggest_uniform('subsample', 0.5, 1.0),
             'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_loguniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_loguniform('lambda_l2', 1e-5, 1.0),
