@@ -69,7 +69,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
     def objective(trial):
-        callbacks = [LightGBMPruningCallback(trial, 'rmse')]
+        callbacks = [LightGBMPruningCallback(trial, 'mae')]
 
         params = {
             'objective': 'regression',
@@ -101,8 +101,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
             model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000, callbacks=callbacks)
 
             val_preds = model.predict(X_val)
-            val_score = mean_squared_error(y_val, val_preds)
-            val_score = math.sqrt(val_score)
+            #val_score = mean_squared_error(y_val, val_preds)
+            #val_score = math.sqrt(val_score)
+            val_preds = mean_absolute_error(y_val, val_preds)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
@@ -114,7 +115,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     best_score = study.best_value
 
     print(f"Best Params: {best_params}")
-    print(f"Best MSE training: {best_score}")
+    print(f"Best MAE training: {best_score}")
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
