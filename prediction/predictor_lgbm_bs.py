@@ -63,7 +63,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         X_test = X_test.drop(axis=1, columns=['dataset', 'branchId'])
 
     def objective(trial):
-        callbacks = [LightGBMPruningCallback(trial, 'l1')]
+        #callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
             'objective': 'regression',
@@ -91,7 +91,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
-            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=200, callbacks=callbacks)
+            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=200, callbacks=LightGBMPruningCallback(trial, 'l1'))
 
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
