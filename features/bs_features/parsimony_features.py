@@ -17,6 +17,7 @@ for file in filenames:
 
     if not os.path.exists(support_path):
         print("Couldnt find support: " + support_path)
+        continue
 
     with open(support_path, "r") as support_file:
         tree_str = support_file.read()
