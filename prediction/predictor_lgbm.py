@@ -56,6 +56,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
     # Reset the index of the new DataFrame
     df = sampled_df.reset_index(drop=True)
     print(df.shape)
+    print(df["entropy"].min())
 
 
 
