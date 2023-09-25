@@ -18,7 +18,7 @@ from verstack import LGBMTuner
 from optuna.integration import LightGBMPruningCallback
 
 
-def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=[]):
+def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "current_closest_taxon_perc_ham", "difficult"],
             inplace=True)
@@ -31,32 +31,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
 
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
 
-    sample_size_per_interval = 800
-
-    # Create an empty DataFrame to store the sampled data
-    sampled_df = pd.DataFrame()
-
-    # Loop through intervals from 0 to 1 with steps of 0.1
-    for interval_start in np.arange(0, 1, 0.1):
-        # Define the interval end
-        interval_end = interval_start + 0.1
-
-        # Filter the DataFrame for rows within the current interval
-        interval_df = df[(df['entropy'] >= interval_start) & (df['entropy'] < interval_end)]
-
-        # Randomly sample from the interval without replacement
-        if len(interval_df) >= sample_size_per_interval:
-            sampled_interval = interval_df.sample(n=sample_size_per_interval, replace=False)
-        else:
-            sampled_interval = interval_df  # If the interval has fewer samples, use all of them
-
-        # Append the sampled interval to the new DataFrame
-        sampled_df = pd.concat([sampled_df, sampled_interval])
-
-    # Reset the index of the new DataFrame
-    df = sampled_df.reset_index(drop=True)
-    print(df.shape)
-    print(df["entropy"].min())
 
 
 
@@ -269,4 +243,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         plt.savefig("lgbm-300.png")
 
 
-light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
+light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
