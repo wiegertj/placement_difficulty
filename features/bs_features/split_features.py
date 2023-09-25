@@ -203,7 +203,7 @@ for file in filenames:
     if not os.path.isfile(os.path.join(grandir, "data/processed/features/bs_features",
                              "split_features.csv")):
         df_tmp.to_csv(os.path.join(os.path.join(grandir, "data/processed/features/bs_features",
-                             "split_features.csv")))
+                             "split_features.csv")), index=False)
     else:
         df_tmp.to_csv(os.path.join(grandir, "data/processed/features/bs_features",
                              "split_features.csv"),
