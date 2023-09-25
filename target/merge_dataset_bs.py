@@ -31,6 +31,24 @@ df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inn
 df_merged['split_skw_ratio_topo'].fillna(-1, inplace=True)
 df_merged['split_skw_ratio_branch'].fillna(-1, inplace=True)
 df_merged['split_skw_entropy_diff'].fillna(-1, inplace=True)
+df_merged['skew_branch_length_inner'].fillna(-1, inplace=True)
+df_merged['skew_irs'].fillna(-1, inplace=True)
+df_merged['skew_branch_length_tips'].fillna(-1, inplace=True)
+
+df_merged['kur_gaps_msa'].fillna(-1, inplace=True)
+df_merged['kur_entropy_msa'].fillna(-1, inplace=True)
+df_merged['kurtosis_branch_length_tips'].fillna(-1, inplace=True)
+df_merged['kurtosis_branch_length_inner'].fillna(-1, inplace=True)
+df_merged['kurtosis_irs'].fillna(-1, inplace=True)
+df_merged['kur_clo_sim'].fillna(-1, inplace=True)
+df_merged['kur_eig_sim'].fillna(-1, inplace=True)
+
+
+
+
+
+
+
 df_merged.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support.csv"), index=False)
 
 
