@@ -43,9 +43,25 @@ filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 # print("Before filterling" + str(len(filenames)))
 # filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
 # print("After filterling" + str(len(filtered_filenames)))
-loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
+loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/diff_test/difficulty_looreest_vs_loonoreest.csv"))
+filenames = loo_reest_samples["dataset"]
+filenames = set(filenames)
 filtered_filenames = filenames
 msa_counter = 0
+print(len(filenames))
+
+#existing = set(existing["dataset"])
+
+#for dataset in existing["dataset"]:
+ #   samples = existing[existing["dataset"] == dataset]["sampleId"]
+  #  for sampleId in samples:
+
+
+
+#filenames = filenames - existing
+print(len(filenames))
+filtered_filenames = filenames
+
 for msa_name in filtered_filenames:
     msa_counter += 1
     print(str(msa_counter) + "/" + str(len(filtered_filenames)))
@@ -79,6 +95,56 @@ for msa_name in filtered_filenames:
     #   sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
 
     sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
+    #print(sequence_ids_sample.values.tolist())
+    #samples = existing[existing["dataset"] == msa_name]["sampleId"]
+    #print(samples.values.tolist())
+    #sequence_ids_sample_new = [x for x in sequence_ids_sample.values.tolist() if x not in samples.values.tolist()]
+    #sequence_ids_sample = sequence_ids_sample.values.tolist() - samples.values.tolist()
+    #print(len(sequence_ids_sample_new))
+
+    #if len(sequence_ids_sample_new) == 0:
+     #   print("skipped, complete")
+      #  continue
+
+    # Deduplicate MSA
+    unique_sequences = set()
+    alignment_dedup = []
+    for record in MSA:
+        # Convert the sequence to a string for comparison
+        sequence_str = str(record.seq)
+
+        # Check if the sequence is unique
+        if sequence_str not in unique_sequences:
+            unique_sequences.add(sequence_str)
+            alignment_dedup.append(record)
+
+    SeqIO.write(alignment_dedup, filepath.replace("reference.fasta", "dedup_reference.fasta"), "fasta")
+    MSA = AlignIO.read(filepath.replace("reference.fasta", "dedup_reference.fasta"), 'fasta')
+    raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
+    command = ["pythia", "--msa", os.path.abspath(filepath.replace("reference.fasta", "dedup_reference.fasta")),
+               "--raxmlng", raxml_path, "--shap"]
+
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+    pythia_output = result.stdout
+    pythia_output = result.stdout
+    pythia_error = result.stderr  # Capture stderr
+
+    is_index = result.stderr.find("is: ")
+    if is_index != -1:
+        value_string = result.stderr[is_index + 4:is_index + 8]  # Add 4 to skip "is: "
+        extracted_value = float(value_string)
+    else:
+        print("No match found")
+
+    last_float_before = extracted_value
+
+    # Rename shap csv
+    shap_path = os.path.join(os.pardir, "scripts", msa_name + "_dedup_reference.fasta_shapexpl.csv")
+    shap_path_new = os.path.join(os.pardir, "scripts",
+                                 msa_name + "_base" + "_dedup_reference.fasta_shapexpl.csv")
+    os.rename(shap_path, shap_path_new)
+
+    shap_base_df = pd.read_csv(shap_path_new)
 
     for to_query in sequence_ids_sample:
 
@@ -91,12 +157,13 @@ for msa_name in filtered_filenames:
             else:
                 if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
                     print("Skipping " + msa_name + " " + to_query + " result already exists")
-                    #continue
+                    # continue
 
         counter += 1
+
+        print(last_float_before)
         print(to_query)
         print(str(counter) + "/" + str(len(sequence_ids_sample)))
-
         new_alignment = []
         query_alignment = []
 
@@ -114,47 +181,181 @@ for msa_name in filtered_filenames:
 
         output_file_query = os.path.join(os.pardir, "data/processed/loo", msa_name + "_query_" + to_query + ".fasta")
         output_file_query = os.path.abspath(output_file_query)
-        unique_sequences = set()
-        new_alignment_dup = []
-        for record in new_alignment:
-            # Convert the sequence to a string for comparison
-            sequence_str = str(record.seq)
 
-            # Check if the sequence is unique
-            if sequence_str not in unique_sequences:
-                unique_sequences.add(sequence_str)
-                new_alignment_dup.append(record)
-
-        SeqIO.write(new_alignment_dup, output_file, "fasta")
         SeqIO.write(query_alignment, output_file_query, "fasta")
-
+        SeqIO.write(new_alignment, output_file, "fasta")
         output_file_tree = output_file.replace(".fasta", ".newick")
-        raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
 
-        command = ["pythia", "--msa", output_file, "--raxmlng", raxml_path]
+        command = ["pythia", "--msa", output_file,
+                   "--raxmlng", raxml_path, "--shap"]
+        print(command)
+
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
         pythia_output = result.stdout
         pythia_output = result.stdout
         pythia_error = result.stderr  # Capture stderr
 
-
-        # Define a regular expression pattern to match float numbers
-        # This pattern captures one or more digits, an optional decimal point, and more digits
-        pattern = r"[-+]?\d*\.\d+|\d+"
-
-        # Use re.findall to find all matches in the string
-        matches = re.findall(pattern, result.stderr)
-
-        # Extract the last float number
-        if matches:
-            last_float_before = float(matches[-1])
-            print("Last float number:", last_float_before)
+        is_index = result.stderr.find("is: ")
+        if is_index != -1:
+            value_string = result.stderr[is_index + 4:is_index + 8]  # Add 4 to skip "is: "
+            extracted_value = float(value_string)
         else:
-            print("No float numbers found in the string.")
+            print("No match found")
 
+        last_float_after = extracted_value
+        shap_path_new_loo = os.path.join(os.pardir, "scripts", msa_name + "_msa_"+ to_query + ".fasta_shapexpl.csv")
+        #shap_path = os.path.join(os.pardir, "scripts", msa_name + "_dedup_reference.fasta_shapexpl.csv")
+        #shap_path_new_loo = os.path.join(os.pardir, "scripts",
+        #                             msa_name + "_loo_"+ to_query + "_dedup_reference.fasta_shapexpl.csv")
+        #os.rename(shap_path, shap_path_new_loo)
 
+        shap_loo_df = pd.read_csv(shap_path_new_loo)
 
+        print("Save new data ... ")
 
+        proportion_unique_topos_parsimony_base_val = shap_base_df[shap_base_df['features'] == 'proportion_unique_topos_parsimony']["value"].values[0]
+        avg_rfdist_parsimony_base_val = shap_base_df[shap_base_df['features'] == 'avg_rfdist_parsimony']["value"].values[0]
+        proportion_invariant_base_val = shap_base_df[shap_base_df['features'] == 'proportion_invariant']["value"].values[0]
+        num_patterns_num_taxa_base_val = shap_base_df[shap_base_df['features'] == 'num_patterns/num_taxa']["value"].values[0]
+        bollback_base_val = shap_base_df[shap_base_df['features'] == 'bollback']["value"].values[0]
+        proportion_gaps_base_val = shap_base_df[shap_base_df['features'] == 'proportion_gaps']["value"].values[0]
+        pattern_entropy_base_val = shap_base_df[shap_base_df['features'] == 'pattern_entropy']["value"].values[0]
+        entropy_base_val = shap_base_df[shap_base_df['features'] == 'entropy']["value"].values[0]
+        num_patterns_num_sites_base_val = shap_base_df[shap_base_df['features'] == 'num_patterns/num_sites']["value"].values[0]
+        num_sites_num_taxa_base_val = shap_base_df[shap_base_df['features'] == 'num_sites/num_taxa']["value"].values[0]
+
+        proportion_unique_topos_parsimony_base_exp = shap_base_df[shap_base_df['features'] == 'proportion_unique_topos_parsimony']["expl_val"].values[0]
+        avg_rfdist_parsimony_base_exp = shap_base_df[shap_base_df['features'] == 'avg_rfdist_parsimony']["expl_val"].values[0]
+        proportion_invariant_base_exp = shap_base_df[shap_base_df['features'] == 'proportion_invariant']["expl_val"].values[0]
+        num_patterns_num_taxa_base_exp = shap_base_df[shap_base_df['features'] == 'num_patterns/num_taxa']["expl_val"].values[0]
+        bollback_base_exp = shap_base_df[shap_base_df['features'] == 'bollback']["expl_val"].values[0]
+        proportion_gaps_base_exp = shap_base_df[shap_base_df['features'] == 'proportion_gaps']["expl_val"].values[0]
+        pattern_entropy_base_exp = shap_base_df[shap_base_df['features'] == 'pattern_entropy']["expl_val"].values[0]
+        entropy_base_exp = shap_base_df[shap_base_df['features'] == 'entropy']["expl_val"].values[0]
+        num_patterns_num_sites_base_exp = shap_base_df[shap_base_df['features'] == 'num_patterns/num_sites']["expl_val"].values[0]
+        num_sites_num_taxa_base_exp = shap_base_df[shap_base_df['features'] == 'num_sites/num_taxa']["expl_val"].values[0]
+
+        proportion_unique_topos_parsimony_loo_val = shap_loo_df[shap_loo_df['features'] == 'proportion_unique_topos_parsimony']["value"].values[0]
+        avg_rfdist_parsimony_loo_val = shap_loo_df[shap_loo_df['features'] == 'avg_rfdist_parsimony']["value"].values[0]
+        proportion_invariant_loo_val = shap_loo_df[shap_loo_df['features'] == 'proportion_invariant']["value"].values[0]
+        num_patterns_num_taxa_loo_val = shap_loo_df[shap_loo_df['features'] == 'num_patterns/num_taxa']["value"].values[0]
+        bollback_loo_val = shap_loo_df[shap_loo_df['features'] == 'bollback']["value"].values[0]
+        proportion_gaps_loo_val = shap_loo_df[shap_loo_df['features'] == 'proportion_gaps']["value"].values[0]
+        pattern_entropy_loo_val = shap_loo_df[shap_loo_df['features'] == 'pattern_entropy']["value"].values[0]
+        entropy_loo_val = shap_loo_df[shap_loo_df['features'] == 'entropy']["value"].values[0]
+        num_patterns_num_sites_loo_val = shap_loo_df[shap_loo_df['features'] == 'num_patterns/num_sites']["value"].values[0]
+        num_sites_num_taxa_loo_val = shap_loo_df[shap_loo_df['features'] == 'num_sites/num_taxa']["value"].values[0]
+
+        proportion_unique_topos_parsimony_loo_exp = shap_loo_df[shap_loo_df['features'] == 'proportion_unique_topos_parsimony']["expl_val"].values[0]
+        avg_rfdist_parsimony_loo_exp = shap_loo_df[shap_loo_df['features'] == 'avg_rfdist_parsimony']["expl_val"].values[0]
+        proportion_invariant_loo_exp = shap_loo_df[shap_loo_df['features'] == 'proportion_invariant']["expl_val"].values[0]
+        num_patterns_num_taxa_loo_exp = shap_loo_df[shap_loo_df['features'] == 'num_patterns/num_taxa']["expl_val"].values[0]
+        bollback_loo_exp = shap_loo_df[shap_loo_df['features'] == 'bollback']["expl_val"].values[0]
+        proportion_gaps_loo_exp = shap_loo_df[shap_loo_df['features'] == 'proportion_gaps']["expl_val"].values[0]
+        pattern_entropy_loo_exp = shap_loo_df[shap_loo_df['features'] == 'pattern_entropy']["expl_val"].values[0]
+        entropy_loo_exp = shap_loo_df[shap_loo_df['features'] == 'entropy']["expl_val"].values[0]
+        num_patterns_num_sites_loo_exp = shap_loo_df[shap_loo_df['features'] == 'num_patterns/num_sites']["expl_val"].values[0]
+        num_sites_num_taxa_loo_exp = shap_loo_df[shap_loo_df['features'] == 'num_sites/num_taxa']["expl_val"].values[0]
+
+        pythia_non_reest.append(
+            (msa_name, to_query, last_float_before, last_float_after, avg_rfdist_parsimony_base_val, proportion_unique_topos_parsimony_base_val, proportion_invariant_base_val,
+             num_patterns_num_taxa_base_val, bollback_base_val, proportion_gaps_base_val, pattern_entropy_base_val, entropy_base_val, num_patterns_num_sites_base_val,
+             num_sites_num_taxa_base_val, avg_rfdist_parsimony_base_exp, proportion_unique_topos_parsimony_base_exp, proportion_invariant_base_exp, num_patterns_num_taxa_base_exp,
+             bollback_base_exp, proportion_gaps_base_exp, pattern_entropy_base_exp, entropy_base_exp, num_patterns_num_sites_base_exp, num_sites_num_taxa_base_exp, avg_rfdist_parsimony_loo_val,
+             proportion_unique_topos_parsimony_loo_val, proportion_invariant_loo_val, num_patterns_num_taxa_loo_val, bollback_loo_val, proportion_gaps_loo_val, pattern_entropy_loo_val,
+             entropy_loo_val, num_patterns_num_sites_loo_val, num_sites_num_taxa_loo_val, avg_rfdist_parsimony_loo_exp, proportion_unique_topos_parsimony_loo_exp,
+             proportion_invariant_loo_exp, num_patterns_num_taxa_loo_exp, bollback_loo_exp, proportion_gaps_loo_exp, pattern_entropy_loo_exp, entropy_loo_exp, num_patterns_num_sites_loo_exp,
+             num_sites_num_taxa_loo_exp))
+        df_py = pd.DataFrame(pythia_non_reest,
+                             columns=["dataset", "sampleId", "difficulty_loo_no_reest", "difficulty_loo_reest",
+                                      "avg_rfdist_parsimony_base_val",
+                                      "proportion_unique_topos_parsimony_base_val",
+                                      "proportion_invariant_base_val", "num_patterns/num_taxa_base_val",
+                                      "bollback_base_val", "proportion_gaps_base_val",
+                                      "pattern_entropy_base_val", "entropy_base_val",
+                                      "num_patterns/num_sites_base_val",
+                                      "num_sites/num_taxa_base_val", "avg_rfdist_parsimony_base_exp",
+                                      "proportion_unique_topos_parsimony_base_exp",
+                                      "proportion_invariant_base_exp", "num_patterns/num_taxa_base_exp",
+                                      "bollback_base_exp", "proportion_gaps_base_exp",
+                                      "pattern_entropy_base_exp", "entropy_base_exp",
+                                      "num_patterns/num_sites_base_exp",
+                                      "num_sites/num_taxa_base_exp",
+                                      "avg_rfdist_parsimony_loo_val",
+                                      "proportion_unique_topos_parsimony_loo_val",
+                                      "proportion_invariant_loo_val", "num_patterns/num_taxa_loo_val",
+                                      "bollback_loo_val", "proportion_gaps_loo_val", "pattern_entropy_loo_val",
+                                      "entropy_loo_val", "num_patterns/num_sites_loo_val",
+                                      "num_sites/num_taxa_loo_val", "avg_rfdist_parsimony_loo_exp",
+                                      "proportion_unique_topos_parsimony_loo_exp",
+                                      "proportion_invariant_loo_exp", "num_patterns/num_taxa_loo_exp",
+                                      "bollback_loo_exp", "proportion_gaps_loo_exp", "pattern_entropy_loo_exp",
+                                      "entropy_loo_exp", "num_patterns/num_sites_loo_exp",
+                                      "num_sites/num_taxa_loo_exp"
+                                      ])
+
+        if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv")):
+            df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
+                         index=False, header=True,
+                         columns=["dataset", "sampleId", "difficulty_loo_no_reest", "difficulty_loo_reest",
+                                      "avg_rfdist_parsimony_base_val",
+                                      "proportion_unique_topos_parsimony_base_val",
+                                      "proportion_invariant_base_val", "num_patterns/num_taxa_base_val",
+                                      "bollback_base_val", "proportion_gaps_base_val",
+                                      "pattern_entropy_base_val", "entropy_base_val",
+                                      "num_patterns/num_sites_base_val",
+                                      "num_sites/num_taxa_base_val", "avg_rfdist_parsimony_base_exp",
+                                      "proportion_unique_topos_parsimony_base_exp",
+                                      "proportion_invariant_base_exp", "num_patterns/num_taxa_base_exp",
+                                      "bollback_base_exp", "proportion_gaps_base_exp",
+                                      "pattern_entropy_base_exp", "entropy_base_exp",
+                                      "num_patterns/num_sites_base_exp",
+                                      "num_sites/num_taxa_base_exp",
+                                      "avg_rfdist_parsimony_loo_val",
+                                      "proportion_unique_topos_parsimony_loo_val",
+                                      "proportion_invariant_loo_val", "num_patterns/num_taxa_loo_val",
+                                      "bollback_loo_val", "proportion_gaps_loo_val", "pattern_entropy_loo_val",
+                                      "entropy_loo_val", "num_patterns/num_sites_loo_val",
+                                      "num_sites/num_taxa_loo_val", "avg_rfdist_parsimony_loo_exp",
+                                      "proportion_unique_topos_parsimony_loo_exp",
+                                      "proportion_invariant_loo_exp", "num_patterns/num_taxa_loo_exp",
+                                      "bollback_loo_exp", "proportion_gaps_loo_exp", "pattern_entropy_loo_exp",
+                                      "entropy_loo_exp", "num_patterns/num_sites_loo_exp",
+                                      "num_sites/num_taxa_loo_exp"
+                                      ])
+        else:
+            df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
+                         index=False,
+                         mode='a', header=False,
+                         columns=["dataset", "sampleId", "difficulty_loo_no_reest", "difficulty_loo_reest",
+                                      "avg_rfdist_parsimony_base_val",
+                                      "proportion_unique_topos_parsimony_base_val",
+                                      "proportion_invariant_base_val", "num_patterns/num_taxa_base_val",
+                                      "bollback_base_val", "proportion_gaps_base_val",
+                                      "pattern_entropy_base_val", "entropy_base_val",
+                                      "num_patterns/num_sites_base_val",
+                                      "num_sites/num_taxa_base_val", "avg_rfdist_parsimony_base_exp",
+                                      "proportion_unique_topos_parsimony_base_exp",
+                                      "proportion_invariant_base_exp", "num_patterns/num_taxa_base_exp",
+                                      "bollback_base_exp", "proportion_gaps_base_exp",
+                                      "pattern_entropy_base_exp", "entropy_base_exp",
+                                      "num_patterns/num_sites_base_exp",
+                                      "num_sites/num_taxa_base_exp",
+                                      "avg_rfdist_parsimony_loo_val",
+                                      "proportion_unique_topos_parsimony_loo_val",
+                                      "proportion_invariant_loo_val", "num_patterns/num_taxa_loo_val",
+                                      "bollback_loo_val", "proportion_gaps_loo_val", "pattern_entropy_loo_val",
+                                      "entropy_loo_val", "num_patterns/num_sites_loo_val",
+                                      "num_sites/num_taxa_loo_val", "avg_rfdist_parsimony_loo_exp",
+                                      "proportion_unique_topos_parsimony_loo_exp",
+                                      "proportion_invariant_loo_exp", "num_patterns/num_taxa_loo_exp",
+                                      "bollback_loo_exp", "proportion_gaps_loo_exp", "pattern_entropy_loo_exp",
+                                      "entropy_loo_exp", "num_patterns/num_sites_loo_exp",
+                                      "num_sites/num_taxa_loo_exp"
+                                      ])
+        pythia_non_reest = []
+
+        continue
 
         if feature_config.REESTIMATE_TREE == True:
 
@@ -213,10 +414,35 @@ for msa_name in filtered_filenames:
                 print("Diff before: " + str(last_float_before))
                 print("Diff after: " + str(last_float_after))
 
-
                 pythia_non_reest.append(
-                    (msa_name, to_query, last_float_before, last_float_after))
-                df_py = pd.DataFrame(pythia_non_reest, columns=["dataset", "sampleId", "difficulty_loo_no_reest", "difficulty_loo_reest"])
+                    (msa_name, to_query, last_float_before, last_float_after, shap_base_df["features"]))
+                df_py = pd.DataFrame(pythia_non_reest,
+                                     columns=["dataset", "sampleId", "difficulty_loo_no_reest", "difficulty_loo_reest",
+                                              "avg_rfdist_parsimony_base_val",
+                                              "proportion_unique_topos_parsimony_base_val",
+                                              "proportion_invariant_base_val", "num_patterns/num_taxa_base_val",
+                                              "bollback_base_val", "proportion_gaps_base_val",
+                                              "pattern_entropy_base_val", "entropy_base_val",
+                                              "num_patterns/num_sites_base_val",
+                                              "num_sites/num_taxa_base_val", "avg_rfdist_parsimony_base_exp",
+                                              "proportion_unique_topos_parsimony_base_exp",
+                                              "proportion_invariant_base_exp", "num_patterns/num_taxa_base_exp",
+                                              "bollback_base_exp", "proportion_gaps_base_exp",
+                                              "pattern_entropy_base_exp", "entropy_base_exp",
+                                              "num_patterns/num_sites_base_exp",
+                                              "num_sites/num_taxa_base_exp",
+                                              "avg_rfdist_parsimony_loo_val",
+                                              "proportion_unique_topos_parsimony_loo_val",
+                                              "proportion_invariant_loo_val", "num_patterns/num_taxa_loo_val",
+                                              "bollback_loo_val", "proportion_gaps_loo_val", "pattern_entropy_loo_val",
+                                              "entropy_loo_val", "num_patterns/num_sites_loo_val",
+                                              "num_sites/num_taxa_loo_val", "avg_rfdist_parsimony_loo_exp",
+                                              "proportion_unique_topos_parsimony_loo_exp",
+                                              "proportion_invariant_loo_exp", "num_patterns/num_taxa_loo_exp",
+                                              "bollback_loo_exp", "proportion_gaps_loo_exp", "pattern_entropy_loo_exp",
+                                              "entropy_loo_exp", "num_patterns/num_sites_loo_exp",
+                                              "num_sites/num_taxa_loo_exp"
+                                              ])
 
                 if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv")):
                     df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "diff_no_reest.csv"),
