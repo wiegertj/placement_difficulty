@@ -69,11 +69,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True, targets=
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
     def objective(trial):
-        callbacks = [LightGBMPruningCallback(trial, 'mae')]
+        callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
             'objective': 'regression',
-            'metric': 'mae',
+            'metric': 'l1',
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 50),
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
