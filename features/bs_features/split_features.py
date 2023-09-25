@@ -199,8 +199,14 @@ for file in filenames:
     tree_path = os.path.join(grandir, "data/raw/reference_tree/") + file
     msa_path = os.path.join(grandir, "data/raw/msa/") + file.replace(".newick", "_reference.fasta")
     df_tmp = split_features(tree_path, msa_path, file.replace(".newick", ""))
-    df_list.append(df_tmp)
 
-df_final = pd.concat(df_list, ignore_index=True)
-df_final.to_csv(os.path.join(grandir, "data/processed/features/bs_features",
-                             "split_features.csv"))
+    if not os.path.isfile(os.path.join(grandir, "data/processed/features/bs_features",
+                             "split_features.csv")):
+        df_tmp.to_csv(os.path.join(os.path.join(grandir, "data/processed/features/bs_features",
+                             "split_features.csv")))
+    else:
+        df_tmp.to_csv(os.path.join(grandir, "data/processed/features/bs_features",
+                             "split_features.csv"),
+                     index=False,
+                     mode='a', header=False)
+
