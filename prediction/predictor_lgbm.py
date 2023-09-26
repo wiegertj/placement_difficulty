@@ -18,7 +18,7 @@ from verstack import LGBMTuner
 from optuna.integration import LightGBMPruningCallback
 
 
-def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=[]):
+def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "current_closest_taxon_perc_ham", "difficult"],
             inplace=True)
@@ -85,7 +85,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
             'objective': 'regression',
             'metric': 'l1',
             'boosting_type': 'gbdt',
-            'num_leaves': trial.suggest_int('num_leaves', 2, 50),
+            'num_leaves': trial.suggest_int('num_leaves', 2, 20),
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
             'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 20),
@@ -107,7 +107,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
-            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=1000, callbacks=callbacks)
+            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=200, callbacks=callbacks)
 
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
@@ -128,7 +128,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    final_model = lgb.train(best_params, train_data, num_boost_round=1000)
+    final_model = lgb.train(best_params, train_data, num_boost_round=200)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
@@ -165,7 +165,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     scaler = MinMaxScaler()
     importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
-    importance_df = importance_df.nlargest(15, 'Importance')
+    importance_df = importance_df.nlargest(30, 'Importance')
 
     plt.figure(figsize=(10, 6))
     plt.bar(importance_df['Feature'], importance_df['Importance'])
@@ -243,4 +243,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         plt.savefig("lgbm-300.png")
 
 
-light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
+light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
