@@ -195,6 +195,7 @@ for file in filenames:
     print(counter)
     print(file)
 
+
     # support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_1000.raxml.support"
     tree_path = os.path.join(grandir, "data/raw/reference_tree/") + file
     msa_path = os.path.join(grandir, "data/raw/msa/") + file.replace(".newick", "_reference.fasta")
