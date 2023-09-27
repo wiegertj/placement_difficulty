@@ -353,7 +353,7 @@ for msa_name in filtered_filenames:
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
                    os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query), "--filter-max",
                    "10000", "--filter-acc-lwr", "0.999"]
-        print(command.join(" "))
+        print(" ".join(command))
 
         try:
             process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
