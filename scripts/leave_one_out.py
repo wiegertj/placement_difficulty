@@ -335,7 +335,13 @@ for msa_name in filtered_filenames:
                 original_tree_path = os.path.abspath(original_tree_path)
                 print(original_tree_path)
 
-                print(tree.write())
+                newick_string = tree.write()
+                try:
+                    with open(file_path, 'w') as file:
+                        file.write(newick_string)
+                    print(f"Newick tree has been saved to {file_path}")
+                except Exception as e:
+                    print(f"An error occurred while saving the Newick tree: {str(e)}")
 
                 tree_path = original_tree_path
                 tree_path_epa = tree_path
