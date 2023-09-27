@@ -1,16 +1,10 @@
 import os
-import re
-import shutil
+
 import tarfile
 
-import dendropy
-import ete3
 import subprocess
-import glob
 import pandas as pd
-import numpy as np
-import types
-import random
+
 from Bio import AlignIO, SeqIO
 
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
