@@ -212,7 +212,7 @@ def multiprocess_string_kernel(query_filename, isAA, bloom_filters_MSA_, msa_fil
 
     pool = multiprocessing.Pool(initializer=initializer, initargs=(bloom_filters_MSA_, msa_file_, isAA))
     results_async = [pool.apply_async(compute_string_kernel_statistics, (item,)) for item in data]
-    monitor_progress(results_async)
+    #monitor_progress(results_async)
     output = [result_.get() for result_ in results_async]
 
     pool.close()
@@ -277,7 +277,7 @@ if __name__ == '__main__':
                                           1000) + ".csv")
         if os.path.exists(potential_path):
             print("Skipped: " + msa_file + " already processed")
-            continue
+            #continue
 
         results = []
 
