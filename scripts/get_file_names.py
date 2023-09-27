@@ -113,12 +113,15 @@ for file in result["verbose_name"]:
 
     # Load the tree from the file
     tree = Tree(tree_path)
+    print("--------------------------------")
+    print("To delete: " + str(len(duplicate_names)))
     print("Leaves before: " + str(len(tree.get_leaves())))
     for taxon in duplicate_names:
         node = tree.search_nodes(name=taxon)
         if node:
             node[0].delete()
     print("Leaves after: " + str(len(tree.get_leaves())))
+    print("--------------------------------")
 
 
     new_tree_name = os.path.join(file_path, file.replace(".phy", ".newick"))
