@@ -113,7 +113,7 @@ for file in result["verbose_name"]:
 
     # Load the tree from the file
     tree = Tree(tree_path)
-    print("Leaves bfeofr: " + str(len(tree.get_leaves())))
+    print("Leaves before: " + str(len(tree.get_leaves())))
     for taxon in duplicate_names:
         node = tree.search_nodes(name=taxon)
         if node:
@@ -127,8 +127,17 @@ for file in result["verbose_name"]:
     shutil.copy(new_tree_name, copy_to_path_tree)
 
     # ----------------------------- COPY model -------------------------------------------
+    alternative_path_model = False
+    if not os.path.exists(os.path.join(file_path, "model_0.txt")):
+        if not os.path.exists(os.path.join(file_path, file.replace(".phy", "") + "_msa_model.txt")):
+            continue
+        alternative_path_model = True
+
     try:
-        model_path = os.path.join(file_path, "model_0.txt")
+        if alternative_path_model:
+            model_path = os.path.join(file_path, file.replace(".phy", "") + "_msa_model.txt")
+        else:
+            model_path = os.path.join(file_path, "model_0.txt")
         new_model_name = os.path.join(file_path, file.replace(".phy", "_msa_model.txt"))
         os.rename(model_path, new_model_name)
         copy_to_path_model = os.path.join(os.pardir, "data/processed/loo")
