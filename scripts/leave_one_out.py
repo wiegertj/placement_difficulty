@@ -115,6 +115,18 @@ for msa_name in filtered_filenames:
         output_file_query = os.path.join(os.pardir, "data/processed/loo", msa_name + "_query_" + to_query + ".fasta")
         output_file_query = os.path.abspath(output_file_query)
 
+        with open(output_file, "w") as new_alignment_output:
+            SeqIO.write(new_alignment, new_alignment_output, "fasta")
+
+        # Write the query alignment to a FASTA file
+        with open(output_file_query, "w") as query_alignment_output:
+            SeqIO.write(query_alignment, query_alignment_output, "fasta")
+
+
+
+
+
+
         if feature_config.REESTIMATE_TREE == True:
 
             # Disalign msa
