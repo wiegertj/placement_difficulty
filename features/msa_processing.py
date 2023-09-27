@@ -63,7 +63,7 @@ def gap_statistics(msa_filepath) -> (float, float):
                     :return tuple: average gaps per sequence, standard deviation of gap count
     """
     alignment = AlignIO.read(msa_filepath, 'fasta')
-    print(seq)
+    print(alignment)
     gap_counts = [seq.count('-') for seq in alignment]
     seq_length = len(alignment[0].seq)
 
