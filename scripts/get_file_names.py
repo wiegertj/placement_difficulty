@@ -15,7 +15,7 @@ difficulties_merged = difficulties_path_new.merge(difficulties_df, how="inner")
 print(difficulties_merged["difficult"])
 difficulties_merged["difficult"] = difficulties_merged["difficulty"]
 print(difficulties_merged["difficult"])
-
+difficulties_df = difficulties_merged
 if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     df_used = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     names_used = df_used["verbose_name"].unique()
