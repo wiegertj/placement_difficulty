@@ -63,7 +63,7 @@ def gap_statistics(msa_filepath) -> (float, float):
                     :return tuple: average gaps per sequence, standard deviation of gap count
     """
     alignment = AlignIO.read(msa_filepath, 'fasta')
-    gap_counts = [str(seq).count('-') for seq in alignment]
+    gap_counts = [seqe.seq.count('-') for seqe in alignment]
     seq_length = len(alignment[0].seq)
 
     mean_gaps = statistics.mean(gap_counts)
@@ -154,7 +154,7 @@ def compute_entropy(msa_filepath, isAA):
     nucleotide_statistics = []
     if not isAA:
         for seq_record in alignment:
-            nucleotide_counts = {nucleotide: str(seq_record).upper().count(nucleotide) for nucleotide in nucleotides}
+            nucleotide_counts = {nucleotide: seq_record.seq.upper().count(nucleotide) for nucleotide in nucleotides}
 
             if len(seq_record) != 0:
                 g_fraction = nucleotide_counts["G"] / len(seq_record)
