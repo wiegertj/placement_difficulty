@@ -78,9 +78,11 @@ def height(node):
 def imbalance_ratio(node):
     if node is None:
         return 0
-
-    left_height = height(node.children[0])
-    right_height = height(node.children[1])
+    try:
+        left_height = height(node.children[0])
+        right_height = height(node.children[1])
+    except IndexError:
+        return 0
     return max(left_height, right_height) / min(left_height, right_height)
 
 
