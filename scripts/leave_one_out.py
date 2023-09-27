@@ -335,7 +335,7 @@ for msa_name in filtered_filenames:
                 original_tree_path = os.path.abspath(original_tree_path)
                 print(original_tree_path)
 
-                print(tree.write(outfile=original_tree_path))
+                print(tree.write())
 
                 tree_path = original_tree_path
                 tree_path_epa = tree_path
