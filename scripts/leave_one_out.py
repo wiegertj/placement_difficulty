@@ -314,7 +314,9 @@ for msa_name in filtered_filenames:
                     msa_path_epa = aligned_output_file
         else:
             original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick")
+
             tree_path = original_tree_path  # use original tree without reestimation
+            print("Getting original from " + tree_path)
             print("Start without reestimation")
 
             with open(tree_path, 'r') as file:
@@ -331,9 +333,8 @@ for msa_name in filtered_filenames:
                 original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree_tmp",
                                                   msa_name + "_" + to_query + ".newick")
                 print("Start creating loo tree")
-                print(tree)
                 original_tree_path = os.path.abspath(original_tree_path)
-                print(original_tree_path)
+                print("Storing to: " + original_tree_path)
 
                 newick_string = tree.write()
                 try:
