@@ -52,11 +52,15 @@ for file in result["verbose_name"]:
     file_path = os.path.join(os.pardir, "data/TreeBASEMirror-main/trees/" + file)
     tar_file = os.path.join(file_path, file + ".tar.gz")
     print(file_path)
+    alternative_path_tree = False
 
     if not os.path.exists(os.path.join(file_path, "tree_best.newick")):
-        print("Tree file not found for " + file + " skipped")
-        result = result[result['verbose_name'] != file]
-        continue
+        if not os.path.exists(os.path.join(file_path, file.replace(".phy","") + ".newick")):
+            print("Tree file not found for " + file + " skipped")
+            result = result[result['verbose_name'] != file]
+            continue
+        alternative_path_tree = True
+
 
     try:
         with tarfile.open(tar_file, 'r:gz') as tar:
@@ -101,7 +105,11 @@ for file in result["verbose_name"]:
               copy_to_path + "/" + file.replace(".phy", "_query.fasta"))
 
     # ----------------------------- COPY tree-------------------------------------------
-    tree_path = os.path.join(file_path, "tree_best.newick")
+    if alternative_path_tree == False:
+        tree_path = os.path.join(file_path, "tree_best.newick")
+    else:
+        tree_path = os.path.join(file_path, file.replace(".phy","") + ".newick")
+
 
     # Load the tree from the file
     tree = Tree(tree_path)
