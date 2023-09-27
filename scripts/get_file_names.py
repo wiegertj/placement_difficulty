@@ -124,6 +124,7 @@ for file in result["verbose_name"]:
             deleted += 1
     if deleted < len(duplicate_names):
         print("Did not find every node, skipped")
+        result = result[result['verbose_name'] != file]
         continue
 
     print("Leaves after: " + str(len(tree.get_leaves())))
