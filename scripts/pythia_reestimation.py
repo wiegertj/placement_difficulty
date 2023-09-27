@@ -12,8 +12,11 @@ difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda
 difficulties_df.drop_duplicates(subset=["verbose_name"], keep="first", inplace=True)
 results = []
 counter = 0
-current_processed = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
-current_processed_names = current_processed["name"].values.tolist()
+try:
+    current_processed = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
+    current_processed_names = current_processed["name"].values.tolist()
+except FileNotFoundError:
+    current_processed_names = []
 print(current_processed_names)
 for index, row in difficulties_df.iterrows():
     counter +=1
