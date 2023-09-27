@@ -119,13 +119,16 @@ for file in result["verbose_name"]:
     shutil.copy(new_tree_name, copy_to_path_tree)
 
     # ----------------------------- COPY model -------------------------------------------
-
-    model_path = os.path.join(file_path, "model_0.txt")
-    new_model_name = os.path.join(file_path, file.replace(".phy", "_msa_model.txt"))
-    os.rename(model_path, new_model_name)
-    copy_to_path_model = os.path.join(os.pardir, "data/processed/loo")
-    shutil.copy(new_model_name, copy_to_path_model)
-
+    try:
+        model_path = os.path.join(file_path, "model_0.txt")
+        new_model_name = os.path.join(file_path, file.replace(".phy", "_msa_model.txt"))
+        os.rename(model_path, new_model_name)
+        copy_to_path_model = os.path.join(os.pardir, "data/processed/loo")
+        shutil.copy(new_model_name, copy_to_path_model)
+    except FileNotFoundError:
+        print("Not found: " + file + " skipped")
+        result = result[result['verbose_name'] != file]
+        continue
 if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', header=False, index=False)
 else:
