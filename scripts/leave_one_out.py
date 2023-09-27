@@ -315,6 +315,7 @@ for msa_name in filtered_filenames:
         else:
             original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick")
             tree_path = original_tree_path  # use original tree without reestimation
+            print("Start without reestimation")
 
             with open(tree_path, 'r') as file:
                 print(tree_path)
@@ -330,6 +331,7 @@ for msa_name in filtered_filenames:
 
                 original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree_tmp",
                                                   msa_name + "_" + to_query + ".newick")
+                print(original_tree_path)
                 tree.write(outfile=original_tree_path, format=1)
 
                 tree_path = original_tree_path
