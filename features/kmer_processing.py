@@ -197,9 +197,15 @@ def monitor_progress(results):
 def multiprocess_string_kernel(query_filename, isAA, bloom_filters_MSA_, msa_file_, interval):
     data = []
     counter = 0
+    #current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
+    #sampledData = current_loo_targets[current_loo_targets["dataset"] == msa_file_.replace("_reference.fasta", "")]["sampleId"].values.tolist()
+    #print(sampledData)
+
     for query_record in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_filename), 'fasta'):
         counter += 1
         if (interval - feature_config.KMER_PROCESSING_STEPSIZE) < counter <= interval:
+            #print(query_record.id)
+            #if query_record.id in sampledData:
             data.append(query_record)
         if counter > interval:
             break
@@ -233,9 +239,12 @@ if __name__ == '__main__':
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     loo_selection = loo_selection.drop_duplicates(subset=["verbose_name"], keep="first")
     filenames = loo_selection['verbose_name'].str.replace(".phy", "_reference.fasta").tolist()
-    filenames.remove("11226_0_reference.fasta")
-    filenames.remove("15849_4_reference.fasta")
-    filenames.remove("15849_1_reference.fasta")
+    try:
+        filenames.remove("11226_0_reference.fasta")
+        filenames.remove("15849_4_reference.fasta")
+        filenames.remove("15849_1_reference.fasta")
+    except ValueError:
+        print("Skipped")
 
     if feature_config.INCUDE_TARA_BV_NEO:
         filenames = filenames + ["bv_reference.fasta", "neotrop_reference.fasta", "tara_reference.fasta"]
@@ -285,12 +294,12 @@ if __name__ == '__main__':
         bound = feature_config.KMER_PROCESSING_COUNT  # how many sequences
 
         # Check if too large
-        # if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
-        #   print("Skipped " + msa_file + " too large")
-        #  continue
+        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
+           print("Skipped " + msa_file + " too large")
+           continue
         num_sequences = sum(1 for _ in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'))
 
-        # if num_sequences > 150:
+        #if num_sequences > 150:
         #   print("Skipped " + msa_file + " too large")
         #  continue
 
