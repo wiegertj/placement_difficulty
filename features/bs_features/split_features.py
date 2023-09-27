@@ -186,7 +186,7 @@ grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
 
 loo_selection = pd.read_csv(os.path.join(grandir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
-filenames = filenames[:506]
+filenames = filenames[:507]
 
 counter = 0
 df_list = []
