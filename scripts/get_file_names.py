@@ -45,10 +45,7 @@ if len(samples) == 1:
 else:
     result = pd.concat(samples)
 
-if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
-    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', header=False, index=False)
-else:
-    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), header=True, index=False)
+
 
 # Create reference MSA and Query file
 for file in result["verbose_name"]:
@@ -58,6 +55,7 @@ for file in result["verbose_name"]:
 
     if not os.path.exists(os.path.join(file_path, "tree_best.newick")):
         print("Tree file not found for " + file + " skipped")
+        result = result[result['verbose_name'] != file]
         continue
 
     try:
@@ -65,6 +63,7 @@ for file in result["verbose_name"]:
             tar.extractall(file_path)
     except FileNotFoundError:
         print("Not found: " + file + " skipped")
+        result = result[result['verbose_name'] != file]
         continue
 
     extracted_path = os.path.join(file_path,
@@ -126,3 +125,8 @@ for file in result["verbose_name"]:
     os.rename(model_path, new_model_name)
     copy_to_path_model = os.path.join(os.pardir, "data/processed/loo")
     shutil.copy(new_model_name, copy_to_path_model)
+
+if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
+    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', header=False, index=False)
+else:
+    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), header=True, index=False)
