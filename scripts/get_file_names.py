@@ -16,12 +16,13 @@ print(difficulties_merged["difficult"])
 difficulties_merged["difficult"] = difficulties_merged["difficulty"]
 print(difficulties_merged["difficult"])
 difficulties_df = difficulties_merged
+print(difficulties_df.shape)
 if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     df_used = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     names_used = df_used["verbose_name"].unique()
     difficulties_df = difficulties_df[~difficulties_df["verbose_name"].isin(names_used)]
 
-difficulty_ranges = np.arange(0.1, 1.1, 0.1)
+difficulty_ranges = np.arange(0.0, 1.1, 0.1)
 samples = []
 for i in range(len(difficulty_ranges) - 1):
     lower_bound = difficulty_ranges[i]
@@ -31,7 +32,7 @@ for i in range(len(difficulty_ranges) - 1):
         (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)].shape)
     subset = difficulties_df[
         (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)]
-    if len(subset) < 100:
+    if len(subset) < 150:
         selected_subset = subset
     else:
         selected_subset = subset.sample(150)
