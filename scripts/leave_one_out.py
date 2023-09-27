@@ -316,6 +316,8 @@ for msa_name in filtered_filenames:
             original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick")
 
             tree_path = original_tree_path  # use original tree without reestimation
+            print("-------------------------------------------")
+
             print("Getting original from " + tree_path)
             print("Start without reestimation")
 
@@ -343,6 +345,7 @@ for msa_name in filtered_filenames:
                     print(f"Newick tree has been saved to {original_tree_path}")
                 except Exception as e:
                     print(f"An error occurred while saving the Newick tree: {str(e)}")
+                print("-------------------------------------------")
 
                 tree_path = original_tree_path
                 tree_path_epa = tree_path
