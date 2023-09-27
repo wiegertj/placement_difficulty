@@ -154,7 +154,7 @@ def compute_entropy(msa_filepath, isAA):
     nucleotide_statistics = []
     if not isAA:
         for seq_record in alignment:
-            nucleotide_counts = {nucleotide: seq_record.upper().count(nucleotide) for nucleotide in nucleotides}
+            nucleotide_counts = {nucleotide: str(seq_record).upper().count(nucleotide) for nucleotide in nucleotides}
 
             if len(seq_record) != 0:
                 g_fraction = nucleotide_counts["G"] / len(seq_record)
