@@ -3,17 +3,25 @@ import tarfile
 import os
 import pandas as pd
 import numpy as np
+from Bio import AlignIO, SeqIO
+from ete3 import Tree
 
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 difficulties_df.drop_duplicates(subset=["verbose_name"], keep="first", inplace=True)
+difficulties_path_new = os.path.join(os.pardir, "data/treebase_difficulty_new.csv")
+difficulties_df_new = pd.read_csv(difficulties_path_new, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
+difficulties_merged = difficulties_path_new.merge(difficulties_df, how="inner")
+print(difficulties_merged["difficult"])
+difficulties_merged["difficult"] = difficulties_merged["difficulty"]
+print(difficulties_merged["difficult"])
 
 if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
     df_used = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     names_used = df_used["verbose_name"].unique()
     difficulties_df = difficulties_df[~difficulties_df["verbose_name"].isin(names_used)]
 
-difficulty_ranges = np.arange(0.5, 1.1, 0.1)
+difficulty_ranges = np.arange(0.1, 1.1, 0.1)
 samples = []
 for i in range(len(difficulty_ranges) - 1):
     lower_bound = difficulty_ranges[i]
@@ -23,10 +31,10 @@ for i in range(len(difficulty_ranges) - 1):
         (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)].shape)
     subset = difficulties_df[
         (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)]
-    if len(subset) < 20:
+    if len(subset) < 100:
         selected_subset = subset
     else:
-        selected_subset = subset.sample(20)
+        selected_subset = subset.sample(100)
     print("Subset size " + str(lower_bound) + " - " + str(upper_bound))
     print(subset.shape)
     samples.append(selected_subset)
@@ -41,7 +49,7 @@ if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
 else:
     result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), header=True, index=False)
 
-# Create reference MSA
+# Create reference MSA and Query file
 for file in result["verbose_name"]:
     file_path = os.path.join(os.pardir, "data/TreeBASEMirror-main/trees/" + file)
     tar_file = os.path.join(file_path, file + ".tar.gz")
@@ -60,9 +68,29 @@ for file in result["verbose_name"]:
 
     extracted_path = os.path.join(file_path,
                                   'msa.fasta')
-    new_name_msa = os.path.join(file_path, file.replace(".phy", "_reference.fasta"))
 
-    os.rename(extracted_path, new_name_msa)
+    MSA = AlignIO.read(extracted_path, 'fasta')
+
+    unique_sequences = set()
+    alignment_dedup = []
+    duplicate_counter = 0
+    duplicate_names = []
+    for record in MSA:
+        # Convert the sequence to a string for comparison
+        sequence_str = str(record.seq)
+
+        # Check if the sequence is unique
+        if sequence_str not in unique_sequences:
+            unique_sequences.add(sequence_str)
+            alignment_dedup.append(record)
+        else:
+            duplicate_counter += 1
+            duplicate_names.append(record.id)
+    print("Duplicate counter: " + str(duplicate_counter))
+    print("Duplicates: " + str(duplicate_names))
+
+    new_name_msa = os.path.join(file_path, file.replace(".phy", "_reference.fasta"))
+    SeqIO.write(alignment_dedup, new_name_msa, "fasta")
 
     copy_to_path = os.path.join(os.pardir, "data/raw/msa")
     shutil.copy(new_name_msa, copy_to_path)
@@ -73,10 +101,20 @@ for file in result["verbose_name"]:
               copy_to_path + "/" + file.replace(".phy", "_query.fasta"))
 
     # ----------------------------- COPY tree-------------------------------------------
-
     tree_path = os.path.join(file_path, "tree_best.newick")
+
+    # Load the tree from the file
+    tree = Tree(tree_path)
+    print("Leaves bfeofr: " + str(len(tree.get_leaves())))
+    for taxon in duplicate_names:
+        node = tree.search_nodes(name=taxon)
+        if node:
+            node[0].delete()
+    print("Leaves after: " + str(len(tree.get_leaves())))
+
+
     new_tree_name = os.path.join(file_path, file.replace(".phy", ".newick"))
-    os.rename(tree_path, new_tree_name)
+    tree.write(outfile=new_tree_name)
     copy_to_path_tree = os.path.join(os.pardir, "data/raw/reference_tree")
     shutil.copy(new_tree_name, copy_to_path_tree)
 
@@ -87,3 +125,4 @@ for file in result["verbose_name"]:
     os.rename(model_path, new_model_name)
     copy_to_path_model = os.path.join(os.pardir, "data/processed/loo")
     shutil.copy(new_model_name, copy_to_path_model)
+    break
