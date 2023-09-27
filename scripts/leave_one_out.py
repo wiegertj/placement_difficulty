@@ -332,6 +332,7 @@ for msa_name in filtered_filenames:
                 original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree_tmp",
                                                   msa_name + "_" + to_query + ".newick")
                 print(original_tree_path)
+                print("Start creating loo tree")
                 tree.write(outfile=original_tree_path, format=1)
 
                 tree_path = original_tree_path
