@@ -11,7 +11,7 @@ difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda
 difficulties_df.drop_duplicates(subset=["verbose_name"], keep="first", inplace=True)
 difficulties_path_new = os.path.join(os.pardir, "data/treebase_difficulty_new.csv")
 difficulties_df_new = pd.read_csv(difficulties_path_new, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
-difficulties_merged = difficulties_path_new.merge(difficulties_df, how="inner")
+difficulties_merged = difficulties_df_new.merge(difficulties_df, how="inner")
 print(difficulties_merged["difficult"])
 difficulties_merged["difficult"] = difficulties_merged["difficulty"]
 print(difficulties_merged["difficult"])
