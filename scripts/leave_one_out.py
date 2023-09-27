@@ -43,7 +43,7 @@ filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 # print("Before filterling" + str(len(filenames)))
 # filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
 # print("After filterling" + str(len(filtered_filenames)))
-loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
+#loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
 filtered_filenames = filenames
 msa_counter = 0
 for msa_name in filtered_filenames:
@@ -114,42 +114,6 @@ for msa_name in filtered_filenames:
 
         output_file_query = os.path.join(os.pardir, "data/processed/loo", msa_name + "_query_" + to_query + ".fasta")
         output_file_query = os.path.abspath(output_file_query)
-        unique_sequences = set()
-        new_alignment_dup = []
-        for record in new_alignment:
-            # Convert the sequence to a string for comparison
-            sequence_str = str(record.seq)
-
-            # Check if the sequence is unique
-            if sequence_str not in unique_sequences:
-                unique_sequences.add(sequence_str)
-                new_alignment_dup.append(record)
-
-        SeqIO.write(new_alignment_dup, output_file, "fasta")
-        SeqIO.write(query_alignment, output_file_query, "fasta")
-
-        output_file_tree = output_file.replace(".fasta", ".newick")
-        raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
-
-        command = ["pythia", "--msa", output_file, "--raxmlng", raxml_path]
-        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
-        pythia_output = result.stdout
-        pythia_output = result.stdout
-        pythia_error = result.stderr  # Capture stderr
-
-        # Define a regular expression pattern to match float numbers
-        # This pattern captures one or more digits, an optional decimal point, and more digits
-        pattern = r"[-+]?\d*\.\d+|\d+"
-
-        # Use re.findall to find all matches in the string
-        matches = re.findall(pattern, result.stderr)
-
-        # Extract the last float number
-        if matches:
-            last_float_before = float(matches[-1])
-            print("Last float number:", last_float_before)
-        else:
-            print("No float numbers found in the string.")
 
         if feature_config.REESTIMATE_TREE == True:
 
