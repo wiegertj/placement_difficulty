@@ -334,6 +334,7 @@ for msa_name in filtered_filenames:
                 print(original_tree_path)
                 print("Start creating loo tree")
                 print(tree)
+                original_tree_path = os.path.abspath(original_tree_path)
                 tree.write(outfile=original_tree_path, format=1)
 
                 tree_path = original_tree_path
