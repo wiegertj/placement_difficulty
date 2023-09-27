@@ -328,13 +328,13 @@ for msa_name in filtered_filenames:
                 leaf_node.delete()
                 leaf_names = tree.get_leaf_names()
                 leaf_count = len(leaf_names)
-
                 original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree_tmp",
                                                   msa_name + "_" + to_query + ".newick")
-                print(original_tree_path)
                 print("Start creating loo tree")
                 print(tree)
                 original_tree_path = os.path.abspath(original_tree_path)
+                print(original_tree_path)
+
                 tree.write(outfile=original_tree_path)
 
                 tree_path = original_tree_path
