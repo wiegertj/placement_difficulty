@@ -116,10 +116,16 @@ for file in result["verbose_name"]:
     print("--------------------------------")
     print("To delete: " + str(len(duplicate_names)))
     print("Leaves before: " + str(len(tree.get_leaves())))
+    deleted = 0
     for taxon in duplicate_names:
         node = tree.search_nodes(name=taxon)
         if node:
             node[0].delete()
+            deleted += 1
+    if deleted < len(duplicate_names):
+        print("Did not find every node, skipped")
+        continue
+
     print("Leaves after: " + str(len(tree.get_leaves())))
     print("--------------------------------")
 
