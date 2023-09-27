@@ -388,5 +388,5 @@ for msa_name in filtered_filenames:
 
         files = glob.glob(os.path.join(os.path.join(os.pardir, "data/processed/loo", f"*{to_query}*")))
 
-        for file_path in files:
-            os.remove(file_path)
+        #for file_path in files:
+         #   os.remove(file_path)
