@@ -126,4 +126,3 @@ for file in result["verbose_name"]:
     os.rename(model_path, new_model_name)
     copy_to_path_model = os.path.join(os.pardir, "data/processed/loo")
     shutil.copy(new_model_name, copy_to_path_model)
-    break
