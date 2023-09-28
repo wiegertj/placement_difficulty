@@ -156,7 +156,7 @@ for file in result["verbose_name"].unique():
         print("Not found: " + file + " skipped")
         result = result[result['verbose_name'] != file]
         continue
-#if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
- #   result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', header=False, index=False)
-#else:
- #   result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), header=True, index=False)
+if os.path.exists(os.path.join(os.pardir, "data/loo_selection_up.csv")):
+    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', header=False, index=False)
+else:
+    result.to_csv(os.path.join(os.pardir, "data/loo_selection_up.csv"), header=True, index=False)
