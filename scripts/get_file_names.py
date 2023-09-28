@@ -129,6 +129,8 @@ for file in result["verbose_name"].unique():
         print(tree)
         print(duplicate_names)
         result = result[result['verbose_name'] != file]
+        print("deleted: " + str(deleted))
+        print("Leaves after: " + str(len(tree.get_leaves())))
         continue
     print("deleted: " + str(deleted))
     print("Leaves after: " + str(len(tree.get_leaves())))
