@@ -250,7 +250,7 @@ def compute_entropy(msa_filepath, isAA):
                         entropy -= probability * math.log(probability, 2)
                 try:
                     entropy = entropy / math.log2(len(site_column))
-                catch ZeroDivisionError:
+                except ZeroDivisionError:
                     entropy = 0
                 site_entropies.append(entropy)
 
