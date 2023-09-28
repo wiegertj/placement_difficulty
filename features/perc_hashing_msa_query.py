@@ -295,7 +295,6 @@ def compute_perceptual_hash_distance(msa_file):
                                   msa_file.replace("_reference.fasta", "") + "16p_msa_perc_hash_dist" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped: " + msa_file + " already processed")
-        return 0
 
     current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
     sampledData = current_loo_targets[current_loo_targets["dataset"] == msa_file.replace("_reference.fasta", "")][
