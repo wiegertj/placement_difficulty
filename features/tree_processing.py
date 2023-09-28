@@ -72,8 +72,10 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
         kurtosis_irs = 0
         std_irs = 0
         max_irs = max(irs)
-
-    min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim = calculate_all_centrality_measures(newick_tree)
+    try:
+        min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim = calculate_all_centrality_measures(newick_tree)
+    except TypeError:
+        min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim = -1
 
     return tree_file.replace(".newick",
                              ""), average_length, max_length, min_length, std_length, depth, average_branch_length_tips, \
