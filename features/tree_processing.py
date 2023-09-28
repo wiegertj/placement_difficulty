@@ -37,10 +37,14 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     tip_branch_lengths = [node.dist for node in tree.iter_leaves()]
     average_branch_length_tips = sum(tip_branch_lengths) / len(tip_branch_lengths)
     max_branch_length_tips = max(tip_branch_lengths)
-    std_branch_length_tips = statistics.stdev(tip_branch_lengths)
-    skew_branch_length_tips = skew(tip_branch_lengths)
-    kurtosis_branch_length_tips = kurtosis(tip_branch_lengths, fisher=True)
-
+    if len(tip_branch_lengths) >= 2:
+        std_branch_length_tips = statistics.stdev(tip_branch_lengths)
+        skew_branch_length_tips = skew(tip_branch_lengths)
+        kurtosis_branch_length_tips = kurtosis(tip_branch_lengths, fisher=True)
+    else:
+        std_branch_length_tips = 0
+        skew_branch_length_tips = 0
+        kurtosis_branch_length_tips = 0
     all_nodes = tree.traverse()
     inner_nodes = [node.dist for node in all_nodes if not node.is_leaf()]
     # inner_branch_lengths = [node.dist for node in inner_nodes]
