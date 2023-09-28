@@ -308,8 +308,8 @@ def compute_perceptual_hash_distance(msa_file):
         counter += 1
         if counter % 50 == 0:
             print(counter)
-        if record_query.name not in sampledData:
-            continue
+        #if record_query.name not in sampledData:
+         #   continue
         distances = []
         kmer_sims10 = []
         kmer_sims15 = []
