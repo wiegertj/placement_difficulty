@@ -347,6 +347,8 @@ def compute_perceptual_hash_distance(msa_file):
                     coeff_dists.append(coeff_dist)
                 else:
                     return 0
+        if len(distances) < 2:
+            return 0
 
         max_ham = max(distances)
         min_ham = min(distances)
