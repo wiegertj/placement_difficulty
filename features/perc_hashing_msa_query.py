@@ -531,7 +531,7 @@ if __name__ == '__main__':
 
 
     print("Finished Perc Hash, starting CV")
-    for file in filenames_comp:
+    #for file in filenames_comp:
         #if os.path.exists(os.path.join(os.pardir, "data/processed/features",
          #                          file.replace("_reference.fasta", "") + "_msa_im_comp.csv")):
           #  print("Found existing one ... ")
