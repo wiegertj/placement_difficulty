@@ -62,11 +62,15 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
 
     irs = compute_tree_imbalance(tree)
     avg_irs = sum(irs) / len(irs)
-    std_irs = statistics.stdev(irs)
-    max_irs = max(irs)
-    skew_irs = skew(irs)
-    kurtosis_irs = kurtosis(irs, fisher=True)
-
+    if len(irs) >= 2:
+        std_irs = statistics.stdev(irs)
+        max_irs = max(irs)
+        skew_irs = skew(irs)
+        kurtosis_irs = kurtosis(irs, fisher=True)
+    else:
+        skew_irs = 0
+        kurtosis_irs = 0
+        std_irs = 0
     min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim = calculate_all_centrality_measures(newick_tree)
 
     return tree_file.replace(".newick",
