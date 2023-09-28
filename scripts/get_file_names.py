@@ -48,7 +48,7 @@ else:
 result = names_used
 print(result)
 # Create reference MSA and Query file
-for file in result["verbose_name"]:
+for file in result:
     file_path = os.path.join(os.pardir, "data/TreeBASEMirror-main/trees/" + file)
     tar_file = os.path.join(file_path, file + ".tar.gz")
     print(file_path)
