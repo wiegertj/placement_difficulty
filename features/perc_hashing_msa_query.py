@@ -138,7 +138,7 @@ def compute_image_distances(msa_file):
                                   msa_file.replace("_reference.fasta", "") + "_msa_im_comp" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped Image Comp: " + msa_file + " already processed")
-        return 0
+        #return 0
 
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
@@ -291,10 +291,17 @@ def compute_perceptual_hash_distance(msa_file):
         print("Skipped: " + msa_file + " already processed")
         return 0
 
+    current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
+    sampledData = current_loo_targets[current_loo_targets["dataset"] == msa_file.replace("_reference.fasta", "")][
+        "sampleId"].values.tolist()
+
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
+
         counter += 1
         if counter % 50 == 0:
             print(counter)
+        if record_query.id not in sampledData:
+            continue
         distances = []
         kmer_sims10 = []
         kmer_sims15 = []
