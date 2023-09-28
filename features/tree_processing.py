@@ -51,9 +51,14 @@ def analyze_newick_tree(newick_tree, tree_file) -> tuple:
     average_branch_length_inner = sum(inner_nodes) / len(inner_nodes)
     min_branch_length_inner = min(inner_nodes)
     max_branch_length_inner = max(inner_nodes)
-    std_branch_length_inner = statistics.stdev(inner_nodes)
-    skew_branch_length_inner = skew(inner_nodes)
-    kurtosis_branch_length_inner = kurtosis(inner_nodes, fisher=True)
+    if len(inner_nodes) >= 2:
+        std_branch_length_inner = statistics.stdev(inner_nodes)
+        skew_branch_length_inner = skew(inner_nodes)
+        kurtosis_branch_length_inner = kurtosis(inner_nodes, fisher=True)
+    else:
+        std_branch_length_inner = 0
+        skew_branch_length_inner = 0
+        kurtosis_branch_length_inner = 0
 
     irs = compute_tree_imbalance(tree)
     avg_irs = sum(irs) / len(irs)
