@@ -300,8 +300,6 @@ def compute_perceptual_hash_distance(msa_file):
         counter += 1
         if counter % 50 == 0:
             print(counter)
-            print(record_query.name)
-            print(sampledData)
         if record_query.name not in sampledData:
             continue
         distances = []
