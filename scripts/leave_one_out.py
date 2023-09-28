@@ -43,7 +43,7 @@ filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 # print("Before filterling" + str(len(filenames)))
 # filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
 # print("After filterling" + str(len(filtered_filenames)))
-#loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
+loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
 filtered_filenames = filenames
 msa_counter = 0
 for msa_name in filtered_filenames:
@@ -73,12 +73,12 @@ for msa_name in filtered_filenames:
     counter = 0
 
     # Create random sample
-    if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
-        sequence_ids_sample = sequence_ids
-    else:
-        sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
+    #if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
+     #   sequence_ids_sample = sequence_ids
+    #else:
+     #   sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
 
-    # sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
+    sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
 
     for to_query in sequence_ids_sample:
 
