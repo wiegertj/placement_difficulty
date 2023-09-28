@@ -73,12 +73,12 @@ for msa_name in filtered_filenames:
     counter = 0
 
     # Create random sample
-    #if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
-     #   sequence_ids_sample = sequence_ids
-    #else:
-     #   sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
+    if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
+        sequence_ids_sample = sequence_ids
+    else:
+        sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
 
-    sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
+    #sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
 
     for to_query in sequence_ids_sample:
 
