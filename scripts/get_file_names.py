@@ -45,8 +45,8 @@ if len(samples) == 1:
 else:
     result = pd.concat(samples)
 
-
-
+result = names_used
+print(result)
 # Create reference MSA and Query file
 for file in result["verbose_name"]:
     file_path = os.path.join(os.pardir, "data/TreeBASEMirror-main/trees/" + file)
