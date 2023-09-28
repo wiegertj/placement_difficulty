@@ -90,8 +90,7 @@ for file in result["verbose_name"].unique():
         else:
             duplicate_counter += 1
             duplicate_names.append(record.id)
-    print("Duplicate counter: " + str(duplicate_counter))
-    print("Duplicates: " + str(duplicate_names))
+
 
     new_name_msa = os.path.join(file_path, file.replace(".phy", "_reference.fasta"))
     SeqIO.write(alignment_dedup, new_name_msa, "fasta")
@@ -114,6 +113,8 @@ for file in result["verbose_name"].unique():
     # Load the tree from the file
     tree = Tree(tree_path)
     print("--------------------------------")
+    print("Duplicate counter: " + str(duplicate_counter))
+    print("Duplicates: " + str(duplicate_names))
     print("To delete: " + str(len(duplicate_names)))
     print("Leaves before: " + str(len(tree.get_leaves())))
     deleted = 0
