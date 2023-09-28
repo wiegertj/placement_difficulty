@@ -29,7 +29,7 @@ for i in range(len(difficulty_ranges) - 1):
     upper_bound = difficulty_ranges[i + 1]
     print("Subset size " + str(lower_bound) + " - " + str(upper_bound))
     print(difficulties_df[
-        (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)].shape)
+              (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)].shape)
     subset = difficulties_df[
         (difficulties_df['difficult'] >= lower_bound) & (difficulties_df['difficult'] < upper_bound)]
     if len(subset) < 150:
@@ -55,12 +55,11 @@ for file in result["verbose_name"].unique():
     alternative_path_tree = False
 
     if not os.path.exists(os.path.join(file_path, "tree_best.newick")):
-        if not os.path.exists(os.path.join(file_path, file.replace(".phy","") + ".newick")):
+        if not os.path.exists(os.path.join(file_path, file.replace(".phy", "") + ".newick")):
             print("Tree file not found for " + file + " skipped")
             result = result[result['verbose_name'] != file]
             continue
         alternative_path_tree = True
-
 
     try:
         with tarfile.open(tar_file, 'r:gz') as tar:
@@ -91,7 +90,6 @@ for file in result["verbose_name"].unique():
             duplicate_counter += 1
             duplicate_names.append(record.id)
 
-
     new_name_msa = os.path.join(file_path, file.replace(".phy", "_reference.fasta"))
     SeqIO.write(alignment_dedup, new_name_msa, "fasta")
 
@@ -107,8 +105,7 @@ for file in result["verbose_name"].unique():
     if alternative_path_tree == False:
         tree_path = os.path.join(file_path, "tree_best.newick")
     else:
-        tree_path = os.path.join(file_path, file.replace(".phy","") + ".newick")
-
+        tree_path = os.path.join(file_path, file.replace(".phy", "") + ".newick")
 
     # Load the tree from the file
     tree = Tree(tree_path)
@@ -129,7 +126,6 @@ for file in result["verbose_name"].unique():
     print("deleted: " + str(deleted))
     print("Leaves after: " + str(len(tree.get_leaves())))
     print("--------------------------------")
-
 
     new_tree_name = os.path.join(file_path, file.replace(".phy", ".newick"))
     tree.write(outfile=new_tree_name)
