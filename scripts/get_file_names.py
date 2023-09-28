@@ -45,10 +45,10 @@ if len(samples) == 1:
 else:
     result = pd.concat(samples)
 
-result = names_used
+result = df_used
 print(result)
 # Create reference MSA and Query file
-for file in result:
+for file in result["verbose_name"].unique():
     file_path = os.path.join(os.pardir, "data/TreeBASEMirror-main/trees/" + file)
     tar_file = os.path.join(file_path, file + ".tar.gz")
     print(file_path)
@@ -156,7 +156,7 @@ for file in result:
         print("Not found: " + file + " skipped")
         result = result[result['verbose_name'] != file]
         continue
-if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
-    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', header=False, index=False)
-else:
-    result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), header=True, index=False)
+#if os.path.exists(os.path.join(os.pardir, "data/loo_selection.csv")):
+ #   result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), mode='a', header=False, index=False)
+#else:
+ #   result.to_csv(os.path.join(os.pardir, "data/loo_selection.csv"), header=True, index=False)
