@@ -248,8 +248,10 @@ def compute_entropy(msa_filepath, isAA):
                 for probability in probabilities.values():
                     if probability != 0:
                         entropy -= probability * math.log(probability, 2)
-
-                entropy = entropy / math.log2(len(site_column))
+                try:
+                    entropy = entropy / math.log2(len(site_column))
+                catch ZeroDivisionError:
+                    entropy = 0
                 site_entropies.append(entropy)
 
     max_entropy_ = np.max(site_entropies)
