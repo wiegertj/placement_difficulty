@@ -119,11 +119,14 @@ for file in result["verbose_name"].unique():
     deleted = 0
     for taxon in duplicate_names:
         node = tree.search_nodes(name=taxon)
+        tree.search_nodes()
         if node:
             node[0].delete()
             deleted += 1
     if deleted < len(duplicate_names):
         print("Did not find every node, skipped")
+        print(tree)
+        print(duplicate_names)
         result = result[result['verbose_name'] != file]
         continue
 
