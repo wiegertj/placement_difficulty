@@ -130,7 +130,7 @@ for file in result["verbose_name"].unique():
     new_tree_name = os.path.join(file_path, file.replace(".phy", ".newick"))
     tree.write(outfile=new_tree_name)
     copy_to_path_tree = os.path.join(os.pardir, "data/raw/reference_tree")
-    shutil.move(new_tree_name, copy_to_path_tree)
+    shutil.copy(new_tree_name, copy_to_path_tree)
 
     # ----------------------------- COPY model -------------------------------------------
     alternative_path_model = False
