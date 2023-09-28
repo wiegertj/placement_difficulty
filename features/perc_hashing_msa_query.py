@@ -219,10 +219,11 @@ def compute_image_distances(msa_file):
                             distances_pca.append(distance_pca)
                         except (ValueError, np.linalg.LinAlgError):
                             print("Skipped, error occured in PCA")
-        if len(distances_hu) < 2:
+        try:
+            min_distance = min(distances_hu)
+            max_distance = max(distances_hu)
+        except ValueError:
             return 0
-        min_distance = min(distances_hu)
-        max_distance = max(distances_hu)
 
         max_dist_hu = max(distances_hu)
         min_dist_hu = min(distances_hu)
