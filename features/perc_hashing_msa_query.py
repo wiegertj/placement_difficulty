@@ -481,53 +481,53 @@ if __name__ == '__main__':
         print(file)
         if not os.path.exists(os.path.join(os.pardir, "data/raw/msa", file)):
             print("File not found: " + file)
-            #filenames.remove(file)
-            #continue
+            filenames.remove(file)
+            continue
         if file == "11274_2_reference.fasta":
             filenames.remove(file)
 
-        # if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
-        #   filenames.remove(file)
+        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
+           filenames.remove(file)
     filenames_comp = filenames
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
 
-    #pool = multiprocessing.Pool()
-    #results = pool.imap_unordered(compute_perceptual_hash_distance, filenames)
+    pool = multiprocessing.Pool()
+    results = pool.imap_unordered(compute_perceptual_hash_distance, filenames)
 
-    #for result in results:
-     #   if result != 0:
-      #      print("Finished processing: " + result[1] + "with query file")
-       #     df = pd.DataFrame(result[0],
-        #                      columns=['dataset', 'sampleId', 'current_closest_taxon_perc_ham','min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
-         #                              'avg_perc_hash_ham_dist',
-          #                             'std_perc_hash_ham_dist', 'sks_perc_hash_ham_dist',
-           #                            'kur_perc_hash_ham_dist', "sk_kmer_sim10", "kur_kmer_sim10",
-            #                           "rel_max_kmer_sim10", "rel_min_kmer_sim10", "rel_avg_kmer_sim10",
-             #                          "rel_std_kmer_sim10",
-              #                         "sk_kmer_sim15", "kur_kmer_sim15", "rel_max_kmer_sim15", "rel_min_kmer_sim15",
-               #                        "rel_avg_kmer_sim15",
-                #                       "rel_std_kmer_sim15",
-                 #                      "sk_kmer_sim25", "kur_kmer_sim25", "rel_max_kmer_sim25", "rel_min_kmer_sim25",
-                  #                     "rel_avg_kmer_sim25",
-                   #                    "rel_std_kmer_sim25",
-                    #                   "sk_kmer_sim50", "kur_kmer_sim50", "rel_max_kmer_sim50", "rel_min_kmer_sim50",
-                     #                  "rel_avg_kmer_sim50",
-                      #                 "rel_std_kmer_sim50",
-                       #                "sk_perc_hash_lcs",
-                        #               "kur_perc_hash_lcs", "max_perc_hash_lcs", "min_perc_hash_lcs",
-                         #              "avg_perc_hash_lcs",
-                          #             "std_perc_hash_lcs",
-                           #            "max_dist_coeff", "min_dist_coeff", "std_dist_coeff", "avg_dist_coeff", "sk_dist_coeff",
-                            #           "kur_dist_coeff"
-                             #          ])
-            #df.to_csv(os.path.join(os.pardir, "data/processed/features",
-             #                      result[1].replace("_reference.fasta", "") + str(
-              #                         feature_config.SIGN_ONLY_MATRIX_SIZE) + "p_msa_perc_hash_dist.csv"))
+    for result in results:
+        if result != 0:
+            print("Finished processing: " + result[1] + "with query file")
+            df = pd.DataFrame(result[0],
+                              columns=['dataset', 'sampleId', 'current_closest_taxon_perc_ham','min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
+                                       'avg_perc_hash_ham_dist',
+                                       'std_perc_hash_ham_dist', 'sks_perc_hash_ham_dist',
+                                       'kur_perc_hash_ham_dist', "sk_kmer_sim10", "kur_kmer_sim10",
+                                       "rel_max_kmer_sim10", "rel_min_kmer_sim10", "rel_avg_kmer_sim10",
+                                       "rel_std_kmer_sim10",
+                                       "sk_kmer_sim15", "kur_kmer_sim15", "rel_max_kmer_sim15", "rel_min_kmer_sim15",
+                                       "rel_avg_kmer_sim15",
+                                       "rel_std_kmer_sim15",
+                                       "sk_kmer_sim25", "kur_kmer_sim25", "rel_max_kmer_sim25", "rel_min_kmer_sim25",
+                                       "rel_avg_kmer_sim25",
+                                       "rel_std_kmer_sim25",
+                                       "sk_kmer_sim50", "kur_kmer_sim50", "rel_max_kmer_sim50", "rel_min_kmer_sim50",
+                                       "rel_avg_kmer_sim50",
+                                       "rel_std_kmer_sim50",
+                                       "sk_perc_hash_lcs",
+                                       "kur_perc_hash_lcs", "max_perc_hash_lcs", "min_perc_hash_lcs",
+                                       "avg_perc_hash_lcs",
+                                       "std_perc_hash_lcs",
+                                       "max_dist_coeff", "min_dist_coeff", "std_dist_coeff", "avg_dist_coeff", "sk_dist_coeff",
+                                       "kur_dist_coeff"
+                                       ])
+            df.to_csv(os.path.join(os.pardir, "data/processed/features",
+                                   result[1].replace("_reference.fasta", "") + str(
+                                       feature_config.SIGN_ONLY_MATRIX_SIZE) + "p_msa_perc_hash_dist.csv"))
 
-    #pool.close()
-    #pool.join()
+    pool.close()
+    pool.join()
 
 
     print("Finished Perc Hash, starting CV")
