@@ -252,6 +252,7 @@ def main():
 
     counter = 0
     dataset_set.remove("18872_2")
+    dataset_set.remove("11451_0")
 
     for dataset in dataset_set:
         results = []
