@@ -33,9 +33,9 @@ for tree_filename in filenames:
     t = Tree(tree_path)
     num_leaves = len(t.get_leaves())
 
-    #if num_leaves >= 500:
-     #   print("Too large, skipped")
-      #  continue
+    if num_leaves >= 1000:
+        print("Too large, skipped")
+        continue
 
 
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
@@ -44,8 +44,9 @@ for tree_filename in filenames:
         sequence_length = len(record.seq)
         break
 
-    if sequence_length >= 5000:
+    if sequence_length >= 10000:
         print("Too large, skipped")
+        continue
 
 
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
