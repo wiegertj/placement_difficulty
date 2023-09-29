@@ -298,6 +298,7 @@ def main():
                 original_tree.write(outfile=output_file_tree, format=5)
 
                 result = count_subst_freqs(output_file_tree, output_file_msa)
+
                 max_subst_freq = max(result) / leaf_count
                 avg_subst_freq = (sum(result) / len(result)) / leaf_count
                 if statistics.mean(result) != 0:

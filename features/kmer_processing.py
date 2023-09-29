@@ -5,6 +5,8 @@ import pandas as pd
 import statistics
 import multiprocessing
 from itertools import product
+
+import probables
 from Bio import SeqIO
 from probables import BloomFilter
 from scipy.stats import skew, kurtosis
@@ -210,7 +212,11 @@ def multiprocess_string_kernel(query_filename, isAA, bloom_filters_MSA_, msa_fil
     pool = multiprocessing.Pool(initializer=initializer, initargs=(bloom_filters_MSA_, msa_file_, isAA))
     results_async = [pool.apply_async(compute_string_kernel_statistics, (item,)) for item in data]
     #monitor_progress(results_async)
-    output = [result_.get() for result_ in results_async]
+    try:
+        output = [result_.get() for result_ in results_async]
+    except probables.exceptions.InitializationError:
+        print("No ouput")
+        return 0
 
     pool.close()
     pool.join()
@@ -248,6 +254,8 @@ if __name__ == '__main__':
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
+
+    filenames = filenames[-135:]
 
     counter_msa = 0
     for msa_file in filenames:
@@ -318,18 +326,19 @@ if __name__ == '__main__':
         while True:
             interval_start += feature_config.KMER_PROCESSING_STEPSIZE
             result_tmp = multiprocess_string_kernel(query_file, isAA, bloom_filters_MSA, msa_file, interval_start)
+            if result_tmp != 0:
 
-            results.extend(result_tmp)
-            df = pd.DataFrame(results,
-                              columns=['dataset', 'sampleId', 'min_kmer_sim', 'max_kmer_sim', 'mean_kmer_sim',
-                                       'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim'])
-            df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                                   msa_file.replace("_reference.fasta", "") + "_kmer" + str(
-                                       feature_config.K_MER_LENGTH) + "_0" + str(
-                                       feature_config.K_MER_MAX_GAP_PERCENTAGE).replace("0.",
-                                                                                        "") + "_" + str(
-                                       interval_start) + ".csv"), index=False)
-            results = []
+                results.extend(result_tmp)
+                df = pd.DataFrame(results,
+                                  columns=['dataset', 'sampleId', 'min_kmer_sim', 'max_kmer_sim', 'mean_kmer_sim',
+                                           'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim'])
+                df.to_csv(os.path.join(os.pardir, "data/processed/features",
+                                       msa_file.replace("_reference.fasta", "") + "_kmer" + str(
+                                           feature_config.K_MER_LENGTH) + "_0" + str(
+                                           feature_config.K_MER_MAX_GAP_PERCENTAGE).replace("0.",
+                                                                                            "") + "_" + str(
+                                           interval_start) + ".csv"), index=False)
+                results = []
 
             if interval_start >= no_queries or interval_start >= bound:  # stop if we reached bound or no query samples left
                 break
