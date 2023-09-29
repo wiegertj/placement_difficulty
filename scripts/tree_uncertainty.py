@@ -10,7 +10,8 @@ filenames = loo_selection['dataset'].tolist()
 filenames = set(filenames)
 duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 for file in filenames:
-    dupl = duplicate_data.loc[duplicate_data["name"] == file, "no_duplicates"].values[0]
+    dupl = duplicate_data.loc[duplicate_data["name"] == file].iloc[0]
+    dupl = dupl["no_duplicates"]
     print(dupl)
     print(file)
 
