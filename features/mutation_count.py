@@ -269,7 +269,7 @@ def main():
         reference_msa = AlignIO.read(reference_msa_path, 'fasta')
         reference_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", dataset + ".newick")
         sample_df = current_loo_targets[current_loo_targets['dataset'] == dataset]["sampleId"]
-        if len(sample_df[0].seq) > 10000:
+        if len(reference_msa[0].seq) > 10000:
             print("too large sequences")
             continue
         if len(reference_msa) > 1000:
