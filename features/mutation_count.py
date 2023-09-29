@@ -251,6 +251,7 @@ def main():
     dataset_set = set(current_loo_targets['dataset'])
 
     counter = 0
+    dataset_set.remove("18872_2")
 
     for dataset in dataset_set:
         results = []
