@@ -8,7 +8,16 @@ loo_selection = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_r
 loo_selection["dataset"] = loo_selection["dataset"] + ".newick"
 filenames = loo_selection['dataset'].tolist()
 filenames = set(filenames)
+duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
+for file in filenames:
+    dupl = duplicate_data[duplicate_data["name"] == file][0]["no_duplicates"]
+    print(dupl)
+    print(file)
 
+    if dupl == 0:
+        filenames.remove(file)
+        print("removed")
+    print("--------")
 for file in filenames:
     if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree", file)):
         print("Not found " + file)
