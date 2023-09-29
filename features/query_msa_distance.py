@@ -21,10 +21,17 @@ def compute_hamming_distance(msa_file, query_file) -> list:
     """
     results = []
     counter = 0
+
+    #current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
+    #sampledData = current_loo_targets[current_loo_targets["dataset"] == msa_file.replace("_reference.fasta", "")][
+     #   "sampleId"].values.tolist()
+
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
         if counter % 50 == 0:
             print(counter)
+        #if record_query.id not in sampledData:
+         #   continue
         distances = []
         #lcss = []
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
@@ -120,7 +127,7 @@ if __name__ == '__main__':
         if os.path.isfile(os.path.join(os.pardir, "data/processed/features",
                                        msa_file.replace("reference.fasta", "msa_dist.csv"))):
             print("Found " + msa_file + " skipped")
-            continue
+            #continue
         if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 15000:
             print("Skipped " + msa_file + " too large")
             continue
