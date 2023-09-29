@@ -41,6 +41,9 @@ def compute_hamming_distance(msa_file, query_file) -> list:
                 #lcss.append(lcs)
                 distances.append(distance)
 
+        if len(distances) < 2:
+            return 0
+
         max_ham = max(distances)
         min_ham = min(distances)
         avg_ham = sum(distances) / len(distances)
@@ -122,6 +125,8 @@ if __name__ == '__main__':
 
     counter_msa = 0
     #filenames = filenames[:2]
+    filenames = filenames[240:]  # Slice starting from the 241st element (index 240)
+
     for msa_file in filenames:
         print(msa_file)
         if os.path.isfile(os.path.join(os.pardir, "data/processed/features",
@@ -136,9 +141,11 @@ if __name__ == '__main__':
         counter_msa += 1
         result_tmp = compute_hamming_distance(msa_file, msa_file.replace("reference.fasta", "query.fasta"))
 
-        df = pd.DataFrame(result_tmp, columns=['dataset', 'sampleId', 'min_ham_dist', 'max_ham_dist', 'avg_ham_dist',
-                                               'std_ham_dist', "cv_ham_dist", "sk_ham_dist", "kur_ham_dist"
+        if result_tmp != 0:
 
-                                               ])
-        df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                               msa_file.replace("_reference.fasta", "") + "_msa_dist.csv"))
+            df = pd.DataFrame(result_tmp, columns=['dataset', 'sampleId', 'min_ham_dist', 'max_ham_dist', 'avg_ham_dist',
+                                                   'std_ham_dist', "cv_ham_dist", "sk_ham_dist", "kur_ham_dist"
+
+                                                   ])
+            df.to_csv(os.path.join(os.pardir, "data/processed/features",
+                                   msa_file.replace("_reference.fasta", "") + "_msa_dist.csv"))
