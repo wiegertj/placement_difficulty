@@ -12,8 +12,12 @@ filenames = list(filenames)
 filenames_filtered = []
 duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 for file in filenames:
-    dupl = duplicate_data.loc[duplicate_data["name"] == file.replace(".newick", ".phy")].iloc[0]
-    dupl = dupl["no_duplicates"]
+    try:
+        dupl = duplicate_data.loc[duplicate_data["name"] == file.replace(".newick", ".phy")].iloc[0]
+        dupl = dupl["no_duplicates"]
+    except IndexError:
+        print("File not found in placements")
+        continue
     print(dupl)
     print(file)
 
