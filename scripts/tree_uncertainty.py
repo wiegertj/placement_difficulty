@@ -5,7 +5,7 @@ from ete3 import Tree
 from Bio import SeqIO
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
-loo_selection["dataset"] = loo_selection["dataset"].str + ".newick"
+loo_selection["dataset"] = loo_selection["dataset"] + ".newick"
 filenames = loo_selection['dataset'].tolist()
 filenames = set(filenames)
 
