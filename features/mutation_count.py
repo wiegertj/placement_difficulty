@@ -272,7 +272,6 @@ def main():
             new_alignment = []
             for record in reference_msa:
                 if record.id != sample:
-                    print(record.id)
                     seq_record = SeqIO.SeqRecord(seq=record.seq, id=record.id, description="")
                     new_alignment.append(seq_record)
 
