@@ -9,6 +9,7 @@ loo_selection["dataset"] = loo_selection["dataset"] + ".newick"
 filenames = loo_selection['dataset'].tolist()
 filenames = set(filenames)
 filenames = list(filenames)
+filenames_filtered = []
 duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 for file in filenames:
     dupl = duplicate_data.loc[duplicate_data["name"] == file.replace(".newick", ".phy")].iloc[0]
@@ -19,6 +20,8 @@ for file in filenames:
     if dupl == 0:
         filenames.remove(file)
         print("removed")
+    else:
+        filenames_filtered.append(file)
     print("--------")
 for file in filenames:
     if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree", file)):
