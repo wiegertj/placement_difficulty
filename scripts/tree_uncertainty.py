@@ -30,7 +30,7 @@ for tree_filename in filenames:
 
     if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_1000.raxml.support"):
         print("Found already, move on")
-        continue
+        #continue
 
     t = Tree(tree_path)
     num_leaves = len(t.get_leaves())
