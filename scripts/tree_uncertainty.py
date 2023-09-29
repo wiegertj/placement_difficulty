@@ -13,7 +13,7 @@ for file in filenames:
     if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree", file)):
         print("Not found " + file)
         filenames.remove(file)
-
+print(len(filenames))
 counter = 0
 for tree_filename in filenames:
     counter += 1
