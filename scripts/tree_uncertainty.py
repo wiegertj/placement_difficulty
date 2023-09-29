@@ -34,7 +34,7 @@ print(len(filenames))
 counter = 0
 for tree_filename in filenames_filtered:
     counter += 1
-    print(str(counter) + "/" + str(len(filenames)))
+    print(str(counter) + "/" + str(len(filenames_filtered)))
     #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
     #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
     #    print("Skipped, already found: " + tree_filename)
