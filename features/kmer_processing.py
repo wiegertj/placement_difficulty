@@ -205,7 +205,7 @@ def multiprocess_string_kernel(query_filename, isAA, bloom_filters_MSA_, msa_fil
         if (interval - feature_config.KMER_PROCESSING_STEPSIZE) < counter <= interval:
             print(query_record.name)
             if query_record.name in sampledData:
-            data.append(query_record)
+                data.append(query_record)
         if counter > interval:
             break
 
