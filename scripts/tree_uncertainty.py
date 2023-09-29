@@ -18,7 +18,6 @@ for file in filenames:
     print(file)
 
     if dupl == 0:
-        filenames.remove(file)
         print("removed")
     else:
         filenames_filtered.append(file)
