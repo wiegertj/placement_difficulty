@@ -4,8 +4,10 @@ import os
 from ete3 import Tree
 from Bio import SeqIO
 
-loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
+loo_selection = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
+loo_selection["dataset"] = loo_selection["dataset"].str + ".newick"
+filenames = loo_selection['dataset'].tolist()
+filenames = set(filenames)
 
 for file in filenames:
     if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree", file)):
