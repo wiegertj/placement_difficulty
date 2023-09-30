@@ -47,6 +47,7 @@ for tree_filename in filenames_filtered:
         continue
 
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
+    print(tree_path)
 
     if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_1000.raxml.support"):
         print("Found already, move on")
