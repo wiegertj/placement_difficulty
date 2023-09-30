@@ -279,21 +279,21 @@ for msa_name in rand_sample:
                     print("RF distance is %s over a total of" % (results_distance["norm_rf"]))
                     print("Quartet Distance: " + str(quartet_distance))
                     rf_distances.append(
-                        (msa_name, to_query, results_distance["norm_rf"], bsd_aligned, quartet_distance, last_float))
+                        (msa_name, to_query, results_distance["norm_rf"], bsd_aligned, quartet_distance))
                     df_rf = pd.DataFrame(rf_distances, columns=["dataset", "sampleId", "norm_rf_dist", "norm_bsd_dist",
-                                                                "norm_quartet_dist", "difficult_new"])
+                                                                "norm_quartet_dist"])
 
-                    if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv")):
-                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"),
+                    if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate_test.csv")):
+                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate_test.csv"),
                                      index=False, header=True,
                                      columns=["dataset", "sampleId", "norm_rf_dist", "norm_bsd_dist",
-                                              "norm_quartet_dist", "difficult_new"])
+                                              "norm_quartet_dist"])
                     else:
-                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate.csv"),
+                        df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate_test.csv"),
                                      index=False,
                                      mode='a', header=False,
                                      columns=["dataset", "sampleId", "norm_rf_dist", "norm_bsd_dist",
-                                              "norm_quartet_dist", "difficult_new"])
+                                              "norm_quartet_dist"])
                     rf_distances = []
                     msa_path_epa = aligned_output_file
         else:
