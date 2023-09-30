@@ -87,7 +87,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print(f"MDAE on baseline test set: {mdae}")
 
     mbe = MBE(y_test, np.zeros(len(y_test)) + mean(y_train))
-    print(f"MBE on baseline test set: {mdae}")
+    print(f"MBE on baseline test set: {mbe}")
 
 
 
@@ -183,7 +183,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print(f"MDAE on test set: {mdae}")
 
     mbe = MBE(y_test, y_pred)
-    print(f"MBE on test set: {mdae}")
+    print(f"MBE on test set: {mbe}")
 
 
 
