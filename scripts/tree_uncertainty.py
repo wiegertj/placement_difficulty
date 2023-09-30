@@ -9,7 +9,7 @@ loo_selection["dataset"] = loo_selection["dataset"] + ".newick"
 filenames = loo_selection['dataset'].tolist()
 filenames = set(filenames)
 filenames = list(filenames)
-filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].values.tolist()
+filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].str.replacer(".phy", ".newick").values.tolist()
 
 
 filenames_filtered = []
