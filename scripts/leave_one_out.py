@@ -43,7 +43,7 @@ filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 # print("Before filterling" + str(len(filenames)))
 # filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
 # print("After filterling" + str(len(filtered_filenames)))
-loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
+loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy_tmp.csv"))
 filtered_filenames = loo_reest_samples["dataset"].values.tolist()
 filtered_filenames = set(filtered_filenames)
 rand_sample = random.sample(filtered_filenames, 80)
