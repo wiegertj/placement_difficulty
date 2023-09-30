@@ -194,12 +194,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         X_test = X_test_
         X_test = X_test.sort_values(by="entropy")
         explainer = shap.Explainer(final_model,
-                                   X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId", "group"]),
+                                   X_test.drop(columns=["entropy", "prediction", "group"]),
                                    check_additivity=False)
-        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId", "group"]),
+        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "group"]),
                                 check_additivity=False)
 
-        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "dataset", "sampleId", "group"]),
+        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group"]),
                           plot_type="bar")
         plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
