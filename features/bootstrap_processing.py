@@ -168,7 +168,7 @@ def compute_rf_distance_statistics(bootstrap_path, reference_tree_path):
         mean_rf = np.mean(rf_distances)
     except np.core._exceptions._UFuncNoLoopError:
         print("Problem occured")
-        return -1, -1, -1, -1, -1, -1
+        return 0,0,0,0,0,0
     std_dev_rf = np.std(rf_distances)
     skewness_rf = skew(rf_distances)
     kurtosis_rf = kurtosis(rf_distances, fisher=True)
