@@ -81,6 +81,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
         params = {
             'objective': 'regression',
+            "n_estimators": trial.suggest_int('num_leaves', 200, 1000),
             'metric': 'l1',
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 100),
