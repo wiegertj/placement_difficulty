@@ -313,7 +313,7 @@ def sample_rows(group):
     percentile = group["percentile"].iloc[0]
     print(percentile)
     if percentile <= 4.0:
-        max_sample_size = min(1000, len(group))
+        max_sample_size = 1500
     else:
         return group
     print(group.shape)
