@@ -77,11 +77,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
     def objective(trial):
-        callbacks = [LightGBMPruningCallback(trial, 'l1')]
+        callbacks = [LightGBMPruningCallback(trial, 'huber')]
 
         params = {
             'objective': 'regression',
-            'metric': 'l1',
+            'metric': 'huber',
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 100),
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
@@ -104,7 +104,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
 
-            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=200, callbacks=callbacks)
+            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=100, callbacks=callbacks)
 
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
@@ -125,7 +125,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    final_model = lgb.train(best_params, train_data, num_boost_round=200)
+    final_model = lgb.train(best_params, train_data, num_boost_round=100)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
