@@ -315,6 +315,8 @@ def sample_rows(group):
     if percentile <= 4.0:
         max_sample_size = 1500
     else:
+        print(group.shape)
+
         return group
     print(group.shape)
     return group.sample(max_sample_size)
