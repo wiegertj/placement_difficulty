@@ -208,65 +208,66 @@ for file in filenames:
         print("Empty distance dataframe found ... skipped")
         continue
 
-    if not os.path.exists(os.path.join(os.pardir, "data/processed/features",
-                                           file.replace(".newick", "") + "_nearest_bootstrap.csv")):
-        result_columns_nearest = ['sampleId', 'dataset', 'min_support_nearest', 'max_support_nearest',
-                                  'mean_support_nearest', 'std_support_nearest', 'skewness_nearest',
-                                  'kurtosis_nearest', 'depth_nearest', "min_branch_len_nearest", "max_branch_len_nearest",
-                                  "mean_branch_len_nearest", "std_branch_len_nearest", "sk_branch_len_nearest",
-                                  "kurt_branch_len_nearest"]
-        results_df_nearest = pd.DataFrame(columns=result_columns_nearest)
-        float_columns = [
-            'min_support_nearest', 'max_support_nearest', 'mean_support_nearest',
-            'std_support_nearest', 'skewness_nearest', 'kurtosis_nearest',
-            'depth_nearest', 'min_branch_len_nearest', 'max_branch_len_nearest',
-            'mean_branch_len_nearest', 'std_branch_len_nearest', 'sk_branch_len_nearest',
-            'kurt_branch_len_nearest'
-        ]
+    #if not os.path.exists(os.path.join(os.pardir, "data/processed/features",
+     #                                      file.replace(".newick", "") + "_nearest_bootstrap.csv")):
+    result_columns_nearest = ['sampleId', 'dataset', 'min_support_nearest', 'max_support_nearest',
+                              'mean_support_nearest', 'std_support_nearest', 'skewness_nearest',
+                              'kurtosis_nearest', 'depth_nearest', "min_branch_len_nearest", "max_branch_len_nearest",
+                              "mean_branch_len_nearest", "std_branch_len_nearest", "sk_branch_len_nearest",
+                              "kurt_branch_len_nearest"]
+    results_df_nearest = pd.DataFrame(columns=result_columns_nearest)
+    float_columns = [
+        'min_support_nearest', 'max_support_nearest', 'mean_support_nearest',
+        'std_support_nearest', 'skewness_nearest', 'kurtosis_nearest',
+        'depth_nearest', 'min_branch_len_nearest', 'max_branch_len_nearest',
+        'mean_branch_len_nearest', 'std_branch_len_nearest', 'sk_branch_len_nearest',
+        'kurt_branch_len_nearest'
+    ]
 
-        results_df_nearest[float_columns] = results_df_nearest[float_columns].astype(float)
+    results_df_nearest[float_columns] = results_df_nearest[float_columns].astype(float)
 
-        # Initialize an empty list to store dictionaries
-        results_data = []
+    # Initialize an empty list to store dictionaries
+    results_data = []
 
-        for index, row in df_distances.iterrows():
-            taxon_name = row['current_closest_taxon_perc_ham']
-            sampleId = row['sampleId']
-            datset = row['dataset']
+    for index, row in df_distances.iterrows():
+        taxon_name = row['current_closest_taxon_perc_ham']
+        sampleId = row['sampleId']
+        datset = row['dataset']
 
-            min_support, max_support, mean_support, std_support, skewness, kurt, depth, min_branch_len_nearest, max_branch_len_nearest, mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest = nearest_sequence_features(
-                support_path,
-                taxon_name)
+        min_support, max_support, mean_support, std_support, skewness, kurt, depth, min_branch_len_nearest, max_branch_len_nearest, mean_branch_len_nearest, std_branch_len_nearest, sk_branch_len_nearest, kurt_branch_len_nearest = nearest_sequence_features(
+            support_path,
+            taxon_name)
 
-            # Append a dictionary to the list
-            results_data.append({
-                'sampleId': sampleId,
-                'dataset': datset,
-                'min_support_nearest': min_support,
-                'max_support_nearest': max_support,
-                'mean_support_nearest': mean_support,
-                'std_support_nearest': std_support,
-                'skewness_nearest': skewness,
-                'kurtosis_nearest': kurt,
-                'depth_nearest': depth,
-                "min_branch_len_nearest": min_branch_len_nearest,
-                "max_branch_len_nearest": max_branch_len_nearest,
-                "mean_branch_len_nearest": mean_branch_len_nearest,
-                "std_branch_len_nearest": std_branch_len_nearest,
-                "sk_branch_len_nearest": sk_branch_len_nearest,
-                "kurt_branch_len_nearest": kurt_branch_len_nearest
-            })
+        # Append a dictionary to the list
+        results_data.append({
+            'sampleId': sampleId,
+            'dataset': datset,
+            'min_support_nearest': min_support,
+            'max_support_nearest': max_support,
+            'mean_support_nearest': mean_support,
+            'std_support_nearest': std_support,
+            'skewness_nearest': skewness,
+            'kurtosis_nearest': kurt,
+            'depth_nearest': depth,
+            "min_branch_len_nearest": min_branch_len_nearest,
+            "max_branch_len_nearest": max_branch_len_nearest,
+            "mean_branch_len_nearest": mean_branch_len_nearest,
+            "std_branch_len_nearest": std_branch_len_nearest,
+            "sk_branch_len_nearest": sk_branch_len_nearest,
+            "kurt_branch_len_nearest": kurt_branch_len_nearest
+        })
 
-        # Create a DataFrame from the list of dictionaries
-        results_df_nearest = pd.DataFrame(results_data)
+    # Create a DataFrame from the list of dictionaries
+    results_df_nearest = pd.DataFrame(results_data)
 
-        results_df_nearest.to_csv(os.path.join(os.pardir, "data/processed/features",
-                                               file.replace(".newick", "") + "_nearest_bootstrap.csv"))
-    else:
-        print("Found nearest bootstrap results for " + file)
+    results_df_nearest.to_csv(os.path.join(os.pardir, "data/processed/features",
+                                           file.replace(".newick", "") + "_nearest_bootstrap.csv"))
+    #else:
+     #   print("Found nearest bootstrap results for " + file)
 
     min_rf, max_rf, mean_rf, std_dev_rf, skewness_rf, kurtosis_rf = compute_rf_distance_statistics(bootstrap_path,
     tree_path)
+
 
     min_support, max_support, mean_support, std_support, skewness, kurt, distance_major_modes_supp, abs_distance_major_modes_supp, weighted_distance_major_modes_supp,abs_weighted_distance_major_modes_supp = calculate_support_statistics(support_path)
 
