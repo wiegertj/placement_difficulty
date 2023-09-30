@@ -48,9 +48,11 @@ filtered_filenames = loo_reest_samples["dataset"].values.tolist()
 filtered_filenames = set(filtered_filenames)
 rand_sample = random.sample(filtered_filenames, 80)
 df = pd.DataFrame({'reest_files': rand_sample})
-df.to_csv(os.path.join(os.pardir, "data/reest_selection.csv"))
+rand_sample = pd.read_csv(os.path.join(os.pardir, "data/reest_selection.csv"))
 msa_counter = 0
-for msa_name in rand_sample:
+for msa_name in rand_sample["dataset"]:
+    if msa_name == "17080_0":
+        continue
     msa_counter += 1
     print(str(msa_counter) + "/" + str(len(rand_sample)))
     print(msa_name)
