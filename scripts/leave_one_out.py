@@ -44,11 +44,15 @@ filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 # filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
 # print("After filterling" + str(len(filtered_filenames)))
 loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
-filtered_filenames = filenames
+filtered_filenames = loo_reest_samples["dataset"].values.tolist()
+filtered_filenames = set(filtered_filenames)
+rand_sample = random.sample(filtered_filenames, 80)
+df = pd.DataFrame({'reest_files': rand_sample})
+df.to_csv(os.pardir, "data/reest_selection.csv")
 msa_counter = 0
-for msa_name in filtered_filenames:
+for msa_name in rand_sample:
     msa_counter += 1
-    print(str(msa_counter) + "/" + str(len(filtered_filenames)))
+    print(str(msa_counter) + "/" + str(len(rand_sample)))
     print(msa_name)
 
     rf_distances = []
@@ -68,30 +72,28 @@ for msa_name in filtered_filenames:
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
     MSA = AlignIO.read(filepath, 'fasta')
 
-    # if len(MSA[0].seq) >= feature_config.SEQUENCE_LEN_THRESHOLD:  # if too large, skip
-    #   continue
     counter = 0
 
     # Create random sample
-    if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
-        sequence_ids_sample = sequence_ids
-    else:
-        sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
+    # if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
+    #   sequence_ids_sample = sequence_ids
+    # else:
+    #   sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
 
-    #sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
+    sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
 
     for to_query in sequence_ids_sample:
 
-        if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
-            if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
-                                           msa_name + "_" + to_query)):  # if folder empty
-                print("Empty folder found for " + msa_name + " " + to_query + " filling it")
-                os.rmdir(os.path.join(os.pardir, "data/processed/loo_results",
-                                      msa_name + "_" + to_query))  # delete empty folder
-            else:
-                if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
-                    print("Skipping " + msa_name + " " + to_query + " result already exists")
-                    # continue
+        # if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
+        #   if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
+        #                                 msa_name + "_" + to_query)):  # if folder empty
+        #     print("Empty folder found for " + msa_name + " " + to_query + " filling it")
+        #    os.rmdir(os.path.join(os.pardir, "data/processed/loo_results",
+        #                         msa_name + "_" + to_query))  # delete empty folder
+        # else:
+        #   if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
+        #      print("Skipping " + msa_name + " " + to_query + " result already exists")
+        # continue
 
         counter += 1
         print(to_query)
@@ -121,11 +123,6 @@ for msa_name in filtered_filenames:
         # Write the query alignment to a FASTA file
         with open(output_file_query, "w") as query_alignment_output:
             SeqIO.write(query_alignment, query_alignment_output, "fasta")
-
-
-
-
-
 
         if feature_config.REESTIMATE_TREE == True:
 
@@ -160,31 +157,6 @@ for msa_name in filtered_filenames:
 
                 with open(aligned_output_file, "w") as output_file:
                     output_file.write(mafft_output)
-
-                command = ["pythia", "--msa", aligned_output_file, "--raxmlng", raxml_path]
-                result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
-                pythia_output = result.stdout
-                pythia_output = result.stdout
-                pythia_error = result.stderr  # Capture stderr
-
-                # Define a regular expression pattern to match float numbers
-                # This pattern captures one or more digits, an optional decimal point, and more digits
-                pattern = r"[-+]?\d*\.\d+|\d+"
-
-                # Use re.findall to find all matches in the string
-                matches = re.findall(pattern, result.stderr)
-
-                # Extract the last float number
-                if matches:
-                    last_float_after = float(matches[-1])
-                    print("Last float number:", last_float_after)
-                else:
-                    print("No float numbers found in the string.")
-
-                print("Diff before: " + str(last_float_before))
-                print("Diff after: " + str(last_float_after))
-
-
 
                 command = ["mafft", "--preservecase", "--keeplength", "--add", output_file_query_disaligned,
                            "--reorder",
