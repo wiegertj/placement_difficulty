@@ -13,7 +13,7 @@ filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verb
 
 
 filenames_filtered = []
-duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
+duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"), index=False)
 for file in filenames:
     try:
         dupl = duplicate_data.loc[duplicate_data["name"] == file.replace(".newick", ".phy")].iloc[0]
@@ -29,6 +29,8 @@ for file in filenames:
     else:
         filenames_filtered.append(file)
     print("--------")
+filtered_filenames_df = pd.DataFrame(filenames_filtered, columns=["dataset"])
+filtered_filenames_df.to_csv(os.path.join(os.pardir, "data/bs_support_pred_selection.csv"))
 for file in filenames_filtered:
     if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree", file)):
         print("Not found " + file)
@@ -71,6 +73,9 @@ for tree_filename in filenames_filtered:
         print("Too large, skipped")
         continue
 
+    existing_csv_file = os.path.join(os.pardir, "data/bs_support_pred_selection.csv")
+    filtered_filenames_df_tmp = pd.DataFrame([tree_filename], columns=["dataset"])
+    filtered_filenames_df_tmp.to_csv(existing_csv_file, mode='a', header=False, index=False)
 
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
     output_prefix = tree_filename.split(".")[0] + "_1000"  # Using the filename as the prefix
