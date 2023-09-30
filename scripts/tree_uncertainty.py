@@ -9,7 +9,7 @@ loo_selection["dataset"] = loo_selection["dataset"] + ".newick"
 filenames = loo_selection['dataset'].tolist()
 filenames = set(filenames)
 filenames = list(filenames)
-filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["dataset"]
+filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].values.tolist()
 
 
 filenames_filtered = []
@@ -29,7 +29,7 @@ for file in filenames:
     else:
         filenames_filtered.append(file)
     print("--------")
-for file in filenames:
+for file in filenames_filtered:
     if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree", file)):
         print("Not found " + file)
         filenames.remove(file)
