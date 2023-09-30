@@ -63,13 +63,13 @@ for tree_filename in filenames_filtered:
         sequence_length = len(record.seq)
         break
 
-    if sequence_length >= 10000:
+    if sequence_length >= 8000:
         print("Too large, skipped")
         continue
 
 
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
-    output_prefix = tree_filename.split(".")[0] + "_100"  # Using the filename as the prefix
+    output_prefix = tree_filename.split(".")[0] + "_1000"  # Using the filename as the prefix
 
     bootstrap_filepath = os.path.join(os.pardir, "scripts",
                                       output_prefix+".raxml.bootstraps")
@@ -78,7 +78,7 @@ for tree_filename in filenames_filtered:
         "raxml-ng",
         "--bootstrap",
         f"--model {model_path}",
-        f"--bs-trees {100}",
+        f"--bs-trees {1000}",
         f"--msa {msa_filepath}",
         "--redo",
         f"--prefix {output_prefix}"
