@@ -9,6 +9,9 @@ loo_selection["dataset"] = loo_selection["dataset"] + ".newick"
 filenames = loo_selection['dataset'].tolist()
 filenames = set(filenames)
 filenames = list(filenames)
+filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["dataset"]
+
+
 filenames_filtered = []
 duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 for file in filenames:
@@ -52,7 +55,7 @@ for tree_filename in filenames_filtered:
     t = Tree(tree_path)
     num_leaves = len(t.get_leaves())
 
-    if num_leaves >= 1000:
+    if num_leaves >= 800:
         print("Too large, skipped")
         continue
 
