@@ -184,6 +184,8 @@ results = []
 counter = 0
 
 for file in filenames:
+    if file == "20632_1.newick":
+        continue
     counter += 1
     print(counter)
     print(file)
