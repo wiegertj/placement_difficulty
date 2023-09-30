@@ -11,11 +11,27 @@ from sklearn.feature_selection import RFE
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, mean_absolute_percentage_error
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, mean_absolute_percentage_error, \
+    median_absolute_error
 from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
 
+def MBE(y_true, y_pred):
+    '''
+    Parameters:
+        y_true (array): Array of observed values
+        y_pred (array): Array of prediction values
 
+    Returns:
+        mbe (float): Biais score
+    '''
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+    y_true = y_true.reshape(len(y_true),1)
+    y_pred = y_pred.reshape(len(y_pred),1)
+    diff = (y_true-y_pred)
+    mbe = diff.mean()
+    return mbe
 def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=[]):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "current_closest_taxon_perc_ham", "difficult"],
@@ -56,6 +72,26 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     mse_mean = mean_squared_error(y_test, np.zeros(len(y_test)) + mean(y_train))
     rmse_mean = math.sqrt(mse_mean)
     print("Baseline predicting mean RMSE: " + str(rmse_mean))
+
+
+    r_squared = r2_score(y_test, np.zeros(len(y_test)) + mean(y_train))
+    print(f"R-squared on baseline test set: {r_squared:.2f}")
+
+    mae = mean_absolute_error(y_test, np.zeros(len(y_test)) + mean(y_train))
+    print(f"MAE on baseline test set: {mae:.2f}")
+
+    mape = mean_absolute_percentage_error(y_test, np.zeros(len(y_test)) + mean(y_train))
+    print(f"MAPE on baseline test set: {mape}")
+
+    mdae = median_absolute_error(y_test, np.zeros(len(y_test)) + mean(y_train))
+    print(f"MDAE on baseline test set: {mdae}")
+
+    mbe = MBE(y_test, np.zeros(len(y_test)) + mean(y_train))
+    print(f"MBE on baseline test set: {mdae}")
+
+
+
+
 
     if rfe:
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
@@ -142,6 +178,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
     mape = mean_absolute_percentage_error(y_test, y_pred)
     print(f"MAPE on test set: {mape}")
+
+    mdae = median_absolute_error(y_test, y_pred)
+    print(f"MDAE on test set: {mdae}")
+
+    mbe = MBE(y_test, y_pred)
+    print(f"MBE on test set: {mdae}")
+
 
 
     residuals = y_test - y_pred
