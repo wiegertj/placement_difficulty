@@ -184,15 +184,17 @@ def split_features(tree_path, msa_filepath, dataset):
 
 grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
 
-loo_selection = pd.read_csv(os.path.join(grandir, "data/loo_selection.csv"))
-filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
-filenames = filenames[:507]
-
+#loo_selection = pd.read_csv(os.path.join(grandir, "data/loo_selection.csv"))
+targets = pd.read_csv(os.path.join(grandir, "data/processed/target/branch_supports.csv"))
+#filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
+#filenames = filenames[:507]
+filenames = targets["dataset"].unique().tolist()
 counter = 0
 df_list = []
 for file in filenames:
     counter += 1
     print(counter)
+    print(len(filenames))
     print(file)
 
 
