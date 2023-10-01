@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from ete3 import Tree
 from Bio import SeqIO
+import re
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
@@ -11,6 +12,7 @@ for file in filenames:
         print("Not found " + file)
         filenames.remove(file)
 
+results = []
 counter = 0
 for tree_filename in filenames:
     counter += 1
@@ -53,7 +55,7 @@ for tree_filename in filenames:
         "raxml-ng",
         "--start",
         f"--model {model_path}",
-        "--tree pars{1000}",
+        "--tree pars{10000}",
         f"--msa {msa_filepath}",
         "--redo",
         f"--prefix {output_prefix}"
@@ -72,3 +74,32 @@ for tree_filename in filenames:
 
     subprocess.run(" ".join(raxml_command), shell=True)
 
+    raxml_command = ["raxml-ng",
+                     "--rfdist",
+                     f"--tree {bootstrap_filepath}",
+                     "--redo",
+                     f"--prefix {output_prefix}"]
+    #result =  subprocess.run(" ".join(raxml_command), shell=True)
+    result = subprocess.run(" ".join(raxml_command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
+
+    print("result")
+    print(result.stdout)
+    # Check if the command was successful
+    if result.returncode == 0:
+        # Extract numbers following "set: " using regular expressions
+        numbers = re.findall(r'set:\s+([\d.]+)', result.stdout)
+
+        # Convert the extracted strings to integers or floats
+        numbers = [int(num) if num.isdigit() else float(num) for num in numbers]
+
+        # Print the extracted numbers
+        print("Extracted numbers:", numbers)
+    else:
+        # Print an error message if the command failed
+        print("Command failed with the following error message:")
+        print(result.stderr)
+
+    results.append((tree_filename.replace(".newick", ""), numbers[0], numbers[1], numbers[2]))
+
+res_df = pd.DataFrame(results, columns=["dataset", "avg_rf", "avg_rel_rf", "no_top"])
+res_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features.csv"), index=False)
