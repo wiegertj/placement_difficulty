@@ -44,6 +44,9 @@ def split_features(tree_path, msa_filepath, dataset):
                         list_b_dist_topo.append(
                             leaf.get_distance(topology_only=True, target=phylo_tree.get_tree_root()))
 
+                if len(list_a_dist_branch) == 0 or len(list_b_dist_branch) == 0:
+                    continue
+
                 split_len_a_b =  min(len(list_b), len(list_a)) / max(len(list_b), len(list_a))
                 split_min_dist_branch_a = min(list_a_dist_branch)
                 split_max_dist_branch_a = max(list_a_dist_branch)
@@ -71,8 +74,7 @@ def split_features(tree_path, msa_filepath, dataset):
                 except ZeroDivisionError:
                     split_skw_ratio_branch = 0
 
-                if len(list_a_dist_branch) == 0 or len(list_b_dist_branch) == 0:
-                    continue
+
 
                 split_min_dist_topo_a = min(list_a_dist_topo)
                 split_max_dist_topo_a = max(list_a_dist_topo)
