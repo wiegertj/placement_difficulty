@@ -188,6 +188,7 @@ grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
 targets = pd.read_csv(os.path.join(grandir, "data/processed/target/branch_supports.csv"))
 #filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
 #filenames = filenames[:507]
+targets["dataset"] = targets["dataset"] + ".newick"
 filenames = targets["dataset"].unique().tolist()
 counter = 0
 df_list = []
