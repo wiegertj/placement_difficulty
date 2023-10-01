@@ -141,7 +141,7 @@ def extract_jplace_info(directory):
     print("Finished creating filelist ... ")
 
     selection = pd.read_csv(os.path.join(os.pardir, "data/", "reest_selection.csv"))
-    selection["dataset"] = selection["dataset"].str.replace(".newick", "").values.tolist()
+    selectionList = selection["reest_files"].str.replace(".newick", "").values.tolist()
 
     if not os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
         #current_df = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
@@ -149,7 +149,7 @@ def extract_jplace_info(directory):
 
         for file_entry in file_list:
             dataset = file_entry[0].split('/')[4].split('_taxon')[0]
-            if dataset in selection:
+            if dataset in selectionList:
                 filtered_file_list.append(dataset)
 
 
