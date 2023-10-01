@@ -1,10 +1,12 @@
 import warnings
 import pandas as pd
 import os
+import numpy as np
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Get targets and branch features
-targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/branch_supports.csv"), usecols=lambda column: column != 'Unnamed: 0')
+targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/branch_supports.csv"),
+                      usecols=lambda column: column != 'Unnamed: 0')
 
 # Get MSA features
 msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features",
@@ -18,16 +20,19 @@ tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "
 tree_features = tree_features.drop_duplicates(subset=['dataset'], keep='first')
 
 # Get parsimony features
-parsimony_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/parsimony.csv"), usecols=lambda column: column != 'Unnamed: 0')
-
+parsimony_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/parsimony.csv"),
+                                 usecols=lambda column: column != 'Unnamed: 0')
+parsimony_features2 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features.csv"),
+                                  usecols=lambda column: column != 'Unnamed: 0')
 # Get split features
 split_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                  "split_features.csv"), usecols=lambda column: column != 'Unnamed: 0')
+                                          "split_features.csv"), usecols=lambda column: column != 'Unnamed: 0')
 
 df_merged = targets.merge(msa_features, on=["dataset"], how="inner")
 df_merged = df_merged.merge(tree_features, on=["dataset"], how="inner")
 df_merged = df_merged.merge(parsimony_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inner")
+df_merged = df_merged.merge(parsimony_features2, on=["dataset"], how="inner")
 df_merged['split_skw_ratio_topo'].fillna(-1, inplace=True)
 df_merged['split_skw_ratio_branch'].fillna(-1, inplace=True)
 df_merged['split_skw_entropy_diff'].fillna(-1, inplace=True)
@@ -43,14 +48,32 @@ df_merged['kurtosis_irs'].fillna(-1, inplace=True)
 df_merged['kur_clo_sim'].fillna(-1, inplace=True)
 df_merged['kur_eig_sim'].fillna(-1, inplace=True)
 
+step_size = 0.1
+max_samples_per_interval = 2500
 
+# Initialize an empty DataFrame to store the sampled data
+sampled_data = pd.DataFrame()
 
+# Iterate through the support intervals
+for support_start in np.arange(0, 1, step_size):
+    support_end = support_start + step_size
 
+    # Filter the data within the current support interval
+    interval_data = df_merged[(df_merged['support'] >= support_start) & (df_merged['support'] < support_end)]
 
+    # Determine the number of samples to select
+    num_samples = min(max_samples_per_interval, len(interval_data))
 
+    # Randomly sample the data within the interval
+    sampled_interval = interval_data.sample(n=num_samples, random_state=42)  # Adjust the random_state as needed
 
-df_merged.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support.csv"), index=False)
+    # Append the sampled interval to the result DataFrame
+    sampled_data = pd.concat([sampled_data, sampled_interval])
 
+# Display the sampled data
+print(sampled_data.shape)
+
+sampled_data.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support.csv"), index=False)
+sampled_data.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 
 print(df_merged.shape)
-
