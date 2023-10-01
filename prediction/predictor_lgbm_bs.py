@@ -69,7 +69,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'objective': 'regression',
             'metric': 'l1',
             'boosting_type': 'gbdt',
-            'num_leaves': trial.suggest_int('num_leaves', 2, 20),
+            'num_leaves': trial.suggest_int('num_leaves', 2, 30),
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
             'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 20),
@@ -96,7 +96,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
             #val_score = math.sqrt(val_score)
-            val_score = math.sqrt(mean_squared_error(y_val, val_preds))
+            val_score = mean_absolute_error(y_val, val_preds)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
