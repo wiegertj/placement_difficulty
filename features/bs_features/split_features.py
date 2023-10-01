@@ -193,6 +193,7 @@ targets = pd.read_csv(os.path.join(grandir, "data/processed/target/branch_suppor
 #filenames = filenames[:507]
 targets["dataset"] = targets["dataset"] + ".newick"
 filenames = targets["dataset"].unique().tolist()
+del filenames[:81]
 counter = 0
 df_list = []
 for file in filenames:
