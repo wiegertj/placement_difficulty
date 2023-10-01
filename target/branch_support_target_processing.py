@@ -22,7 +22,7 @@ def calculate_support_statistics(support_file_path, dataset_name):
             node.__setattr__("name", branch_id_counter)
             depth = node.get_distance(topology_only=True, target=phylo_tree.get_tree_root())
             num_children = sum(1 for child in node.traverse())  # Number of leaf children
-            results.append((dataset_name, node.name, node.support / 100, length, depth, num_children))
+            results.append((dataset_name, node.name, node.support / 100, length, depth, num_children / branch_id_counter))
 
     return results
 
