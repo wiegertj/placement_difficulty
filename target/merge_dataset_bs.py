@@ -71,9 +71,9 @@ for support_start in np.arange(0, 1, step_size):
     sampled_data = pd.concat([sampled_data, sampled_interval])
 
 # Display the sampled data
+sampled_data.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 print(sampled_data.shape)
 
 sampled_data.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support.csv"), index=False)
-sampled_data.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 
 print(df_merged.shape)
