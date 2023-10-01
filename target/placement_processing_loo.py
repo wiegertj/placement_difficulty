@@ -150,7 +150,7 @@ def extract_jplace_info(directory):
         for file_entry in file_list:
             dataset = file_entry[0].split('/')[4].split('_taxon')[0]
             if dataset in selectionList:
-                filtered_file_list.append(dataset)
+                filtered_file_list.append(file_entry)
 
 
         #for file_entry in file_list:
