@@ -90,9 +90,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
-
-            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=200, callbacks=callbacks)
-
+            # KEIN VALIDSETS?
+            model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=100, callbacks=callbacks)
+            lgb.LGBMRegressor
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
             #val_score = math.sqrt(val_score)
@@ -112,7 +112,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    final_model = lgb.train(best_params, train_data, num_boost_round=1000)
+    final_model = lgb.train(best_params, train_data, num_boost_round=100)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
