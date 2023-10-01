@@ -71,7 +71,7 @@ def split_features(tree_path, msa_filepath, dataset):
                 except ZeroDivisionError:
                     split_skw_ratio_branch = 0
 
-                if len(list_a_dist_branch) == 0 or len(list_b_dist_branch):
+                if len(list_a_dist_branch) == 0 or len(list_b_dist_branch) == 0:
                     continue
 
                 split_min_dist_topo_a = min(list_a_dist_topo)
