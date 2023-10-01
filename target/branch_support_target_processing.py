@@ -28,13 +28,23 @@ def calculate_support_statistics(support_file_path, dataset_name):
 
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
+
+already_dedup_bs = pd.read_csv(os.path.join(os.pardir, "data/bs_support_pred_selection.csv"))
+already_dedup_bs["dataset"] = already_dedup_bs["dataset"].str.replace(".newick", "")
+
+loo_selection = loo_selection.merge(already_dedup_bs, on="dataset", how="inner")
+print(loo_selection.shape)
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 results_final = []
 counter = 0
 
 for file in filenames:
+    print(len(filenames))
     support_path = os.path.join(os.pardir, "scripts/") + file + "_1000.raxml.support"
     print(support_path)
+    counter +=1
+    print(counter)
 
     if os.path.exists(support_path):
         print("Found")
