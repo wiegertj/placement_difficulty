@@ -113,12 +113,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
     def objective(trial):
-        callbacks = [LightGBMPruningCallback(trial, 'quantile')]
+        callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
-            'objective': 'regression',
+            'objective': 'quantile',
             "n_estimators": trial.suggest_int('num_leaves', 200, 300),
-            'metric': 'quantile',
+            'metric': 'l1',
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 100),
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
