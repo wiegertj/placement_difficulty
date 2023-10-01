@@ -71,6 +71,9 @@ def split_features(tree_path, msa_filepath, dataset):
                 except ZeroDivisionError:
                     split_skw_ratio_branch = 0
 
+                if len(list_a_dist_branch) == 0 or len(list_b_dist_branch):
+                    continue
+
                 split_min_dist_topo_a = min(list_a_dist_topo)
                 split_max_dist_topo_a = max(list_a_dist_topo)
                 split_mean_dist_topo_a = mean(list_a_dist_topo)
