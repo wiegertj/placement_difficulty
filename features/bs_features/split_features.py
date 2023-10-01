@@ -193,9 +193,11 @@ grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
 targets = pd.read_csv(os.path.join(grandir, "data/processed/target/branch_supports.csv"))
 #filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
 #filenames = filenames[:507]
+
+already_processed = pd.read_csv(os.path.join(grandir, "data/processed/features/bs_features/split_features.csv"))["dataset"].unique().tolist()
+targets = targets[~targets['dataset'].isin(already_processed)]
 targets["dataset"] = targets["dataset"] + ".newick"
 filenames = targets["dataset"].unique().tolist()
-del filenames[:81]
 counter = 0
 df_list = []
 for file in filenames:
@@ -203,7 +205,8 @@ for file in filenames:
     print(counter)
     print(len(filenames))
     print(file)
-
+    if file == "15653_0.newick":
+        continue
 
     # support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_1000.raxml.support"
     tree_path = os.path.join(grandir, "data/raw/reference_tree/") + file
