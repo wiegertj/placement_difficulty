@@ -140,7 +140,7 @@ def extract_jplace_info(directory):
     file_list = [item for sublist in results for item in sublist]
     print("Finished creating filelist ... ")
 
-    selection = pd.read_csv(os.path.join(os.pardir, "data/", "bs_support_pred_selection.csv"))
+    selection = pd.read_csv(os.path.join(os.pardir, "data/", "reest_selection.csv"))
     selection["dataset"] = selection["dataset"].str.replace(".newick", "").values.tolist()
 
     if not os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
