@@ -69,10 +69,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'objective': 'regression',
             'metric': 'l1',
             'boosting_type': 'gbdt',
-            'num_leaves': trial.suggest_int('num_leaves', 2, 30),
+            'num_leaves': trial.suggest_int('num_leaves', 2, 50),
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
             'max_depth': -1,
-            'min_child_samples': trial.suggest_int('min_child_samples', 1, 20),
+            'min_child_samples': trial.suggest_int('min_child_samples', 1, 30),
             'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_loguniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_loguniform('lambda_l2', 1e-5, 1.0),
@@ -111,7 +111,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    final_model = lgb.train(best_params, train_data, num_boost_round=50)
+    final_model = lgb.train(best_params, train_data, num_boost_round=200)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
