@@ -55,7 +55,7 @@ for tree_filename in filenames:
         "raxml-ng",
         "--start",
         f"--model {model_path}",
-        "--tree pars{10000}",
+        "--tree pars{1000}",
         f"--msa {msa_filepath}",
         "--redo",
         f"--prefix {output_prefix}"
