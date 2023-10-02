@@ -266,10 +266,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'objective': 'quantile',
             'metric': 'quantile',
             'alpha': 0.05,
+            'reg_sqrt': True,
             'num_iterations': trial.suggest_int('num_iterations', 100, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
+            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
             'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
@@ -282,7 +283,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         val_scores = []
 
-        gkf = GroupKFold(n_splits=6)
+        gkf = GroupKFold(n_splits=10)
         for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
@@ -299,7 +300,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=50)
+    study.optimize(objective_lower_bound, n_trials=1ßß)
 
     best_params_lower_bound = study.best_params
     best_score_lower_bound = study.best_value
@@ -323,10 +324,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'objective': 'quantile',
             'metric': 'quantile',
             'alpha': 0.95,
+            'reg_sqrt': True,
             'num_iterations': trial.suggest_int('num_iterations', 100, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
+            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
             'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
@@ -356,7 +358,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_upper_bound, n_trials=50)
+    study.optimize(objective_upper_bound, n_trials=100)
 
     best_params_upper_bound = study.best_params
     best_score_upper_bound = study.best_value
