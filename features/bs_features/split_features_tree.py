@@ -55,10 +55,12 @@ def split_features(tree_path, msa_filepath, dataset):
                 node.__setattr__("name", branch_id_counter)
 
         results = []
-
+        phylo_tree_original = phylo_tree.copy() # get reference copy
         for node in phylo_tree.traverse("postorder"):
             if (not node.is_root()) and (not node.is_leaf()):
-                left_subtree, right_subtree = node.split()
+                phylo_tree = phylo_tree_original.copy() # copy reference
+                left_subtree = node.detach()
+                right_subtree = phylo_tree
 
                 num_leaves_left = len(left_subtree.get_leaves())
                 num_leaves_right = len(right_subtree.get_leaves())
