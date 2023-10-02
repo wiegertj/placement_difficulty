@@ -99,7 +99,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             val_score = mean_absolute_error(y_val, val_preds)
             val_scores.append(val_score)
 
-        return sum(val_scores) / len(val_scores) #median?
+        return np.median(val_scores)#sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='minimize')
     study.optimize(objective, n_trials=100)
