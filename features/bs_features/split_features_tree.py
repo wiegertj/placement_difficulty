@@ -126,8 +126,8 @@ targets = pd.read_csv(os.path.join(grandir, "data/processed/target/branch_suppor
 #filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
 #filenames = filenames[:507]
 
-already_processed = pd.read_csv(os.path.join(grandir, "data/processed/features/bs_features/split_features.csv"))["dataset"].unique().tolist()
-targets = targets[~targets['dataset'].isin(already_processed)]
+#already_processed = pd.read_csv(os.path.join(grandir, "data/processed/features/bs_features/split_features.csv"))["dataset"].unique().tolist()
+#targets = targets[~targets['dataset'].isin(already_processed)]
 targets["dataset"] = targets["dataset"] + ".newick"
 filenames = targets["dataset"].unique().tolist()
 counter = 0
