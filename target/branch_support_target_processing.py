@@ -20,9 +20,12 @@ def calculate_support_statistics(support_file_path, dataset_name):
         if node.support is not None and not node.is_leaf():
             length = node.dist
             node.__setattr__("name", branch_id_counter)
+            farthest_topo = phylo_tree.get_farthest_leaf(topology_only=True).get_distance(topology_only=True, target=phylo_tree.get_tree_root())
+            farthest_branch = phylo_tree.get_farthest_leaf(topology_only=False).get_distance(topology_only=False, target=phylo_tree.get_tree_root())
+            length_relative = length / farthest_branch
             depth = node.get_distance(topology_only=True, target=phylo_tree.get_tree_root())
             num_children = sum(1 for child in node.traverse())  # Number of leaf children
-            results.append((dataset_name, node.name, node.support / 100, length, depth, num_children / branch_id_counter))
+            results.append((dataset_name, node.name, node.support / 100, length, length_relative,depth, depth / farthest_topo, num_children / branch_id_counter))
 
     return results
 
@@ -51,6 +54,5 @@ for file in filenames:
         results_tmp = calculate_support_statistics(support_path, file.replace(".newick", ""))
         results_final.extend(results_tmp)
 
-
-df_final = pd.DataFrame(results_final, columns=["dataset", "branchId", "support", "length", "depth", "num_children"])
+df_final = pd.DataFrame(results_final, columns=["dataset", "branchId", "support", "length", "length_relative", "depth", "depth_relative","num_children"])
 df_final.to_csv(os.path.join(os.pardir, "data/processed/target/branch_supports.csv"))
