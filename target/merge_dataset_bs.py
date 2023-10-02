@@ -34,7 +34,7 @@ df_merged = targets.merge(msa_features, on=["dataset"], how="inner")
 df_merged = df_merged.merge(tree_features, on=["dataset"], how="inner")
 df_merged = df_merged.merge(parsimony_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(split_features2, on=["dataset", "branchId"], how="inner")
-#df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inner")
+df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inner")
 #df_merged = df_merged.merge(parsimony_features2, on=["dataset"], how="inner")
 #df_merged['split_skw_ratio_topo'].fillna(-1, inplace=True)
 #df_merged['split_skw_ratio_branch'].fillna(-1, inplace=True)
@@ -77,7 +77,7 @@ for support_start in np.arange(0, 1, step_size):
 # Display the sampled data
 sampled_data.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 print(sampled_data.shape)
-print("Mean " + str(sampled_data["support"].mean()))
+print("Mean " + str(sampled_data["support"].median()))
 
 sampled_data.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support.csv"), index=False)
 
