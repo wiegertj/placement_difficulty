@@ -11,7 +11,8 @@ from sklearn.feature_selection import RFE
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, mean_absolute_percentage_error
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, mean_absolute_percentage_error, \
+    median_absolute_error
 from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
 
@@ -141,7 +142,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mae = mean_absolute_error(y_test, y_pred)
     print(f"MAE on test set: {mae:.2f}")
 
-    mape = MBE(y_test, y_pred)
+    mape = median_absolute_error(y_test, y_pred)
     print(f"MdAE on test set: {mape}")
 
 
