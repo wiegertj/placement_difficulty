@@ -14,7 +14,7 @@ def traverse_and_add_edges(node_, graph):
     for child in node_.children:
         edge_weight = node_.get_distance(child)
         graph.add_edge(node_.name, child.name, weight=edge_weight)
-        traverse_and_add_edges(child)
+        traverse_and_add_edges(child, graph)
     return graph
 def height(node):
     if node is None:
