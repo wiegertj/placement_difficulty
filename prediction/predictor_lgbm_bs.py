@@ -1,4 +1,6 @@
 import math
+import sys
+
 import shap
 import lightgbm as lgb
 import os
@@ -58,6 +60,21 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mse_mean = mean_squared_error(y_test, np.zeros(len(y_test)) + mean(y_train))
     rmse_mean = math.sqrt(mse_mean)
     print("Baseline predicting mean RMSE: " + str(rmse_mean))
+
+    mse = mean_squared_error(y_test,  np.zeros(len(y_test)) + mean(y_train))
+    rmse = math.sqrt(mse)
+    print(f"Root Mean Squared Error on test set: {rmse}")
+
+    r_squared = r2_score(y_test,  np.zeros(len(y_test)) + mean(y_train))
+    print(f"R-squared on test set: {r_squared:.2f}")
+
+    mae = mean_absolute_error(y_test,  np.zeros(len(y_test)) + mean(y_train))
+    print(f"MAE on test set: {mae:.2f}")
+
+    mape = median_absolute_error(y_test,  np.zeros(len(y_test)) + mean(y_train))
+    print(f"MdAE on test set: {mape}")
+
+    sys.exit()
 
     if rfe:
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
