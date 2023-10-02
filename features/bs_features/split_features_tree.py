@@ -9,6 +9,13 @@ from ete3 import Tree
 import os
 import networkx as nx
 
+
+def traverse_and_add_edges(node_, G):
+    for child in node_.children:
+        edge_weight = node_.get_distance(child)
+        G.add_edge(node_.name, child.name, weight=edge_weight)
+        traverse_and_add_edges(child)
+    return G
 def height(node):
     if node is None:
         return 0
@@ -94,12 +101,7 @@ def split_features(tree_path, msa_filepath, dataset):
                 irs_std_ratio = min(irs_std_left, irs_std_right) / max(irs_std_left, irs_std_right)
                 irs_skw_ratio = min(irs_skw_left, irs_skw_right) / max(irs_skw_left, irs_skw_right)
 
-                def traverse_and_add_edges(node_, G):
-                    for child in node_.children:
-                        edge_weight = node_.get_distance(child)
-                        G.add_edge(node_.name, child.name, weight=edge_weight)
-                        traverse_and_add_edges(child)
-                    return G
+
 
                 G_left = nx.DiGraph()
                 G_left = traverse_and_add_edges(left_subtree, G_left)
