@@ -312,7 +312,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_lower_bound = lgb.train(best_params_lower_bound, train_data, num_boost_round=100)
 
-    y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"]))
+    y_pred_lower = math.sqrt(final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"])))
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.05)))
 
     #########################################################################################################
@@ -370,7 +370,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_upper_bound = lgb.train(best_params_upper_bound, train_data)
 
-    y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"]))
+    y_pred_upper = math.sqrt(final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"])))
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.95)))
 
     result_df = pd.DataFrame({'upper_bound': y_pred_upper, 'lower_bound': y_pred_lower, 'pred': y_pred, 'support': y_test})
