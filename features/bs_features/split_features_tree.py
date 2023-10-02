@@ -122,7 +122,7 @@ def split_features(tree_path, msa_filepath, dataset):
                 skw_clo_sim_right = skew(closeness_centrality_right)
 
                 mean_clo_sim_ratio = min(mean_clo_sim_left, mean_clo_sim_right) / max(mean_clo_sim_left, mean_clo_sim_right)
-                std_clo_sim_ratio = min(std_clo_sim_left, std_clo_sim_right) / max(std_clo_sim_left, std_clo_sim_ratio)
+                std_clo_sim_ratio = min(std_clo_sim_left, std_clo_sim_right) / max(std_clo_sim_left, std_clo_sim_right)
                 max_clo_sim_ratio = min(max_clo_sim_left, max_clo_sim_right) / max(max_clo_sim_right, max_clo_sim_left)
                 min_clo_sim_ratio = min(min_clo_sim_left, min_clo_sim_right) / max(min_clo_sim_right, min_clo_sim_left)
                 skw_clo_sim_ratio = min(skw_clo_sim_left, skw_clo_sim_right) / max(skw_clo_sim_left, skw_clo_sim_right)
