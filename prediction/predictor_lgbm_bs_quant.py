@@ -34,7 +34,7 @@ def quantile_loss(y_true, y_pred, quantile):
         Quantile to be evaluated, e.g., 0.5 for median.
     """
     residual = y_true - y_pred
-    return np.maximum(quantile * residual, (quantile - 1) * residual)
+    return mean(np.maximum(quantile * residual, (quantile - 1) * residual))
 
 
 
