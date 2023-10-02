@@ -74,7 +74,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mape = median_absolute_error(y_test,  np.zeros(len(y_test)) + mean(y_train))
     print(f"MdAE on test set: {mape}")
 
-    sys.exit()
 
     if rfe:
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
