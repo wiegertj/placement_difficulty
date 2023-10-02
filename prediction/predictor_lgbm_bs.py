@@ -74,12 +74,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
             'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 100),
-            'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
+            #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.1),
             'bagging_freq': 0,
-            'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
+            #'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
         }
 
         val_scores = []
