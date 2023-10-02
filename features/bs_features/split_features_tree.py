@@ -95,11 +95,26 @@ def split_features(tree_path, msa_filepath, dataset):
                 irs_std_right = np.std(irs_right)
                 irs_skw_left = skew(irs_left)
                 irs_skw_right = skew(irs_right)
-                irs_mean_ratio = min(irs_mean_left, irs_mean_right) / max(irs_mean_left, irs_mean_right)
-                irs_min_ratio = min(irs_min_left, irs_min_right) / max(irs_min_left, irs_min_right)
-                irs_max_ratio = min(irs_max_left, irs_max_right) / max(irs_max_left, irs_max_right)
-                irs_std_ratio = min(irs_std_left, irs_std_right) / max(irs_std_left, irs_std_right)
-                irs_skw_ratio = min(irs_skw_left, irs_skw_right) / max(irs_skw_left, irs_skw_right)
+                try:
+                    irs_mean_ratio = min(irs_mean_left, irs_mean_right) / max(irs_mean_left, irs_mean_right)
+                except ZeroDivisionError:
+                    irs_mean_ratio = -1
+                try:
+                    irs_min_ratio = min(irs_min_left, irs_min_right) / max(irs_min_left, irs_min_right)
+                except ZeroDivisionError:
+                    irs_min_ratio = -1
+                try:
+                    irs_max_ratio = min(irs_max_left, irs_max_right) / max(irs_max_left, irs_max_right)
+                except ZeroDivisionError:
+                    irs_max_ratio = -1
+                try:
+                    irs_std_ratio = min(irs_std_left, irs_std_right) / max(irs_std_left, irs_std_right)
+                except ZeroDivisionError:
+                    irs_std_ratio = -1
+                try:
+                    irs_skw_ratio = min(irs_skw_left, irs_skw_right) / max(irs_skw_left, irs_skw_right)
+                except:
+                    irs_skw_ratio = -1
 
 
 
@@ -121,11 +136,26 @@ def split_features(tree_path, msa_filepath, dataset):
                 max_clo_sim_right = max(closeness_centrality_right)
                 skw_clo_sim_right = skew(closeness_centrality_right)
 
-                mean_clo_sim_ratio = min(mean_clo_sim_left, mean_clo_sim_right) / max(mean_clo_sim_left, mean_clo_sim_right)
-                std_clo_sim_ratio = min(std_clo_sim_left, std_clo_sim_right) / max(std_clo_sim_left, std_clo_sim_right)
-                max_clo_sim_ratio = min(max_clo_sim_left, max_clo_sim_right) / max(max_clo_sim_right, max_clo_sim_left)
-                min_clo_sim_ratio = min(min_clo_sim_left, min_clo_sim_right) / max(min_clo_sim_right, min_clo_sim_left)
-                skw_clo_sim_ratio = min(skw_clo_sim_left, skw_clo_sim_right) / max(skw_clo_sim_left, skw_clo_sim_right)
+                try:
+                    mean_clo_sim_ratio = min(mean_clo_sim_left, mean_clo_sim_right) / max(mean_clo_sim_left, mean_clo_sim_right)
+                except ZeroDivisionError:
+                    mean_clo_sim_ratio = -1
+                try:
+                    std_clo_sim_ratio = min(std_clo_sim_left, std_clo_sim_right) / max(std_clo_sim_left, std_clo_sim_right)
+                except ZeroDivisionError:
+                    std_clo_sim_ratio = -1
+                try:
+                    max_clo_sim_ratio = min(max_clo_sim_left, max_clo_sim_right) / max(max_clo_sim_right, max_clo_sim_left)
+                except ZeroDivisionError:
+                    max_clo_sim_ratio = -1
+                try:
+                    min_clo_sim_ratio = min(min_clo_sim_left, min_clo_sim_right) / max(min_clo_sim_right, min_clo_sim_left)
+                except ZeroDivisionError:
+                    min_clo_sim_ratio = -1
+                try:
+                    skw_clo_sim_ratio = min(skw_clo_sim_left, skw_clo_sim_right) / max(skw_clo_sim_left, skw_clo_sim_right)
+                except ZeroDivisionError:
+                    skw_clo_sim_ratio = -1
 
 
                 result = (dataset, node.name, leaves_ratio, children_ratio, bl_ratio, irs_max_ratio, irs_mean_ratio, irs_min_ratio, irs_skw_ratio, irs_std_ratio, mean_clo_sim_ratio, std_clo_sim_ratio,
