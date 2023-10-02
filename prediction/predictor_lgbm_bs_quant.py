@@ -114,12 +114,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
-            'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
-            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.1),
+            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
             'bagging_freq': 0,
             #'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
         }
@@ -134,7 +133,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val)#, reference=train_data)
             # KEIN VALIDSETS?
-            model = lgb.train(params, train_data, valid_sets=[val_data])
+            model = lgb.train(params, train_data)#, valid_sets=[val_data])
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.5)
             print("score: " + str(val_score))
@@ -283,12 +282,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
-            'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
-            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.1),
+            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
             'bagging_freq': 0,
             #'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
         }
@@ -303,7 +301,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
-            model = lgb.train(params, train_data, valid_sets=[val_data])
+            model = lgb.train(params, train_data)#, valid_sets=[val_data])
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.05)
             val_scores.append(val_score)
@@ -311,7 +309,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=100)
+    study.optimize(objective_lower_bound, n_trials=50)
 
     best_params_lower_bound = study.best_params
     best_score_lower_bound = study.best_value
@@ -321,7 +319,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    final_model_lower_bound = lgb.train(best_params_lower_bound, train_data, num_boost_round=100)
+    final_model_lower_bound = lgb.train(best_params_lower_bound, train_data)
 
     y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"]))
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.05)))
@@ -339,19 +337,18 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
-            'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
-            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.1),
+            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
             'bagging_freq': 0,
             # 'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
         }
 
         val_scores = []
 
-        gkf = GroupKFold(n_splits=6)
+        gkf = GroupKFold(n_splits=10)
         for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
@@ -359,7 +356,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
-            model = lgb.train(params, train_data, valid_sets=[val_data])
+            model = lgb.train(params, train_data)#, valid_sets=[val_data])
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.95)
             val_scores.append(val_score)
