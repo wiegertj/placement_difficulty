@@ -132,11 +132,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
 
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
-            val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
+            val_data = lgb.Dataset(X_val, label=y_val)#, reference=train_data)
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data, valid_sets=[val_data])
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.5)[1]
+            val_score = quantile_loss(y_val, val_preds, 0.5)
             print("score: " + str(val_score))
 
             val_scores.append(val_score)
