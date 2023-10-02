@@ -19,7 +19,7 @@ from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
 
 
-def compute_quantile_loss(y_true, y_pred, quantile):
+def quantile_loss(y_true, y_pred, quantile):
     """
 
     Parameters
@@ -137,7 +137,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             model = lgb.train(params, train_data, valid_sets=[val_data])
             lgb.LGBMRegressor
             val_preds = model.predict(X_val)
-            val_score = mean_absolute_error(y_val, val_preds)
+            val_score = quantile_loss(y_val, val_preds, 0.5)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
