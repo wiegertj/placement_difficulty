@@ -113,22 +113,23 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
     def objective(trial):
-        callbacks = [LightGBMPruningCallback(trial, 'l1')]
+        #callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
-            'objective': 'quantile',
-            "n_estimators": trial.suggest_int('num_leaves', 200, 300),
+            'objective': 'regression',
             'metric': 'l1',
+            'num_iterations': trial.suggest_int('num_iterations', 100, 300),
             'boosting_type': 'gbdt',
-            'num_leaves': trial.suggest_int('num_leaves', 2, 100),
-            'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),
-            'min_child_samples': trial.suggest_int('min_child_samples', 5, 20),
-            'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
-            'lambda_l1': trial.suggest_loguniform('lambda_l1', 0.05, 1.0),
-            'lambda_l2': trial.suggest_loguniform('lambda_l2', 0.05, 1.0),
-            'min_split_gain': trial.suggest_loguniform('min_split_gain', 1e-5, 0.1),
-            'bagging_freq': trial.suggest_int('bagging_freq', 1, 10),
-            'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
+            'num_leaves': trial.suggest_int('num_leaves', 2, 200),
+            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
+            'max_depth': -1,
+            'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
+            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
+            'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
+            'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
+            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.1),
+            'bagging_freq': 0,
+            # 'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
         }
 
         val_scores = []
@@ -141,7 +142,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             #
-            model = lgb.train(params, train_data, valid_sets=[val_data], callbacks=callbacks)
+            model = lgb.train(params, train_data, valid_sets=[val_data])
 
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
