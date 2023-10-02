@@ -81,6 +81,8 @@ def split_features(tree_path, msa_filepath, dataset):
                 irs_mean_left = mean(irs_left)
                 irs_mean_right = mean(irs_right)
                 irs_min_left = min(irs_left)
+                irs_min_right = min(irs_right)
+                irs_max_left = max(irs_left)
                 irs_max_right = max(irs_right)
                 irs_std_left = np.std(irs_left)
                 irs_std_right = np.std(irs_right)
