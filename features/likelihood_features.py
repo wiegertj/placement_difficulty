@@ -27,39 +27,43 @@ for tree_filename in filenames:
     counter += 1
     print(counter)
     likpath = os.path.join(os.pardir, "scripts/", tree_filename.replace(".newick", "") + "_siteliks_.raxml.siteLH")
-    with open(likpath, 'r') as file:
-        # Read the lines from the file
-        lines = file.readlines()
+    try:
+        with open(likpath, 'r') as file:
+            # Read the lines from the file
+            lines = file.readlines()
 
-    # Check if there are at least two lines in the file
-    if len(lines) >= 2:
-        # Extract the second line (index 1) and remove leading/trailing whitespace
-        second_line = lines[1].strip()
-        #print(second_line)
-        # Use regular expression to extract numbers from the second line
-        import re
+        # Check if there are at least two lines in the file
+        if len(lines) >= 2:
+            # Extract the second line (index 1) and remove leading/trailing whitespace
+            second_line = lines[1].strip()
+            #print(second_line)
+            # Use regular expression to extract numbers from the second line
+            import re
 
-        numbers = re.findall(r"[-+]?\d*\.\d+|\d+", second_line)
-        numbers = numbers[1:]
+            numbers = re.findall(r"[-+]?\d*\.\d+|\d+", second_line)
+            numbers = numbers[1:]
 
-        numbers = [float(number) for number in numbers]
-        min_value = min(numbers)
-        max_value = max(numbers)
+            numbers = [float(number) for number in numbers]
+            min_value = min(numbers)
+            max_value = max(numbers)
 
-        # Perform min-max scaling
-        scaled_numbers = [(x - min_value) / (max_value - min_value) for x in numbers]
+            # Perform min-max scaling
+            scaled_numbers = [(x - min_value) / (max_value - min_value) for x in numbers]
 
-        mean_loglik = mean(scaled_numbers)
-        min_loglik = min(scaled_numbers)
-        max_loglik = max(scaled_numbers)
-        std_loglik = np.std(scaled_numbers)
-        skw_loglik = skew(scaled_numbers)
-        kurt_loglik = kurtosis(scaled_numbers, fisher=True)
+            mean_loglik = mean(scaled_numbers)
+            min_loglik = min(scaled_numbers)
+            max_loglik = max(scaled_numbers)
+            std_loglik = np.std(scaled_numbers)
+            skw_loglik = skew(scaled_numbers)
+            kurt_loglik = kurtosis(scaled_numbers, fisher=True)
 
-        results.append((dataset, mean_loglik, min_loglik, max_loglik, std_loglik, skw_loglik, kurt_loglik))
+            results.append((dataset, mean_loglik, min_loglik, max_loglik, std_loglik, skw_loglik, kurt_loglik))
 
-    else:
-        print("File does not contain at least two lines.")
+        else:
+            print("File does not contain at least two lines.")
+    except FileNotFoundError:
+        print("File not found")
+        continue
 
 
 df = pd.DataFrame(results, columns=["dataset","mean_loglik", "min_loglik", "max_loglik", "std_loglik", "skw_loglik", "kurt_loglik"])
