@@ -19,10 +19,23 @@ from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
 
 
-def quantile_loss(y_true, y_pred, quantile):
+def compute_quantile_loss(y_true, y_pred, quantile):
+    """
+
+    Parameters
+    ----------
+    y_true : 1d ndarray
+        Target value.
+
+    y_pred : 1d ndarray
+        Predicted value.
+
+    quantile : float, 0. ~ 1.
+        Quantile to be evaluated, e.g., 0.5 for median.
+    """
     residual = y_true - y_pred
-    loss = np.maximum(quantile * residual, (quantile - 1) * residual)
-    return np.mean(loss)
+    return np.maximum(quantile * residual, (quantile - 1) * residual)
+
 
 
 def MBE(y_true, y_pred):
@@ -266,7 +279,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'objective': 'quantile',
             'metric': 'quantile',
             'alpha': 0.05,
-            'reg_sqrt': True,
             'num_iterations': trial.suggest_int('num_iterations', 100, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
@@ -312,7 +324,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_lower_bound = lgb.train(best_params_lower_bound, train_data, num_boost_round=100)
 
-    y_pred_lower = math.sqrt(final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"])))
+    y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"]))
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.05)))
 
     #########################################################################################################
@@ -324,7 +336,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'objective': 'quantile',
             'metric': 'quantile',
             'alpha': 0.95,
-            'reg_sqrt': True,
             'num_iterations': trial.suggest_int('num_iterations', 100, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
@@ -370,7 +381,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_upper_bound = lgb.train(best_params_upper_bound, train_data)
 
-    y_pred_upper = math.sqrt(final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"])))
+    y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"]))
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.95)))
 
     result_df = pd.DataFrame({'upper_bound': y_pred_upper, 'lower_bound': y_pred_lower, 'pred': y_pred, 'support': y_test})
