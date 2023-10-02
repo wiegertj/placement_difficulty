@@ -136,7 +136,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data, valid_sets=[val_data])
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.5)
+            val_score = quantile_loss(y_val, val_preds, 0.5)[1]
             print("score: " + str(val_score))
 
             val_scores.append(val_score)
