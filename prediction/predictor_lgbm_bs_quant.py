@@ -68,10 +68,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
 
     target = "support"
-    sample_dfs = random.sample(df["group"].values.tolist(), int(len(df["group"].values.tolist()) * 0.2))
+    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
     print(sample_dfs)
     print(len(sample_dfs))
-    print(len(df["group"].values.tolist()))
+    print(len(df["group"].unique().tolist()))
     sys.exit()
     X = df.drop(axis=1, columns=target)
     y = df[target]
