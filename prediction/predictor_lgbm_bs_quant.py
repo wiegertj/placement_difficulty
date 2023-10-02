@@ -68,12 +68,16 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
 
     target = "support"
-
+    sample_dfs = random.sample(df["group"].values.tolist(), int(len(df["group"].values.tolist()) * 0.2))
+    print(sample_dfs)
+    print(len(sample_dfs))
+    print(len(df["group"].values.tolist()))
+    sys.exit()
     X = df.drop(axis=1, columns=target)
     y = df[target]
 
-    X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, df["group"], test_size=0.2,
-                                                                                   random_state=12)
+    X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, test_size=0.2,
+                                                                                   random_state=42)
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
