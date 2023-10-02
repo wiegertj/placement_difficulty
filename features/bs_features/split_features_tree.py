@@ -78,7 +78,19 @@ def split_features(tree_path, msa_filepath, dataset):
 
                 irs_left = compute_tree_imbalance(left_subtree)
                 irs_right = compute_tree_imbalance(right_subtree)
-                irs_ratio = min(irs_left, irs_right) / max(irs_right, irs_left)
+                irs_mean_left = mean(irs_left)
+                irs_mean_right = mean(irs_right)
+                irs_min_left = min(irs_left)
+                irs_max_right = max(irs_right)
+                irs_std_left = np.std(irs_left)
+                irs_std_right = np.std(irs_right)
+                irs_skw_left = skew(irs_left)
+                irs_skw_right = skew(irs_right)
+                irs_mean_ratio = min(irs_mean_left, irs_mean_right) / max(irs_mean_left, irs_mean_right)
+                irs_min_ratio = min(irs_min_left, irs_min_right) / max(irs_min_left, irs_min_right)
+                irs_max_ratio = min(irs_max_left, irs_max_right) / max(irs_max_left, irs_max_right)
+                irs_std_ratio = min(irs_std_left, irs_std_right) / max(irs_std_left, irs_std_right)
+                irs_skw_ratio = min(irs_skw_left, irs_skw_right) / max(irs_skw_left, irs_skw_right)
 
                 def traverse_and_add_edges(node_, G):
                     for child in node_.children:
@@ -112,11 +124,11 @@ def split_features(tree_path, msa_filepath, dataset):
                 skw_clo_sim_ratio = min(skw_clo_sim_left, skw_clo_sim_right) / max(skw_clo_sim_left, skw_clo_sim_right)
 
 
-                result = (dataset, node.name, leaves_ratio, children_ratio, bl_ratio, irs_ratio, mean_clo_sim_ratio, std_clo_sim_ratio,
+                result = (dataset, node.name, leaves_ratio, children_ratio, bl_ratio, irs_max_ratio, irs_mean_ratio, irs_min_ratio, irs_skw_ratio, irs_std_ratio, mean_clo_sim_ratio, std_clo_sim_ratio,
                           min_clo_sim_ratio,max_clo_sim_ratio,skw_clo_sim_ratio)
                 results.append(result)
 
-    df_res = pd.DataFrame(results, columns=["dataset", "branchId", "leaves_ratio", "children_ratio", "bl_ratio", "irs_ratio", "mean_clo_sim_ratio", "std_clo_sim_ratio",
+    df_res = pd.DataFrame(results, columns=["dataset", "branchId", "leaves_ratio", "children_ratio", "bl_ratio", "irs_max_ratio", "irs_mean_ratio", "irs_min_ratio", "irs_skw_ratio", "irs_std_ratio", "mean_clo_sim_ratio", "std_clo_sim_ratio",
                           "min_clo_sim_ratio","max_clo_sim_ratio","skw_clo_sim_ratio"])
     return df_res
 
