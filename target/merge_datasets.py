@@ -27,6 +27,9 @@ print("Query feature count: " + str(query_features.shape))
 tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), index_col=False,
                             usecols=lambda column: column != 'Unnamed: 0')
 tree_features = tree_features.drop_duplicates(subset=['dataset'], keep='first')
+like = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "loglik.csv"), index_col=False,
+                            usecols=lambda column: column != 'Unnamed: 0')
+tree_features = tree_features.merge(like, on=["dataset"], how="inner")
 print(tree_features.shape)
 
 # Get tree uncertainty features
