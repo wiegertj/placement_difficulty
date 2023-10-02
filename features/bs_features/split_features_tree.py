@@ -10,12 +10,12 @@ import os
 import networkx as nx
 
 
-def traverse_and_add_edges(node_, G):
+def traverse_and_add_edges(node_, graph):
     for child in node_.children:
         edge_weight = node_.get_distance(child)
-        G.add_edge(node_.name, child.name, weight=edge_weight)
+        graph.add_edge(node_.name, child.name, weight=edge_weight)
         traverse_and_add_edges(child)
-    return G
+    return graph
 def height(node):
     if node is None:
         return 0
