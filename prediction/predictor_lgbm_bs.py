@@ -15,7 +15,22 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, m
 from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
 
+def MBE(y_true, y_pred):
+    '''
+    Parameters:
+        y_true (array): Array of observed values
+        y_pred (array): Array of prediction values
 
+    Returns:
+        mbe (float): Biais score
+    '''
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+    y_true = y_true.reshape(len(y_true),1)
+    y_pred = y_pred.reshape(len(y_pred),1)
+    diff = (y_true-y_pred)
+    mbe = diff.mean()
+    return mbe
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
     print("Median Support: ")
@@ -126,8 +141,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mae = mean_absolute_error(y_test, y_pred)
     print(f"MAE on test set: {mae:.2f}")
 
-    mape = mean_absolute_percentage_error(y_test, y_pred)
-    print(f"MAPE on test set: {mape}")
+    mape = MBE(y_test, y_pred)
+    print(f"MdAE on test set: {mape}")
 
 
     residuals = y_test - y_pred
