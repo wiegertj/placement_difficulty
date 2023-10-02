@@ -173,7 +173,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mbe = MBE(y_test, y_pred)
     print(f"MBE on test set: {mbe}")
 
-    sys.exit()
 
     residuals = y_test - y_pred
 
