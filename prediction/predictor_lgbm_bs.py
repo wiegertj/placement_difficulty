@@ -70,7 +70,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'metric': 'l1',
             'num_boost_round': trial.suggest_int('num_boost_round', 100, 300),
             'boosting_type': 'gbdt',
-            'num_leaves': trial.suggest_int('num_leaves', 2, 50),
+            'num_leaves': trial.suggest_int('num_leaves', 2, 100),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
             'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 50),
