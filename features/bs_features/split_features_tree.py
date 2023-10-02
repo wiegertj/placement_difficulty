@@ -104,8 +104,8 @@ def split_features(tree_path, msa_filepath, dataset):
 
 
                 G_left = nx.DiGraph()
-                G_left = traverse_and_add_edges(left_subtree, graph=G_left)
-                closeness_centrality_left = nx.closeness_centrality(G_left, distance='weight')
+                G_left_ = traverse_and_add_edges(left_subtree, graph=G_left)
+                closeness_centrality_left = nx.closeness_centrality(G_left_, distance='weight')
                 mean_clo_sim_left = sum(closeness_centrality_left) / len(closeness_centrality_left)
                 std_clo_sim_left = np.std(closeness_centrality_left)
                 min_clo_sim_left = min(closeness_centrality_left)
@@ -113,8 +113,8 @@ def split_features(tree_path, msa_filepath, dataset):
                 skw_clo_sim_left = skew(closeness_centrality_left)
 
                 G_right = nx.DiGraph()
-                G_right = traverse_and_add_edges(right_subtree, graph=G_right)
-                closeness_centrality_right = nx.closeness_centrality(G_right, distance='weight')
+                G_right_ = traverse_and_add_edges(right_subtree, graph=G_right)
+                closeness_centrality_right = nx.closeness_centrality(G_right_, distance='weight')
                 mean_clo_sim_right = sum(closeness_centrality_right) / len(closeness_centrality_right)
                 std_clo_sim_right = np.std(closeness_centrality_right)
                 min_clo_sim_right = min(closeness_centrality_right)
