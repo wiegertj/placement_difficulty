@@ -63,7 +63,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     test = df[df['group'].isin(sample_dfs)]
     #test = test.sample(200)
     train = df[~df['group'].isin(sample_dfs)]
-    columns_to_scale = [col for col in df.columns if col not in ['dataset', 'branchId', 'support']]
+    columns_to_scale = [col for col in df.columns if col not in ['dataset', 'branchId', 'support', 'group']]
     # Create a StandardScaler instance
     scaler = StandardScaler()
 
