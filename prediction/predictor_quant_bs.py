@@ -117,7 +117,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
 
-            'alpha': trial.suggest_int('alpha', 0.1, 1.0),
+            'alpha': 1.0#trial.suggest_int('alpha', 0.1, 1.0),
 
         }
 
