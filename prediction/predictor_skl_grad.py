@@ -388,4 +388,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     result_df = pd.DataFrame({'upper_bound': y_pred_upper, 'lower_bound': y_pred_lower, 'pred': y_pred, 'support': y_test})
     result_df.to_csv(os.path.join(os.pardir, "data/prediction", "bs_support_pred_quant.csv"))
 
-light_gbm_regressor(rfe=False, shapley_calc=False)
+light_gbm_regressor(rfe=True, shapley_calc=False)
