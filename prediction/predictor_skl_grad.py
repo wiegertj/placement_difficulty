@@ -114,20 +114,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
-            'objective': 'quantile',
-            'metric': 'quantile',
+            'loss': 'quantile',
             'alpha': 0.5,
-            'num_iterations': trial.suggest_int('num_iterations', 100, 300),
-            'boosting_type': 'gbdt',
-            'num_leaves': trial.suggest_int('num_leaves', 2, 200),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
-            'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
-            'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
-            'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
-            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
-            'bagging_freq': 0,
-            #'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
+            'n_estimators': trial.suggest_int('n_estimators', 100, 1000),  # Number of boosting stages to be used
+            'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),  # Learning rate
+            'max_depth': trial.suggest_int('max_depth', 3, 10),  # Maximum depth of the individual trees
+            'min_samples_split': trial.suggest_int('min_samples_split', 2, 20),
+            # Minimum samples required to split an internal node
+            'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 10)
+            # Minimum number of samples required to be at a leaf node
         }
 
         val_scores = []
@@ -140,7 +135,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val)#, reference=train_data)
             # KEIN VALIDSETS?
-            model = GradientBoostingRegressor(params)
+            model = GradientBoostingRegressor(**params)
             model = model.fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.5)
@@ -160,7 +155,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best MAPE training: {best_score_median}")
 
     #train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
-    model = GradientBoostingRegressor(best_params_median)
+    model = GradientBoostingRegressor(**best_params_median)
     final_model_median = model.fit(X_train.drop(axis=1, columns=["group"]), y_train)
     #final_model_median = lgb.train(best_params_median, train_data)
 
@@ -284,20 +279,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         # callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
-            'objective': 'quantile',
-            'metric': 'quantile',
+            'loss': 'quantile',
             'alpha': 0.05,
-            'num_iterations': trial.suggest_int('num_iterations', 100, 300),
-            'boosting_type': 'gbdt',
-            'num_leaves': trial.suggest_int('num_leaves', 2, 200),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
-            'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
-            'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
-            'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
-            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
-            'bagging_freq': 0,
-            #'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
+            'n_estimators': trial.suggest_int('n_estimators', 100, 1000),  # Number of boosting stages to be used
+            'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),  # Learning rate
+            'max_depth': trial.suggest_int('max_depth', 3, 10),  # Maximum depth of the individual trees
+            'min_samples_split': trial.suggest_int('min_samples_split', 2, 20),
+            # Minimum samples required to split an internal node
+            'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 10)
+            # Minimum number of samples required to be at a leaf node
         }
 
         val_scores = []
@@ -310,7 +300,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
-            model = GradientBoostingRegressor(params)
+            model = GradientBoostingRegressor(**params)
             model = model.fit(X_train_tmp.drop(axis=1, columns=["group"]), y_train_tmp)
             #model = lgb.train(params, train_data)#, valid_sets=[val_data])
             val_preds = model.predict(X_val)
@@ -329,7 +319,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Quantile Loss: {best_score_lower_bound}")
 
     #train_data = lgb.Dataset()
-    model = GradientBoostingRegressor(best_params_lower_bound)
+    model = GradientBoostingRegressor(**best_params_lower_bound)
     final_model_lower_bound = model.fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
     y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"]))
@@ -341,20 +331,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         # callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
-            'objective': 'quantile',
-            'metric': 'quantile',
+            'loss': 'quantile',
             'alpha': 0.95,
-            'num_iterations': trial.suggest_int('num_iterations', 100, 300),
-            'boosting_type': 'gbdt',
-            'num_leaves': trial.suggest_int('num_leaves', 2, 200),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
-            'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
-            'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
-            'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
-            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
-            'bagging_freq': 0,
-            # 'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
+            'n_estimators': trial.suggest_int('n_estimators', 100, 1000),  # Number of boosting stages to be used
+            'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),  # Learning rate
+            'max_depth': trial.suggest_int('max_depth', 3, 10),  # Maximum depth of the individual trees
+            'min_samples_split': trial.suggest_int('min_samples_split', 2, 20),
+            # Minimum samples required to split an internal node
+            'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 10)
+            # Minimum number of samples required to be at a leaf node
         }
 
         val_scores = []
@@ -367,7 +352,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
-            model = GradientBoostingRegressor(params)
+            model = GradientBoostingRegressor(**params)
             model = model.fit(X_train_tmp, y_train_tmp)
            # model = lgb.train(params, train_data)#, valid_sets=[val_data])
             val_preds = model.predict(X_val)
@@ -386,7 +371,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Quantile Loss: {best_score_upper_bound}")
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
-    model = GradientBoostingRegressor(best_params_upper_bound)
+    model = GradientBoostingRegressor(**best_params_upper_bound)
     final_model_upper_bound = model.fit(X_train.drop(axis=1, columns=["group"]), y_train)
     #äfinal_model_upper_bound = lgb.train(best_params_upper_bound, train_data)
 
