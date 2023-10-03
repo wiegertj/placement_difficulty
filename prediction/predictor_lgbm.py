@@ -1,4 +1,6 @@
 import math
+import sys
+
 import shap
 import lightgbm as lgb
 import os
@@ -98,7 +100,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     mbe = MBE(y_test, np.zeros(len(y_test)) + mean(y_train))
     print(f"MBE on baseline test set: {mbe}")
 
-
+    sys.exit()
 
 
 
@@ -162,7 +164,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=100)
+    study.optimize(objective, n_trials=50)
 
     best_params = study.best_params
     best_score = study.best_value
