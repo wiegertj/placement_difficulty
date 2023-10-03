@@ -80,6 +80,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     y_train = train[target]
 
     X_test = test.drop(axis=1, columns=target)
+    X_test = X_test[["parsimony_support", "length"]]
     y_test = test[target]
 
     #X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, test_size=0.2,
