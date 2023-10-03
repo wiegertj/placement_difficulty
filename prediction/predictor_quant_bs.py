@@ -19,7 +19,6 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, m
     median_absolute_error
 from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
-solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
 def quantile_loss(y_true, y_pred, quantile):
     """
@@ -132,7 +131,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val)#, reference=train_data)
             # KEIN VALIDSETS?
+            solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
+
             model = QuantileRegressor(**params, quantile=0.1, solver=solver)
+            print(X_train_tmp)
+            print(y_train_tmp)
             model = model.fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.1)
