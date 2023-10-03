@@ -118,6 +118,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
             'loss': 'quantile',
             'alpha': 0.5,
+            'n_iter_no_change': 5,
             'n_estimators': trial.suggest_int('n_estimators', 100, 1000),  # Number of boosting stages to be used
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),  # Learning rate
             'max_depth': trial.suggest_int('max_depth', 3, 10),  # Maximum depth of the individual trees
@@ -287,6 +288,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),  # Learning rate
             'max_depth': trial.suggest_int('max_depth', 3, 10),  # Maximum depth of the individual trees
             'min_samples_split': trial.suggest_int('min_samples_split', 2, 20),
+            'n_iter_no_change': 5,
+
             # Minimum samples required to split an internal node
             'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 10)
             # Minimum number of samples required to be at a leaf node
@@ -339,6 +342,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'learning_rate': trial.suggest_loguniform('learning_rate', 0.001, 0.1),  # Learning rate
             'max_depth': trial.suggest_int('max_depth', 3, 10),  # Maximum depth of the individual trees
             'min_samples_split': trial.suggest_int('min_samples_split', 2, 20),
+            'n_iter_no_change': 5,
+
             # Minimum samples required to split an internal node
             'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 10)
             # Minimum number of samples required to be at a leaf node
