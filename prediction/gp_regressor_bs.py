@@ -133,6 +133,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
             'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 10),
             # Minimum number of samples required to be at a leaf node
             'random_state': 42,  # Set a random seed for reproducibility
+            'n_jobs': -1
         }
         val_scores = []
 
