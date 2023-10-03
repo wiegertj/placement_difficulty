@@ -168,7 +168,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    final_model = model(**best_params)
+    final_model = RandomForestRegressor(**best_params)
     final_model = final_model.fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
