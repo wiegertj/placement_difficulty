@@ -59,9 +59,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
     test = df[df['group'].isin(sample_dfs)]
-    test = test.sample(100)
+    test = test.sample(200)
     train = df[~df['group'].isin(sample_dfs)]
-    train = train.sample(1000)
+    train = train.sample(2000)
 
     X_train = train.drop(axis=1, columns=target)
     y_train = train[target]
@@ -137,7 +137,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         return np.median(val_scores)#sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=50)
+    study.optimize(objective, n_trials=5)
 
     best_params = study.best_params
     best_score = study.best_value
