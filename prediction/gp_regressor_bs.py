@@ -14,7 +14,7 @@ from statistics import mean
 from sklearn.feature_selection import RFE
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, mean_absolute_percentage_error, \
@@ -63,6 +63,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     test = df[df['group'].isin(sample_dfs)]
     #test = test.sample(200)
     train = df[~df['group'].isin(sample_dfs)]
+    columns_to_scale = [col for col in df.columns if col not in ['dataset', 'branchId', 'support']]
+    # Create a StandardScaler instance
+    scaler = StandardScaler()
+
+    # Scale the selected columns and update them in the original DataFrame
+    train[columns_to_scale] = scaler.fit_transform(train[columns_to_scale])
+    test[columns_to_scale] = scaler.fit_transform(test[columns_to_scale])
 
     #train = train.sample(2000)
 
