@@ -100,7 +100,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     mbe = MBE(y_test, np.zeros(len(y_test)) + mean(y_train))
     print(f"MBE on baseline test set: {mbe}")
 
-    sys.exit()
 
 
 
