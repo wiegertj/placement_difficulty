@@ -127,7 +127,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
 
         params = {
-            'n_estimators': trial.suggest_int('n_estimators', 100, 1000),  # Number of trees in the forest
+            'n_estimators': trial.suggest_int('n_estimators', 100, 400),  # Number of trees in the forest
             'max_depth': trial.suggest_int('max_depth', 3, 10),  # Maximum depth of the trees
             'min_samples_split': trial.suggest_int('min_samples_split', 2, 20),
             # Minimum samples required to split an internal node
@@ -158,7 +158,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=1)
+    study.optimize(objective, n_trials=50)
 
     best_params = study.best_params
     best_score = study.best_value
@@ -205,7 +205,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     # Save the plot as an image file (e.g., PNG)
     plt.savefig("residual_plot.png")
 
-    feature_importance = final_model.feature_importance(importance_type='gain')
+    feature_importance = final_model.feature_importance_
 
     importance_df = pd.DataFrame(
         {'Feature': X_train.drop(axis=1, columns=["group"]).columns, 'Importance': feature_importance})
