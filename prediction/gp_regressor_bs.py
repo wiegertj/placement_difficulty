@@ -125,8 +125,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     def objective(trial):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
-        alpha = trial.suggest_loguniform("alpha", 1e-5, 10)  # Regularization strength (alpha)
-
+        params = {
+            'n_estimators': trial.suggest_int('n_estimators', 100, 1000),  # Number of trees in the forest
+            'max_depth': trial.suggest_int('max_depth', 3, 10),  # Maximum depth of the trees
+            'min_samples_split': trial.suggest_int('min_samples_split', 2, 20),
+            # Minimum samples required to split an internal node
+            'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 10),
+            # Minimum number of samples required to be at a leaf node
+            'random_state': 42,  # Set a random seed for reproducibility
+        }
         val_scores = []
 
         gkf = GroupKFold(n_splits=10)
@@ -137,7 +144,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
-            model = KernelRidge(alpha=alpha, kernel="rbf")
+            model = RandomForestRegressor(**params)
             model = model.fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
@@ -158,7 +165,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    model = KernelRidge(alpha=best_params["alpha"], kernel="rbf")
+    model = RandomForestRegressor(**best_params)
     final_model = model.fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
