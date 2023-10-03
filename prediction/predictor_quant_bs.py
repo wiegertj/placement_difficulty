@@ -157,7 +157,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     model_lo = QuantileRegressor(**best_params_lo, quantile=0.1, solver=solver).fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
-    y_pred = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
+    y_pred_lo = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
@@ -219,7 +219,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     model_hi = QuantileRegressor(**best_params_lo, quantile=0.9, solver=solver).fit(
         X_train.drop(axis=1, columns=["group"]), y_train)
 
-    y_pred = model_hi.predict(X_test.drop(axis=1, columns=["group"]))
+    y_pred_hi = model_hi.predict(X_test.drop(axis=1, columns=["group"]))
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
@@ -237,5 +237,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mbe = MBE(y_test, y_pred)
     print(f"MBE on test set: {mbe}")
 
+    df_res = pd.DataFrame([y_pred_lo, y_pred_hi], columns=["pred_lo", "pred_hi"])
+    df_res.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_new.csv"))
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
