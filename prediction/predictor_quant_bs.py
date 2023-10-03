@@ -119,7 +119,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
 
-            'alpha': trial.suggest_float('alpha', 0.01, 1.0),
+            'alpha': trial.suggest_float('alpha', 0.01, 0.5),
 
         }
 
@@ -161,20 +161,20 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     y_pred_lo = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
 
-    mse = mean_squared_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred_lo)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
-    mae = mean_absolute_error(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred_lo)
     print(f"MAE on test set: {mae:.2f}")
 
-    mape = mean_absolute_percentage_error(y_test, y_pred)
+    mape = mean_absolute_percentage_error(y_test, y_pred_lo)
     print(f"MAPE on test set: {mape}")
 
-    mdae = median_absolute_error(y_test, y_pred)
+    mdae = median_absolute_error(y_test, y_pred_lo)
     print(f"MDAE on test set: {mdae}")
 
-    mbe = MBE(y_test, y_pred)
+    mbe = MBE(y_test, y_pred_lo)
     print(f"MBE on test set: {mbe}")
 
 
@@ -186,7 +186,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
 
-            'alpha': trial.suggest_float('alpha', 0.1, 1.0),
+            'alpha': trial.suggest_float('alpha', 0.01, 0.5),
 
         }
 
@@ -224,20 +224,20 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     y_pred_hi = model_hi.predict(X_test.drop(axis=1, columns=["group"]))
 
-    mse = mean_squared_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred_hi)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
-    mae = mean_absolute_error(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred_hi)
     print(f"MAE on test set: {mae:.2f}")
 
-    mape = mean_absolute_percentage_error(y_test, y_pred)
+    mape = mean_absolute_percentage_error(y_test, y_pred_hi)
     print(f"MAPE on test set: {mape}")
 
-    mdae = median_absolute_error(y_test, y_pred)
+    mdae = median_absolute_error(y_test, y_pred_hi)
     print(f"MDAE on test set: {mdae}")
 
-    mbe = MBE(y_test, y_pred)
+    mbe = MBE(y_test, y_pred_hi)
     print(f"MBE on test set: {mbe}")
 
     df_res = pd.DataFrame([y_pred_lo, y_pred_hi], columns=["pred_lo", "pred_hi"])
