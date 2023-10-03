@@ -132,7 +132,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val)#, reference=train_data)
             # KEIN VALIDSETS?
-            model = QuantileRegressor(**params, quantile=0.1, solver=solver).fit(X_train_tmp, y_train_tmp)
+            model = QuantileRegressor(**params, quantile=0.1, solver=solver)\
+            model = model.fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.1)
             print("score: " + str(val_score))
