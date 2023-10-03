@@ -67,12 +67,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     #train = train.sample(2000)
 
     X_train = train.drop(axis=1, columns=target)
-    X_train = (X_train - X_train.mean()) / X_train.std()
 
     y_train = train[target]
 
     X_test = test.drop(axis=1, columns=target)
-    X_test = (X_test - X_test.mean()) / X_test.std()
 
     y_test = test[target]
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
