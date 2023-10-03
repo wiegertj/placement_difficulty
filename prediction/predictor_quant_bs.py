@@ -60,6 +60,8 @@ def MBE(y_true, y_pred):
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
+    df.fillna(-1, inplace=True)
+    df.replace([np.inf, -np.inf], -1, inplace=True)
     print("Median Support: ")
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
