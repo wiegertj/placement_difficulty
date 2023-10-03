@@ -6,6 +6,7 @@ import lightgbm as lgb
 import os
 import optuna
 import numpy as np
+from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model import Ridge
 
 import pandas as pd
@@ -136,7 +137,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
-            model = Ridge(alpha=alpha)
+            model = KernelRidge(alpha=alpha, kernel="rbf")
             model = model.fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
@@ -157,7 +158,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    model = Ridge(alpha=best_params["alpha"])
+    model = KernelRidge(alpha=best_params["alpha"], kernel="rbf")
     final_model = model.fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
