@@ -1,6 +1,6 @@
 import math
 import sys
-
+import random
 import shap
 import lightgbm as lgb
 import os
@@ -48,11 +48,21 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     target = "support"
 
-    X = df.drop(axis=1, columns=target)
-    y = df[target]
+    #X = df.drop(axis=1, columns=target)
+    #y = df[target]
 
-    X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, df["group"], test_size=0.2,
-                                                                                   random_state=12)
+    #X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, df["group"], test_size=0.2,
+     #                                                                              random_state=12)
+
+    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    test = df[df['group'].isin(sample_dfs)]
+    train = df[~df['group'].isin(sample_dfs)]
+
+    X_train = train.drop(axis=1, columns=target)
+    y_train = train[target]
+
+    X_test = test.drop(axis=1, columns=target)
+    y_test = test[target]
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
@@ -104,7 +114,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
-            'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
