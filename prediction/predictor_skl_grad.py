@@ -62,6 +62,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print("Median Support: ")
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
+    df.fillna(-1, inplace=True)
 
     print(df.columns)
     print(df.shape)
