@@ -6,6 +6,8 @@ import lightgbm as lgb
 import os
 import optuna
 import numpy as np
+from sklearn.linear_model import Ridge
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from statistics import mean
@@ -116,9 +118,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     def objective(trial):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
-
-        kernel = C(trial.suggest_float("kernel_constant", 1e-3, 1e3)) * RBF(
-            trial.suggest_float("length_scale", 1e-2, 1e2))
+        alpha = trial.suggest_loguniform("alpha", 1e-5, 10)  # Regularization strength (alpha)
 
         val_scores = []
 
@@ -130,7 +130,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
-            model = GaussianProcessRegressor(kernel=kernel)
+            model = Ridge(kernel=alpha)
             model = model.fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
             #val_score = mean_squared_error(y_val, val_preds)
@@ -152,7 +152,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
     best_kernel = C(best_params["kernel_constant"]) * RBF(best_params["length_scale"])
 
-    model = GaussianProcessRegressor(kernel=best_kernel, n_restarts_optimizer=5)
+    model = Ridge(alpha=best_params["alpha"])
     final_model = model.fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
