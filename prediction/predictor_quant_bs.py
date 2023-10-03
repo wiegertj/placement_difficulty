@@ -136,8 +136,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
             model = QuantileRegressor(**params, quantile=0.1, solver=solver)
-            print(X_train_tmp)
-            print(y_train_tmp)
+
             model = model.fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.1)
