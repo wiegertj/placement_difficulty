@@ -206,6 +206,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     importance_df = importance_df.nlargest(30, 'Importance')
 
+    print(importance_df)
+
     plt.figure(figsize=(10, 6))
     plt.bar(importance_df['Feature'], importance_df['Importance'])
     plt.xticks(rotation=90)
