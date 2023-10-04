@@ -59,6 +59,8 @@ def MBE(y_true, y_pred):
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
+    df_diff = os.path.join(os.pardir, "data/treebase_difficulty_new.csv")
+    df = df.merge(df_diff, on="dataset", how="inner")
     df.fillna(-1, inplace=True)
     df.replace([np.inf, -np.inf], -1, inplace=True)
     print("Median Support: ")
