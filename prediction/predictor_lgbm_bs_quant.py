@@ -322,7 +322,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Params: {best_params_lower_bound}")
     print(f"Best Quantile Loss: {best_score_lower_bound}")
 
-    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"])[[["parsimony_support", "length"]], label=y_train)
+    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"])[["parsimony_support", "length"]], label=y_train)
 
     final_model_lower_bound = lgb.train(best_params_lower_bound, train_data)
 
