@@ -213,8 +213,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
 
     #####################################################################################################################
-    X_test = X_test[["parsimony_support", "length", 'dataset', 'min_pars_supp_child_w','branchId', 'split_std_ratio_branch', 'group']]
-    X_train = X_train[["parsimony_support", "length", 'dataset', 'min_pars_supp_child_w','branchId', 'split_std_ratio_branch', 'group']]
+    X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
+    X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
 
     def objective_lower_bound(trial):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
