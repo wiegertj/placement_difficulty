@@ -119,7 +119,73 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
 
-            'alpha': trial.suggest_float('alpha', 0.01, 0.5),
+            'alpha': trial.suggest_float('alpha', 0.01, 1.0),
+
+        }
+
+        val_scores = []
+
+        gkf = GroupKFold(n_splits=4)
+        for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
+            X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
+            X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
+
+            train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
+            val_data = lgb.Dataset(X_val, label=y_val)#, reference=train_data)
+            # KEIN VALIDSETS?
+            solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
+
+            model = QuantileRegressor(**params, quantile=0.1, solver=solver)
+
+            model = model.fit(X_train_tlist()) * 0.2))
+    test = df[df['group'].isin(sample_dfs)]
+    train = df[~df['group'].isin(sample_dfs)]
+
+    X_train = train.drop(axis=1, columns=target)
+    X_train = X_train[["parsimony_support", "length", 'dataset', 'branchId', 'group']]
+    y_train = train[target]
+
+    X_test = test.drop(axis=1, columns=target)
+    X_test = X_test[["parsimony_support", "length", 'dataset', 'branchId', 'group']]
+    y_test = test[target]
+
+    #X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, test_size=0.2,
+     #                                                                              random_state=42)
+    mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
+    rmse_zero = math.sqrt(mse_zero)
+    print("Baseline prediting 0 RMSE: " + str(rmse_zero))
+
+    mse_mean = mean_squared_error(y_test, np.zeros(len(y_test)) + mean(y_train))
+    rmse_mean = math.sqrt(mse_mean)
+    print("Baseline predicting mean RMSE: " + str(rmse_mean))
+
+    if rfe:
+        model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
+                                      min_samples_leaf=10)
+        rfe = RFE(estimator=model, n_features_to_select=rfe_feature_n)  # Adjust the number of features as needed
+        rfe.fit(X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']), y_train)
+        print(rfe.support_)
+        selected_features = X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']).columns[rfe.support_]
+        selected_features = selected_features.append(pd.Index(['group']))
+
+        print("Selected features for RFE: ")
+        print(selected_features)
+        X_train = X_train[selected_features]
+        X_test = X_test[selected_features]
+
+    X_test_ = X_test
+    if not rfe:
+        X_train = X_train.drop(axis=1, columns=['dataset', 'branchId'])
+        X_test = X_test.drop(axis=1, columns=['dataset', 'branchId'])
+
+    #####################################################################################################################
+
+    def objective_lower_bound(trial):
+        #callbacks = [LightGBMPruningCallback(trial, 'l1')]
+
+        params = {
+
+            'alpha': trial.suggest_float('alpha', 0.01, 1.0),
 
         }
 
@@ -149,7 +215,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=20)
+    study.optimize(objective_lower_bound, n_trials=50)
 
     best_params_lo = study.best_params
     best_score_lo = study.best_value
@@ -160,7 +226,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     model_lo = QuantileRegressor(**best_params_lo, quantile=0.1, solver=solver).fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
     y_pred_lo = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
-
+    quant_loss_lo = quantile_loss(y_test, y_pred_lo)
+    print(f"Quantile Loss Holdout: {quant_loss_lo}" )
     mse = mean_squared_error(y_test, y_pred_lo)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
@@ -186,7 +253,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
 
-            'alpha': trial.suggest_float('alpha', 0.01, 0.5),
+            'alpha': trial.suggest_float('alpha', 0.01, 1.0),
 
         }
 
@@ -210,16 +277,16 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=20)
+    study.optimize(objective_lower_bound, n_trials=50)
     solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
     best_params_hi = study.best_params
     best_score_hi = study.best_value
 
-    print(f"Best Params: {best_params_lo}")
-    print(f"Best MAPE training: {best_score_lo}")
+    print(f"Best Params: {best_params_hi}")
+    print(f"Best Q training: {best_score_hi}")
 
-    model_hi = QuantileRegressor(**best_params_lo, quantile=0.9, solver=solver).fit(
+    model_hi = QuantileRegressor(**best_params_hi, quantile=0.9, solver=solver).fit(
         X_train.drop(axis=1, columns=["group"]), y_train)
 
     y_pred_hi = model_hi.predict(X_test.drop(axis=1, columns=["group"]))
@@ -239,6 +306,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     mbe = MBE(y_test, y_pred_hi)
     print(f"MBE on test set: {mbe}")
+
+    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.1)
+    print(f"Quantile Loss Holdout: {quant_loss_lo}" )
+
+    quant_loss_hi = quantile_loss(y_test, y_pred_hi, 0.9)
+    print(f"Quantile Loss Holdout: {quant_loss_hi}" )
 
     df_res = pd.DataFrame([y_pred_lo, y_pred_hi], columns=["pred_lo", "pred_hi"])
     df_res.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_new.csv"))
