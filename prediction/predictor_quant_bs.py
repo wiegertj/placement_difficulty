@@ -180,9 +180,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"MdAE on test set: {mape}")
 
 
-    residuals = y_test - y_pred
+    residuals = y_test - y_pred_median
 
-    plt.scatter(y_pred, residuals)
+    plt.scatter(y_pred_median, residuals)
     plt.xlabel("Predicted Values")
     plt.ylabel("Residuals")
     plt.title("Residual Plot")
