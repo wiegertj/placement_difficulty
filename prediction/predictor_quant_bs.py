@@ -166,17 +166,17 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     y_pred_median = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
-    mse = mean_squared_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred_median)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
-    r_squared = r2_score(y_test, y_pred)
+    r_squared = r2_score(y_test, y_pred_median)
     print(f"R-squared on test set: {r_squared:.2f}")
 
-    mae = mean_absolute_error(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred_median)
     print(f"MAE on test set: {mae:.2f}")
 
-    mape = median_absolute_error(y_test, y_pred)
+    mape = median_absolute_error(y_test, y_pred_median)
     print(f"MdAE on test set: {mape}")
 
 
