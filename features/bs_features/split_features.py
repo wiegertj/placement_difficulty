@@ -205,7 +205,7 @@ for file in filenames:
     print(counter)
     print(len(filenames))
     print(file)
-    if file == "15653_0.newick" or file == "15045_1.newick" or file == "18577_0.newick":
+    if file == "15653_0.newick" or file == "15045_1.newick" or file == "18577_0.newick" or file == "28494_0.newick":
         continue
 
     # support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_1000.raxml.support"
