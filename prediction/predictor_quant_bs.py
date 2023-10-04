@@ -222,9 +222,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group', 'avg_entropy_msa', 'mean_pars_supp_tree']]
     X_train["log_parsimony_support_tree"] = np.log(X_train['mean_pars_supp_tree'])
-    X_train["sqrt_parsimony_support_tree"] = np.log(X_train['mean_pars_supp_tree'])
+    X_train["sqrt_parsimony_support_tree"] = pow(X_train['mean_pars_supp_tree'])
     X_train["log_parsimony_support"] = np.log(X_train['parsimony_support'])
-    X_train["sqrt_parsimony_support"] = np.sqrt(X_train['parsimony_support'])
+    X_train["sqrt_parsimony_support"] = pow(X_train['parsimony_support'])
     def objective_lower_bound(trial):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
