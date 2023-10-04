@@ -214,16 +214,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     #####################################################################################################################
 
-    X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group', 'avg_entropy_msa', 'mean_pars_supp_tree']]
+    X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group', 'avg_entropy_msa', 'mean_pars_supp_tree', 'std_pars_supp_tree']]
     X_test["sqrt_parsimony_support_tree"] = pow(X_test['mean_pars_supp_tree'],2)
     X_test["sqrt_parsimony_support"] = pow(X_test['parsimony_support'],2)
     X_test["sqrt3_parsimony_support_tree"] = pow(X_test['mean_pars_supp_tree'], 3)
     X_test["sqrt3_parsimony_support"] = pow(X_test['parsimony_support'], 3)
 
-    X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group', 'avg_entropy_msa', 'mean_pars_supp_tree']]
+    X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group', 'avg_entropy_msa', 'mean_pars_supp_tree', 'std_pars_supp_tree']]
     X_train["sqrt_parsimony_support_tree"] = pow(X_train['mean_pars_supp_tree'], 2)
     X_train["sqrt_parsimony_support"] = pow(X_train['parsimony_support'], 2)
-    X_train["sqrt3_parsimony_support_tree"] = pow(X_train['mean_pars_supp_tree'], 3)
     X_train["sqrt3_parsimony_support"] = pow(X_train['parsimony_support'], 3)
     def objective_lower_bound(trial):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
