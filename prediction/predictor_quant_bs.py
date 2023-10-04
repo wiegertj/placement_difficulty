@@ -352,6 +352,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["prediction_low"] = y_pred_hi
     X_test_["support"] = y_test
     X_test_["pred_error"] = y_test - y_pred_median
+    X_test_["pi_width"] = y_pred_hi - y_pred_lo
 
     X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_new.csv"))
 
