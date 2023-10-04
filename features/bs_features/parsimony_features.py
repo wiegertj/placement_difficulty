@@ -29,11 +29,21 @@ for file in filenames:
 
         count = 0
         branch_id_counter = 0
+        all_supports = []
+        for node in tree.traverse():
+            if not node.is_leaf():
+                all_supports.append(node.support)
+
+        min_pars_supp_tree = min(all_supports)
+        max_pars_supp_tree = max(all_supports)
+        mean_pars_supp_tree = statistics.mean(all_supports)
+        std_pars_supp_tree = np.std(all_supports)
+        skw_pars_supp_tree = skew(all_supports)
+
         for node in tree.traverse():
             branch_id_counter += 1
             node.__setattr__("name", branch_id_counter)
             if node.support is not None and not node.is_leaf():
-
                 childs_inner = [node_child for node_child in node.traverse() if not node_child.is_leaf()]
                 parents_inner = node.get_ancestors()
                 supports_childs = []
@@ -122,7 +132,7 @@ for file in filenames:
                                 mean_pars_supp_parents, std_pars_supp_parents, skw_pars_supp_parents,
                                 min_pars_supp_parents_w,
                                 max_pars_supp_parents_w,
-                                mean_pars_supp_parents_w, std_pars_supp_parents_w, skw_pars_supp_parents_w,
+                                mean_pars_supp_parents_w, std_pars_supp_parents_w, skw_pars_supp_parents_w, min_pars_supp_tree, max_pars_supp_tree, std_pars_supp_tree, skw_pars_supp_tree, mean_pars_supp_tree
                                 ))
 
 df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_support",
@@ -136,6 +146,8 @@ df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_suppor
                                         "max_pars_supp_parents_w",
                                         "mean_pars_supp_parents_w", "std_pars_supp_parents_w",
                                         "skw_pars_supp_parents_w",
+                                        "min_pars_supp_tree", "max_pars_supp_tree", "std_pars_supp_tree", "skw_pars_supp_tree",
+                                        "mean_pars_supp_tree"
 
                                         ])
 df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony.csv"))
