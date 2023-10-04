@@ -59,10 +59,10 @@ def MBE(y_true, y_pred):
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
-    df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
-    df_diff["name"] = df_diff["name"].str.replace(".phy", "")
-    df = df.merge(df_diff, left_on="dataset", right_on="name", how="inner")
-    df.drop(columns=["datatype", "name"], axis=1, inplace=True)
+    #df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
+    #df_diff["name"] = df_diff["name"].str.replace(".phy", "")
+    #df = df.merge(df_diff, left_on="dataset", right_on="name", how="inner")
+    #df.drop(columns=["datatype", "name"], axis=1, inplace=True)
 
     df.fillna(-1, inplace=True)
     df.replace([np.inf, -np.inf], -1, inplace=True)
@@ -157,7 +157,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return np.median(val_scores)#sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=10)
+    study.optimize(objective, n_trials=50)
 
     best_params = study.best_params
     best_score = study.best_value
@@ -220,8 +220,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
 
     #####################################################################################################################
-    X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
-    X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
+    #X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
+    #X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
+    X_test = X_test[["parsimony_support", "length", 'length_relative', 'min_pars_supp_child_w', 'split_std_ratio_branch','seq_length', 'group']]
+    X_train = X_train[["parsimony_support", "length", 'length_relative', 'min_pars_supp_child_w', 'split_std_ratio_branch','seq_length', 'group']]
 
     def objective_lower_bound(trial):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
