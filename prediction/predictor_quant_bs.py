@@ -152,7 +152,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return np.median(val_scores)#sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=10)
+    study.optimize(objective, n_trials=50)
 
     best_params = study.best_params
     best_score = study.best_value
@@ -162,7 +162,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    final_model = lgb.train(best_params, train_data)
+    final_model = lgb.train(best_params, train_data, verbosity=-1)
 
     y_pred_median = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
@@ -213,8 +213,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
 
     #####################################################################################################################
-    X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group', 'mean_entropy_msa', 'mean_pars_supp_tree']]
-    X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group', 'mean_entropy_msa', 'mean_pars_supp_tree']]
+    X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
+    X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
 
     def objective_lower_bound(trial):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
