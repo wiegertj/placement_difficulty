@@ -121,7 +121,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
 
-            'alpha': trial.suggest_float('alpha', 0.01, 1.0),
+            'alpha': trial.suggest_float('alpha', 0.001,0.1),
 
         }
 
@@ -189,7 +189,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
 
-            'alpha': trial.suggest_float('alpha', 0.01, 1.0),
+            'alpha': trial.suggest_float('alpha', 0.001,0.1),
 
         }
 
@@ -249,7 +249,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     quant_loss_hi = quantile_loss(y_test, y_pred_hi, 0.9)
     print(f"Quantile Loss Holdout: {quant_loss_hi}" )
 
-    df_res = pd.DataFrame([y_pred_lo, y_pred_hi], columns=["pred_lo", "pred_hi"])
+    df_res = pd.DataFrame({'y_pred_lo': y_pred_lo, 'y_pred_hi': y_pred_hi})
     df_res.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_new.csv"))
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
