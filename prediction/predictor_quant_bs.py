@@ -152,7 +152,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return np.median(val_scores)#sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=50)
+    study.optimize(objective, n_trials=100)
 
     best_params = study.best_params
     best_score = study.best_value
@@ -350,7 +350,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["prediction_median"] = y_pred_median
     X_test_["prediction_low"] = y_pred_lo
     X_test_["prediction_low"] = y_pred_hi
-    X_test_["entropy"] = y_test
+    X_test_["support"] = y_test
+    X_test_["pred_error"] = y_test - y_pred_median
 
     X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_new.csv"))
 
