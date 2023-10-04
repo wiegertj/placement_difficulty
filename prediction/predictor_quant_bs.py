@@ -222,7 +222,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
 
             'alpha': trial.suggest_float('alpha', 0.001,0.1),
-            'verbosity': -1
 
         }
 
@@ -291,7 +290,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
 
             'alpha': trial.suggest_float('alpha', 0.001,0.1),
-            'verbosity': -1
 
         }
 
