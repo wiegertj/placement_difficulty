@@ -229,8 +229,9 @@ df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_suppor
                                         "skw_pars_supp_parents_w",
                                         "min_pars_supp_tree", "max_pars_supp_tree", "std_pars_supp_tree", "skw_pars_supp_tree",
                                         "mean_pars_supp_tree", "diff_support_100", "node_100_support" ,"diff_support_1000", "node_1000_support",
-"diff_support_500", "node_500_support"
 
+"diff_support_500", "node_500_support",
+                                        "mean_all_supps", "std_all_supps", "mean_all_diff_supps", "std_all_diff_supps"
 
                                         ])
 df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony.csv"))
