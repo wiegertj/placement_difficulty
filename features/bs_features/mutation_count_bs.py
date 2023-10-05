@@ -266,7 +266,7 @@ def main():
         reference_msa_path = os.path.join(grandir, "data/raw/msa", dataset + "_reference.fasta")
         reference_msa = AlignIO.read(reference_msa_path, 'fasta')
         reference_tree_path = os.path.join(grandir, "data/raw/reference_tree", dataset + ".newick")
-
+        reference_tree_path_abs = os.path.abspath(reference_tree_path)
         with open(reference_tree_path, 'r') as original_file:
 
             original_newick_tree = original_file.read()
