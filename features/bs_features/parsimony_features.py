@@ -157,7 +157,7 @@ for file in filenames:
                                 min_pars_supp_parents_w,
                                 max_pars_supp_parents_w,
                                 mean_pars_supp_parents_w, std_pars_supp_parents_w, skw_pars_supp_parents_w, min_pars_supp_tree, max_pars_supp_tree, std_pars_supp_tree, skw_pars_supp_tree, mean_pars_supp_tree,
-                                diff_support_100, node_low_support
+                                diff_support_100 /100, node_low_support/100
                                 ))
 
 df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_support",
