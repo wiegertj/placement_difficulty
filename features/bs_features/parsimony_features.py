@@ -18,10 +18,21 @@ for file in filenames:
     print(file)
 
     support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_100.raxml.support"
+    support_path_low = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_100_low.raxml.support"
 
     if not os.path.exists(support_path):
         print("Couldnt find support: " + support_path)
         continue
+    with open(support_path_low, "r") as support_file_low:
+        tree_str_low = support_file_low.read()
+        tree_low = Tree(tree_str_low)
+
+        branch_id_counter_low = 0
+
+        for node_low in tree_low.traverse():
+            branch_id_counter_low += 1
+            node_low.__setattr__("name", branch_id_counter_low)
+
 
     with open(support_path, "r") as support_file:
         tree_str = support_file.read()
@@ -44,6 +55,12 @@ for file in filenames:
             branch_id_counter += 1
             node.__setattr__("name", branch_id_counter)
             if node.support is not None and not node.is_leaf():
+
+                node_low = tree.search_nodes(name=branch_id_counter, internal=True)
+                node_low_support = node_low.support
+
+                diff_support_100 = node.support - node_low_support
+
                 childs_inner = [node_child for node_child in node.traverse() if not node_child.is_leaf()]
                 parents_inner = node.get_ancestors()
                 supports_childs = []
@@ -123,6 +140,8 @@ for file in filenames:
                     std_pars_supp_parents_w = np.std(weighted_supports_parents)
                     skw_pars_supp_parents_w = skew(weighted_supports_parents)
 
+
+
                 results.append((file.replace(".newick", ""), node.name, node.support / 100, min_pars_supp_child,
                                 max_pars_supp_child,
                                 mean_pars_supp_child, std_pars_supp_child, skw_pars_supp_child, min_pars_supp_child_w,
@@ -132,7 +151,8 @@ for file in filenames:
                                 mean_pars_supp_parents, std_pars_supp_parents, skw_pars_supp_parents,
                                 min_pars_supp_parents_w,
                                 max_pars_supp_parents_w,
-                                mean_pars_supp_parents_w, std_pars_supp_parents_w, skw_pars_supp_parents_w, min_pars_supp_tree, max_pars_supp_tree, std_pars_supp_tree, skw_pars_supp_tree, mean_pars_supp_tree
+                                mean_pars_supp_parents_w, std_pars_supp_parents_w, skw_pars_supp_parents_w, min_pars_supp_tree, max_pars_supp_tree, std_pars_supp_tree, skw_pars_supp_tree, mean_pars_supp_tree,
+                                diff_support_100, node_low_support
                                 ))
 
 df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_support",
@@ -147,7 +167,7 @@ df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_suppor
                                         "mean_pars_supp_parents_w", "std_pars_supp_parents_w",
                                         "skw_pars_supp_parents_w",
                                         "min_pars_supp_tree", "max_pars_supp_tree", "std_pars_supp_tree", "skw_pars_supp_tree",
-                                        "mean_pars_supp_tree"
+                                        "mean_pars_supp_tree", "diff_support_100", "node_low_support"
 
                                         ])
 df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony.csv"))
