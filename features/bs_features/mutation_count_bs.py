@@ -272,7 +272,7 @@ def main():
             original_newick_tree = original_file.read()
             original_tree = ete3.Tree(original_newick_tree)
 
-            result = count_subst_freqs(reference_tree_path_abs, reference_msa)
+            result = count_subst_freqs(reference_tree_path_abs, reference_msa_path)
             leaf_count = len(original_tree.get_leaves())
 
             max_subst_freq = max(result) / leaf_count
