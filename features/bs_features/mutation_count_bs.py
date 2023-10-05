@@ -247,7 +247,9 @@ def example(tree_path, msa_path):
 
 
 def main():
-    current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/branch_supports.csv"))
+    grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
+
+    current_loo_targets = pd.read_csv(os.path.join(grandir, "data/processed/target/branch_supports.csv"))
     dataset_set = set(current_loo_targets['dataset'])
 
     counter = 0
@@ -259,11 +261,11 @@ def main():
 
         counter += 1
         print(str(counter) + "/" + str(len(dataset_set)))
-        print(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats.csv"))
+        print(os.path.join(grandir, "data/processed/features", dataset + "_subst_freq_stats.csv"))
 
-        reference_msa_path = os.path.join(os.pardir, "data/raw/msa", dataset + "_reference.fasta")
+        reference_msa_path = os.path.join(grandir, "data/raw/msa", dataset + "_reference.fasta")
         reference_msa = AlignIO.read(reference_msa_path, 'fasta')
-        reference_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", dataset + ".newick")
+        reference_tree_path = os.path.join(grandir, "data/raw/reference_tree", dataset + ".newick")
 
         with open(reference_tree_path, 'r') as original_file:
 
@@ -294,7 +296,7 @@ def main():
     df = pd.DataFrame(results,
                       columns=['dataset', "max_subst_freq", "avg_subst_freq", "cv_subst_freq",
                                "sk_subst_freq", "kur_subst_freq"])
-    df.to_csv(os.path.join(os.pardir, "data/processed/features/features_bs", "_subst_freq_stats_bs.csv"))
+    df.to_csv(os.path.join(grandir, "data/processed/features/features_bs", "_subst_freq_stats_bs.csv"))
 
 
 if __name__ == "__main__":
