@@ -246,11 +246,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             # KEIN VALIDSETS?
             solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
-            model = QuantileRegressor(**params, quantile=0.1, solver=solver)
+            model = QuantileRegressor(**params, quantile=0.05, solver=solver)
 
             model = model.fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.1)
+            val_score = quantile_loss(y_val, val_preds, 0.05)
             print("score: " + str(val_score))
 
             val_scores.append(val_score)
@@ -268,10 +268,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Params: {best_params_lo}")
     print(f"Best MAPE training: {best_score_lo}")
 
-    model_lo = QuantileRegressor(**best_params_lo, quantile=0.1, solver=solver).fit(X_train.drop(axis=1, columns=["group"]), y_train)
+    model_lo = QuantileRegressor(**best_params_lo, quantile=0.05, solver=solver).fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
     y_pred_lo = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
-    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.1)
+    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.05)
     print(f"Quantile Loss Holdout: {quant_loss_lo}" )
     mse = mean_squared_error(y_test, y_pred_lo)
     rmse = math.sqrt(mse)
@@ -312,9 +312,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val)  # , reference=train_data)
             # KEIN VALIDSETS?
-            model = QuantileRegressor(**params, quantile=0.9, solver=solver).fit(X_train_tmp, y_train_tmp)
+            model = QuantileRegressor(**params, quantile=0.95, solver=solver).fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.9)
+            val_score = quantile_loss(y_val, val_preds, 0.95)
             print("score: " + str(val_score))
 
             val_scores.append(val_score)
@@ -331,7 +331,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Params: {best_params_hi}")
     print(f"Best Q training: {best_score_hi}")
 
-    model_hi = QuantileRegressor(**best_params_hi, quantile=0.9, solver=solver).fit(
+    model_hi = QuantileRegressor(**best_params_hi, quantile=0.95, solver=solver).fit(
         X_train.drop(axis=1, columns=["group"]), y_train)
 
     y_pred_hi = model_hi.predict(X_test.drop(axis=1, columns=["group"]))
@@ -352,10 +352,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mbe = MBE(y_test, y_pred_hi)
     print(f"MBE on test set: {mbe}")
 
-    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.1)
+    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.05)
     print(f"Quantile Loss Holdout: {quant_loss_lo}" )
 
-    quant_loss_hi = quantile_loss(y_test, y_pred_hi, 0.9)
+    quant_loss_hi = quantile_loss(y_test, y_pred_hi, 0.95)
     print(f"Quantile Loss Holdout: {quant_loss_hi}" )
 
     X_test_["prediction_median"] = y_pred_median
