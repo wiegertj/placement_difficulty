@@ -8,6 +8,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/branch_supports.csv"),
                       usecols=lambda column: column != 'Unnamed: 0')
 
+subst = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "subst_freq_stats_bs.csv"))
+
 # Get MSA features
 msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features",
                                         "msa_features.csv"), index_col=False,
@@ -38,6 +40,7 @@ df_merged = df_merged.merge(tree_features, on=["dataset"], how="inner")
 df_merged = df_merged.merge(parsimony_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(split_features2, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inner")
+df_merged = df_merged.merge(subst, on=["dataset"], how="inner")
 #df_merged = df_merged.merge(parsimony_features2, on=["dataset"], how="inner")
 #df_merged['split_skw_ratio_topo'].fillna(-1, inplace=True)
 #df_merged['split_skw_ratio_branch'].fillna(-1, inplace=True)
