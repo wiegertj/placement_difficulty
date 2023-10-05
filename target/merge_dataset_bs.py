@@ -85,6 +85,7 @@ for support_start in np.arange(0, 1, step_size):
 sampled_data.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 print(sampled_data.shape)
 print("Mean " + str(sampled_data["support"].median()))
+print(sampled_data.columns)
 
 sampled_data.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support.csv"), index=False)
 
