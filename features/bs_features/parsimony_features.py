@@ -97,6 +97,8 @@ for file in filenames:
                 node_low500 = tree_low500.search_nodes(name=branch_id_counter)[0]
                 node_low_support500 = node_low500.support
 
+                diff_support_500 = ode.support - node_low_support500
+
                 all_supps.append(node.support)
                 all_supps.append(node_low_support)
                 all_supps.append(node_low_support1000)
