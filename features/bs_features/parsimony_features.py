@@ -56,7 +56,7 @@ for file in filenames:
             node.__setattr__("name", branch_id_counter)
             if node.support is not None and not node.is_leaf():
 
-                node_low = tree.search_nodes(name=branch_id_counter, internal=True).index(0)
+                node_low = tree.search_nodes(name=branch_id_counter, internal=True)[0]
                 node_low_support = node_low.support
 
                 diff_support_100 = node.support - node_low_support
