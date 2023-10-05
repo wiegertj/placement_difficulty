@@ -29,6 +29,7 @@ parsimony_features = pd.read_csv(os.path.join(os.pardir, "data/processed/feature
                                  usecols=lambda column: column != 'Unnamed: 0')
 parsimony_features2 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features.csv"),
                                   usecols=lambda column: column != 'Unnamed: 0')
+print(parsimony_features2.columns)
 # Get split features
 split_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
                                           "split_features.csv"), usecols=lambda column: column != 'Unnamed: 0')
