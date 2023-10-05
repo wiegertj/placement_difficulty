@@ -255,9 +255,9 @@ def main():
     counter = 0
     dataset_set.remove("18872_2")
     dataset_set.remove("11451_0")
+    results = []
 
     for dataset in dataset_set:
-        results = []
 
         counter += 1
         print(str(counter) + "/" + str(len(dataset_set)))
