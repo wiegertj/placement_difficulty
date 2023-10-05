@@ -104,9 +104,7 @@ for file in filenames:
                 all_supps.append(node_low_support1000)
                 all_supps.append(node_low_support500)
 
-                all_diff_supps.append(diff_support_100)
-                all_diff_supps.append(diff_support_500)
-                all_diff_supps.append(diff_support_1000)
+
 
 
 
@@ -120,6 +118,10 @@ for file in filenames:
                 diff_support_1000 = node.support - node_low_support1000
 
                 diff_support_500 = node.support - node_low_support500
+
+                all_diff_supps.append(diff_support_100)
+                all_diff_supps.append(diff_support_500)
+                all_diff_supps.append(diff_support_1000)
 
 
                 childs_inner = [node_child for node_child in node.traverse() if not node_child.is_leaf()]
