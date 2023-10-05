@@ -296,7 +296,8 @@ def main():
     df = pd.DataFrame(results,
                       columns=['dataset', "max_subst_freq", "avg_subst_freq", "cv_subst_freq",
                                "sk_subst_freq", "kur_subst_freq"])
-    df.to_csv(os.path.join(grandir, "data/processed/features/features_bs", "_subst_freq_stats_bs.csv"))
+    df.to_csv(os.path.join(grandir, "data/processed/features/bs_features", "subst_freq_stats_bs.csv"))
+
 
 
 if __name__ == "__main__":
