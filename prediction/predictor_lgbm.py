@@ -36,7 +36,7 @@ def MBE(y_true, y_pred):
     mbe = diff.mean()
     return mbe
 def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=[]):
-    df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "pars_top_features.csv"))
+    df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pars_top_features.csv"))
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df = df.merge(df_pars_top, on=["dataset"], how="inner")
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "current_closest_taxon_perc_ham", "difficult"],
