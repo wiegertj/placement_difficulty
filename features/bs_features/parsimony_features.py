@@ -23,6 +23,11 @@ for file in filenames:
     if not os.path.exists(support_path):
         print("Couldnt find support: " + support_path)
         continue
+
+    if not os.path.exists(support_path_low):
+        print("Couldnt find support low: " + support_path_low)
+        continue
+
     with open(support_path_low, "r") as support_file_low:
         tree_str_low = support_file_low.read()
         tree_low = Tree(tree_str_low)
