@@ -108,10 +108,7 @@ for file in filenames:
 
 
 
-                mean_all_supps = statistics.mean(all_supps)
-                std_all_supps = np.std(all_supps)
-                mean_all_diff_supps = statistics.mean(all_diff_supps)
-                std_all_diff_supps = np.std(all_diff_supps)
+
 
 
 
@@ -122,6 +119,11 @@ for file in filenames:
                 all_diff_supps.append(diff_support_100)
                 all_diff_supps.append(diff_support_500)
                 all_diff_supps.append(diff_support_1000)
+
+                mean_all_supps = statistics.mean(all_supps)
+                std_all_supps = np.std(all_supps)
+                mean_all_diff_supps = statistics.mean(all_diff_supps)
+                std_all_diff_supps = np.std(all_diff_supps)
 
 
                 childs_inner = [node_child for node_child in node.traverse() if not node_child.is_leaf()]
