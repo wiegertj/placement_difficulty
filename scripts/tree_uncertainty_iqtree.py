@@ -88,9 +88,7 @@ for tree_filename in filenames_filtered:
     # Open the file in write mode and write the string to it
     with open(file_name_iqtreemodel, "w") as file:
         file.write(found_model)
-    iqtree - s example.phy - m
-    TIM2 + I + G - B
-    1000
+
 
     raxml_command = [
         "iqtree",
