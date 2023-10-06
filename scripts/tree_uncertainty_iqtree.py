@@ -82,11 +82,11 @@ for tree_filename in filenames_filtered:
     found_model = "GTR{"+content_within_braces.replace("/",",")+"}"
 
     # Specify the file name where you want to save the string
-    file_name = model_path.replace("model","model_iqtree")
+    file_name_iqtreemodel = model_path.replace("model","model_iqtree")
 
     # Open the file in write mode and write the string to it
     with open(file_name_iqtreemodel, "w") as file:
-        file.write(file_name_iqtreemodel)
+        file.write(found_model)
 
     raxml_command = [
         "iqtree",
