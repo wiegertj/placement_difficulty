@@ -96,9 +96,11 @@ for tree_filename in filenames_filtered:
         f"--bb {1000}"
     ]
 
-    #subprocess.run(" ".join(raxml_command), shell=True)
+    #print("Boot")
 
-    #print(f"Bootstrap analysis for {tree_filename} completed.")
+    subprocess.run(" ".join(raxml_command), shell=True)
+
+    print(f"Bootstrap analysis for {tree_filename} completed.")
 
     #raxml_command = ["raxml-ng",
      #                "--support",
