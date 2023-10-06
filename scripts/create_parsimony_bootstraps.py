@@ -83,7 +83,7 @@ for tree_filename in filenames:
     file_list = os.listdir(folder_path)
 
     # Filter files that contain "_parsimony_100temp_" in their names
-    files_to_delete = [file for file in file_list if "_parsimony_100temp_" in file]
+    files_to_delete = [file for file in file_list if ("_parsimony_100temp_" in file or ".log" in file or ".rba" in file)]
 
     # Delete the filtered files
     for file_to_delete in files_to_delete:
