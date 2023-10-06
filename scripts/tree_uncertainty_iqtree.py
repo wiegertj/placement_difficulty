@@ -1,5 +1,4 @@
-
-
+import re
 import subprocess
 import pandas as pd
 import os
@@ -55,7 +54,25 @@ for tree_filename in filenames_filtered:
         print("Too large, skipped")
         continue
 
+    model_path = "your_model_file.txt"
 
+    # Read the content from the model file
+    with open(model_path, 'r') as file:
+        model_content = file.read()
+
+    # Define a regular expression pattern to match the content within curly braces
+    pattern = r'GTR{([^}]+)}'
+
+    # Use re.search() to find the pattern in the model content
+    match = re.search(pattern, model_content)
+
+    # Check if a match is found
+    if match:
+        # Extract the content within curly braces
+        content_within_braces = match.group(1)
+        print(content_within_braces.replace("/",","))
+    else:
+        print("No match found.")
    # filtered_filenames_df_tmp.to_csv(existing_csv_file, mode='a', header=False, index=False)
 #
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
@@ -63,6 +80,9 @@ for tree_filename in filenames_filtered:
 
     bootstrap_filepath = os.path.join(os.pardir, "scripts",
                                       output_prefix+".raxml.bootstraps")
+
+
+
 
     raxml_command = [
         "iqtree",
