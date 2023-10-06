@@ -104,6 +104,8 @@ for tree_filename in filenames_filtered:
 
     print(f"Bootstrap analysis for {tree_filename} completed.")
 
+    break
+
     #raxml_command = ["raxml-ng",
      #                "--support",
       #               f"--tree {tree_path}",
