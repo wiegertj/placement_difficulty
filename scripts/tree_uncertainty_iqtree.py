@@ -49,8 +49,7 @@ for tree_filename in filenames_filtered:
     if sequence_length >= 8000:
         print("Too large, skipped")
         continue
-
-    model_path = "your_model_file.txt"
+    model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
 
     # Read the content from the model file
     with open(model_path, 'r') as file:
@@ -71,7 +70,6 @@ for tree_filename in filenames_filtered:
         print("No match found.")
    # filtered_filenames_df_tmp.to_csv(existing_csv_file, mode='a', header=False, index=False)
 #
-    model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
     output_prefix = tree_filename.split(".")[0] + "_1000"  # Using the filename as the prefix
 
     bootstrap_filepath = os.path.join(os.pardir, "scripts",
