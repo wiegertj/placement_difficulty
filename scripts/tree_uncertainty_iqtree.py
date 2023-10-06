@@ -93,8 +93,8 @@ for tree_filename in filenames_filtered:
     raxml_command = [
         "iqtree",
         f"-m {file_name_iqtreemodel}",
-        #f"-s {msa_filepath}",
-        f"-s {tree_path}",
+        f"-s {msa_filepath}",
+        f"-t {tree_path}",
         f"-bb {1000}"
     ]
 
