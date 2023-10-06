@@ -77,7 +77,7 @@ for tree_filename in filenames_filtered:
 
 
 
-    found_model = content_within_braces.replace("/",",")
+    found_model = "GTR{"+content_within_braces.replace("/",",")+"}"
     raxml_command = [
         "iqtree",
         f"-m {found_model}",
