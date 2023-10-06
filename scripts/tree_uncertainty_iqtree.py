@@ -51,25 +51,26 @@ for tree_filename in filenames_filtered:
         continue
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
 
-    # Read the content from the model file
     with open(model_path, 'r') as file:
-        model_content = file.read()
+        # Read the first line from the file
+        line = file.readline().strip()
 
-    # Define a regular expression pattern to match the content within curly braces
-    pattern = r'GTR{([^}]+)}'
+        # Find the position of the second closing bracket }
+        second_end_brace = line.find('}', line.find('}') + 1)
 
-    # Use re.search() to find the pattern in the model content
-    match = re.search(pattern, model_content)
+        if second_end_brace != -1:
+            # Extract the substring up to the second closing bracket }
+            result_string = line[:second_end_brace + 1]
 
-    # Check if a match is found
-    if match:
-        # Extract the content within curly braces
-        content_within_braces = match.group(1)
-        print(content_within_braces.replace("/",","))
-    else:
-        print("No match found.")
-   # filtered_filenames_df_tmp.to_csv(existing_csv_file, mode='a', header=False, index=False)
-#
+            # Find the last float within the first set of brackets
+            #last_float_start = result_string.rfind('/')
+            #if last_float_start != -1:
+             #   last_float_end = result_string.rfind(' ', 0, last_float_start)
+              #  if last_float_end != -1:
+               #     # Delete the last float within the first set of brackets
+                #    result_string = result_string[:last_float_end] + result_string[last_float_start:]
+
+
     output_prefix = tree_filename.split(".")[0] + "_1000"  # Using the filename as the prefix
 
     bootstrap_filepath = os.path.join(os.pardir, "scripts",
@@ -79,7 +80,7 @@ for tree_filename in filenames_filtered:
 
 
 
-    found_model = "GTR{"+content_within_braces.replace("/",",")+"}"
+    found_model = result_string.replace("/1.000000}", "}").replace("U","").replace("/",",")
 
     # Specify the file name where you want to save the string
     file_name_iqtreemodel = model_path.replace("model","model_iqtree")
