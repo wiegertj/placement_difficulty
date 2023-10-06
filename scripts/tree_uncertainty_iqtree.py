@@ -65,7 +65,7 @@ for tree_filename in filenames_filtered:
                                       output_prefix+".raxml.bootstraps")
 
     raxml_command = [
-        "iqtree-ng",
+        "iqtree",
         f"--m {model_path}",
         f"--s {msa_filepath}",
         f"--t {tree_path}",
