@@ -83,10 +83,10 @@ for tree_filename in filenames_filtered:
 
 
 
-
+    found_model = content_within_braces.replace("/",",")
     raxml_command = [
         "iqtree",
-        f"--m {model_path}",
+        f"--m {found_model}",
         f"--s {msa_filepath}",
         f"--t {tree_path}",
         f"--bb {1000}"
