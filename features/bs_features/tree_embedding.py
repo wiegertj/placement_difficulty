@@ -8,6 +8,8 @@ from scipy.stats import skew, kurtosis
 import dendropy
 from sklearn.decomposition import PCA
 import networkx as nx
+from scipy.spatial.distance import pdist
+
 import numpy as np
 from scipy.stats import skew, kurtosis
 from node2vec import Node2Vec
@@ -39,13 +41,14 @@ def calc_tree_embedding(name, tree):
     # Extract the embeddings as a NumPy array
     embeddings_array = np.array(list(node_embeddings.values()))
 
-    # Compute the desired summary statistics
-    min_embedding = np.min(embeddings_array, axis=0)
-    max_embedding = np.max(embeddings_array, axis=0)
-    mean_embedding = np.mean(embeddings_array, axis=0)
-    std_embedding = np.std(embeddings_array, axis=0)
-    skewness_embedding = skew(embeddings_array, axis=0)
-    kurtosis_embedding = kurtosis(embeddings_array, axis=0)
+    pairwise_distances = pdist(embeddings_array, metric='euclidean')
+
+    min_embedding_dim0 = np.min(pairwise_distances)
+    max_embedding_dim0 = np.max(pairwise_distances)
+    mean_embedding_dim0 = np.mean(pairwise_distances)
+    std_embedding_dim0 = np.std(pairwise_distances)
+    skewness_embedding_dim0 = skew(pairwise_distances)
+    kurtosis_embedding_dim0 = kurtosis(pairwise_distances)
 
     return (name, min_embedding, max_embedding, mean_embedding, std_embedding, skewness_embedding, kurtosis_embedding)
 
