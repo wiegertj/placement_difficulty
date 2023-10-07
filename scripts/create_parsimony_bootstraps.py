@@ -146,14 +146,13 @@ for tree_filename in filenames:
     }
 
     time_dat = pd.DataFrame(data)
-    grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
 
-    if not os.path.isfile(os.path.join(grandir, "data/processed/features/bs_features",
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                              "pars_boot_times.csv")):
-        time_dat.to_csv(os.path.join(os.path.join(grandir, "data/processed/features/bs_features",
+        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
                              "pars_boot_times.csv")), index=False)
     else:
-        time_dat.to_csv(os.path.join(grandir, "data/processed/features/bs_features",
+        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
                              "pars_boot_times.csv"),
                      index=False,
                      mode='a', header=False)
