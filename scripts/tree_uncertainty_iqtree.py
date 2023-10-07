@@ -1,10 +1,11 @@
 print("Started")
 
-import subprocess
+import pandas as pd
 
 print("Started1")
 
-import pandas as pd
+import subprocess
+
 
 print("Started2")
 
