@@ -17,7 +17,7 @@ for file in filenames:
     print(counter)
     print(file)
 
-    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_99.raxml.support"
+    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_199.raxml.support"
 
     if not os.path.exists(support_path):
         print("Couldnt find support: " + support_path)
