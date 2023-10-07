@@ -54,7 +54,7 @@ def calc_tree_embedding(name, tree):
     # Extract the embeddings as a NumPy array
     embeddings_array = np.array(list(node_embeddings.values()))
 
-    pairwise_distances = pdist(embeddings_array, metric='mahalanobis')
+    pairwise_distances = pdist(embeddings_array, metric='cosine')
 
     min_embedding = np.min(pairwise_distances)
     max_embedding = np.max(pairwise_distances)
