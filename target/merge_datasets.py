@@ -26,6 +26,13 @@ print("Query feature count: " + str(query_features.shape))
 # Get tree features
 tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), index_col=False,
                             usecols=lambda column: column != 'Unnamed: 0')
+like = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "loglik.csv"), index_col=False,
+                            usecols=lambda column: column != 'Unnamed: 0')
+tree_features = tree_features.merge(like, on=["dataset"], how="inner")
+tree_features_embed = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_embedd_stats.csv"), index_col=False,
+                            usecols=lambda column: column != 'Unnamed: 0')
+tree_features_embed = tree_features_embed.drop_duplicates(subset=['dataset'], keep='first')
+tree_features = tree_features.merge(tree_features_embed, on=["dataset"], how="inner")
 tree_features = tree_features.drop_duplicates(subset=['dataset'], keep='first')
 like = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "loglik.csv"), index_col=False,
                             usecols=lambda column: column != 'Unnamed: 0')
