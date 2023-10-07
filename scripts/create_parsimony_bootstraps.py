@@ -129,8 +129,15 @@ for tree_filename in filenames:
     end_time = time.time()
 
     elapsed_time = end_time - start_time
-    print(alignment.shape)
     print("Elapsed time (seconds):", elapsed_time)
+    num_sequences = len(alignment)
+
+    # Get the length of the alignment
+    alignment_length = alignment.get_alignment_length()
+
+    # Print the number of sequences and length of the alignment
+    print("Number of Sequences:", num_sequences)
+    print("Length of Alignment:", alignment_length)
 
     time.sleep(1)
 
