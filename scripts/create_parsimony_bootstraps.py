@@ -18,6 +18,13 @@ for tree_filename in filenames:
         print("Skipped, MSA not found")
         continue
 
+    if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_parsimony_supp_99.raxml.support"):
+        print("Found already, move on")
+        continue
+
+    if tree_filename == "20632_1.newick":
+        continue
+
     resampled_msas = []
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
 
