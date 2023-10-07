@@ -85,10 +85,11 @@ if __name__ == '__main__':
 
         tree = ete3.Tree(newick_tree)
         embeds = calc_tree_embedding(tree, tree_file.replace(".newick", ""))
+        embeds_list = [embeds]
 
         print("finished one embedding")
 
-        df_tmp = pd.DataFrame(embeds, columns=["min_embedding", "max_embedding", "mean_embedding", "std_embedding", "skewness_embedding", "kurtosis_embedding"])
+        df_tmp = pd.DataFrame(embeds_list, columns=["dataset","min_embedding", "max_embedding", "mean_embedding", "std_embedding", "skewness_embedding", "kurtosis_embedding"])
 
 
         if not os.path.isfile(os.path.join(grandir, "data/processed/features",
