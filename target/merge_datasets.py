@@ -282,41 +282,41 @@ print("Create uniform sample")
 combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 
 
-combined_df["avg_perc_ham_dist_msa"] = 0.0
-combined_df["std_perc_ham_dist_msa"] = 0.0
-combined_df["min_perc_ham_dist_msa"] = 0.0
-combined_df["max_perc_ham_dist_msa"] = 0.0
-combined_df["avg_kmer_simt_msa"] = 0.0
-combined_df["min_kmer_simt_msa"] = 0.0
-combined_df["max_kmer_simt_msa"] = 0.0
-combined_df["std_kmer_simt_msa"] = 0.0
+#combined_df["avg_perc_ham_dist_msa"] = 0.0
+#combined_df["std_perc_ham_dist_msa"] = 0.0
+#combined_df["min_perc_ham_dist_msa"] = 0.0
+#combined_df["max_perc_ham_dist_msa"] = 0.0
+#combined_df["avg_kmer_simt_msa"] = 0.0
+#combined_df["min_kmer_simt_msa"] = 0.0
+#combined_df["max_kmer_simt_msa"] = 0.0
+#combined_df["std_kmer_simt_msa"] = 0.0
 
-dataset_counter = 0
-for dataset in combined_df['dataset'].unique():
-    dataset_counter += 1
-    print(dataset_counter)
-    subset = combined_df[combined_df['dataset'] == dataset]
-    for index_aim, row_aim in subset.iterrows():
-        row_set = []
-        for index, row in subset.iterrows():
-            if index != index_aim:
-                row_set.append(row)
-        avg_perc_ham_dist_msa = pd.DataFrame(row_set)['avg_perc_hash_ham_dist'].mean()
-        std_perc_ham_dist_msa = pd.DataFrame(row_set)['std_perc_hash_ham_dist'].std()
-        min_perc_ham_dist_msa = pd.DataFrame(row_set)['min_perc_hash_ham_dist'].min()
-        max_perc_ham_dist_msa = pd.DataFrame(row_set)['max_perc_hash_ham_dist'].max()
-        avg_kmer_sim_msa = pd.DataFrame(row_set)['mean_kmer_sim'].mean()
-        std_kmer_sim_msa = pd.DataFrame(row_set)['std_kmer_sim'].std()
-        min_kmer_sim_msa = pd.DataFrame(row_set)['min_kmer_sim'].min()
-        max_kmer_sim_msa = pd.DataFrame(row_set)['max_kmer_sim'].max()
-        combined_df.at[index_aim, "avg_perc_ham_dist_msa"] = avg_perc_ham_dist_msa
-        combined_df.at[index_aim, "std_perc_ham_dist_msa"] = std_perc_ham_dist_msa
-        combined_df.at[index_aim, "min_perc_ham_dist_msa"] = min_perc_ham_dist_msa
-        combined_df.at[index_aim, "max_perc_ham_dist_msa"] = max_perc_ham_dist_msa
-        combined_df.at[index_aim, "avg_kmer_simt_msa"] = avg_kmer_sim_msa
-        combined_df.at[index_aim, "std_kmer_simt_msa"] = std_kmer_sim_msa
-        combined_df.at[index_aim, "min_kmer_simt_msa"] = min_kmer_sim_msa
-        combined_df.at[index_aim, "max_kmer_simt_msa"] = max_kmer_sim_msa
+#dataset_counter = 0
+#for dataset in combined_df['dataset'].unique():
+ #   dataset_counter += 1
+  #  print(dataset_counter)
+   # subset = combined_df[combined_df['dataset'] == dataset]
+    #for index_aim, row_aim in subset.iterrows():
+     #   row_set = []
+      #  for index, row in subset.iterrows():
+       #     if index != index_aim:
+         #       row_set.append(row)
+        #avg_perc_ham_dist_msa = pd.DataFrame(row_set)['avg_perc_hash_ham_dist'].mean()
+        #std_perc_ham_dist_msa = pd.DataFrame(row_set)['std_perc_hash_ham_dist'].std()
+        #min_perc_ham_dist_msa = pd.DataFrame(row_set)['min_perc_hash_ham_dist'].min()
+        #max_perc_ham_dist_msa = pd.DataFrame(row_set)['max_perc_hash_ham_dist'].max()
+        #avg_kmer_sim_msa = pd.DataFrame(row_set)['mean_kmer_sim'].mean()
+        #std_kmer_sim_msa = pd.DataFrame(row_set)['std_kmer_sim'].std()
+        #min_kmer_sim_msa = pd.DataFrame(row_set)['min_kmer_sim'].min()
+        #max_kmer_sim_msa = pd.DataFrame(row_set)['max_kmer_sim'].max()
+        #combined_df.at[index_aim, "avg_perc_ham_dist_msa"] = avg_perc_ham_dist_msa
+        #combined_df.at[index_aim, "std_perc_ham_dist_msa"] = std_perc_ham_dist_msa
+        #combined_df.at[index_aim, "min_perc_ham_dist_msa"] = min_perc_ham_dist_msa
+        #combined_df.at[index_aim, "max_perc_ham_dist_msa"] = max_perc_ham_dist_msa
+        #combined_df.at[index_aim, "avg_kmer_simt_msa"] = avg_kmer_sim_msa
+        #combined_df.at[index_aim, "std_kmer_simt_msa"] = std_kmer_sim_msa
+        #combined_df.at[index_aim, "min_kmer_simt_msa"] = min_kmer_sim_msa
+        #combined_df.at[index_aim, "max_kmer_simt_msa"] = max_kmer_sim_msa##
 
 
 def sample_rows(group):
