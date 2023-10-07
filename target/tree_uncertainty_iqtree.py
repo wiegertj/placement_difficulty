@@ -111,7 +111,8 @@ for tree_filename in filenames_filtered:
         f"-m GTR+G",
         f"-s {msa_filepath}",
         f"-t {tree_path}",
-        f"-B {1000}"
+        f"-B {1000}",
+        "--redo"
     ]
 
     #print("Boot")
