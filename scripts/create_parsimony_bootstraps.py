@@ -25,7 +25,7 @@ for tree_filename in filenames:
 
     if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_parsimony_supp_199.raxml.support"):
         print("Found already, move on")
-        continue
+        #continue
 
     if tree_filename == "20632_1.newick":
         continue
