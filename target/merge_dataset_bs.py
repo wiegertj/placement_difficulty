@@ -24,6 +24,10 @@ like = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "loglik.cs
                             usecols=lambda column: column != 'Unnamed: 0')
 tree_features = tree_features.merge(like, on=["dataset"], how="inner")
 
+tree_features_embed = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_embedd_stats.csv"), index_col=False,
+                            usecols=lambda column: column != 'Unnamed: 0')
+tree_features_embed = tree_features_embed.drop_duplicates(subset=['dataset'], keep='first')
+
 # Get parsimony features
 parsimony_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/parsimony.csv"),
                                  usecols=lambda column: column != 'Unnamed: 0')
@@ -54,6 +58,8 @@ df_merged = df_merged.merge(split_features2, on=["dataset", "branchId"], how="in
 df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(subst, on=["dataset"], how="inner")
 df_merged = df_merged.merge(parsimony_features2, on=["dataset"], how="inner")
+df_merged = df_merged.merge(tree_features_embed, on=["dataset"], how="inner")
+
 #df_merged = df_merged.merge(parsimony_features3, on=["dataset", "branchId"], how="inner")
 
 #df_merged['split_skw_ratio_topo'].fillna(-1, inplace=True)
