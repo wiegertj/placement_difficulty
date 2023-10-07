@@ -81,6 +81,9 @@ for support_start in np.arange(0, 1, step_size):
 
     # Randomly sample the data within the interval
     sampled_interval = interval_data.sample(n=num_samples, random_state=42)  # Adjust the random_state as needed
+    print(support_start)
+    print(num_samples)
+
 
     # Append the sampled interval to the result DataFrame
     sampled_data = pd.concat([sampled_data, sampled_interval])
