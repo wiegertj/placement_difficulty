@@ -1,4 +1,6 @@
 import subprocess
+import time
+
 import pandas as pd
 import os
 import numpy as np
@@ -44,6 +46,8 @@ for tree_filename in filenames:
     trees_path = os.path.join(os.pardir, "data/raw/reference_tree/tmp",
                               tree_filename.replace(".newick", "_pars_boot.txt"))
 
+    start_time = time.time()
+
     for x in range(100):
         # Initialize an empty array for each replicate
         replicate_alignment = np.empty((alignment_array.shape[0], alignment_array.shape[1]), dtype=alignment_array.dtype)
@@ -60,7 +64,6 @@ for tree_filename in filenames:
         output_prefix = tree_filename.split(".")[0] + "_parsimony_100temp_" + str(x)  # Using the filename as the prefix
 
         SeqIO.write(msa_new, os.path.join(os.pardir, "data/raw/msa/tmp/", tree_filename.replace(".newick", "") + "_pars_tmp_" + str(x) + ".fasta"), "fasta")
-        print("Saved new bootstrap")
 
         raxml_command = [
             "raxml-ng",
@@ -71,10 +74,8 @@ for tree_filename in filenames:
             "--redo",
             f"--prefix {output_prefix}",
         ]
-        print(raxml_command)
         subprocess.run(" ".join(raxml_command), shell=True)
 
-        print(f"Parsimony Bootstrap analysis for {tree_filename}" + str(x) + "completed.")
 
         result_tree_path = os.path.join(os.pardir, "scripts", tree_filename.replace(".newick", "") + "_parsimony_100temp_" + str(x) + ".raxml.startTree")
 
@@ -110,6 +111,12 @@ for tree_filename in filenames:
         file_path = os.path.join(folder_path, file_to_delete)
         os.remove(file_path)
 
+    end_time = time.time()
+
+    elapsed_time = end_time - start_time
+
+    print("Elapsed time (seconds):", elapsed_time)
+
     print(f"Deleted {len(files_to_delete)} files containing '_parsimony_100temp_' in their names.")
     output_prefix = tree_filename.split(".")[0] + "_parsimony_supp_" + str(x)  # Using the filename as the prefix
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
@@ -122,3 +129,5 @@ for tree_filename in filenames:
                      f"--prefix {output_prefix}"]
 
     subprocess.run(" ".join(raxml_command), shell=True)
+
+
