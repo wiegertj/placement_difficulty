@@ -27,7 +27,7 @@ def calc_tree_embedding(name, tree):
     traverse_and_add_edges(tree)
 
     # Initialize and generate node embeddings using node2vec
-    node2vec = Node2Vec(G, dimensions=5, walk_length=10, num_walks=100, workers=-1)
+    node2vec = Node2Vec(G, dimensions=5, walk_length=10, num_walks=100, workers=10)
 
     # Learn embeddings
     model = node2vec.fit(window=5, min_count=1)
