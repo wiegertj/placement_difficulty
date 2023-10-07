@@ -80,7 +80,8 @@ if __name__ == '__main__':
         with open(os.path.join(grandir, "data/raw/reference_tree", tree_file), 'r') as file:
             newick_tree = file.read()
 
-    embeds = calc_tree_embedding(newick_tree)
+    tree = ete3.Tree(newick_tree)
+    embeds = calc_tree_embedding(tree)
 
     df_tmp = pd.DataFrame(embeds, columns=["min_embedding", "max_embedding", "mean_embedding", "std_embedding", "skewness_embedding", "kurtosis_embedding"])
 
