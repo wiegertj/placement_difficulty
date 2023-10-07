@@ -20,16 +20,16 @@ for tree_filename in filenames_filtered:
     #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
     #    print("Skipped, already found: " + tree_filename)
     #    continue 13808_7
-    if tree_filename == "11762_1.newick" or tree_filename == "11762_0.newick":
+    if tree_filename == "11762_1.newick" or tree_filename == "11762_0.newick" or tree_filename == "20632_1.newick":
         print("skipped too large!")
         continue
 
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
     print(tree_path)
 
-    if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_1000.raxml.support"):
+    if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_parsimony_supp_99.raxml.support"):
         print("Found already, move on")
-        #continue
+        continue
 
     t = Tree(tree_path)
     num_leaves = len(t.get_leaves())
