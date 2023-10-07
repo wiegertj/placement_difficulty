@@ -30,6 +30,9 @@ for file in filenames:
         f"--prefix {output_prefix}"
     ]
 
+    subprocess.run(" ".join(raxml_command), shell=True)
+
+
     consensus_path = os.path.join(os.pardir, "target",
                  file.replace(".newick","") + "_consensus_.raxml.consensusTreeMR")
     original_path = os.path.join(os.pardir, "data/raw/reference_tree",
