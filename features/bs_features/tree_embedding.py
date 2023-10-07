@@ -11,7 +11,7 @@ import networkx as nx
 import numpy as np
 from scipy.stats import skew, kurtosis
 from node2vec import Node2Vec
-def calc_tree_embedding(tree):
+def calc_tree_embedding(name, tree):
 
     # Create an empty directed graph
     G = nx.DiGraph()
@@ -46,7 +46,7 @@ def calc_tree_embedding(tree):
     skewness_embedding = skew(embeddings_array, axis=0)
     kurtosis_embedding = kurtosis(embeddings_array, axis=0)
 
-    return (min_embedding, max_embedding, mean_embedding, std_embedding, skewness_embedding, kurtosis_embedding)
+    return (name, min_embedding, max_embedding, mean_embedding, std_embedding, skewness_embedding, kurtosis_embedding)
 
 
 if __name__ == '__main__':
@@ -84,7 +84,7 @@ if __name__ == '__main__':
         print(counter)
 
         tree = ete3.Tree(newick_tree)
-        embeds = calc_tree_embedding(tree)
+        embeds = calc_tree_embedding(tree, tree_file.replace(".newick", ""))
 
         print("finished one embedding")
 
