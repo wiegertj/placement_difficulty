@@ -19,7 +19,7 @@ from ete3 import Tree
 
 print("Started4")
 
-from Bio import SeqIO
+from Bio import SeqIO, AlignIO
 
 print("Started5")
 
@@ -144,10 +144,12 @@ for tree_filename in filenames_filtered:
 
     elapsed_time = end_time - start_time
     print("Elapsed time (seconds):", elapsed_time)
-    num_sequences = len(SeqIO.parse(msa_filepath, "fasta"))
+    alignment = AlignIO.read(msa_filepath, "fasta")
+
+    num_sequences = len(alignment)
 
     # Get the length of the alignment
-    alignment_length = SeqIO.parse(msa_filepath, "fasta").get_alignment_length()
+    alignment_length = alignment.get_alignment_length()
 
     # Print the number of sequences and length of the alignment
     print("Number of Sequences:", num_sequences)
