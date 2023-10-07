@@ -79,7 +79,7 @@ df_merged['irs_skw_ratio'].fillna(-1, inplace=True)
 df_merged['skw_clo_sim_ratio'].fillna(-1, inplace=True)
 
 step_size = 0.1
-max_samples_per_interval = 6000
+max_samples_per_interval = 3000
 
 # Initialize an empty DataFrame to store the sampled data
 sampled_data = pd.DataFrame()
