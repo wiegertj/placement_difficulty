@@ -111,11 +111,6 @@ for tree_filename in filenames:
         file_path = os.path.join(folder_path, file_to_delete)
         os.remove(file_path)
 
-    end_time = time.time()
-
-    elapsed_time = end_time - start_time
-
-    print("Elapsed time (seconds):", elapsed_time)
 
     print(f"Deleted {len(files_to_delete)} files containing '_parsimony_100temp_' in their names.")
     output_prefix = tree_filename.split(".")[0] + "_parsimony_supp_" + str(x)  # Using the filename as the prefix
@@ -129,5 +124,13 @@ for tree_filename in filenames:
                      f"--prefix {output_prefix}"]
 
     subprocess.run(" ".join(raxml_command), shell=True)
+
+    end_time = time.time()
+
+    elapsed_time = end_time - start_time
+
+    print("Elapsed time (seconds):", elapsed_time)
+
+    time.sleep(1)
 
 
