@@ -29,6 +29,8 @@ parsimony_features = pd.read_csv(os.path.join(os.pardir, "data/processed/feature
                                  usecols=lambda column: column != 'Unnamed: 0')
 parsimony_features2 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features.csv"),
                                   usecols=lambda column: column != 'Unnamed: 0')
+parsimony_features3 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/parsimony_boot.csv"),
+                                  usecols=lambda column: column != 'Unnamed: 0')
 print(parsimony_features2.columns)
 # Get split features
 split_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
@@ -43,6 +45,8 @@ df_merged = df_merged.merge(split_features2, on=["dataset", "branchId"], how="in
 df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(subst, on=["dataset"], how="inner")
 df_merged = df_merged.merge(parsimony_features2, on=["dataset"], how="inner")
+df_merged = df_merged.merge(parsimony_features3, on=["dataset", "branchId"], how="inner")
+
 #df_merged['split_skw_ratio_topo'].fillna(-1, inplace=True)
 #df_merged['split_skw_ratio_branch'].fillna(-1, inplace=True)
 #df_merged['split_skw_entropy_diff'].fillna(-1, inplace=True)
@@ -60,7 +64,7 @@ df_merged['irs_skw_ratio'].fillna(-1, inplace=True)
 df_merged['skw_clo_sim_ratio'].fillna(-1, inplace=True)
 
 step_size = 0.1
-max_samples_per_interval = 5000
+max_samples_per_interval = 2500
 
 # Initialize an empty DataFrame to store the sampled data
 sampled_data = pd.DataFrame()
