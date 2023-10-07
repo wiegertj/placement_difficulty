@@ -129,7 +129,7 @@ for tree_filename in filenames:
     end_time = time.time()
 
     elapsed_time = end_time - start_time
-
+    print(alignment.shape)
     print("Elapsed time (seconds):", elapsed_time)
 
     time.sleep(1)
