@@ -1,9 +1,25 @@
-import subprocess
-import pandas as pd
-import os
-from ete3 import Tree
-from Bio import SeqIO
 print("Started")
+
+import subprocess
+
+print("Started1")
+
+import pandas as pd
+
+print("Started2")
+
+import os
+
+print("Started3")
+
+from ete3 import Tree
+
+print("Started4")
+
+from Bio import SeqIO
+
+print("Started5")
+
 
 filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].str.replace(".phy", ".newick").values.tolist()
 
