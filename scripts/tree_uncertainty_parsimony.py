@@ -63,16 +63,19 @@ for tree_filename in filenames:
     #print(raxml_command)
     #subprocess.run(" ".join(raxml_command), shell=True)
 
+
     #print(f"Bootstrap analysis for {tree_filename} completed.")
 
-    raxml_command = ["raxml-ng",
-                     "--support",
-                     f"--tree {tree_path}",
-                     f"--bs-trees {bootstrap_filepath}",
-                     "--redo",
-                     f"--prefix {output_prefix}"]
+    #raxml_command = ["raxml-ng",
+     #                "--support",
+      #               f"--tree {tree_path}",
+       #              f"--bs-trees {bootstrap_filepath}",
+        #             "--redo",
+         #            f"--prefix {output_prefix}"]
 
     #subprocess.run(" ".join(raxml_command), shell=True)
+    bootstrap_filepath = os.path.join(os.pardir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_199.raxml.support"
+
 
     raxml_command = ["raxml-ng",
                      "--rfdist",
