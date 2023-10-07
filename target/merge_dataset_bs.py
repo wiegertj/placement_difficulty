@@ -45,7 +45,7 @@ parsimony_features2.drop_duplicates(inplace=True, subset=["dataset"])
 parsimony_features3.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 split_features2.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 split_features.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
-subst.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
+subst.drop_duplicates(inplace=True, subset=["dataset"])
 
 df_merged = targets.merge(msa_features, on=["dataset"], how="inner")
 df_merged = df_merged.merge(tree_features, on=["dataset"], how="inner")
