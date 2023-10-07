@@ -132,8 +132,6 @@ for tree_filename in filenames_filtered:
     files_to_delete = [file for file in file_list if
                        ((".nex" in file) or (".log" in file) or (".iqtree" in file) or (".treefile" in file))]
 
-    print(files_to_delete)
-    break
 
     # Delete the filtered files
     for file_to_delete in files_to_delete:
