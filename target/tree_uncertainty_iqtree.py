@@ -31,6 +31,7 @@ filenames_filtered = filenames
 duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 accepted = []
 counter = 0
+filenames_filtered = filenames_filtered[:300]
 for tree_filename in filenames_filtered:
     counter += 1
     print(str(counter) + "/" + str(len(filenames_filtered)))
@@ -133,7 +134,7 @@ for tree_filename in filenames_filtered:
 
     # Filter files that contain "_parsimony_100temp_" in their names
     files_to_delete = [file for file in file_list if
-                       ((".nex" in file) or (".log" in file) or (".iqtree" in file) or (".treefile" in file))]
+                       ((".nex" in file) or (".log" in file))]
 
 
     # Delete the filtered files
