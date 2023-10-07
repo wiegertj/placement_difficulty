@@ -17,7 +17,7 @@ for file in filenames:
     print(counter)
     print(file)
 
-    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_100.raxml.support"
+    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_199.raxml.support"
     support_path_low = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_100_low.raxml.support"
     support_path_low1000 = os.path.join(grandir, "scripts/") + file.replace(".newick",
                                                                         "") + "_parsimony_1000_low.raxml.support"
