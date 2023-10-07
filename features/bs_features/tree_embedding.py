@@ -34,6 +34,7 @@ def calc_tree_embedding(name, tree):
 
     # Get the embeddings for nodes
     node_embeddings = {node: model.wv[node] for node in G.nodes()}
+    print(node_embeddings)
 
     # Extract the embeddings as a NumPy array
     embeddings_array = np.array(list(node_embeddings.values()))
