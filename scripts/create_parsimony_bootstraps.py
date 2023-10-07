@@ -68,8 +68,11 @@ for tree_filename in filenames:
 
         result_tree_path = os.path.join(os.pardir, "scripts", tree_filename.replace(".newick", "") + "_parsimony_100temp_" + str(x) + ".raxml.startTree")
 
-        with open(result_tree_path, 'r') as tree_file:
-            newick_tree = tree_file.read()
+        try:
+            with open(result_tree_path, 'r') as tree_file:
+                newick_tree = tree_file.read()
+        except FileNotFoundError:
+            continue
 
         # Delete result_tree_path and new_msa_filepath
         os.remove(new_msa_path)
