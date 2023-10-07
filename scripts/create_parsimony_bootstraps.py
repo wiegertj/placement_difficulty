@@ -16,6 +16,8 @@ for file in filenames:
 results = []
 counter = 0
 for tree_filename in filenames:
+    start_time = time.time()
+
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
     if not os.path.exists(msa_filepath):
         print("Skipped, MSA not found")
@@ -46,7 +48,6 @@ for tree_filename in filenames:
     trees_path = os.path.join(os.pardir, "data/raw/reference_tree/tmp",
                               tree_filename.replace(".newick", "_pars_boot.txt"))
 
-    start_time = time.time()
 
     for x in range(100):
         # Initialize an empty array for each replicate
