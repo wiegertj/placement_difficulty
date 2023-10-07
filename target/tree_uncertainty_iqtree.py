@@ -114,7 +114,7 @@ for tree_filename in filenames_filtered:
         "iqtree",
         f"-m GTR+G",
         f"-s {msa_filepath}",
-        f"-t {tree_path}",
+        #f"-t {tree_path}",
         f"-B {1000}",
         "--redo"
     ]
