@@ -56,10 +56,11 @@ def calc_tree_embedding(name, tree):
     # Apply PCA to reduce dimensionality to 5 components for the whole graph
     pca = PCA(n_components=5)
     pca_result = pca.fit_transform(embedding_matrix)
+    component_lengths = np.linalg.norm(pca.components_, axis=1)
 
     # Print the 5 principal components for the entire graph
     print("5 Principal Components for the Entire Graph:")
-    print(pca.components_)
+    print(component_lengths)
 
     # Extract the embeddings as a NumPy array
     embeddings_array = np.array(list(node_embeddings.values()))
