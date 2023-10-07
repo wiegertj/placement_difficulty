@@ -1,3 +1,5 @@
+import time
+
 print("Started")
 
 import pandas as pd
@@ -105,6 +107,7 @@ for tree_filename in filenames_filtered:
     with open(file_name_iqtreemodel, "w") as file:
         file.write(found_model)
 
+    start_time = time.time()
 
     raxml_command = [
         "iqtree",
@@ -121,7 +124,7 @@ for tree_filename in filenames_filtered:
     print(s)
     subprocess.run(" ".join(raxml_command), shell=True)
 
-    print(f"Bootstrap analysis for {tree_filename} completed.")
+    end_time = time.time()
 
     folder_path = os.path.join(os.pardir, "data/raw/msa")
 
@@ -139,7 +142,34 @@ for tree_filename in filenames_filtered:
         os.remove(file_path)
 
 
+    elapsed_time = end_time - start_time
+    print("Elapsed time (seconds):", elapsed_time)
+    num_sequences = len(SeqIO.parse(msa_filepath, "fasta"))
 
+    # Get the length of the alignment
+    alignment_length = SeqIO.parse(msa_filepath, "fasta").get_alignment_length()
+
+    # Print the number of sequences and length of the alignment
+    print("Number of Sequences:", num_sequences)
+    print("Length of Alignment:", alignment_length)
+
+    data = {
+        'elapsed_time': [int(elapsed_time)],
+        'num_seq': [num_sequences],
+        'len': [alignment_length]
+    }
+
+    time_dat = pd.DataFrame(data)
+
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "pars_boot_times_iqrtree.csv")):
+        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                  "pars_boot_times_iqrtree.csv")), index=False)
+    else:
+        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                     "pars_boot_times_iqrtree.csv"),
+                        index=False,
+                        mode='a', header=False)
 
 #raxml_command = ["raxml-ng",
      #                "--support",
