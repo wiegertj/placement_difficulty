@@ -41,7 +41,7 @@ split_features2 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/b
 msa_features.drop_duplicates(inplace=True, subset=["dataset"])
 tree_features.drop_duplicates(inplace=True, subset=["dataset"])
 parsimony_features.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
-parsimony_features2.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
+parsimony_features2.drop_duplicates(inplace=True, subset=["dataset"])
 parsimony_features3.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 split_features2.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 split_features.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
