@@ -23,7 +23,7 @@ for tree_filename in filenames:
         print("Skipped, MSA not found")
         continue
 
-    if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_parsimony_supp_99.raxml.support"):
+    if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_parsimony_supp_199.raxml.support"):
         print("Found already, move on")
         continue
 
@@ -49,7 +49,7 @@ for tree_filename in filenames:
                               tree_filename.replace(".newick", "_pars_boot.txt"))
 
 
-    for x in range(100):
+    for x in range(200):
         # Initialize an empty array for each replicate
         replicate_alignment = np.empty((alignment_array.shape[0], alignment_array.shape[1]), dtype=alignment_array.dtype)
         sampled_columns = np.random.choice(alignment_array.shape[1], size=alignment_array.shape[1], replace=True)
@@ -62,7 +62,7 @@ for tree_filename in filenames:
         msa_new = AlignIO.MultipleSeqAlignment(seq_records)
 
         new_msa_path = os.path.join(os.pardir, "data/raw/msa/tmp/", tree_filename.replace(".newick", "") + "_pars_tmp_" + str(x) + ".fasta")
-        output_prefix = tree_filename.split(".")[0] + "_parsimony_100temp_" + str(x)  # Using the filename as the prefix
+        output_prefix = tree_filename.split(".")[0] + "_parsimony_200temp_" + str(x)  # Using the filename as the prefix
 
         SeqIO.write(msa_new, os.path.join(os.pardir, "data/raw/msa/tmp/", tree_filename.replace(".newick", "") + "_pars_tmp_" + str(x) + ".fasta"), "fasta")
 
@@ -78,7 +78,7 @@ for tree_filename in filenames:
         subprocess.run(" ".join(raxml_command), shell=True)
 
 
-        result_tree_path = os.path.join(os.pardir, "scripts", tree_filename.replace(".newick", "") + "_parsimony_100temp_" + str(x) + ".raxml.startTree")
+        result_tree_path = os.path.join(os.pardir, "scripts", tree_filename.replace(".newick", "") + "_parsimony_200temp_" + str(x) + ".raxml.startTree")
 
         try:
             with open(result_tree_path, 'r') as tree_file:
@@ -105,7 +105,7 @@ for tree_filename in filenames:
     file_list = os.listdir(folder_path)
 
     # Filter files that contain "_parsimony_100temp_" in their names
-    files_to_delete = [file for file in file_list if (("_parsimony_100temp_" in file) or (".log" in file) or (".rba" in file) or ("reduced" in file))]
+    files_to_delete = [file for file in file_list if (("_parsimony_200temp_" in file) or (".log" in file) or (".rba" in file) or ("reduced" in file))]
 
     # Delete the filtered files
     for file_to_delete in files_to_delete:
@@ -113,7 +113,7 @@ for tree_filename in filenames:
         os.remove(file_path)
 
 
-    print(f"Deleted {len(files_to_delete)} files containing '_parsimony_100temp_' in their names.")
+    print(f"Deleted {len(files_to_delete)} files containing '_parsimony_200temp_' in their names.")
     output_prefix = tree_filename.split(".")[0] + "_parsimony_supp_" + str(x)  # Using the filename as the prefix
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
 
@@ -139,6 +139,24 @@ for tree_filename in filenames:
     print("Number of Sequences:", num_sequences)
     print("Length of Alignment:", alignment_length)
 
-    time.sleep(1)
+    data = {
+        'elapsed_time': [int(elapsed_time)],
+        'num_seq': [num_sequences],
+        'len': [alignment_length]
+    }
+
+    time_dat = pd.DataFrame(data)
+    grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
+
+    if not os.path.isfile(os.path.join(grandir, "data/processed/features/bs_features",
+                             "pars_boot_times.csv")):
+        time_dat.to_csv(os.path.join(os.path.join(grandir, "data/processed/features/bs_features",
+                             "pars_boot_times.csv")), index=False)
+    else:
+        time_dat.to_csv(os.path.join(grandir, "data/processed/features/bs_features",
+                             "pars_boot_times.csv"),
+                     index=False,
+                     mode='a', header=False)
+
 
 
