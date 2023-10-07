@@ -38,6 +38,15 @@ split_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs
 split_features2 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
                                           "split_features_tree.csv"), usecols=lambda column: column != 'Unnamed: 0')
 
+msa_features.drop_duplicates(inplace=True, subset=["dataset"])
+tree_features.drop_duplicates(inplace=True, subset=["dataset"])
+parsimony_features.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
+parsimony_features2.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
+parsimony_features3.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
+split_features2.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
+split_features.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
+subst.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
+
 df_merged = targets.merge(msa_features, on=["dataset"], how="inner")
 df_merged = df_merged.merge(tree_features, on=["dataset"], how="inner")
 df_merged = df_merged.merge(parsimony_features, on=["dataset", "branchId"], how="inner")
