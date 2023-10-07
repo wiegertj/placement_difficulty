@@ -84,7 +84,7 @@ if __name__ == '__main__':
         print(counter)
 
         tree = ete3.Tree(newick_tree)
-        embeds = calc_tree_embedding(tree, tree_file.replace(".newick", ""))
+        embeds = calc_tree_embedding(tree_file.replace(".newick", ""), tree)
         embeds_list = [embeds]
 
         print("finished one embedding")
