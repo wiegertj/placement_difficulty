@@ -13,6 +13,19 @@ from scipy.spatial.distance import pdist
 import numpy as np
 from scipy.stats import skew, kurtosis
 from node2vec import Node2Vec
+
+def normalize_branch_lengths(tree):
+    total_length = 0.0
+
+    for node in tree.traverse():
+        if not node.is_root():
+            total_length += node.dist
+
+    for node in tree.traverse():
+        if node.up:
+            node.dist /= total_length
+    return tree
+
 def calc_tree_embedding(name, tree):
 
     # Create an empty directed graph
@@ -88,6 +101,8 @@ if __name__ == '__main__':
         print(counter)
 
         tree = ete3.Tree(newick_tree)
+        tree = normalize_branch_lengths(tree)
+
         embeds = calc_tree_embedding(tree_file.replace(".newick", ""), tree)
         embeds_list = [embeds]
 
