@@ -134,7 +134,7 @@ for tree_filename in filenames_filtered:
 
     # Filter files that contain "_parsimony_100temp_" in their names
     files_to_delete = [file for file in file_list if
-                       ((".nex" in file) or (".log" in file))]
+                       ".log" in file]
 
 
     # Delete the filtered files
