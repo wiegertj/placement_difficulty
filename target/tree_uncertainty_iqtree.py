@@ -1,5 +1,3 @@
-import time
-
 print("Started")
 
 import pandas as pd
@@ -107,9 +105,6 @@ for tree_filename in filenames_filtered:
     with open(file_name_iqtreemodel, "w") as file:
         file.write(found_model)
 
-    start_time = time.time()
-
-
 
     raxml_command = [
         "iqtree",
@@ -127,37 +122,24 @@ for tree_filename in filenames_filtered:
 
     print(f"Bootstrap analysis for {tree_filename} completed.")
 
-    end_time = time.time()
+    folder_path = os.path.join(os.pardir, "data/raw/msa")
 
-    elapsed_time = end_time - start_time
-    print("Elapsed time (seconds):", elapsed_time)
+    # List all files in the folder
+    file_list = os.listdir(folder_path)
 
-    # Get the length of the alignment
+    # Filter files that contain "_parsimony_100temp_" in their names
+    files_to_delete = [file for file in file_list if
+                       ((".nex" in file) or (".log" in file) or (".iqtree" in file) or (".treefile" in file))]
 
-    num_sequences = len(SeqIO.parse(msa_filepath, "fasta"))
+    # Delete the filtered files
+    for file_to_delete in files_to_delete:
+        file_path = os.path.join(folder_path, file_to_delete)
+        os.remove(file_path)
 
-    # Get the length of the alignment
-    alignment_length =  SeqIO.parse(msa_filepath, "fasta").get_alignment_length()
 
-    data = {
-        'elapsed_time': [int(elapsed_time)],
-        'num_seq': num_sequences,
-        'len': alignment_length
-    }
 
-    time_dat = pd.DataFrame(data)
 
-    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "pars_boot_times_iqtree.csv")):
-        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "pars_boot_times_iqtree.csv")), index=False)
-    else:
-        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "pars_boot_times_iqtree.csv"),
-                        index=False,
-                        mode='a', header=False)
-
-    #raxml_command = ["raxml-ng",
+#raxml_command = ["raxml-ng",
      #                "--support",
       #               f"--tree {tree_path}",
        #              f"--bs-trees {bootstrap_filepath}",
