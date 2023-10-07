@@ -43,12 +43,12 @@ def calc_tree_embedding(name, tree):
 
     pairwise_distances = pdist(embeddings_array, metric='euclidean')
 
-    min_embedding_dim = np.min(pairwise_distances)
-    max_embedding_dim = np.max(pairwise_distances)
-    mean_embedding_dim = np.mean(pairwise_distances)
-    std_embedding_dim = np.std(pairwise_distances)
-    skewness_embedding_dim = skew(pairwise_distances)
-    kurtosis_embedding_dim = kurtosis(pairwise_distances)
+    min_embedding = np.min(pairwise_distances)
+    max_embedding = np.max(pairwise_distances)
+    mean_embedding = np.mean(pairwise_distances)
+    std_embedding = np.std(pairwise_distances)
+    skewness_embedding = skew(pairwise_distances)
+    kurtosis_embedding = kurtosis(pairwise_distances)
 
     return (name, min_embedding, max_embedding, mean_embedding, std_embedding, skewness_embedding, kurtosis_embedding)
 
