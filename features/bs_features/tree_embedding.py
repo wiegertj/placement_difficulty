@@ -75,23 +75,28 @@ if __name__ == '__main__':
         if not os.path.exists(os.path.join(grandir, "data/raw/reference_tree", file)):
             print("Not found " + file)
             filenames.remove(file)
-
+    counter = 0
     for tree_file in filenames:
         with open(os.path.join(grandir, "data/raw/reference_tree", tree_file), 'r') as file:
             newick_tree = file.read()
 
-    tree = ete3.Tree(newick_tree)
-    embeds = calc_tree_embedding(tree)
+        counter += 1
+        print(counter)
 
-    df_tmp = pd.DataFrame(embeds, columns=["min_embedding", "max_embedding", "mean_embedding", "std_embedding", "skewness_embedding", "kurtosis_embedding"])
+        tree = ete3.Tree(newick_tree)
+        embeds = calc_tree_embedding(tree)
+
+        print("finished one embedding")
+
+        df_tmp = pd.DataFrame(embeds, columns=["min_embedding", "max_embedding", "mean_embedding", "std_embedding", "skewness_embedding", "kurtosis_embedding"])
 
 
-    if not os.path.isfile(os.path.join(grandir, "data/processed/features",
-                             "tree_embedd_stats.csv")):
-        df_tmp.to_csv(os.path.join(os.path.join(grandir, "data/processed/features",
-                             "tree_embedd_stats.csv")), index=False)
-    else:
-        df_tmp.to_csv(os.path.join(grandir, "data/processed/features",
-                             "tree_embedd_stats.csv"),
-                     index=False,
-                     mode='a', header=False)
+        if not os.path.isfile(os.path.join(grandir, "data/processed/features",
+                                 "tree_embedd_stats.csv")):
+            df_tmp.to_csv(os.path.join(os.path.join(grandir, "data/processed/features",
+                                 "tree_embedd_stats.csv")), index=False)
+        else:
+            df_tmp.to_csv(os.path.join(grandir, "data/processed/features",
+                                 "tree_embedd_stats.csv"),
+                         index=False,
+                         mode='a', header=False)
