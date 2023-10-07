@@ -51,7 +51,7 @@ for tree_filename in filenames:
 
     for x in range(200):
         # Initialize an empty array for each replicate
-        replicate_alignment = np.empty((alignment_array.shape[0], alignment_array.shape[1]), dtype=alignment_array.dtype)
+        #replicate_alignment = np.empty((alignment_array.shape[0], alignment_array.shape[1]), dtype=alignment_array.dtype)
         sampled_columns = np.random.choice(alignment_array.shape[1], size=alignment_array.shape[1], replace=True)
         replicate_alignment = alignment_array[:, sampled_columns]
 
