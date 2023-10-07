@@ -51,6 +51,16 @@ def calc_tree_embedding(name, tree):
     node_embeddings = {node: model.wv[node] for node in G.nodes()}
     print(node_embeddings)
 
+    # Convert embeddings to a matrix
+    embedding_matrix = np.array([node_embeddings[node] for node in G.nodes()])
+
+    # Apply PCA to reduce dimensionality to 5 components
+    pca = PCA(n_components=5)
+    pca_result = pca.fit_transform(embedding_matrix)
+
+    print("PCA Results (First Few Rows):")
+    print(pca_result[:5])
+
     # Extract the embeddings as a NumPy array
     embeddings_array = np.array(list(node_embeddings.values()))
 
