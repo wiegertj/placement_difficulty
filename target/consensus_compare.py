@@ -42,6 +42,7 @@ for file in filenames:
                os.path.abspath(original_path)]
     try:
         command_string = " ".join(command)
+        print(command_string)
         output = subprocess.check_output(command, stderr=subprocess.STDOUT, text=True)
         lines = output.strip().split('\n')
         values = lines[0].split()
@@ -64,4 +65,16 @@ for file in filenames:
 
         print(nrf_distance)
         print(quartet_distance)
+
+    results = [(file,nrf_distance, quartet_distance)]
+    df = pd.DataFrame(results, columns=["dataset", "nrf", "quartet"])
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                             "cons_comp.csv")):
+        df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                             "cons_comp.csv")), index=False)
+    else:
+        df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                             "cons_comp.csv"),
+                     index=False,
+                     mode='a', header=False)
 
