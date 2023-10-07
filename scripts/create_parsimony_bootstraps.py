@@ -1,6 +1,7 @@
 import subprocess
 import pandas as pd
 import os
+import numpy as np
 from Bio import SeqIO, AlignIO, Seq, SeqRecord
 import random
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
@@ -30,22 +31,31 @@ for tree_filename in filenames:
 
     alignment = AlignIO.read(msa_filepath, "fasta")
 
+    sequence_data = [list(record.seq) for record in alignment]
+
+    # Convert the sequence data into a NumPy array
+    alignment_array = np.array(sequence_data)
+    no_col = alignment.get_alignment_length()
+    original_ids = [record.id for record in alignment]
+
     alignment_length = alignment.get_alignment_length()
     original_sites = list(range(1, alignment_length + 1))
 
-    trees_path =  os.path.join(os.pardir, "data/raw/reference_tree/tmp", tree_filename.replace(".newick", "_pars_boot.txt"))
+    trees_path = os.path.join(os.pardir, "data/raw/reference_tree/tmp",
+                              tree_filename.replace(".newick", "_pars_boot.txt"))
 
-    # Perform resampling 100 times
     for x in range(100):
-        sampled_lists_index = random.choices(original_sites, k=alignment_length)
-        new_records = []
-        for record in alignment:
-            new_sequence = Seq.Seq('')
-            for site_index in sampled_lists_index:
-                new_sequence += record[site_index - 1]  # Adjust for 0-based indexing
-            new_seq_record = SeqRecord.SeqRecord(new_sequence, id=record.id, description="")
-            new_records.append(new_seq_record)
-        msa_new = AlignIO.MultipleSeqAlignment(new_records)
+        # Initialize an empty array for each replicate
+        replicate_alignment = np.empty((alignment_array.shape[0], alignment_array.shape[1]), dtype=alignment_array.dtype)
+        sampled_columns = np.random.choice(alignment_array.shape[1], size=alignment_array.shape[1], replace=True)
+        replicate_alignment = alignment_array[:, sampled_columns]
+
+        seq_records = [SeqRecord.SeqRecord(Seq.Seq(''.join(seq)), id=original_ids[i], description="") for i, seq in
+                       enumerate(replicate_alignment)]
+
+        # Create a MultipleSeqAlignment object from the SeqRecords
+        msa_new = AlignIO.MultipleSeqAlignment(seq_records)
+
         new_msa_path = os.path.join(os.pardir, "data/raw/msa/tmp/", tree_filename.replace(".newick", "") + "_pars_tmp_" + str(x) + ".fasta")
         output_prefix = tree_filename.split(".")[0] + "_parsimony_100temp_" + str(x)  # Using the filename as the prefix
 
