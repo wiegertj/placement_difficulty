@@ -54,7 +54,7 @@ subst.drop_duplicates(inplace=True, subset=["dataset"])
 #df_merged = targets.merge(msa_features, on=["dataset"], how="inner")
 df_merged = targets.merge(tree_features, on=["dataset"], how="inner")
 df_merged = df_merged.merge(parsimony_features, on=["dataset", "branchId"], how="inner")
-#df_merged = df_merged.merge(split_features2, on=["dataset", "branchId"], how="inner")
+df_merged = df_merged.merge(split_features2, on=["dataset", "branchId"], how="inner")
 #df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(subst, on=["dataset"], how="inner")
 df_merged = df_merged.merge(parsimony_features2, on=["dataset"], how="inner")
@@ -85,7 +85,7 @@ df_merged['kur_eig_sim'].fillna(-1, inplace=True)
 #df_merged = df_merged.drop(columns=columns_to_drop)
 
 step_size = 0.1
-max_samples_per_interval = 6000
+max_samples_per_interval = 5000
 
 # Initialize an empty DataFrame to store the sampled data
 sampled_data = pd.DataFrame()
