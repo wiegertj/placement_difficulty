@@ -4,7 +4,7 @@ import time
 import pandas as pd
 import os
 import numpy as np
-from Bio import SeqIO, AlignIO, Seq, SeqRecord
+from Bio import SeqIO, AlignIO, Seq, SeqRecord, Phylo
 import random
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
@@ -25,7 +25,7 @@ for tree_filename in filenames:
 
     if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_parsimony_supp_499.raxml.support"):
         print("Found already, move on")
-        #continue
+        continue
 
     if tree_filename == "20632_1.newick":
         continue
@@ -64,6 +64,25 @@ for tree_filename in filenames:
         new_msa_path = os.path.join(os.pardir, "data/raw/msa/tmp/", tree_filename.replace(".newick", "") + "_pars_tmp_" + str(x) + ".fasta")
         output_prefix = tree_filename.split(".")[0] + "_parsimony_500temp_" + str(x)  # Using the filename as the prefix
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         SeqIO.write(msa_new, os.path.join(os.pardir, "data/raw/msa/tmp/", tree_filename.replace(".newick", "") + "_pars_tmp_" + str(x) + ".fasta"), "fasta")
 
         raxml_command = [
@@ -73,6 +92,7 @@ for tree_filename in filenames:
             "--tree pars{1}",
             f"--msa {new_msa_path}",
             "--redo",
+            "--log ERROR",
             f"--prefix {output_prefix}",
         ]
         subprocess.run(" ".join(raxml_command), shell=True)
