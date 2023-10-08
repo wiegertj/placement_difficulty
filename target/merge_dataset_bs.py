@@ -52,13 +52,13 @@ split_features.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 subst.drop_duplicates(inplace=True, subset=["dataset"])
 
 df_merged = targets.merge(msa_features, on=["dataset"], how="inner")
-#df_merged = targets.merge(tree_features, on=["dataset"], how="inner")
-df_merged = targets.merge(parsimony_features, on=["dataset", "branchId"], how="inner")
+df_merged = df_merged.merge(tree_features, on=["dataset"], how="inner")
+df_merged = df_merged.merge(parsimony_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(split_features2, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(subst, on=["dataset"], how="inner")
 df_merged = df_merged.merge(parsimony_features2, on=["dataset"], how="inner")
-#df_merged = df_merged.merge(tree_features_embed, on=["dataset"], how="inner")
+df_merged = df_merged.merge(tree_features_embed, on=["dataset"], how="inner")
 
 df_merged = df_merged.merge(parsimony_features3, on=["dataset", "branchId"], how="inner")
 
