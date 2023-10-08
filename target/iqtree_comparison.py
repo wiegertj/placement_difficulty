@@ -62,8 +62,8 @@ for file in filenames:
 
     # Load the Newick trees
     try:
-        tree = ete3.Tree(support_path, format=1)
-        tree_iqtree = ete3.Tree(support_path_iq, format=1)
+        tree = ete3.Tree(support_path, format=0)
+        tree_iqtree = ete3.Tree(support_path_iq, format=0)
     except ete3.parser.newick.NewickError:
         print("Tree broken")
         continue
