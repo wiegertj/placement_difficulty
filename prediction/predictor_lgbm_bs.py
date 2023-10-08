@@ -67,8 +67,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
 
     X_train.fillna(-1, inplace=True)
-
-
+    X_train.replace([np.inf, -np.inf], -1, inplace=True)
 
 
 
