@@ -14,6 +14,7 @@ for file in filenames:
 
 results = []
 counter = 0
+print(filenames)
 for tree_filename in filenames:
     counter += 1
     print(counter)
