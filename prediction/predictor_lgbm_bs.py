@@ -63,6 +63,32 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     X_test = test.drop(axis=1, columns=target)
     y_test = test[target]
+
+
+
+
+
+
+    model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
+                                  min_samples_leaf=10)
+    rfe = RFE(estimator=model, n_features_to_select=10)  # Adjust the number of features as needed
+    rfe.fit(X_train.drop(axis=1, columns=['dataset', 'sampleId', 'group']), y_train)
+    print(rfe.support_)
+    selected_features = X_train.drop(axis=1, columns=['dataset', 'sampleId', 'group']).columns[rfe.support_]
+    selected_features = selected_features.append(pd.Index(['group']))
+
+    print("Selected features for RFE: ")
+    print(selected_features)
+    X_train = X_train[selected_features]
+    X_test = X_test[selected_features]
+
+
+
+
+
+
+
+
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
