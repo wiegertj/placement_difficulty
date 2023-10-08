@@ -10,7 +10,13 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 import numpy as np
 import os
-
+def get_bipartition(node):
+    if not node.is_leaf():
+        left_children = sorted([leaf.name for leaf in node.children[0].iter_leaves()])
+        right_children = sorted([leaf.name for leaf in node.children[1].iter_leaves()])
+        bipartition = (left_children, right_children)
+        return bipartition
+    return None
 
 def calculate_support_statistics(support_file_path, dataset_name):
     results = []
@@ -57,25 +63,28 @@ for file in filenames:
     tree = ete3.Tree(support_path, format=1)
     tree_iqtree = ete3.Tree(support_path_iq, format=1)
 
-    # Get the sets of bipartitions for each tree
-    bipartitions = set(tree.get_bipartitions())
-    print(bipartitions)
-    bipartitions_iqtree = set(tree_iqtree.get_bipartitions())
+    results = []
 
-    # Find common bipartitions
-    common_bipartitions = bipartitions.intersection(bipartitions_iqtree)
+    for node in tree.traverse():
+        bipartition = get_bipartition(node)
 
-    # Compute the difference in support values for common bipartitions
-    for common_bp in common_bipartitions:
-        node = tree.get_common_ancestor(common_bp)
-        node_iqtree = tree_iqtree.get_common_ancestor(common_bp)
+        if bipartition is not None:
+            for node_iq in tree_iqtree.traverse():
+                bipartition_iq = get_bipartition(node_iq)
+                if bipartition_iq is not None:
+                    first_match = False
+                    second_match = False
+                    if (bipartition[0] == bipartition_iq[0]) or (bipartition[0] == bipartition_iq[1]):
+                        first_match = True
+                    if (bipartition[1] == bipartition_iq[0]) or (bipartition[1] == bipartition_iq[1]):
+                        second_match = True
+                    if second_match and first_match:
+                        print("Matched")
+                        print(bipartition_iq)
+                        print(bipartition)
+                        results.append((node.id, node_iq.id))
 
-        support = node.support if not node.is_root() else None
-        support_iqtree = node_iqtree.support if not node_iqtree.is_root() else None
 
-        support_diff = abs(support - support_iqtree) if support is not None and support_iqtree is not None else None
-
-        print(f"Common Bipartition: {common_bp}, Support Difference: {support_diff}")
 
 
 
