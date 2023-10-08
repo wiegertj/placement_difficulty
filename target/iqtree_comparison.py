@@ -101,8 +101,8 @@ for file in filenames:
                         if second_match and first_match:
                             print("Matched")
                             print(bipartition_iq)
-                            print(bipartition)
-                            results.append((node.name, node_iq.name))
+                            print((node.name, node_iq.name, (node.support - node_iq.support)/100))
+                            results.append((node.name, node_iq.name, (node.support - node_iq.support)/100))
 
 
     print(str(len(results) / len([1 for node in tree.traverse() if not node.is_leaf()])))
