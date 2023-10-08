@@ -34,7 +34,7 @@ def MBE(y_true, y_pred):
     diff = (y_true-y_pred)
     mbe = diff.mean()
     return mbe
-def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
+def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
     print("Median Support: ")
     print(df["support"].median())
