@@ -105,7 +105,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         sfs.fit(X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']), y_train)
         #rfe.fit(X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']), y_train)
         print(sfs.support_)
-        selected_features = X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']).columns[sfs.support_]
+        selected_features = X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']).columns[sfs.get_support()]
         selected_features = selected_features.append(pd.Index(['group']))
 
         print("Selected features for RFE: ")
