@@ -103,7 +103,7 @@ for file in filenames:
                             print((node.name, node_iq.name, (node.support - node_iq.support)/100))
                             results.append((file ,node.name, node_iq.name, node.support, node_iq.support, (node.support - node_iq.support)/100))
 
-df_res = pd.DataFrame(results, columns=["dataset", "branchId", "true_support", "iq_support", "true_iq_diff"])
+df_res = pd.DataFrame(results, columns=["dataset", "branchId_true","branchId_iq", "true_support", "iq_support", "true_iq_diff"])
 df_res.to_csv(os.path.join(os.pardir, "data/iq_boots.csv"))
 
 
