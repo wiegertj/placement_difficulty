@@ -74,7 +74,7 @@ for tree_filename in filenames:
          #            f"--prefix {output_prefix}"]
 
     #subprocess.run(" ".join(raxml_command), shell=True)
-    bootstrap_filepath = os.path.join(os.pardir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_199.raxml.support"
+    bootstrap_filepath = os.path.join(os.pardir, "data/raw/reference_tree/tmp") + file.replace(".newick", "") + "_pars_boot.txt"
 
 
     raxml_command = ["raxml-ng",
