@@ -51,25 +51,25 @@ split_features2.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 split_features.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 subst.drop_duplicates(inplace=True, subset=["dataset"])
 
-#df_merged = targets.merge(msa_features, on=["dataset"], how="inner")
-df_merged = targets.merge(tree_features, on=["dataset"], how="inner")
+df_merged = targets.merge(msa_features, on=["dataset"], how="inner")
+df_merged = df_merged.merge(tree_features, on=["dataset"], how="inner")
 df_merged = df_merged.merge(parsimony_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(split_features2, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(subst, on=["dataset"], how="inner")
-#df_merged = df_merged.merge(parsimony_features2, on=["dataset"], how="inner")
-#df_merged = df_merged.merge(tree_features_embed, on=["dataset"], how="inner")
+df_merged = df_merged.merge(parsimony_features2, on=["dataset"], how="inner")
+df_merged = df_merged.merge(tree_features_embed, on=["dataset"], how="inner")
 
-#df_merged = df_merged.merge(parsimony_features3, on=["dataset", "branchId"], how="inner")
+df_merged = df_merged.merge(parsimony_features3, on=["dataset", "branchId"], how="inner")
 
-#df_merged['split_skw_ratio_topo'].fillna(-1, inplace=True)
-#df_merged['split_skw_ratio_branch'].fillna(-1, inplace=True)
-#df_merged['split_skw_entropy_diff'].fillna(-1, inplace=True)
+df_merged['split_skw_ratio_topo'].fillna(-1, inplace=True)
+df_merged['split_skw_ratio_branch'].fillna(-1, inplace=True)
+df_merged['split_skw_entropy_diff'].fillna(-1, inplace=True)
 df_merged['skew_branch_length_inner'].fillna(-1, inplace=True)
 df_merged['skew_irs'].fillna(-1, inplace=True)
 df_merged['skew_branch_length_tips'].fillna(-1, inplace=True)
-#df_merged['kur_gaps_msa'].fillna(-1, inplace=True)
-#df_merged['kur_entropy_msa'].fillna(-1, inplace=True)
+df_merged['kur_gaps_msa'].fillna(-1, inplace=True)
+df_merged['kur_entropy_msa'].fillna(-1, inplace=True)
 df_merged['kurtosis_branch_length_tips'].fillna(-1, inplace=True)
 df_merged['kurtosis_branch_length_inner'].fillna(-1, inplace=True)
 df_merged['kurtosis_irs'].fillna(-1, inplace=True)
@@ -79,7 +79,7 @@ df_merged['irs_skw_ratio'].fillna(-1, inplace=True)
 df_merged['skw_clo_sim_ratio'].fillna(-1, inplace=True)
 
 
-columns_to_drop = [col for col in df_merged.columns if col.endswith('_w')]
+#columns_to_drop = [col for col in df_merged.columns if col.endswith('_w')]
 
 # Drop the selected columns
 df_merged = df_merged.drop(columns=columns_to_drop)
