@@ -105,7 +105,7 @@ for file in filenames:
                             results.append((node.name, node_iq.name))
 
 
-    print(str(len(results)) / len([1 for node in tree.traverse() if not node.is_leaf()]))
+    print(str(len(results) / len([1 for node in tree.traverse() if not node.is_leaf()])))
     time.sleep(3)
 
 
