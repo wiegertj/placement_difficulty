@@ -38,7 +38,8 @@ def calculate_support_statistics(support_file_path, dataset_name):
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-filenames = loo_selection[:300]
+loo_selection = loo_selection[:300]
+filenames = loo_selection["dataset"].values.tolist()
 
 counter = 0
 
