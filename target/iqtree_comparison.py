@@ -65,6 +65,20 @@ for file in filenames:
 
     results = []
 
+    branch_id_counter = 0
+    for node in tree.traverse():
+        branch_id_counter += 1
+        if node.support is not None and not node.is_leaf():
+            length = node.dist
+            node.__setattr__("name", branch_id_counter)
+
+    branch_id_counter = 0
+    for node in tree_iqtree.traverse():
+        branch_id_counter += 1
+        if node.support is not None and not node.is_leaf():
+            length = node.dist
+            node.__setattr__("name", branch_id_counter)
+
     for node in tree.traverse():
         bipartition = get_bipartition(node)
 
