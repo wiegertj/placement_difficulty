@@ -99,11 +99,7 @@ for file in filenames:
                         if (bipartition[1] == bipartition_iq[0]) or (bipartition[1] == bipartition_iq[1]):
                             second_match = True
                         if second_match and first_match:
-                            print("Matched")
-                            print(bipartition_iq)
-                            print(node.support)
-                            print(node_iq.support)
-                            #print((node.name, node_iq.name, (node.support - node_iq.support)/100))
+                            print((node.name, node_iq.name, (node.support - node_iq.support)/100))
                             results.append((node.name, node_iq.name, (node.support - node_iq.support)/100))
 
 
