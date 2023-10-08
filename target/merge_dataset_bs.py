@@ -85,7 +85,7 @@ df_merged['kur_eig_sim'].fillna(-1, inplace=True)
 #df_merged = df_merged.drop(columns=columns_to_drop)
 
 step_size = 0.1
-max_samples_per_interval = 5000
+max_samples_per_interval = 6000
 
 # Initialize an empty DataFrame to store the sampled data
 sampled_data = pd.DataFrame()
