@@ -78,6 +78,7 @@ df_merged['kur_eig_sim'].fillna(-1, inplace=True)
 df_merged['irs_skw_ratio'].fillna(-1, inplace=True)
 df_merged['skw_clo_sim_ratio'].fillna(-1, inplace=True)
 
+
 columns_to_drop = [col for col in df_merged.columns if col.endswith('_w')]
 
 # Drop the selected columns
