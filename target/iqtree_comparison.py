@@ -96,7 +96,7 @@ for file in filenames:
                         print("Matched")
                         print(bipartition_iq)
                         print(bipartition)
-                        results.append((node.id, node_iq.id))
+                        results.append((node.name, node_iq.name))
 
 
 
