@@ -46,7 +46,7 @@ for tree_filename in filenames:
 
 
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
-    output_prefix = tree_filename.split(".")[0] + "_parsimony_1000_low"  # Using the filename as the prefix
+    output_prefix = tree_filename.split(".")[0] + "_parsimony_199_low"  # Using the filename as the prefix
 
     bootstrap_filepath = os.path.join(os.pardir, "scripts",
                                       output_prefix+".raxml.startTree")
@@ -74,6 +74,7 @@ for tree_filename in filenames:
          #            f"--prefix {output_prefix}"]
 
     #subprocess.run(" ".join(raxml_command), shell=True)
+    print(file)
     bootstrap_filepath = os.path.join(os.pardir, "data/raw/reference_tree/tmp/") + file.replace(".newick", "") + "_pars_boot.txt"
 
 
