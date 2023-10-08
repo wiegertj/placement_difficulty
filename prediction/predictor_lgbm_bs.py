@@ -95,7 +95,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
 
     if rfe:
-        model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
+        model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=20, min_samples_split=20,
                                       min_samples_leaf=10)
         rfe = RFE(estimator=model, n_features_to_select=rfe_feature_n, step=0.1)  # Adjust the number of features as needed
         rfe.fit(X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']), y_train)
@@ -120,7 +120,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
             'objective': 'regression',
             'metric': 'l1',
-            'num_iterations': trial.suggest_int('num_iterations', 100, 400),
+            'num_iterations': trial.suggest_int('num_iterations', 100, 500),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 300),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
