@@ -138,13 +138,6 @@ for file in filenames:
                 #all_diff_supps.append(diff_support_1000)
                 #all_diff_supps.append(diff_support_2000)
 
-                mean_all_supps = statistics.mean(all_supps)
-                std_all_supps = np.std(all_supps)
-                mean_all_diff_supps = statistics.mean(all_diff_supps)
-                std_all_diff_supps = np.std(all_diff_supps)
-                max_all_supps = max(all_supps)
-                min_all_supps = min(all_supps)
-
 
                 childs_inner = [node_child for node_child in node.traverse() if not node_child.is_leaf()]
                 parents_inner = node.get_ancestors()
@@ -236,7 +229,7 @@ for file in filenames:
                                 mean_pars_supp_parents, std_pars_supp_parents, skw_pars_supp_parents,
                                 min_pars_supp_parents_w,
                                 max_pars_supp_parents_w,
-                                mean_pars_supp_parents_w, std_pars_supp_parents_w, skw_pars_supp_parents_w, min_pars_supp_tree, max_pars_supp_tree, std_pars_supp_tree, skw_pars_supp_tree, mean_pars_supp_tree,mean_all_supps, std_all_supps, mean_all_diff_supps, std_all_diff_supps, max_all_supps, min_all_supps
+                                mean_pars_supp_parents_w, std_pars_supp_parents_w, skw_pars_supp_parents_w, min_pars_supp_tree, max_pars_supp_tree, std_pars_supp_tree, skw_pars_supp_tree, mean_pars_supp_tree
                                 ))
 
 
@@ -252,10 +245,6 @@ df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_suppor
                                         "mean_pars_supp_parents_w", "std_pars_supp_parents_w",
                                         "skw_pars_supp_parents_w",
                                         "min_pars_supp_tree", "max_pars_supp_tree", "std_pars_supp_tree", "skw_pars_supp_tree",
-                                        "mean_pars_supp_tree", "diff_support_100", "node_100_support" ,"diff_support_1000", "node_1000_support",
-
-"diff_support_500", "node_500_support", "diff_support_2000", "node_2000_support",
-                                        "mean_all_supps", "std_all_supps", "mean_all_diff_supps", "std_all_diff_supps", "max_all_supps", "min_all_supps"
-
+                                        "mean_pars_supp_tree"
                                         ])
 df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony.csv"))
