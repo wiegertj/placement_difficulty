@@ -108,6 +108,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
         print("Selected features for RFE: ")
         print(selected_features)
+        sys.exit()
         X_train = X_train[selected_features]
         X_test = X_test[selected_features]
 
