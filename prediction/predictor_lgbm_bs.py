@@ -34,7 +34,7 @@ def MBE(y_true, y_pred):
     diff = (y_true-y_pred)
     mbe = diff.mean()
     return mbe
-def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
+def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
     print("Median Support: ")
     print(df["support"].median())
@@ -68,19 +68,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     X_train.fillna(-1, inplace=True)
 
-
-    model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
-                                  min_samples_leaf=10)
-    rfe = RFE(estimator=model, n_features_to_select=10)  # Adjust the number of features as needed
-    rfe.fit(X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']), y_train)
-    print(rfe.support_)
-    selected_features = X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']).columns[rfe.support_]
-    selected_features = selected_features.append(pd.Index(['group']))
-
-    print("Selected features for RFE: ")
-    print(selected_features)
-    X_train = X_train[selected_features]
-    X_test = X_test[selected_features]
 
 
 
@@ -295,4 +282,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         plt.savefig("lgbm-300.png")
 
 
-light_gbm_regressor(rfe=False, shapley_calc=False)
+light_gbm_regressor(rfe=True, shapley_calc=False)
