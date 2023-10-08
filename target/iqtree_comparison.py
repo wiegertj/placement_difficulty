@@ -60,8 +60,12 @@ for file in filenames:
     print(counter)
 
     # Load the Newick trees
-    tree = ete3.Tree(support_path, format=1)
-    tree_iqtree = ete3.Tree(support_path_iq, format=1)
+    try:
+        tree = ete3.Tree(support_path, format=1)
+        tree_iqtree = ete3.Tree(support_path_iq, format=1)
+    except ete3.parser.newick.NewickError:
+        print("Tree broken")
+        continue
 
     results = []
 
@@ -80,23 +84,24 @@ for file in filenames:
             node.__setattr__("name", branch_id_counter)
 
     for node in tree.traverse():
-        bipartition = get_bipartition(node)
+        if not node.is_leaf():
+            bipartition = get_bipartition(node)
 
-        if bipartition is not None:
-            for node_iq in tree_iqtree.traverse():
-                bipartition_iq = get_bipartition(node_iq)
-                if bipartition_iq is not None:
-                    first_match = False
-                    second_match = False
-                    if (bipartition[0] == bipartition_iq[0]) or (bipartition[0] == bipartition_iq[1]):
-                        first_match = True
-                    if (bipartition[1] == bipartition_iq[0]) or (bipartition[1] == bipartition_iq[1]):
-                        second_match = True
-                    if second_match and first_match:
-                        print("Matched")
-                        print(bipartition_iq)
-                        print(bipartition)
-                        results.append((node.name, node_iq.name))
+            if bipartition is not None:
+                for node_iq in tree_iqtree.traverse():
+                    bipartition_iq = get_bipartition(node_iq)
+                    if bipartition_iq is not None:
+                        first_match = False
+                        second_match = False
+                        if (bipartition[0] == bipartition_iq[0]) or (bipartition[0] == bipartition_iq[1]):
+                            first_match = True
+                        if (bipartition[1] == bipartition_iq[0]) or (bipartition[1] == bipartition_iq[1]):
+                            second_match = True
+                        if second_match and first_match:
+                            print("Matched")
+                            print(bipartition_iq)
+                            print(bipartition)
+                            results.append((node.name, node_iq.name))
 
 
 
