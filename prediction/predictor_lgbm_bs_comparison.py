@@ -58,10 +58,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     #X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, df["group"], test_size=0.2,
      #                                                                              random_state=12)
-    sample_dfs = df[df['dataset'].isin(comparison_datasets)]
+    #sample_dfs = df[df['dataset'].isin(comparison_datasets)]
    # sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    test = df[df['group'].isin(sample_dfs)]
-    train = df[~df['group'].isin(sample_dfs)]
+    test = df[df['dataset'].isin(comparison_datasets)]
+    print(test.shape)
+    train = df[~df['dataset'].isin(comparison_datasets)]
 
     X_train = train.drop(axis=1, columns=target)
     y_train = train[target]
