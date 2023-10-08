@@ -75,7 +75,7 @@ df_merged['kurtosis_branch_length_inner'].fillna(-1, inplace=True)
 df_merged['kurtosis_irs'].fillna(-1, inplace=True)
 df_merged['kur_clo_sim'].fillna(-1, inplace=True)
 df_merged['kur_eig_sim'].fillna(-1, inplace=True)
-df_merged['irs_skw_ratio'].fillna(-1, inplace=True)
+#df_merged['irs_skw_ratio'].fillna(-1, inplace=True)
 df_merged['skw_clo_sim_ratio'].fillna(-1, inplace=True)
 
 
