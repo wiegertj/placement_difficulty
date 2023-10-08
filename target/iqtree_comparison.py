@@ -44,6 +44,7 @@ counter = 0
 
 for file in filenames:
     print(len(filenames))
+    print(file)
     support_path = os.path.join(os.pardir, "scripts/") + file + "_1000.raxml.support"
     support_path_iq = os.path.join(os.pardir, "data/raw/msa/") + file + "_reference.fasta.iqtree"
     print(support_path)
