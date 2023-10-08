@@ -50,7 +50,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     loo_selection = loo_selection[:300]
-    comparison_datasets = loo_selection["verbose_name"].str.replace(".newick", "").values.tolist()
+    comparison_datasets = loo_selection["verbose_name"].str.replace(".phy", "").values.tolist()
     print(len(comparison_datasets))
     print(comparison_datasets)
     #X = df.drop(axis=1, columns=target)
