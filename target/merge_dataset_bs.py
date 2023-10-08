@@ -66,7 +66,7 @@ df_merged = df_merged.merge(parsimony_features3, on=["dataset", "branchId"], how
 #df_merged['split_skw_ratio_branch'].fillna(-1, inplace=True)
 #df_merged['split_skw_entropy_diff'].fillna(-1, inplace=True)
 df_merged['skew_branch_length_inner'].fillna(-1, inplace=True)
-df_merged['skew_irs'].fillna(-1, inplace=True)
+#df_merged['skew_irs'].fillna(-1, inplace=True)
 df_merged['skew_branch_length_tips'].fillna(-1, inplace=True)
 #df_merged['kur_gaps_msa'].fillna(-1, inplace=True)
 #df_merged['kur_entropy_msa'].fillna(-1, inplace=True)
