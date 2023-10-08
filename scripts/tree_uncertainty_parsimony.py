@@ -1,4 +1,6 @@
 import subprocess
+import sys
+
 import pandas as pd
 import os
 from ete3 import Tree
@@ -15,6 +17,7 @@ for file in filenames:
 results = []
 counter = 0
 print(filenames)
+sys.exit()
 for tree_filename in filenames:
     counter += 1
     print(counter)
