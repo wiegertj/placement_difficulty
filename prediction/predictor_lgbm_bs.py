@@ -69,9 +69,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_train.fillna(-1, inplace=True)
     X_train.replace([np.inf, -np.inf], -1, inplace=True)
 
-
-
-
+    X_train = X_train[["parsimony_boot_support", "parsimony_support", 'dataset', 'branchId', 'group']]
+    X_test = X_test[["parsimony_boot_support", "parsimony_support", 'dataset', 'branchId', 'group']]
 
 
 
@@ -282,4 +281,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         plt.savefig("lgbm-300.png")
 
 
-light_gbm_regressor(rfe=True, shapley_calc=False)
+light_gbm_regressor(rfe=False, shapley_calc=False)
