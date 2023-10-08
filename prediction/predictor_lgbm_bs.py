@@ -17,7 +17,7 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, m
     median_absolute_error
 from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
-from sklearn.feature_selection import SequentialFeatureSelector
+
 def MBE(y_true, y_pred):
     '''
     Parameters:
@@ -101,11 +101,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
                                       min_samples_leaf=10)
         rfe = RFE(estimator=model, n_features_to_select=rfe_feature_n)  # Adjust the number of features as needed
-        sfs = SequentialFeatureSelector(model, n_features_to_select=10)
-        sfs.fit(X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']), y_train)
-        #rfe.fit(X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']), y_train)
-        print(sfs.support_)
-        selected_features = X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']).columns[sfs.get_support()]
+        rfe.fit(X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']), y_train)
+        print(rfe.support_)
+        selected_features = X_train.drop(axis=1, columns=['dataset', 'branchId', 'group']).columns[rfe.support_]
         selected_features = selected_features.append(pd.Index(['group']))
 
         print("Selected features for RFE: ")
