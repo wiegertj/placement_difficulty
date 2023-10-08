@@ -154,7 +154,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return np.mean(val_scores)#sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=50)
+    study.optimize(objective, n_trials=100)
 
     best_params = study.best_params
     best_score = study.best_value
@@ -279,4 +279,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         plt.savefig("lgbm-300.png")
 
 
-light_gbm_regressor(rfe=False, shapley_calc=False)
+light_gbm_regressor(rfe=True, shapley_calc=False)
