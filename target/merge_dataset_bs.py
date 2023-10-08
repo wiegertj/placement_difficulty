@@ -82,7 +82,7 @@ df_merged['skw_clo_sim_ratio'].fillna(-1, inplace=True)
 #columns_to_drop = [col for col in df_merged.columns if col.endswith('_w')]
 
 # Drop the selected columns
-df_merged = df_merged.drop(columns=columns_to_drop)
+#df_merged = df_merged.drop(columns=columns_to_drop)
 
 step_size = 0.1
 max_samples_per_interval = 5000
