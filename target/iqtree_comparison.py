@@ -49,6 +49,7 @@ loo_selection = loo_selection[:300]
 filenames = loo_selection["dataset"].values.tolist()
 
 counter = 0
+results = []
 
 for file in filenames:
     print(len(filenames))
@@ -68,7 +69,6 @@ for file in filenames:
         print("Tree broken")
         continue
 
-    results = []
 
     branch_id_counter = 0
     for node in tree.traverse():
@@ -99,13 +99,11 @@ for file in filenames:
                         if (bipartition[1] == bipartition_iq[0]) or (bipartition[1] == bipartition_iq[1]):
                             second_match = True
                         if second_match and first_match:
+
                             print((node.name, node_iq.name, (node.support - node_iq.support)/100))
-                            results.append((node.name, node_iq.name, (node.support - node_iq.support)/100))
+                            results.append((file ,node.name, node_iq.name, node.support, node_iq.support, (node.support - node_iq.support)/100))
 
-
-    print(str(len(results) / len([1 for node in tree.traverse() if not node.is_leaf()])))
-    time.sleep(3)
-
-
+df_res = pd.DataFrame(results, columns=["dataset", "branchId", "true_support", "iq_support", "true_iq_diff"])
+df_res.to_csv(os.path.join(os.pardir, "data/iq_boots.csv"))
 
 
