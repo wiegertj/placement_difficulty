@@ -19,13 +19,13 @@ for file in filenames:
     print(counter)
     print(file)
 
-    support_path_no_boot = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_10000.raxml.startTree"
-    support_path_boot = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_199.raxml.startTree"
+    support_path_no_boot = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_1000.raxml.startTree"
+    support_path_boot = os.path.join(grandir, "data/raw/reference_tree/tmp_old") + file.replace(".newick", "") + "_pars_boot.txt"
     #support_path_low = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_100_low.raxml.support"
     #support_path_low1000 = os.path.join(grandir, "scripts/") + file.replace(".newick",
      #                                                                   "") + "_parsimony_1000_low.raxml.s
-    output_prefix_no_boot = file.split(".")[0] + "_parsimony_20000"  # Using the filename as the prefix
-    output_prefix_boot = file.split(".")[0] + "_parsimony_499"  # Using the filename as the prefix
+    output_prefix_no_boot = file.split(".")[0] + "_parsimony_1000"  # Using the filename as the prefix
+    output_prefix_boot = file.split(".")[0] + "_parsimony_199"  # Using the filename as the prefix
 
 
     raxml_command = ["raxml-ng",
