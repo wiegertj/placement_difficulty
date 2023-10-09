@@ -14,8 +14,8 @@ filenames = list(filenames)
 filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].str.replace(".phy", ".newick").values.tolist()
 
 for file in filenames:
-    trees_pars = os.path.join(os.pardir, "data/raw/reference_tree/tmp",
-                 file.replace(".newick","") + "_pars_boot.txt")
+    trees_pars = os.path.join(os.pardir, "scripts",
+                 file.replace(".newick","") + "_parsimony_20000.raxml.startTree")
 
     if not os.path.exists(trees_pars):
         continue
