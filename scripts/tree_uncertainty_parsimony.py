@@ -48,7 +48,7 @@ for tree_filename in filenames:
 
 
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
-    output_prefix = tree_filename.split(".")[0] + "_parsimony_20000"  # Using the filename as the prefix
+    output_prefix = tree_filename.split(".")[0] + "_parsimony_1000"  # Using the filename as the prefix
 
     bootstrap_filepath = os.path.join(os.pardir, "scripts",
                                       output_prefix+".raxml.startTree")
@@ -58,7 +58,7 @@ for tree_filename in filenames:
         "raxml-ng",
         "--start",
         f"--model {model_path}",
-        "--tree pars{20000}",
+        "--tree pars{1000}",
         f"--msa {msa_filepath}",
         "--redo",
         f"--prefix {output_prefix}"
@@ -117,12 +117,12 @@ for tree_filename in filenames:
     time_dat = pd.DataFrame(data)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "pars_boot_times_noboot20000.csv")):
+                                       "pars_boot_times_noboot1000.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "pars_boot_times_noboot20000.csv")), index=False)
+                                                  "pars_boot_times_noboot1000.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "pars_boot_times_noboot20000.csv"),
+                                     "pars_boot_times_noboot1000.csv"),
                         index=False,
                         mode='a', header=False)
 
