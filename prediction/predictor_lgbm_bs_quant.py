@@ -398,7 +398,16 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
              "length", "max_subst_freq"]])
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.95)))
 
-    result_df = pd.DataFrame({'upper_bound': y_pred_upper, 'lower_bound': y_pred_lower, 'pred': y_pred, 'support': y_test})
-    result_df.to_csv(os.path.join(os.pardir, "data/prediction", "bs_support_pred_quant_90.csv"))
+    X_test_["prediction_median"] = y_pred
+    X_test_["prediction_low"] = y_pred_lower
+    X_test_["prediction_hi"] = y_pred_upper
+    X_test_["support"] = y_test
+    X_test_["pred_error"] = y_test - y_pred
+    X_test_["pi_width"] = y_pred_upper - y_pred_lower
+
+    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_90_lgbm.csv"))
+
+    #result_df = pd.DataFrame({'upper_bound': y_pred_upper, 'lower_bound': y_pred_lower, 'pred': y_pred, 'support': y_test})
+    #result_df.to_csv(os.path.join(os.pardir, "data/prediction", "bs_support_pred_quant_90.csv"))
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
