@@ -23,7 +23,7 @@ for tree_filename in filenames:
         print("Skipped, MSA not found")
         continue
 
-    if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_parsimony_supp_499.raxml.support"):
+    if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_parsimony_supp199nomodel_.raxml.support"):
         print("Found already, move on")
         continue
 
@@ -45,7 +45,7 @@ for tree_filename in filenames:
     alignment_length = alignment.get_alignment_length()
     original_sites = list(range(1, alignment_length + 1))
 
-    trees_path = os.path.join(os.pardir, "data/raw/reference_tree/tmp",
+    trees_path = os.path.join(os.pardir, "data/raw/reference_tree/tmp_nomodel",
                               tree_filename.replace(".newick", "_pars_boot.txt"))
 
 
@@ -61,8 +61,8 @@ for tree_filename in filenames:
         # Create a MultipleSeqAlignment object from the SeqRecords
         msa_new = AlignIO.MultipleSeqAlignment(seq_records)
 
-        new_msa_path = os.path.join(os.pardir, "data/raw/msa/tmp/", tree_filename.replace(".newick", "") + "_pars_tmp_" + str(x) + ".fasta")
-        output_prefix = tree_filename.split(".")[0] + "_parsimony_500temp_" + str(x)  # Using the filename as the prefix
+        new_msa_path = os.path.join(os.pardir, "data/raw/msa/tmp_nomodel/", tree_filename.replace(".newick", "") + "_pars_tmp_" + str(x) + ".fasta")
+        output_prefix = tree_filename.split(".")[0] + "_parsimony_199tempnomodel_" + str(x)  # Using the filename as the prefix
 
 
 
@@ -83,7 +83,7 @@ for tree_filename in filenames:
 
 
 
-        SeqIO.write(msa_new, os.path.join(os.pardir, "data/raw/msa/tmp/", tree_filename.replace(".newick", "") + "_pars_tmp_" + str(x) + ".fasta"), "fasta")
+        SeqIO.write(msa_new, os.path.join(os.pardir, "data/raw/msa/tmp_nomodel/", tree_filename.replace(".newick", "") + "_pars_tmp_" + str(x) + ".fasta"), "fasta")
 
         raxml_command = [
             "raxml-ng",
@@ -98,7 +98,7 @@ for tree_filename in filenames:
         subprocess.run(" ".join(raxml_command), shell=True)
 
 
-        result_tree_path = os.path.join(os.pardir, "scripts", tree_filename.replace(".newick", "") + "_parsimony_500temp_" + str(x) + ".raxml.startTree")
+        result_tree_path = os.path.join(os.pardir, "scripts", tree_filename.replace(".newick", "") + "_parsimony_199tempnomodel_" + str(x) + ".raxml.startTree")
 
         try:
             with open(result_tree_path, 'r') as tree_file:
@@ -125,7 +125,7 @@ for tree_filename in filenames:
     file_list = os.listdir(folder_path)
 
     # Filter files that contain "_parsimony_100temp_" in their names
-    files_to_delete = [file for file in file_list if (("_parsimony_500temp_" in file) or (".log" in file) or (".rba" in file) or ("reduced" in file))]
+    files_to_delete = [file for file in file_list if (("_parsimony_199tempnomodel_" in file) or (".log" in file) or (".rba" in file) or ("reduced" in file))]
 
     # Delete the filtered files
     for file_to_delete in files_to_delete:
@@ -133,8 +133,8 @@ for tree_filename in filenames:
         os.remove(file_path)
 
 
-    print(f"Deleted {len(files_to_delete)} files containing '_parsimony_500temp_' in their names.")
-    output_prefix = tree_filename.split(".")[0] + "_parsimony_supp_" + str(x)  # Using the filename as the prefix
+    print(f"Deleted {len(files_to_delete)} files containing '_parsimony_199tempnomodel_' in their names.")
+    output_prefix = tree_filename.split(".")[0] + "_parsimony_supp199nomodel_" + str(x)  # Using the filename as the prefix
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
 
     raxml_command = ["raxml-ng",
@@ -168,12 +168,12 @@ for tree_filename in filenames:
     time_dat = pd.DataFrame(data)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                             "pars_boot_times500.csv")):
+                             "pars_boot_times199_nomodel.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                             "pars_boot_times500.csv")), index=False)
+                             "pars_boot_times199_nomodel.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                             "pars_boot_times500.csv"),
+                             "pars_boot_times199_nomodel.csv"),
                      index=False,
                      mode='a', header=False)
 
