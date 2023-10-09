@@ -99,4 +99,4 @@ for file in filenames:
     print("---"*20)
 
 res_df = pd.DataFrame(results, columns=["dataset", "avg_rf_no_boot", "avg_rf_boot", "avg_rel_rf_no_boot", "avg_rel_rf_boot", "no_top_boot", "no_top_no_boot"])
-res_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features.csv"), index=False)
+res_df.to_csv(os.path.join(grandir, "data/processed/features/bs_features/pars_top_features.csv"), index=False)
