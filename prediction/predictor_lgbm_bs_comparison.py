@@ -36,6 +36,15 @@ def MBE(y_true, y_pred):
     return mbe
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
+
+
+    df = df[["dataset", "branchId", "parsimony_boot_support","parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq", "avg_rel_rf_boot", "length_relative", "max_pars_supp_child_w",
+             "split_std_ratio_branch", "split_std_entropy_diff", "cv_subst_freq", "split_std_ratio_topo",
+             "min_pars_supp_child_w", "mean_pars_bootsupp_parents", "bl_ratio", "std_pars_bootsupp_parents",
+             "mean_clo_sim_ratio", "mean_pars_supp_parents_w", "split_mean_ratio_branch"
+             ]]
+
     print("Median Support: ")
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
