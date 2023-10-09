@@ -38,7 +38,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
 
 
-    df = df[["dataset", "branchId", "parsimony_boot_support","parsimony_support", "avg_subst_freq",
+    df = df[["dataset","support" ,"branchId", "parsimony_boot_support","parsimony_support", "avg_subst_freq",
              "length", "max_subst_freq", "avg_rel_rf_boot", "length_relative", "max_pars_supp_child_w",
              "split_std_ratio_branch", "split_std_entropy_diff", "cv_subst_freq", "split_std_ratio_topo",
              "min_pars_supp_child_w", "mean_pars_bootsupp_parents", "bl_ratio", "std_pars_bootsupp_parents",
