@@ -85,7 +85,7 @@ df_merged = df_merged.merge(parsimony_features3, on=["dataset", "branchId"], how
 #df_merged = df_merged.drop(columns=columns_to_drop)
 
 step_size = 0.1
-max_samples_per_interval = 4800
+max_samples_per_interval = 5000
 
 # Initialize an empty DataFrame to store the sampled data
 sampled_data = pd.DataFrame()
