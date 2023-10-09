@@ -49,7 +49,7 @@ for tree_filename in filenames:
                               tree_filename.replace(".newick", "_pars_boot.txt"))
 
 
-    for x in range(500):
+    for x in range(200):
         # Initialize an empty array for each replicate
         #replicate_alignment = np.empty((alignment_array.shape[0], alignment_array.shape[1]), dtype=alignment_array.dtype)
         sampled_columns = np.random.choice(alignment_array.shape[1], size=alignment_array.shape[1], replace=True)
