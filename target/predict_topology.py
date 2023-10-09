@@ -297,6 +297,20 @@ for tree_filename in filenames:
             if counter == 100:
                 break
 
+    folder_path = os.path.join(os.pardir, "target")
+
+    # List all files in the folder
+    file_list = os.listdir(folder_path)
+
+    # Filter files that contain "_parsimony_100temp_" in their names
+    files_to_delete = [file for file in file_list if
+                       ((".log" in file) or (".rba" in file) or ("reduced" in file) or ("rfDistan" in file))]
+
+    # Delete the filtered files
+    for file_to_delete in files_to_delete:
+        file_path = os.path.join(folder_path, file_to_delete)
+        os.remove(file_path)
+
 
     res_df = pd.DataFrame(results, columns=["dataset", "nrf", "topId", "rf_topo", "nrf_topo", "un_topo", "average_length", "max_length", "min_length", "std_length", "depth", "average_branch_length_tips",
             "max_branch_length_tips", "std_branch_length_tips", "skew_branch_length_tips", "kurtosis_branch_length_tips", "average_branch_length_inner",
