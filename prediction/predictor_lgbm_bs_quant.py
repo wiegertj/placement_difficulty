@@ -155,7 +155,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_median, n_trials=50)
+    study.optimize(objective_median, n_trials=1)
 
     best_params_median = study.best_params
     best_score_median = study.best_value
@@ -309,8 +309,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
-            train_data = lgb.Dataset(X_train_tmp["parsimony_boot_support","parsimony_support", "avg_subst_freq",
-             "length", "max_subst_freq",], label=y_train_tmp)
+            train_data = lgb.Dataset(X_train_tmp[["parsimony_boot_support","parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq",]], label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)#, valid_sets=[val_data])
@@ -330,13 +330,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Params: {best_params_lower_bound}")
     print(f"Best Quantile Loss: {best_score_lower_bound}")
 
-    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"])["parsimony_boot_support","parsimony_support", "avg_subst_freq",
-             "length", "max_subst_freq",], label=y_train)
+    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"])[["parsimony_boot_support","parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq"]], label=y_train)
 
     final_model_lower_bound = lgb.train(best_params_lower_bound, train_data)
 
-    y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"])["parsimony_boot_support","parsimony_support", "avg_subst_freq",
-             "length", "max_subst_freq",])
+    y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"])[["parsimony_boot_support","parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq"]])
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.05)))
 
     #########################################################################################################
@@ -368,13 +368,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
 
-            train_data = lgb.Dataset(X_train_tmp["parsimony_boot_support","parsimony_support", "avg_subst_freq",
-             "length", "max_subst_freq",], label=y_train_tmp)
+            train_data = lgb.Dataset(X_train_tmp[["parsimony_boot_support","parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq"]], label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)#, valid_sets=[val_data])
-            val_preds = model.predict(X_val["parsimony_boot_support","parsimony_support", "avg_subst_freq",
-             "length", "max_subst_freq",])
+            val_preds = model.predict(X_val[["parsimony_boot_support","parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq"]])
             val_score = quantile_loss(y_val, val_preds, 0.95)
             val_scores.append(val_score)
 
@@ -389,13 +389,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Params: {best_params_upper_bound}")
     print(f"Best Quantile Loss: {best_score_upper_bound}")
 
-    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"])["parsimony_boot_support","parsimony_support", "avg_subst_freq",
-             "length", "max_subst_freq",], label=y_train)
+    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"])[["parsimony_boot_support","parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq"]], label=y_train)
 
     final_model_upper_bound = lgb.train(best_params_upper_bound, train_data)
 
-    y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"])["parsimony_boot_support","parsimony_support", "avg_subst_freq",
-             "length", "max_subst_freq",])
+    y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"])[["parsimony_boot_support","parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq"]])
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.95)))
 
     result_df = pd.DataFrame({'upper_bound': y_pred_upper, 'lower_bound': y_pred_lower, 'pred': y_pred, 'support': y_test})
