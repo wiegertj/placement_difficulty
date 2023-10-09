@@ -59,6 +59,12 @@ def MBE(y_true, y_pred):
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
+    df = df[["dataset", "support", "branchId", "parsimony_boot_support", "parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq", "avg_rel_rf_boot", "length_relative", "max_pars_supp_child_w",
+             "split_std_ratio_branch", "split_std_entropy_diff", "cv_subst_freq", "split_std_ratio_topo",
+             "min_pars_supp_child_w", "mean_pars_bootsupp_parents", "bl_ratio", "std_pars_bootsupp_parents",
+             "mean_clo_sim_ratio", "mean_pars_supp_parents_w", "split_mean_ratio_branch"
+             ]]
     #df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
     #df_diff["name"] = df_diff["name"].str.replace(".phy", "")
     #df = df.merge(df_diff, left_on="dataset", right_on="name", how="inner")
@@ -222,8 +228,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     #####################################################################################################################
     #X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
     #X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
-    X_test = X_test[["parsimony_support", "length", 'length_relative', 'min_pars_supp_child_w', 'split_std_ratio_branch','seq_length', 'group']]
-    X_train = X_train[["parsimony_support", "length", 'length_relative', 'min_pars_supp_child_w', 'split_std_ratio_branch','seq_length', 'group']]
+    X_test = X_test[["parsimony_boot_support", "parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq", 'group']]
+    X_train = X_train[["parsimony_boot_support", "parsimony_support", "avg_subst_freq",
+             "length", "max_subst_freq", 'group']]
 
     def objective_lower_bound(trial):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
@@ -365,6 +373,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["pred_error"] = y_test - y_pred_median
     X_test_["pi_width"] = y_pred_hi - y_pred_lo
 
-    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_new.csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_75_final.csv"))
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
