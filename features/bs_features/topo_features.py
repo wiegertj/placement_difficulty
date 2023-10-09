@@ -63,9 +63,9 @@ for file in filenames:
 
     raxml_command = ["raxml-ng",
                      "--rfdist",
-                     f"--tree {support_path_no_boot}",
+                     f"--tree {support_path_boot}",
                      "--redo",
-                     f"--prefix {output_prefix_no_boot}"]
+                     f"--prefix {output_prefix_boot}"]
     #result = subprocess.run(" ".join(raxml_command), shell=True)
     result = subprocess.run(" ".join(raxml_command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                             shell=True)
