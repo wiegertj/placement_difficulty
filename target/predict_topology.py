@@ -278,51 +278,55 @@ for tree_filename in filenames:
     print(f"Parsimony analysis for {tree_filename} completed.")
 
     # Open the file and read the first 100 lines
-    with open(bootstrap_filepath, 'r') as file:
-        counter = 0
-        for line_number, line in enumerate(file, start=1):
-            counter += 1
+    try:
+        with open(bootstrap_filepath, 'r') as file:
+            counter = 0
+            for line_number, line in enumerate(file, start=1):
+                counter += 1
 
-            tree_tmp = ete3.Tree(line)
-            results_distance = maximum_lik_tree.compare(tree_tmp, unrooted=True)
-            nrf_distance = results_distance["norm_rf"]
-            average_length, max_length, min_length, std_length, depth, average_branch_length_tips, \
-            max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips, average_branch_length_inner, \
-            min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs, \
-            skew_irs, kurtosis_irs, min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim = analyze_newick_tree(tree_tmp)
-            results.append((tree_filename.replace(".newick", ""), nrf_distance, counter, numbers[0], numbers[1], numbers[2], average_length, max_length, min_length, std_length, depth, average_branch_length_tips,
-            max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips, average_branch_length_inner,
-            min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs,
-            skew_irs, kurtosis_irs, min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim))
-            if counter == 100:
-                break
+                tree_tmp = ete3.Tree(line)
+                results_distance = maximum_lik_tree.compare(tree_tmp, unrooted=True)
+                nrf_distance = results_distance["norm_rf"]
+                average_length, max_length, min_length, std_length, depth, average_branch_length_tips, \
+                max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips, average_branch_length_inner, \
+                min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs, \
+                skew_irs, kurtosis_irs, min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim = analyze_newick_tree(tree_tmp)
+                results.append((tree_filename.replace(".newick", ""), nrf_distance, counter, numbers[0], numbers[1], numbers[2], average_length, max_length, min_length, std_length, depth, average_branch_length_tips,
+                max_branch_length_tips, std_branch_length_tips, skew_branch_length_tips, kurtosis_branch_length_tips, average_branch_length_inner,
+                min_branch_length_inner, max_branch_length_inner, std_branch_length_inner, skew_branch_length_inner, kurtosis_branch_length_inner, avg_irs, std_irs, max_irs,
+                skew_irs, kurtosis_irs, min_clo_sim, max_clo_sim, mean_clo_sim, std_clo_sim, sk_clo_sim, kur_clo_sim, min_eig_sim, max_eig_sim, mean_eig_sim, std_eig_sim, sk_eig_sim, kur_eig_sim))
+                if counter == 100:
+                    break
 
-    folder_path = os.path.join(os.pardir, "target")
+        folder_path = os.path.join(os.pardir, "target")
 
-    # List all files in the folder
-    file_list = os.listdir(folder_path)
+        # List all files in the folder
+        file_list = os.listdir(folder_path)
 
-    # Filter files that contain "_parsimony_100temp_" in their names
-    files_to_delete = [file for file in file_list if
-                       ((".log" in file) or (".rba" in file) or ("reduced" in file) or ("rfDistan" in file))]
+        # Filter files that contain "_parsimony_100temp_" in their names
+        files_to_delete = [file for file in file_list if
+                           ((".log" in file) or (".rba" in file) or ("reduced" in file) or ("rfDistan" in file))]
 
-    # Delete the filtered files
-    for file_to_delete in files_to_delete:
-        file_path = os.path.join(folder_path, file_to_delete)
-        os.remove(file_path)
+        # Delete the filtered files
+        for file_to_delete in files_to_delete:
+            file_path = os.path.join(folder_path, file_to_delete)
+            os.remove(file_path)
 
 
-    res_df = pd.DataFrame(results, columns=["dataset", "nrf", "topId", "rf_topo", "nrf_topo", "un_topo", "average_length", "max_length", "min_length", "std_length", "depth", "average_branch_length_tips",
-            "max_branch_length_tips", "std_branch_length_tips", "skew_branch_length_tips", "kurtosis_branch_length_tips", "average_branch_length_inner",
-            "min_branch_length_inner", "max_branch_length_inner", "std_branch_length_inner", "skew_branch_length_inner", "kurtosis_branch_length_inner", "avg_irs", "std_irs", "max_irs",
-            "skew_irs", "kurtosis_irs", "min_clo_sim", "max_clo_sim", "mean_clo_sim", "std_clo_sim", "sk_clo_sim", "kur_clo_sim", "min_eig_sim", "max_eig_sim", "mean_eig_sim", "std_eig_sim", "sk_eig_sim", "kur_eig_sim"])
-    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "pred_topo_data.csv")):
-        res_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "pred_topo_data.csv")), index=False)
-    else:
-        res_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "pred_topo_data.csv"),
-                        index=False,
-                        mode='a', header=False)
+        res_df = pd.DataFrame(results, columns=["dataset", "nrf", "topId", "rf_topo", "nrf_topo", "un_topo", "average_length", "max_length", "min_length", "std_length", "depth", "average_branch_length_tips",
+                "max_branch_length_tips", "std_branch_length_tips", "skew_branch_length_tips", "kurtosis_branch_length_tips", "average_branch_length_inner",
+                "min_branch_length_inner", "max_branch_length_inner", "std_branch_length_inner", "skew_branch_length_inner", "kurtosis_branch_length_inner", "avg_irs", "std_irs", "max_irs",
+                "skew_irs", "kurtosis_irs", "min_clo_sim", "max_clo_sim", "mean_clo_sim", "std_clo_sim", "sk_clo_sim", "kur_clo_sim", "min_eig_sim", "max_eig_sim", "mean_eig_sim", "std_eig_sim", "sk_eig_sim", "kur_eig_sim"])
+        if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                           "pred_topo_data.csv")):
+            res_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                      "pred_topo_data.csv")), index=False)
+        else:
+            res_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                         "pred_topo_data.csv"),
+                            index=False,
+                            mode='a', header=False)
+    except FileNotFoundError:
+        print("Error occured")
+        continue
 
