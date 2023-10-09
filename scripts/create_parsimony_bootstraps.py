@@ -88,7 +88,7 @@ for tree_filename in filenames:
         raxml_command = [
             "raxml-ng",
             "--start",
-            f"--model {model_path}",
+            f"--model GTR+G",
             "--tree pars{1}",
             f"--msa {new_msa_path}",
             "--redo",
