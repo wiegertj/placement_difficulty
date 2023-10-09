@@ -42,6 +42,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     #df_difference2["quartet_2"] = df_difference2["quartet"]
     #df_difference2["nrf_2"] = df_difference2["nrf"]
     #df_difference2.drop(axis=1, columns=["nrf", "quartet"], inplace=True)
+    print(df_difference.shape)
+
+    print(df_difference[df_difference["nrf"] < 0.1].shape)
+    sys.exit()
     parsimony_features2 = pd.read_csv(
         os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features.csv"),
         usecols=lambda column: column != 'Unnamed: 0')
