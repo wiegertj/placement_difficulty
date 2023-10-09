@@ -37,6 +37,7 @@ def MBE(y_true, y_pred):
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"))
     df_difference = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "cons_comp.csv"))
+    df_difference["dataset"] = df_difference["dataset"].str.replacer(".newick", "")
     df = df_msa.merge(df_difference, on=["dataset"], how="inner")
     print("Median Support: ")
     print(df["quartet"].median())
