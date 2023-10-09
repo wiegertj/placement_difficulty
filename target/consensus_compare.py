@@ -15,12 +15,12 @@ filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verb
 
 for file in filenames:
     trees_pars = os.path.join(os.pardir, "scripts",
-                 file.replace(".newick","") + "_parsimony_20000.raxml.startTree")
+                 file.replace(".newick","") + "_parsimony_1000.raxml.startTree")
 
     if not os.path.exists(trees_pars):
         continue
 
-    output_prefix = file.replace(".newick", "") + "_consensus_"
+    output_prefix = file.replace(".newick", "") + "_consensus1000_"
 
     raxml_command = [
         "raxml-ng",
@@ -69,12 +69,12 @@ for file in filenames:
     results = [(file,nrf_distance, quartet_distance)]
     df = pd.DataFrame(results, columns=["dataset", "nrf", "quartet"])
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                             "cons_comp.csv")):
+                             "cons_comp1000.csv")):
         df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                             "cons_comp.csv")), index=False)
+                             "cons_comp1000.csv")), index=False)
     else:
         df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                             "cons_comp.csv"),
+                             "cons_comp1000.csv"),
                      index=False,
                      mode='a', header=False)
 
