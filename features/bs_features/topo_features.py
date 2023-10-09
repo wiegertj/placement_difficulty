@@ -56,8 +56,9 @@ for file in filenames:
         avg_rf_no_boot = numbers[0]
         avg_rel_rf_no_boot = numbers[1]
         no_top_no_boot = numbers[2]
-    except IndexError:
+    except (IndexError, NameError) as e:
         print("number extraction failed ....")
+        continue
     ###########
 
     raxml_command = ["raxml-ng",
@@ -89,8 +90,9 @@ for file in filenames:
         avg_rf_boot = numbers[0]
         avg_rel_rf_boot = numbers[1]
         no_top_boot = numbers[2]
-    except IndexError:
+    except (IndexError, NameError) as e:
         print("number extraction failed ....")
+        continue
 
     results.append((file.replace(".newick", ""), avg_rf_no_boot, avg_rf_boot, avg_rel_rf_no_boot, avg_rel_rf_boot, no_top_boot, no_top_no_boot))
 
