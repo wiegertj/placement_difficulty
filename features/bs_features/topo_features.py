@@ -93,8 +93,10 @@ for file in filenames:
     except (IndexError, NameError) as e:
         print("number extraction failed ....")
         continue
-
+    print("---"*20)
+    print((file.replace(".newick", ""), avg_rf_no_boot, avg_rf_boot, avg_rel_rf_no_boot, avg_rel_rf_boot, no_top_boot, no_top_no_boot))
     results.append((file.replace(".newick", ""), avg_rf_no_boot, avg_rf_boot, avg_rel_rf_no_boot, avg_rel_rf_boot, no_top_boot, no_top_no_boot))
+    print("---"*20)
 
 res_df = pd.DataFrame(results, columns=["dataset", "avg_rf_no_boot", "avg_rf_boot", "avg_rel_rf_no_boot", "avg_rel_rf_boot", "no_top_boot", "no_top_no_boot"])
 res_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features.csv"), index=False)
