@@ -36,7 +36,7 @@ def MBE(y_true, y_pred):
     return mbe
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"))
-    df_difference = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "cons_comp_500parsboot.csv")) #20.000
+    df_difference = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "cons_comp1000.csv")) #20.000
     #df_difference2 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "cons_comp_500parsboot.csv"))
     #df_difference2["dataset"] = df_difference2["dataset"].str.replace(".newick", "")
     #df_difference2["quartet_2"] = df_difference2["quartet"]
