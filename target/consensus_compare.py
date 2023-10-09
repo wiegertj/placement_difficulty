@@ -34,7 +34,7 @@ for file in filenames:
 
 
     consensus_path = os.path.join(os.pardir, "target",
-                 file.replace(".newick","") + "_consensus_.raxml.consensusTreeMR")
+                 file.replace(".newick","") + "_consensus1000_.raxml.consensusTreeMR")
     original_path = os.path.join(os.pardir, "data/raw/reference_tree",
                  file)
 
