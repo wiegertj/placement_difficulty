@@ -56,7 +56,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
 
 
-    target = "quartet_2"
+    target = "nrf"
 
     #X = df.drop(axis=1, columns=target)
     #y = df[target]
@@ -69,11 +69,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
-    X_train = X_train.drop(axis=1, columns=["nrf", "nrf_2", "quartet"])
+    X_train = X_train.drop(axis=1, columns=["quartet", "nrf_2", "quartet_2"])
     y_train = train[target]
 
     X_test = test.drop(axis=1, columns=target)
-    X_test = X_test.drop(axis=1, columns=["nrf", "nrf_2", "quartet"])
+    X_test = X_test.drop(axis=1, columns=["quartet", "nrf_2", "quartet_2"])
 
     y_test = test[target]
 
