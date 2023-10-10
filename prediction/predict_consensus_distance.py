@@ -38,7 +38,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"))
 
     #pred topo
-    df_difference = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pred_topo_data.csv")) #20.000
+    df_difference = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "cons_comp_target.csv")) #1000
 
 
 
@@ -58,13 +58,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(df_difference[df_difference["nrf"] < 0.1].shape)
 
     parsimony_features2 = pd.read_csv(
-        os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features.csv"),
+        os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features_no_model.csv"),
         usecols=lambda column: column != 'Unnamed: 0')
 
     df_difference["dataset"] = df_difference["dataset"].str.replace(".newick", "")
    # df_difference = df_difference.merge(df_difference2, on=["dataset"], how="inner")
     df = df_msa.merge(df_difference, on=["dataset"], how="inner")
-   # df = df.merge(parsimony_features2, on=["dataset"], how="inner")
+    df = df.merge(parsimony_features2, on=["dataset"], how="inner")
     print("Median Support: ")
     #print(df["quartet"].median())
     df.columns = df.columns.str.replace(':', '_')
