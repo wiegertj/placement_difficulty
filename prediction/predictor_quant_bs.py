@@ -4,6 +4,8 @@ import random
 import shap
 import lightgbm as lgb
 import os
+import pickle
+
 import optuna
 import numpy as np
 import pandas as pd
@@ -175,6 +177,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
+    model_path = os.path.join(os.pardir, "data/processed/final", "mean_model.pkl")
+    with open(model_path, 'wb') as file:
+        pickle.dump(final_model, file)
+
     y_pred_median = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
     mse = mean_squared_error(y_test, y_pred_median)
@@ -278,6 +284,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     model_lo = QuantileRegressor(**best_params_lo, quantile=0.125, solver=solver).fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
+    model_path = os.path.join(os.pardir, "data/processed/final", "low_model.pkl")
+    with open(model_path, 'wb') as file:
+        pickle.dump(model_lo, file)
+
     y_pred_lo = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
     quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.125)
     print(f"Quantile Loss Holdout: {quant_loss_lo}" )
@@ -341,6 +351,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     model_hi = QuantileRegressor(**best_params_hi, quantile=0.875, solver=solver).fit(
         X_train.drop(axis=1, columns=["group"]), y_train)
+
+    model_path = os.path.join(os.pardir, "data/processed/final", "high_model.pkl")
+    with open(model_path, 'wb') as file:
+        pickle.dump(model_hi, file)
 
     y_pred_hi = model_hi.predict(X_test.drop(axis=1, columns=["group"]))
 
