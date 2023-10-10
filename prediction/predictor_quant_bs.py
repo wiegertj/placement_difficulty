@@ -165,7 +165,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return np.median(val_scores)#sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=1)
+    study.optimize(objective, n_trials=100)
 
     best_params = study.best_params
     best_score = study.best_value
@@ -274,7 +274,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=1)
+    study.optimize(objective_lower_bound, n_trials=100)
 
     best_params_lo = study.best_params
     best_score_lo = study.best_value
@@ -340,7 +340,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_higher_bound, n_trials=1)
+    study.optimize(objective_higher_bound, n_trials=100)
     solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
     best_params_hi = study.best_params
