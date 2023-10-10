@@ -39,7 +39,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     #pred topo
     df_difference = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "cons_comp_target.csv")) #1000
-    df_difference.drop(axis=1, columns=["quartet"], inplace=True)
+    df_difference.drop(axis=1, columns=["nrf"], inplace=True)
 
 
     # pred cons
@@ -60,7 +60,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     # Assuming you have a DataFrame called 'df_difference'
 
     # Extract the "nrf" column
-    nrf_values = df_difference["nrf"]
+    nrf_values = df_difference["quartet"]
 
     # Create a histogram
     plt.hist(nrf_values, bins=20, edgecolor='k')  # You can adjust the number of bins as needed
@@ -68,14 +68,14 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     # Add labels and title
     plt.xlabel('nrf Values')
     plt.ylabel('Frequency')
-    plt.title('Histogram of nrf Values')
+    plt.title('Histogram of quartet Values')
 
     # Save the histogram as an image file (e.g., PNG)
-    plt.savefig('nrf_histogram.png')
+    plt.savefig('quartet_histogram.png')
 
     # Show the histogram (optional)
     plt.show()
-    print(df_difference[df_difference["nrf"] < 0.1].shape)
+    print(df_difference[df_difference["quartet"] < 0.1].shape)
 
     parsimony_features2 = pd.read_csv(
         os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features_no_model.csv"),
@@ -95,7 +95,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
 
 
-    target = "nrf"
+    target = "quartet"
 
     #X = df.drop(axis=1, columns=target)
     #y = df[target]
