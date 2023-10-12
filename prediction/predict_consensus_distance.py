@@ -60,7 +60,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     # Assuming you have a DataFrame called 'df_difference'
 
     # Extract the "nrf" column
-    nrf_values = df_difference["nRF"]
+    nrf_values = df_difference["nrf"]
 
     # Create a histogram
     plt.hist(nrf_values, bins=20, edgecolor='k')  # You can adjust the number of bins as needed
