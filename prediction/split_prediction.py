@@ -163,7 +163,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
             # val_score = mean_squared_error(y_val, val_preds)
             # val_score = math.sqrt(val_score)
-            print(val_preds)
             val_score = accuracy_score(y_val, val_preds_binary)
             val_scores.append(val_score)
 
