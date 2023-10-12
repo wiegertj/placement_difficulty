@@ -323,14 +323,22 @@ for file in filenames:
                 split_std_dist_branch_b = np.std(list_b_dist_branch)
                 split_skew_dist_branch_b = skew(list_b_dist_branch)
 
-                split_min_ratio_branch = min(split_min_dist_branch_a, split_min_dist_branch_b) / max(
-                    split_min_dist_branch_a, split_min_dist_branch_b)
-                split_max_ratio_branch = min(split_max_dist_branch_a, split_max_dist_branch_b) / max(
-                    split_max_dist_branch_a, split_max_dist_branch_b)
-                split_std_ratio_branch = min(split_std_dist_branch_a, split_std_dist_branch_b) / max(
-                    split_std_dist_branch_a, split_std_dist_branch_b)
-                split_mean_ratio_branch = min(split_mean_dist_branch_a, split_mean_dist_branch_b) / max(
-                    split_mean_dist_branch_a, split_mean_dist_branch_b)
+                if max(split_min_dist_branch_a, split_min_dist_branch_b) != 0:
+
+                    split_min_ratio_branch = min(split_min_dist_branch_a, split_min_dist_branch_b) / max(
+                        split_min_dist_branch_a, split_min_dist_branch_b)
+                    split_max_ratio_branch = min(split_max_dist_branch_a, split_max_dist_branch_b) / max(
+                        split_max_dist_branch_a, split_max_dist_branch_b)
+                    split_std_ratio_branch = min(split_std_dist_branch_a, split_std_dist_branch_b) / max(
+                        split_std_dist_branch_a, split_std_dist_branch_b)
+                    split_mean_ratio_branch = min(split_mean_dist_branch_a, split_mean_dist_branch_b) / max(
+                        split_mean_dist_branch_a, split_mean_dist_branch_b)
+                else:
+                    split_min_ratio_branch = 0
+                    split_max_ratio_branch = 0
+                    split_std_ratio_branch = 0
+                    split_mean_ratio_branch = 0
+
                 try:
                     split_skw_ratio_branch = min(split_skew_dist_branch_a, split_skew_dist_branch_b) / max(
                         split_skew_dist_branch_a, split_skew_dist_branch_b)
