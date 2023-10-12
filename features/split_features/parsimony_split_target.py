@@ -81,7 +81,6 @@ grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
 
 loo_selection = pd.read_csv(os.path.join(grandir, "data/loo_selection.csv"), )
 filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
-filenames = filenames[:100]
 for file in filenames:
     if not os.path.exists(os.path.join(grandir, "data/raw/reference_tree", file)):
         print("Not found " + file)
