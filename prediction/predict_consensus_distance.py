@@ -39,7 +39,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     #pred topo
     df_difference = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "cons_comp_target.csv")) #1000
-    df_difference.drop(axis=1, columns=["quartet"], inplace=True)
+    #df_difference.drop(axis=1, columns=["quartet"], inplace=True)
 
 
     # pred cons
