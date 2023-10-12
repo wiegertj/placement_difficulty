@@ -34,8 +34,10 @@ for file in filenames:
         print("Not found " + file)
         filenames.remove(file)
 results = []
-
+counter = 0
 for file in filenames:
+    counter += 1
+    print(counter)
     trees_pars = os.path.join(grandir, "scripts",
                  file.replace(".newick","") + "_parsimony_1000_nomodel.raxml.startTree")
 
@@ -110,7 +112,6 @@ for file in filenames:
                             if second_match and first_match:
                                     node_in_ml_tree = 1
                 results.append((dataset, node.name, node.support, node_in_ml_tree))
-    break
 
 result_df = pd.DataFrame(results, columns=["dataset", "parsBranchId", "pars_support_cons", "inML"])
 result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction.csv"))
