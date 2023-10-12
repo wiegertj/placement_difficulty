@@ -59,7 +59,7 @@ for file in filenames:
     consensus_path = os.path.join(grandir, "features/split_features",
                  file.replace(".newick","") + "_consensus1000nomodel_.raxml.consensusTreeMRE")
 
-    original_path = os.path.join(os.pardir, "data/raw/reference_tree",
+    original_path = os.path.join(grandir, "data/raw/reference_tree",
                  file)
 
     output_prefix = file.replace(".newick", "") + "_consensus1000nomodelsupport_"
