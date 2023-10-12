@@ -46,6 +46,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print("unique datasets: ")
     print(len(df_target["dataset"].unique()))
     df = df_msa.merge(df_target, on=["dataset"], how="inner")
+    print("unique datasets after msa: ")
+    print(len(df["dataset"].unique()))
     parsimony_features2 = pd.read_csv(
         os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features_no_model.csv"),
         usecols=lambda column: column != 'Unnamed: 0')
