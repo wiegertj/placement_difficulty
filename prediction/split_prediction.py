@@ -69,7 +69,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     print(df.columns)
     print(df.shape)
-    df.drop(columns=["irs_left", "irs_right"],axis=1, inplace=True)
     df.to_csv(os.path.join(os.pardir, "data/processed/features/split_features/all_data.csv"))
 
     target = "inML"
