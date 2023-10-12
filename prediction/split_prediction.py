@@ -5,6 +5,7 @@ import shap
 import lightgbm as lgb
 import os
 import sklearn.metrics as metrics
+from scipy.stats import entropy
 
 import optuna
 import numpy as np
@@ -46,6 +47,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     parsimony_features2 = pd.read_csv(
         os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features_no_model.csv"),
         usecols=lambda column: column != 'Unnamed: 0')
+    difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty_new.csv")
+    difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
+    difficulties_df = difficulties_df.drop_duplicates(subset=['name'], keep='first')
+    difficulties_df["dataset"] = difficulties_df["name"].str.replace(".phy", "")
+    difficulties_df = difficulties_df[["dataset", "difficulty"]]
+
+    df = df.merge(difficulties_df, on=["dataset"], how="inner")
     df = df.merge(parsimony_features2, on=["dataset"], how="inner")
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     print(df.columns)
@@ -166,6 +174,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     # Convert probabilities to class labels (binary classification)
     y_pred_binary = (y_pred > 0.5).astype(int)
+    entropy_values = [entropy([p, 1 - p], base=2) for p in y_pred]
 
     # Calculate classification metrics
     accuracy = accuracy_score(y_test, y_pred_binary)
@@ -222,7 +231,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     X_test_["prediction"] = y_pred
     X_test_["support"] = y_test
-    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
+    X_test_["uncertainty"] = entropy_values
+    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results_classifier" + name + ".csv"))
 
     if shapley_calc:
         # X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
