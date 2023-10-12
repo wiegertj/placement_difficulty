@@ -283,7 +283,6 @@ for file in filenames:
         print("Not found support")
         not_counter += 1
         print(not_counter)
-    break
 
 result_df = pd.DataFrame(results, columns=["dataset", "parsBranchId", "pars_support_cons", "inML", "level",
                                            "min_pars_supp_parents_w", "max_pars_supp_parents_w",
