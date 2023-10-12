@@ -38,6 +38,7 @@ for file in filenames:
         "--consense",
         f"--tree {trees_pars}",
         "--redo",
+        "--strict",
         f"--prefix {output_prefix}"
     ]
 
