@@ -113,6 +113,6 @@ for file in filenames:
     break
 
 result_df = pd.DataFrame(results, columns=["dataset", "parsBranchId", "pars_support_cons", "inML"])
-result_df.to_csv(os.path.join(grandir, "data/processed/final/loo_selection.csv"))
+result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction.csv"))
 
 
