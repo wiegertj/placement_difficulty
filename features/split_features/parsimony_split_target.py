@@ -57,7 +57,8 @@ for file in filenames:
         "--consense MRE",
         f"--tree {trees_pars}",
         "--redo",
-        f"--prefix {output_prefix}"
+        f"--prefix {output_prefix}",
+        "--log ERROR"
     ]
 
     subprocess.run(" ".join(raxml_command), shell=True)
@@ -77,8 +78,8 @@ for file in filenames:
                      f"--tree {consensus_path}",
                      f"--bs-trees {trees_pars}",
                      "--redo",
-                     f"--prefix {output_prefix}"],
-                     "--log ERROR"
+                     f"--prefix {output_prefix}"
+                     "--log ERROR"]
 
     subprocess.run(" ".join(raxml_command), shell=True)
 
