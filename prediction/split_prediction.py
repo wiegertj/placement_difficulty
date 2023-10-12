@@ -135,10 +135,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
+            val_preds_binary = (y_pred > 0.5).astype(int)
+
             # val_score = mean_squared_error(y_val, val_preds)
             # val_score = math.sqrt(val_score)
             print(val_preds)
-            val_score = f1(y_val, val_preds)
+            val_score = f1_score(y_val, val_preds_binary)
             val_scores.append(val_score)
 
         return np.mean(val_scores)  # sum(val_scores) / len(val_scores) #median?
