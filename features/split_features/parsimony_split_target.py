@@ -91,6 +91,39 @@ not_counter = 0
 for file in filenames:
     counter += 1
     print(counter)
+
+
+    if counter % 100 == 0:
+        result_df = pd.DataFrame(results, columns=["dataset", "parsBranchId", "pars_support_cons", "inML", "level",
+                                                   "min_pars_supp_parents_w", "max_pars_supp_parents_w",
+                                                   "mean_pars_supp_parents_w",
+                                                   "std_pars_supp_parents_w", "skw_pars_supp_parents_w",
+                                                   "min_pars_supp_parents", "max_pars_supp_parents",
+                                                   "mean_pars_supp_parents",
+                                                   "std_pars_supp_parents", "skw_pars_supp_parents",
+                                                   "min_pars_supp_child_w", "max_pars_supp_child_w",
+                                                   "mean_pars_supp_child_w",
+                                                   "std_pars_supp_child_w", "skw_pars_supp_child_w",
+                                                   "min_pars_supp_child", "max_pars_supp_child", "mean_pars_supp_child",
+                                                   "std_pars_supp_child", "skw_pars_supp_child",
+                                                   "irs_mean_right", "irs_mean_left", "irs_min_left", "irs_min_right",
+                                                   "irs_max_left", "irs_max_right", "irs_std_left", "irs_std_right",
+                                                   "irs_skw_left", "irs_skw_right",
+                                                   "split_len_a_b", "split_min_entropy_diff", "split_max_entropy_diff",
+                                                   "split_std_entropy_diff",
+                                                   "split_mean_entropy_diff", "split_skw_entropy_diff",
+                                                   "split_min_ratio_topo", "split_max_ratio_topo",
+                                                   "split_std_ratio_topo", "split_mean_ratio_topo",
+                                                   "split_skw_ratio_topo", "split_min_ratio_branch",
+                                                   "split_max_ratio_branch", "split_max_ratio_branch",
+                                                   "split_mean_ratio_branch",
+                                                   "split_skw_ratio_branch", "split_std_ratio_branch"
+                                                   ])
+        result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction.csv"))
+
+
+
+
     trees_pars = os.path.join(grandir, "scripts",
                               file.replace(".newick", "") + "_parsimony_1000_nomodel.raxml.startTree")
 
