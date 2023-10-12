@@ -19,8 +19,50 @@ from Bio import SeqIO
 from scipy.stats import skew
 
 
-def get_bipartition(node):
+def traverse_and_add_edges(node_, graph):
+    for child in node_.children:
+        edge_weight = node_.get_distance(child)
+        graph.add_edge(node_.name, child.name, weight=edge_weight)
+        traverse_and_add_edges(child, graph)
+    return graph
 
+
+def height(node):
+    if node is None:
+        return 0
+    if node.is_leaf():
+        return 1
+    return max(height(node.children[0]), height(node.children[1])) + 1
+
+
+def imbalance_ratio(node):
+    if node is None:
+        return 0
+    try:
+        left_height = height(node.children[0])
+        right_height = height(node.children[1])
+    except IndexError:
+        return 0
+    return max(left_height, right_height) / min(left_height, right_height)
+
+
+def compute_tree_imbalance(tree):
+    imbalance_values = []
+
+    def collect_imbalance(node):
+        if node is None:
+            return
+        if not node.is_leaf():
+            ir = imbalance_ratio(node)
+            imbalance_values.append(ir)
+            for child in node.children:
+                collect_imbalance(child)
+
+    collect_imbalance(tree)
+    return imbalance_values
+
+
+def get_bipartition(node):
     if not node.is_leaf():
         try:
             left_children = sorted([leaf.name for leaf in node.children[0].iter_leaves()])
@@ -30,6 +72,7 @@ def get_bipartition(node):
         except IndexError:
             return None
     return None
+
 
 grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
 
@@ -47,7 +90,7 @@ for file in filenames:
     counter += 1
     print(counter)
     trees_pars = os.path.join(grandir, "scripts",
-                 file.replace(".newick","") + "_parsimony_1000_nomodel.raxml.startTree")
+                              file.replace(".newick", "") + "_parsimony_1000_nomodel.raxml.startTree")
 
     if not os.path.exists(trees_pars):
         continue
@@ -66,15 +109,13 @@ for file in filenames:
 
     subprocess.run(" ".join(raxml_command), shell=True)
 
-
     consensus_path = os.path.join(grandir, "features/split_features",
-                 file.replace(".newick","") + "_consensus1000nomodel_.raxml.consensusTreeMRE")
+                                  file.replace(".newick", "") + "_consensus1000nomodel_.raxml.consensusTreeMRE")
 
     original_path = os.path.join(grandir, "data/raw/reference_tree",
-                 file)
+                                 file)
 
     output_prefix = file.replace(".newick", "") + "_consensus1000nomodelsupport_"
-
 
     raxml_command = ["raxml-ng",
                      "--support",
@@ -86,8 +127,7 @@ for file in filenames:
 
     subprocess.run(" ".join(raxml_command), shell=True)
 
-
-    support_path = consensus_path.replace("consensusTreeMRE", "support").replace("nomodel","nomodelsupport")
+    support_path = consensus_path.replace("consensusTreeMRE", "support").replace("nomodel", "nomodelsupport")
 
     with open(original_path, "r") as original_file:
         original_str = original_file.read()
@@ -100,13 +140,20 @@ for file in filenames:
             phylo_tree = Tree(tree_str)
 
         branch_id_counter = 0
+        branch_id_counter_ref = 0
+        phylo_tree_reference = phylo_tree.copy()
+        for node in phylo_tree_reference.traverse():
+            branch_id_counter_ref += 1
+            if not node.is_leaf():
+                node.__setattr__("name", branch_id_counter_ref)
+
         for node in phylo_tree.traverse():
             branch_id_counter += 1
             if not node.is_leaf():
                 node.__setattr__("name", branch_id_counter)
                 node_in_ml_tree = 0
 
-            # Check if bipartition exists in ML tree as label
+                # Check if bipartition exists in ML tree as label
                 bipartition = get_bipartition(node)
                 level = node.get_distance(phylo_tree, topology_only=True)
                 if bipartition is not None:
@@ -120,7 +167,7 @@ for file in filenames:
                             if (bipartition[1] == bipartition_ml[0]) or (bipartition[1] == bipartition_ml[1]):
                                 second_match = True
                             if second_match and first_match:
-                                    node_in_ml_tree = 1
+                                node_in_ml_tree = 1
 
                 childs_inner = [node_child for node_child in node.traverse() if not node_child.is_leaf()]
                 parents_inner = node.get_ancestors()
@@ -201,6 +248,25 @@ for file in filenames:
                     std_pars_supp_parents_w = np.std(weighted_supports_parents)
                     skw_pars_supp_parents_w = skew(weighted_supports_parents)
 
+                phylo_tree_tmp = phylo_tree_reference.copy()  # copy reference
+                found_nodes = phylo_tree_tmp.search_nodes(name=node.name)
+
+                left_subtree = found_nodes[0].detach()
+                right_subtree = phylo_tree_tmp
+
+                irs_left = compute_tree_imbalance(left_subtree)
+                irs_right = compute_tree_imbalance(right_subtree)
+                irs_mean_left = statistics.mean(irs_left)
+                irs_mean_right = statistics.mean(irs_right)
+                irs_min_left = min(irs_left)
+                irs_min_right = min(irs_right)
+                irs_max_left = max(irs_left)
+                irs_max_right = max(irs_right)
+                irs_std_left = np.std(irs_left)
+                irs_std_right = np.std(irs_right)
+                irs_skw_left = skew(irs_left)
+                irs_skw_right = skew(irs_right)
+
                 results.append((dataset, node.name, node.support, node_in_ml_tree, level,
                                 min_pars_supp_parents_w, max_pars_supp_parents_w, mean_pars_supp_parents_w,
                                 std_pars_supp_parents_w, skw_pars_supp_parents_w,
@@ -209,15 +275,27 @@ for file in filenames:
                                 min_pars_supp_child_w, max_pars_supp_child_w, mean_pars_supp_child_w,
                                 std_pars_supp_child_w, skw_pars_supp_child_w,
                                 min_pars_supp_child, max_pars_supp_child, mean_pars_supp_child,
-                                std_pars_supp_child, skw_pars_supp_child
+                                std_pars_supp_child, skw_pars_supp_child,
+                                irs_left, irs_right, irs_mean_right, irs_mean_left, irs_min_left, irs_min_right,
+                                irs_max_left, irs_max_right, irs_std_left, irs_std_right, irs_skw_left, irs_skw_right
                                 ))
     else:
         print("Not found support")
         not_counter += 1
         print(not_counter)
+    break
 
-
-result_df = pd.DataFrame(results, columns=["dataset", "parsBranchId", "pars_support_cons", "inML", "level"])
+result_df = pd.DataFrame(results, columns=["dataset", "parsBranchId", "pars_support_cons", "inML", "level",
+                                           "min_pars_supp_parents_w", "max_pars_supp_parents_w",
+                                           "mean_pars_supp_parents_w",
+                                           "std_pars_supp_parents_w", "skw_pars_supp_parents_w",
+                                           "min_pars_supp_parents", "max_pars_supp_parents", "mean_pars_supp_parents",
+                                           "std_pars_supp_parents", "skw_pars_supp_parents",
+                                           "min_pars_supp_child_w", "max_pars_supp_child_w", "mean_pars_supp_child_w",
+                                           "std_pars_supp_child_w", "skw_pars_supp_child_w",
+                                           "min_pars_supp_child", "max_pars_supp_child", "mean_pars_supp_child",
+                                           "std_pars_supp_child", "skw_pars_supp_child",
+"irs_left", "irs_right", "irs_mean_right", "irs_mean_left", "irs_min_left", "irs_min_right",
+                                "irs_max_left", "irs_max_right", "irs_std_left", "irs_std_right", "irs_skw_left", "irs_skw_right"
+                                           ])
 result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction.csv"))
-
-
