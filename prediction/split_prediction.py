@@ -51,6 +51,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     parsimony_features2 = pd.read_csv(
         os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features_no_model.csv"),
         usecols=lambda column: column != 'Unnamed: 0')
+    print("unique datasets after topo: ")
+    print(len(df["dataset"].unique()))
     difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty_new.csv")
     difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
     difficulties_df = difficulties_df.drop_duplicates(subset=['name'], keep='first')
