@@ -319,7 +319,7 @@ for file in filenames:
 
                 split_min_dist_branch_b = min(list_b_dist_branch)
                 split_max_dist_branch_b = max(list_b_dist_branch)
-                split_mean_dist_branch_b = mean(list_b_dist_branch)
+                split_mean_dist_branch_b = statistics.mean(list_b_dist_branch)
                 split_std_dist_branch_b = np.std(list_b_dist_branch)
                 split_skew_dist_branch_b = skew(list_b_dist_branch)
 
