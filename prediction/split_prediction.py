@@ -138,19 +138,19 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             # val_score = mean_squared_error(y_val, val_preds)
             # val_score = math.sqrt(val_score)
             print(val_preds)
-            val_score = log_loss(y_val, val_preds)
+            val_score = f1(y_val, val_preds)
             val_scores.append(val_score)
 
         return np.mean(val_scores)  # sum(val_scores) / len(val_scores) #median?
 
-    study = optuna.create_study(direction='minimize')
+    study = optuna.create_study(direction='maximize')
     study.optimize(objective, n_trials=10)
 
     best_params = study.best_params
     best_score = study.best_value
 
     print(f"Best Params: {best_params}")
-    print(f"Best MAPE training: {best_score}")
+    print(f"Best F1 training: {best_score}")
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
