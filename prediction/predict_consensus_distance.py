@@ -85,6 +85,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
    # df_difference = df_difference.merge(df_difference2, on=["dataset"], how="inner")
     df = df_msa.merge(df_difference, on=["dataset"], how="inner")
     df = df.merge(parsimony_features2, on=["dataset"], how="inner")
+    df.to_csv(os.path.join(os.pardir, "data/processed/final/consensus_predict_final.csv"))
     print("Median Support: ")
     #print(df["quartet"].median())
     df.columns = df.columns.str.replace(':', '_')
