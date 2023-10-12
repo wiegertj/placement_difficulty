@@ -55,6 +55,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     df = df.merge(difficulties_df, on=["dataset"], how="inner")
     df = df.merge(parsimony_features2, on=["dataset"], how="inner")
+    value_counts = df['inML'].value_counts()
+    print(value_counts)
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     print(df.columns)
     print(df.shape)
