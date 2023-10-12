@@ -125,7 +125,7 @@ for file in filenames:
         print(not_counter)
 
 
-result_df = pd.DataFrame(results, columns=["dataset", "parsBranchId", "pars_support_cons", "inML"])
+result_df = pd.DataFrame(results, columns=["dataset", "parsBranchId", "pars_support_cons", "inML", "level"])
 result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction.csv"))
 
 
