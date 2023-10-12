@@ -35,10 +35,9 @@ for file in filenames:
 
     raxml_command = [
         "raxml-ng",
-        "--consense",
+        "--consense MRE",
         f"--tree {trees_pars}",
         "--redo",
-        "--strict",
         f"--prefix {output_prefix}"
     ]
 
