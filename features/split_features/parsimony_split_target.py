@@ -30,7 +30,7 @@ def get_bipartition(node):
 
 grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
 
-loo_selection = pd.read_csv(os.path.join(grandir, "data/loo_selection.csv"))
+loo_selection = pd.read_csv(os.path.join(grandir, "data/loo_selection.csv"), )
 filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
 
 for file in filenames:
@@ -39,6 +39,7 @@ for file in filenames:
         filenames.remove(file)
 results = []
 counter = 0
+not_counter = 0
 for file in filenames:
     counter += 1
     print(counter)
@@ -76,7 +77,8 @@ for file in filenames:
                      f"--tree {consensus_path}",
                      f"--bs-trees {trees_pars}",
                      "--redo",
-                     f"--prefix {output_prefix}"]
+                     f"--prefix {output_prefix}"],
+                     "--log ERROR"
 
     subprocess.run(" ".join(raxml_command), shell=True)
 
@@ -102,7 +104,7 @@ for file in filenames:
 
             # Check if bipartition exists in ML tree as label
                 bipartition = get_bipartition(node)
-
+                level = node.get_distance(phylo_tree, topology_only=True)
                 if bipartition is not None:
                     for node_ml in phylo_tree_original.traverse():
                         bipartition_ml = get_bipartition(node_ml)
@@ -115,7 +117,12 @@ for file in filenames:
                                 second_match = True
                             if second_match and first_match:
                                     node_in_ml_tree = 1
-                results.append((dataset, node.name, node.support, node_in_ml_tree))
+                results.append((dataset, node.name, node.support, node_in_ml_tree, level))
+    else:
+        print("Not found support")
+        not_counter += 1
+        print(not_counter)
+
 
 result_df = pd.DataFrame(results, columns=["dataset", "parsBranchId", "pars_support_cons", "inML"])
 result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction.csv"))
