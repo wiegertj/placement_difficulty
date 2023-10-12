@@ -39,7 +39,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     #pred topo
     df_difference = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "cons_comp_target.csv")) #1000
-    df_difference.drop(axis=1, columns=["nrf"], inplace=True)
+    df_difference.drop(axis=1, columns=["quartet"], inplace=True)
 
 
     # pred cons
@@ -60,7 +60,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     # Assuming you have a DataFrame called 'df_difference'
 
     # Extract the "nrf" column
-    nrf_values = df_difference["quartet"]
+    nrf_values = df_difference["nRF"]
 
     # Create a histogram
     plt.hist(nrf_values, bins=20, edgecolor='k')  # You can adjust the number of bins as needed
@@ -96,7 +96,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
 
 
-    target = "quartet"
+    target = "nRF"
 
     #X = df.drop(axis=1, columns=target)
     #y = df[target]
