@@ -17,11 +17,15 @@ from ete3 import Tree
 from Bio import SeqIO
 
 def get_bipartition(node):
+
     if not node.is_leaf():
-        left_children = sorted([leaf.name for leaf in node.children[0].iter_leaves()])
-        right_children = sorted([leaf.name for leaf in node.children[1].iter_leaves()])
-        bipartition = (left_children, right_children)
-        return bipartition
+        try:
+            left_children = sorted([leaf.name for leaf in node.children[0].iter_leaves()])
+            right_children = sorted([leaf.name for leaf in node.children[1].iter_leaves()])
+            bipartition = (left_children, right_children)
+            return bipartition
+        except IndexError:
+            return None
     return None
 
 grandir = os.path.join(os.getcwd(), os.pardir, os.pardir)
