@@ -43,6 +43,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"), usecols=lambda column: column != 'Unnamed: 0')
     df_target = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "split_prediction.csv"), usecols=lambda column: column != 'Unnamed: 0')
     df = df_msa.merge(df_target, on=["dataset"], how="inner")
+    parsimony_features2 = pd.read_csv(
+        os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features_no_model.csv"),
+        usecols=lambda column: column != 'Unnamed: 0')
+    df = df.merge(parsimony_features2, on=["dataset"], how="inner")
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     print(df.columns)
     print(df.shape)
