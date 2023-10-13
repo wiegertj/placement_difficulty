@@ -59,9 +59,10 @@ for test_set in all_dataset:
             if not node.is_leaf():
                 node.__setattr__("name", branch_id_counter_ref)
                 matching_row = df_test[df_test['parsBranchId'] == node.name]
-                inML = matching_row["inML"].values[0]
+                inML = int(matching_row["inML"].values[0])
                 if inML == 1:
                     print("added")
+                    print(matching_row["inML"])
                     print(matching_row)
 
                     true_bipartitions.append(get_bipartition(node))
