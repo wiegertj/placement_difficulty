@@ -111,18 +111,18 @@ for file in filenames:
                                                    "irs_skw_left", "irs_skw_right"
 
                                                    ])
-        result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction.csv"))
+        result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction_10000.csv"))
 
 
 
 
     trees_pars = os.path.join(grandir, "scripts",
-                              file.replace(".newick", "") + "_parsimony_1000_nomodel.raxml.startTree")
+                              file.replace(".newick", "") + "_parsimony_10000_nomodel.raxml.startTree")
 
     if not os.path.exists(trees_pars):
         continue
 
-    output_prefix = file.replace(".newick", "") + "_consensus1000nomodel_"
+    output_prefix = file.replace(".newick", "") + "_consensus10000nomodel_"
     dataset = file.replace(".newick", "")
 
     raxml_command = [
@@ -137,7 +137,7 @@ for file in filenames:
     subprocess.run(" ".join(raxml_command), shell=True)
 
     consensus_path = os.path.join(grandir, "features/split_features",
-                                  file.replace(".newick", "") + "_consensus1000nomodel_.raxml.consensusTreeMRE")
+                                  file.replace(".newick", "") + "_consensus10000nomodel_.raxml.consensusTreeMRE")
 
     original_path = os.path.join(grandir, "data/raw/reference_tree",
                                  file)
@@ -145,7 +145,7 @@ for file in filenames:
     msa_path = os.path.join(grandir, "data/raw/msa",
                                  file.replace(".newick", "_reference.fasta"))
 
-    output_prefix = file.replace(".newick", "") + "_consensus1000nomodelsupport_"
+    output_prefix = file.replace(".newick", "") + "_consensus10000nomodelsupport_"
 
     raxml_command = ["raxml-ng",
                      "--support",
@@ -363,4 +363,4 @@ result_df = pd.DataFrame(results, columns=["dataset", "parsBranchId", "pars_supp
                                 "irs_max_left", "irs_max_right", "irs_std_left", "irs_std_right", "irs_skw_left", "irs_skw_right",
 
                                            ])
-result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction.csv"))
+result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction_10000.csv"))
