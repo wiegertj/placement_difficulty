@@ -126,13 +126,13 @@ for test_set in all_dataset:
             print(quartet_distance)
 
         results = [(test_set, nrf_distance, quartet_distance)]
-        df = pd.DataFrame(results, columns=["dataset", "nrf", "quartet"])
+        df_tmp = pd.DataFrame(results, columns=["dataset", "nrf", "quartet"])
         if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                                            "cons_comp_target_best_pars.csv")):
-            df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+            df_tmp.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
                                                 "cons_comp_target_best_pars.csv")), index=False)
         else:
-            df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+            df_tmp.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
                                    "cons_comp_target_best_pars.csv"),
                       index=False,
                       mode='a', header=False)
