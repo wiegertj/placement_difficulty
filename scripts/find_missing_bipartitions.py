@@ -122,11 +122,13 @@ with open(trees_pars, "r") as tree_file:
                             for taxon in taxon_namespace:
                                 true_bipartitions.append({taxon})
 
-                            # Convert true bipartitions to Newick format
-                            newick_tree = "(" + ",".join(bipartitions) + ");"
 
-                            # Print the Newick tree (optional)
-                            print(newick_tree)
+                            def bipartition_to_newick(bipartition):
+                                return "(".join(",".join(taxon for taxon in cluster) for cluster in bipartition) + ");"
+
+
+                            # Join the bipartitions in Newick format
+                            newick_tree = "(" + ",".join(bipartition_to_newick(bp) for bp in bipartitions) + ");"
 
                             # Store the Newick tree in a file named "test.txt"
                             with open("test.txt", "w") as tree_file:
