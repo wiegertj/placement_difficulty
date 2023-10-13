@@ -30,7 +30,7 @@ false_bipartitions = []
 
 with open(consensus_path, "r") as cons:
     tree_str = cons.read()
-    phylo_tree = Tree(tree_str)
+    phylo_tree = Tree.get(data=tree_str, schema="newick")
     branch_id_counter_ref = 0
     for node in phylo_tree.traverse():
         branch_id_counter_ref += 1
