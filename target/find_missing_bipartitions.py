@@ -63,8 +63,6 @@ for test_set in all_dataset:
                 if inML == 1:
                     true_bipartitions.append(get_bipartition(node))
                 else:
-                    print("not added")
-                    print(matching_row)
                     false_bipartitions.append(get_bipartition(node))
 
     with open(trees_pars, "r") as tree_file:
