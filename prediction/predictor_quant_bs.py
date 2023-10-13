@@ -249,16 +249,53 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     plt.title('Feature Importances')
     plt.tight_layout()
 
-
-
+    0
+    parsimony_boot_support
+    1.000000
+    1
+    parsimony_support
+    0.030271
+    3
+    length_relative
+    0.008232
+    2
+    avg_subst_freq
+    0.007949
+    4
+    length
+    0.005446
+    6
+    max_subst_freq
+    0.005076
+    7
+    skw_pars_bootsupp_tree
+    0.004216
+    5
+    avg_rel_rf_boot
+    0.004120
+    9
+    bl_ratio
+    0.003889
+    10
+    max_pars_bootsupp_child_w
+    0.003774
+    14
+    std_pars_bootsupp_parents
+    0.002809
+    8
+    cv_subst_freq
+    0.002762
+    12
+    mean_pars_bootsupp_parents
+    0.002622
 
     #####################################################################################################################
     #X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
     #X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
     X_test = X_test[["parsimony_boot_support", "parsimony_support", "avg_subst_freq",
-             "length", "max_subst_freq", 'group']]
+             "length", "length_relative","max_subst_freq", 'group', "avg_rel_rf_boot"]]
     X_train = X_train[["parsimony_boot_support", "parsimony_support", "avg_subst_freq",
-             "length", "max_subst_freq", 'group']]
+             "length", "length_relative","max_subst_freq", 'group', "avg_rel_rf_boot"]]
 
     def objective_lower_bound(trial):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
