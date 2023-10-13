@@ -83,10 +83,18 @@ def are_bipartitions_compatible(bipartition1, bipartition2):
     bip1 = Bipartition(bitmask=bitmask_str1)
     bip2 = Bipartition(bitmask=bitmask_str2)
 
-    print(filler)
+    # Create Bipartition objects for m1 and m2
+    bip1 = Bipartition(bitmask=bitmask_str1)
+    bip2 = Bipartition(bitmask=bitmask_str2)
+
+    # Create Bipartition object for the filler
+    filler_bipartition = Bipartition(bitmask="".join(filler))
 
     # Check compatibility
-    compatible = Bipartition.is_compatible_bitmasks(bitmask1, bitmask2, list(map(int, filler)))
+    compatible = Bipartition.is_compatible_bitmasks(bip1, bip2, filler_bipartition)
+
+
+    # Check compatibility
 
     print("Bipartition 1:", bip1)
     print("Bipartition 2:", bip2)
