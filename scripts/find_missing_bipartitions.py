@@ -70,14 +70,14 @@ def are_bipartitions_compatible(bipartition1, bipartition2):
 
     bitmask1 = create_bitmask(bipartition1, taxon_namespace)
     bitmask2 = create_bitmask(bipartition2, taxon_namespace)
-
-    filler = []
-    for i in len(bitmask1)-1:
-        if bitmask2[i] == 0 and bitmask1[i] == 0:
-            filler[i] = 1
-
     bitmask_str1 = "".join(map(str, bitmask1))
     bitmask_str2 = "".join(map(str, bitmask2))
+    filler = []
+    for i in len(bitmask_str1)-1:
+        if bitmask_str2[i] == 0 and bitmask_str1[i] == 0:
+            filler[i] = 1
+
+
     print(bitmask_str1)
     print(bitmask_str2)
     # Create Bipartition objects
