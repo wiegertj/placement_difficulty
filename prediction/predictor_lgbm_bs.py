@@ -39,12 +39,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print("Median Support: ")
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
-    df = df[["dataset", "support", "branchId", "parsimony_boot_support", "parsimony_support", "avg_subst_freq",
-             "length", "max_subst_freq", "avg_rel_rf_boot", "length_relative", "max_pars_supp_child_w",
-             "split_std_ratio_branch", "split_std_entropy_diff", "cv_subst_freq", "split_std_ratio_topo",
-             "min_pars_supp_child_w", "mean_pars_bootsupp_parents", "bl_ratio", "std_pars_bootsupp_parents",
-             "mean_clo_sim_ratio", "mean_pars_supp_parents_w", "split_mean_ratio_branch"
-             ]]
+
 
     print(df.columns)
     print(df.shape)
@@ -160,7 +155,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return np.mean(val_scores)#sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=10)
+    study.optimize(objective, n_trials=50)
 
     best_params = study.best_params
     best_score = study.best_value
