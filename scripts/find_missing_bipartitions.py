@@ -88,7 +88,7 @@ with open(trees_pars, "r") as tree_file:
 
 
     original_path = os.path.join(os.pardir, "data/raw/reference_tree",
-                                 test_set)
+                                 test_set + ".newick")
 
     command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", "-v", os.path.abspath(test_set + "best_pars_tree.newick"),
                os.path.abspath(original_path)]
