@@ -98,7 +98,9 @@ with open(trees_pars, "r") as tree_file:
 
         bipartitions = []
         for node in tree.traverse():
-            bipartitions.append(get_bipartition(node))
+            bipar_tmp = get_bipartition(node)
+            if bipar_tmp is not None:
+                bipartitions.append(get_bipartition(node))
         print(bipartitions)
 
         for bipar in bipartitions:
