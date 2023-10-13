@@ -57,9 +57,10 @@ with open(trees_pars, "r") as tree_file:
         tree = Tree(line)
 
         # Extract bipartitions from the tree
-        bipartitions = set()
+
+        bipartitions = []
         for node in tree:
-            bipartitions.add(frozenset(node.get_leaf_names()))
+            bipartitions.append(get_bipartition(node))
         print(bipartitions)
 
         # Check compatibility and add to the true list if criteria met
