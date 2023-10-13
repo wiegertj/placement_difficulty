@@ -13,6 +13,7 @@ trees_pars = os.path.join(os.pardir, "scripts",
 def create_bitmask(bipartition, taxon_namespace):
     # Create an empty bitmask with 0s
     bitmask = [0] * len(taxon_namespace)
+    bipartition = bipartition[0]
 
     # Set bits to 1 for taxa on one side of the bipartition
     for taxon in bipartition:
