@@ -107,11 +107,7 @@ with open(trees_pars, "r") as tree_file:
         original_newick_tree = original_file.read()
         original_tree = ete3.Tree(original_newick_tree)
 
-        with open(consensus_path, 'r') as consensus_file:
-            consensus_newick_tree = consensus_file.read()
-            consensus_tree = ete3.Tree(consensus_newick_tree)
-
-        results_distance = original_tree.compare(consensus_tree, unrooted=True)
+        results_distance = original_tree.compare(best_tree, unrooted=True)
 
         nrf_distance = results_distance["norm_rf"]
 
