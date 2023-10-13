@@ -30,6 +30,7 @@ df = pd.read_csv(os.path.join(os.pardir, "data/processed/final/split_prediction.
 all_dataset = df["dataset"].unique().tolist()
 
 for test_set in all_dataset:
+    print(test_set)
 
     trees_pars = os.path.join(os.pardir, "scripts",
                               test_set + "_parsimony_1000_nomodel.raxml.startTree")
