@@ -22,7 +22,6 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, m
 from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
 
-
 def quantile_loss(y_true, y_pred, quantile):
     """
 
@@ -39,6 +38,7 @@ def quantile_loss(y_true, y_pred, quantile):
     """
     residual = y_true - y_pred
     return mean(np.maximum(quantile * residual, (quantile - 1) * residual))
+
 
 
 def MBE(y_true, y_pred):
@@ -62,7 +62,7 @@ def MBE(y_true, y_pred):
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
 
-    df = df[["parsimony_boot_support",
+    df = df[["dataset", "branchId", "support","parsimony_boot_support",
              "parsimony_support",
              "avg_subst_freq",
              "length_relative",
@@ -85,10 +85,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
              "mean_clo_sim_ratio",
              "depth_relative",
              "min_pars_bootsupp_child_w"]]
-    # df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
-    # df_diff["name"] = df_diff["name"].str.replace(".phy", "")
-    # df = df.merge(df_diff, left_on="dataset", right_on="name", how="inner")
-    # df.drop(columns=["datatype", "name"], axis=1, inplace=True)
+
+
+
+    #df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
+    #df_diff["name"] = df_diff["name"].str.replace(".phy", "")
+    #df = df.merge(df_diff, left_on="dataset", right_on="name", how="inner")
+    #df.drop(columns=["datatype", "name"], axis=1, inplace=True)
 
     df.fillna(-1, inplace=True)
     df.replace([np.inf, -np.inf], -1, inplace=True)
@@ -112,8 +115,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test = test.drop(axis=1, columns=target)
     y_test = test[target]
 
-    # X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, test_size=0.2,
-    #                                                                              random_state=42)
+    #X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, test_size=0.2,
+     #                                                                              random_state=42)
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
@@ -140,11 +143,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     if not rfe:
         X_train = X_train.drop(axis=1, columns=['dataset', 'branchId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'branchId'])
-
     ######################################
 
     def objective(trial):
-        # callbacks = [LightGBMPruningCallback(trial, 'l1')]
+        #callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
             'objective': 'regression',
@@ -154,14 +156,14 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
+            #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.1),
             'bagging_freq': 0,
             'verbosity': -1
 
-            # 'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
+            #'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
         }
 
         val_scores = []
@@ -174,14 +176,14 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
-            model = lgb.train(params, train_data)  # , valid_sets=[val_data])
+            model = lgb.train(params, train_data)#, valid_sets=[val_data])
             val_preds = model.predict(X_val)
-            # val_score = mean_squared_error(y_val, val_preds)
-            # val_score = math.sqrt(val_score)
+            #val_score = mean_squared_error(y_val, val_preds)
+            #val_score = math.sqrt(val_score)
             val_score = mean_absolute_error(y_val, val_preds)
             val_scores.append(val_score)
 
-        return np.median(val_scores)  # sum(val_scores) / len(val_scores) #median?
+        return np.median(val_scores)#sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='minimize')
     study.optimize(objective, n_trials=100)
@@ -215,6 +217,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mape = median_absolute_error(y_test, y_pred_median)
     print(f"MdAE on test set: {mape}")
 
+
     residuals = y_test - y_pred_median
 
     plt.scatter(y_pred_median, residuals)
@@ -246,20 +249,23 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     plt.title('Feature Importances')
     plt.tight_layout()
 
+
+
+
     #####################################################################################################################
-    # X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
-    # X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
+    #X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
+    #X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
     X_test = X_test[["parsimony_boot_support", "parsimony_support", "avg_subst_freq",
-                     "length", "max_subst_freq", 'group']]
+             "length", "max_subst_freq", 'group']]
     X_train = X_train[["parsimony_boot_support", "parsimony_support", "avg_subst_freq",
-                       "length", "max_subst_freq", 'group']]
+             "length", "max_subst_freq", 'group']]
 
     def objective_lower_bound(trial):
-        # callbacks = [LightGBMPruningCallback(trial, 'l1')]
+        #callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
 
-            'alpha': trial.suggest_float('alpha', 0.0001, 0.1),
+            'alpha': trial.suggest_float('alpha', 0.0001,0.1),
 
         }
 
@@ -271,7 +277,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
 
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
-            val_data = lgb.Dataset(X_val, label=y_val)  # , reference=train_data)
+            val_data = lgb.Dataset(X_val, label=y_val)#, reference=train_data)
             # KEIN VALIDSETS?
             solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
@@ -297,8 +303,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Params: {best_params_lo}")
     print(f"Best MAPE training: {best_score_lo}")
 
-    model_lo = QuantileRegressor(**best_params_lo, quantile=0.125, solver=solver).fit(
-        X_train.drop(axis=1, columns=["group"]), y_train)
+    model_lo = QuantileRegressor(**best_params_lo, quantile=0.125, solver=solver).fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
     model_path = os.path.join(os.pardir, "data/processed/final", "low_model.pkl")
     with open(model_path, 'wb') as file:
@@ -306,7 +311,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     y_pred_lo = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
     quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.125)
-    print(f"Quantile Loss Holdout: {quant_loss_lo}")
+    print(f"Quantile Loss Holdout: {quant_loss_lo}" )
     mse = mean_squared_error(y_test, y_pred_lo)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
@@ -323,13 +328,16 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mbe = MBE(y_test, y_pred_lo)
     print(f"MBE on test set: {mbe}")
 
+
+
+
     ######################################################################################################
     def objective_higher_bound(trial):
         # callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
 
-            'alpha': trial.suggest_float('alpha', 0.0001, 0.1),
+            'alpha': trial.suggest_float('alpha', 0.0001,0.1),
 
         }
 
@@ -388,10 +396,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"MBE on test set: {mbe}")
 
     quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.125)
-    print(f"Quantile Loss Holdout: {quant_loss_lo}")
+    print(f"Quantile Loss Holdout: {quant_loss_lo}" )
 
     quant_loss_hi = quantile_loss(y_test, y_pred_hi, 0.875)
-    print(f"Quantile Loss Holdout: {quant_loss_hi}")
+    print(f"Quantile Loss Holdout: {quant_loss_hi}" )
 
     X_test_["prediction_median"] = y_pred_median
     X_test_["prediction_low"] = y_pred_lo
@@ -401,6 +409,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["pi_width"] = y_pred_hi - y_pred_lo
 
     X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_75_final.csv"))
-
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
