@@ -37,6 +37,8 @@ for test_set in all_dataset:
     df_test = df[df["dataset"] == test_set]
     if df_test.shape[0] == 0:
         print("Error, skipped")
+        continue
+
     print(df_test.shape)
 
     consensus_path = os.path.join(os.pardir, "features/split_features",
