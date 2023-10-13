@@ -26,7 +26,8 @@ def get_bipartition(node):
 # Read the true and false bipartitions
 
 
-df = pd.read_csv(os.path.join(os.pardir, "data/processed/final/split_prediction.csv"))
+df = pd.read_csv(os.path.join(os.pardir, "data/processed/features/split_features/all_data.csv"))
+
 all_dataset = df["dataset"].unique().tolist()
 
 for test_set in all_dataset:
