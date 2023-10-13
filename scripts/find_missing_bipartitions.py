@@ -74,8 +74,10 @@ def are_bipartitions_compatible(bipartition1, bipartition2):
     bitmask_str2 = "".join(map(str, bitmask2))
     filler = []
     for i in range(0, len(bitmask_str1)-1):
-        if bitmask_str2[i] == 0 and bitmask_str1[i] == 0:
+        if bitmask_str2[i] == str(0) and bitmask_str1[i] == str(0):
             filler[i] = 1
+        else:
+            filler[i] = 0
 
 
     print(bitmask_str1)
