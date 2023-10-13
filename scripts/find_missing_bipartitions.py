@@ -80,19 +80,16 @@ def are_bipartitions_compatible(bipartition1, bipartition2):
             filler.append(str(0))
     filler_str = "".join(map(str, filler))
 
-    # Create Bipartition objects
-    bip1 = Bipartition(bitmask=bitmask_str1)
-    bip2 = Bipartition(bitmask=bitmask_str2)
+    for bit1, bit2, fill_bit in zip(bitmask1, bitmask2, filler):
+        # If both bipartitions have the same taxon, they are incompatible
+        if bit1 == bit2 == 1:
+            return False
+        # If a taxon is in the fill bitmask but not in either bipartition, they are incompatible
+        if fill_bit == 1 and bit1 == bit2 == 0:
+            return False
+        # If no incompatibilities are found, the bipartitions are compatible
+    return True
 
-    print(filler)
-
-    # Check compatibility
-    compatible = Bipartition.is_compatible_bitmasks(int(bitmask_str1), int(bitmask_str2), int(filler_str))
-
-    print("Bipartition 1:", bip1)
-    print("Bipartition 2:", bip2)
-    print("Are they compatible?", compatible)
-    return compatible
 
 # Create a TaxonNamespace for your taxa
 # Read newick trees from the file and process them
