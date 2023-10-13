@@ -60,6 +60,7 @@ with open(trees_pars, "r") as tree_file:
         bipartitions = set()
         for node in tree:
             bipartitions.add(frozenset(node.get_leaf_names()))
+        print(bipartitions)
 
         # Check compatibility and add to the true list if criteria met
         add_to_true_list = True
