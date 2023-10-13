@@ -1,4 +1,5 @@
 import sys
+from math import inf
 
 from dendropy import Tree, TaxonNamespace
 import itertools
@@ -53,6 +54,8 @@ with open(consensus_path, "r") as cons:
 taxon_namespace = phylo_tree.get_leaf_names()
 
 with open(trees_pars, "r") as tree_file:
+    score_max = -float(inf)
+    best_tree = ""
     for line in tree_file:
 
         tree = Tree(line)
@@ -69,5 +72,8 @@ with open(trees_pars, "r") as tree_file:
                score += 1
             elif bipar in false_bipartitions:
                score -= 1
-
-        print("Score: " + str(score))
+        if score > score_max:
+            score_max = score
+            best_tree = line
+    print("Best Score: " + str(score_max))
+    print("Best Tree: " + str(line))
