@@ -48,6 +48,18 @@ with open(consensus_path, "r") as cons:
 
 # Define your threshold for compatibility (less than 50%)
 compatibility_threshold = 0.5
+def are_bipartitions_compatible(bipartition1, bipartition2):
+    # Check if bipartition1 is nested within bipartition2
+    if set(bipartition1).issubset(bipartition2):
+        return True
+    # Check if bipartition2 is nested within bipartition1
+    if set(bipartition2).issubset(bipartition1):
+        return True
+    # Check if the intersection of bipartition1 and bipartition2 is empty
+    if set(bipartition1) & set(bipartition2) == set():
+        return True
+    # If none of the conditions are met, bipartitions are not compatible
+    return False
 
 # Create a TaxonNamespace for your taxa
 # Read newick trees from the file and process them
@@ -63,21 +75,13 @@ with open(trees_pars, "r") as tree_file:
             bipartitions.append(get_bipartition(node))
         print(bipartitions)
 
-        # Check compatibility and add to the true list if criteria met
-        add_to_true_list = True
-        for true_bp in true_bipartitions:
-            if not all(set(bp).isdisjoint(true_bp) for bp in bipartitions):
-                add_to_true_list = False
-                break
-        for false_bp in false_bipartitions:
-            overlap_count = sum(1 for bp in bipartitions if not set(bp).isdisjoint(false_bp))
-            if overlap_count / len(bipartitions) >= compatibility_threshold:
-                add_to_true_list = False
-                break
-        if add_to_true_list:
-            true_bipartitions.extend(bipartitions)
+        for bipar in bipartitions:
+            for bipar_true in true_bipartitions:
+                is_comp_true = are_bipartitions_compatible(bipar, bipar_true)
+                if is_comp_true:
+                    if bipar not in false_bipartitions:
+                        true_bipartitions.append(bipar)
 
-        # Check if you have a complete tree
         if len(true_bipartitions) == len(df_test) - 1:
             break
 
