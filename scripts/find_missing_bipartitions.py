@@ -38,7 +38,7 @@ with open(consensus_path, "r") as cons:
         branch_id_counter_ref += 1
         if not node.is_leaf():
             node.__setattr__("name", branch_id_counter_ref)
-            matching_row = df[df['branchIdpars'] == node.name]
+            matching_row = df[df['parsBranchId'] == node.name]
             inML = matching_row["inML"]
             if inML == 1:
                 true_bipartitions.append(get_bipartition(node))
@@ -50,8 +50,6 @@ with open(consensus_path, "r") as cons:
 compatibility_threshold = 0.5
 
 # Create a TaxonNamespace for your taxa
-taxon_namespace = TaxonNamespace()
-
 # Read newick trees from the file and process them
 with open(trees_pars, "r") as tree_file:
     for line in tree_file:
@@ -78,7 +76,7 @@ with open(trees_pars, "r") as tree_file:
             true_bipartitions.extend(bipartitions)
 
         # Check if you have a complete tree
-        if len(true_bipartitions) == len(taxon_namespace) - 1:
+        if len(true_bipartitions) == len(df_test) - 1:
             break
 
 # Now your true_bipartitions list contains bipartitions for your complete tree
