@@ -75,8 +75,8 @@ def are_bipartitions_compatible(bipartition1, bipartition2):
     bitmask_str2 = "".join(map(str, bitmask2))
 
     # Create Bipartition objects
-    bip1 = Bipartition(taxon_namespace, bitmask_str1)
-    bip2 = Bipartition(taxon_namespace, bitmask_str2)
+    bip1 = Bipartition(bitmask_str1)
+    bip2 = Bipartition(bitmask_str2)
 
     # Check compatibility
     compatible = bip1.is_compatible_with(bip2)
