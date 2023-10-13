@@ -59,7 +59,7 @@ with open(trees_pars, "r") as tree_file:
         # Extract bipartitions from the tree
 
         bipartitions = []
-        for node in tree:
+        for node in tree.traverse():
             bipartitions.append(get_bipartition(node))
         print(bipartitions)
 
