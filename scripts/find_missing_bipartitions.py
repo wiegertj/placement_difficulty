@@ -38,7 +38,7 @@ with open(consensus_path, "r") as cons:
         branch_id_counter_ref += 1
         if not node.is_leaf():
             node.__setattr__("name", branch_id_counter_ref)
-            matching_row = df[df['parsBranchId'] == node.name]
+            matching_row = df_test[df_test['parsBranchId'] == node.name]
             inML = matching_row["inML"].values
             print(inML)
             if inML == 1:
