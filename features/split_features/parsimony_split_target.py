@@ -157,7 +157,7 @@ for file in filenames:
 
     subprocess.run(" ".join(raxml_command), shell=True)
 
-    support_path = consensus_path.replace("consensusTreeMRE", "support").replace("nomodel", "nomodelsupport")
+    support_path = consensus_path.replace("consensusTreeMRE", "support").replace("nomodel", "nomodelsupport").replace("--log", "")
     print(support_path)
 
     with open(original_path, "r") as original_file:
