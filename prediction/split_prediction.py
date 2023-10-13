@@ -42,7 +42,7 @@ def MBE(y_true, y_pred):
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"), usecols=lambda column: column != 'Unnamed: 0')
-    df_target = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "split_prediction.csv"), usecols=lambda column: column != 'Unnamed: 0')
+    df_target = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "split_prediction_10000.csv"), usecols=lambda column: column != 'Unnamed: 0')
     print("unique datasets: ")
     print(len(df_target["dataset"].unique()))
     df = df_msa.merge(df_target, on=["dataset"], how="inner")
