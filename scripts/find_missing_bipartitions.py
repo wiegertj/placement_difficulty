@@ -50,6 +50,8 @@ with open(consensus_path, "r") as cons:
 compatibility_threshold = 0.5
 def are_bipartitions_compatible(bipartition1, bipartition2):
     # Check if bipartition1 is nested within bipartition2
+    print(bipartition1)
+    print(bipartition2)
     if set(bipartition1).issubset(bipartition2):
         return True
     # Check if bipartition2 is nested within bipartition1
