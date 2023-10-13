@@ -112,6 +112,8 @@ with open(trees_pars, "r") as tree_file:
                 is_comp_true = are_bipartitions_compatible(bipar, bipar_true)
                 if is_comp_true:
                     if bipar not in false_bipartitions:
+                        print("added")
+                        print(len(true_bipartitions))
                         true_bipartitions.append(bipar)
 
         if len(true_bipartitions) == len(df_test) - 1:
