@@ -121,14 +121,27 @@ for test_set in all_dataset:
 
             nrf_distance_cons = results_distance_cons["norm_rf"]
 
+            command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", "-v",
+                       os.path.abspath(consensus_path),
+                       os.path.abspath(original_path)]
+            try:
+                command_string = " ".join(command)
+                print(command_string)
+                output = subprocess.check_output(command, stderr=subprocess.STDOUT, text=True)
+                lines = output.strip().split('\n')
+                values = lines[0].split()
+                quartet_distance_consensus = float(values[3])
+            except:
+                print("quartet went wrong")
+
             print(nrf_distance)
             print(quartet_distance)
 
             score_max = score_max / (len(true_bipartitions) + len(false_bipartitions))
             print(score_max)
 
-        results = [(test_set, nrf_distance, nrf_distance_cons,quartet_distance, score_max)]
-        df_tmp = pd.DataFrame(results, columns=["dataset", "nrf","nrf_cons" ,"quartet", "relative_score"])
+        results = [(test_set, nrf_distance, nrf_distance_cons,quartet_distance_consensus , quartet_distance, score_max)]
+        df_tmp = pd.DataFrame(results, columns=["dataset", "nrf","nrf_cons" ,"quartet_cons","quartet", "relative_score"])
         if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                                            "cons_comp_target_best_pars_10000.csv")):
             df_tmp.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
