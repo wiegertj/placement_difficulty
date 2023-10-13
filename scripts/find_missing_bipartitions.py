@@ -82,7 +82,7 @@ def are_bipartitions_compatible(bipartition1, bipartition2):
 
 
     # Check compatibility
-    compatible = bip1.is_compatible_with(bip2)
+    compatible = bip1.is_compatible_bitmasks(bip2)
 
     print("Bipartition 1:", bip1)
     print("Bipartition 2:", bip2)
