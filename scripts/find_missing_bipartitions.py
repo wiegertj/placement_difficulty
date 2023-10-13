@@ -118,7 +118,22 @@ with open(trees_pars, "r") as tree_file:
                         print(len(true_bipartitions))
                         true_bipartitions.append(bipar)
                         if len(true_bipartitions) == len(taxon_namespace) - 1:
-                            print(bipartitions)
+                            # Add all trivial bipartitions
+                            for taxon in taxon_namespace:
+                                true_bipartitions.append({taxon})
+
+                            # Convert true bipartitions to Newick format
+                            newick_tree = "(" + ",".join(
+                                "({})".format(",".join(bp)) for bp in true_bipartitions) + ");"
+
+                            # Print the Newick tree (optional)
+                            print(newick_tree)
+
+                            # Store the Newick tree in a file named "test.txt"
+                            with open("test.txt", "w") as tree_file:
+                                tree_file.write(newick_tree)
+
+                            # Exit the program
                             sys.exit()
 
 
