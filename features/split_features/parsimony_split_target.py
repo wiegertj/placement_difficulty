@@ -184,7 +184,8 @@ for file in filenames:
             branch_id_counter_ref += 1
             if not node.is_leaf():
                 node.__setattr__("name", branch_id_counter_ref)
-
+        not_in_ML_counter = 0
+        in_ML_counter = 0
         for node in phylo_tree.traverse():
             branch_id_counter += 1
             if not node.is_leaf():
@@ -206,6 +207,10 @@ for file in filenames:
                                 second_match = True
                             if second_match and first_match:
                                 node_in_ml_tree = 1
+                            if node_in_ml_tree != 1:
+                                not_in_ML_counter += 1
+                            else:
+                                in_ML_counter += 1
 
                 childs_inner = [node_child for node_child in node.traverse() if not node_child.is_leaf()]
                 parents_inner = node.get_ancestors()
@@ -332,7 +337,6 @@ for file in filenames:
 
 
 
-
                 results.append((dataset, node.name, node.support, node_in_ml_tree, level,
                                 min_pars_supp_parents_w, max_pars_supp_parents_w, mean_pars_supp_parents_w,
                                 std_pars_supp_parents_w, skw_pars_supp_parents_w,
@@ -346,6 +350,8 @@ for file in filenames:
                                 irs_max_left, irs_max_right, irs_std_left, irs_std_right, irs_skw_left, irs_skw_right
 
                                 ))
+        print(str(in_ML_counter) + "/" + str(not_in_ML_counter))
+
     else:
         print("Not found support")
         not_counter += 1
