@@ -8,7 +8,10 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/branch_supports.csv"),
                       usecols=lambda column: column != 'Unnamed: 0')
 
-subst = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "subst_freq_stats_bs.csv"))
+subst = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "subst_freq_stats_bs.csv"),
+                    index_col=False,
+                    usecols=lambda column: column != 'Unnamed: 0'
+                    )
 
 # Get MSA features
 msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features",
@@ -52,7 +55,7 @@ split_features.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 subst.drop_duplicates(inplace=True, subset=["dataset"])
 
 df_merged = targets.merge(msa_features, on=["dataset"], how="inner")
-#df_merged = targets.merge(tree_features, on=["dataset"], how="inner")
+df_merged = targets.merge(tree_features, on=["dataset"], how="inner")
 df_merged = targets.merge(parsimony_features, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(split_features2, on=["dataset", "branchId"], how="inner")
 #df_merged = df_merged.merge(split_features, on=["dataset", "branchId"], how="inner")
