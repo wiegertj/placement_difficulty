@@ -34,7 +34,7 @@ for test_set in all_dataset:
     print(test_set)
 
     trees_pars = os.path.join(os.pardir, "scripts",
-                              test_set + "_parsimony_1000_nomodel.raxml.startTree")
+                              test_set + "_parsimony_10000_nomodel.raxml.startTree")
 
     df_test = df[df["dataset"] == test_set]
     if df_test.shape[0] == 0:
@@ -44,7 +44,7 @@ for test_set in all_dataset:
     print(df_test.shape)
 
     consensus_path = os.path.join(os.pardir, "features/split_features",
-                                  test_set + "_consensus1000nomodel_.raxml.consensusTreeMRE")
+                                  test_set + "_consensus10000nomodel_.raxml.consensusTreeMRE")
 
     true_bipartitions = []
     false_bipartitions = []
@@ -117,17 +117,21 @@ for test_set in all_dataset:
 
             nrf_distance = results_distance["norm_rf"]
 
+            results_distance_cons = original_tree.compare(phylo_tree, unrooted=True)
+
+            nrf_distance_cons = results_distance_cons["norm_rf"]
+
             print(nrf_distance)
             print(quartet_distance)
 
-        results = [(test_set, nrf_distance, quartet_distance)]
-        df_tmp = pd.DataFrame(results, columns=["dataset", "nrf", "quartet"])
+        results = [(test_set, nrf_distance, nrf_distance_cons,quartet_distance)]
+        df_tmp = pd.DataFrame(results, columns=["dataset", "nrf","nrf_cons" ,"quartet"])
         if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                           "cons_comp_target_best_pars.csv")):
+                                           "cons_comp_target_best_pars_10000.csv")):
             df_tmp.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                "cons_comp_target_best_pars.csv")), index=False)
+                                                "cons_comp_target_best_pars_10000.csv")), index=False)
         else:
             df_tmp.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                   "cons_comp_target_best_pars.csv"),
+                                   "cons_comp_target_best_pars_10000.csv"),
                       index=False,
                       mode='a', header=False)
