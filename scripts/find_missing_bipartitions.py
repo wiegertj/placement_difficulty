@@ -119,8 +119,8 @@ with open(trees_pars, "r") as tree_file:
                         true_bipartitions.append(bipar)
                         if len(true_bipartitions) == len(taxon_namespace) - 1:
                             # Add all trivial bipartitions
-                            for taxon in taxon_namespace:
-                                true_bipartitions.append({taxon})
+                            #for taxon in taxon_namespace:
+                             #   true_bipartitions.append({taxon})
 
 
                             def bipartition_to_newick(bipartition):
