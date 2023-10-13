@@ -133,7 +133,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
             'objective': 'binary',
             'metric': 'binary_logloss',  # Use 'binary_logloss' for binary classification
-            'num_iterations': trial.suggest_int('num_iterations', 100, 500),
+            'num_iterations': trial.suggest_int('num_iterations', 10, 200),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 300),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
