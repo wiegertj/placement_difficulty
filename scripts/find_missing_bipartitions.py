@@ -10,6 +10,7 @@ from dendropy import Bipartition
 import pandas as pd
 import os
 
+
 def get_bipartition(node):
     if not node.is_leaf():
         try:
@@ -20,6 +21,8 @@ def get_bipartition(node):
         except IndexError:
             return None
     return None
+
+
 # Read the true and false bipartitions
 
 
@@ -31,13 +34,10 @@ for test_set in all_dataset:
     trees_pars = os.path.join(os.pardir, "scripts",
                               test_set + "_parsimony_1000_nomodel.raxml.startTree")
 
-
-
     df_test = df[df["dataset"] == test_set]
 
     consensus_path = os.path.join(os.pardir, "features/split_features",
-                                      test_set + "_consensus1000nomodel_.raxml.consensusTreeMRE")
-
+                                  test_set + "_consensus1000nomodel_.raxml.consensusTreeMRE")
 
     true_bipartitions = []
     false_bipartitions = []
@@ -45,7 +45,6 @@ for test_set in all_dataset:
     with open(consensus_path, "r") as cons:
         tree_str = cons.read()
         phylo_tree = Tree(tree_str)
-
 
         branch_id_counter_ref = 0
         for node in phylo_tree.traverse():
@@ -55,11 +54,14 @@ for test_set in all_dataset:
                 matching_row = df_test[df_test['parsBranchId'] == node.name]
                 inML = matching_row["inML"].values[0]
                 if inML == 1:
+                    print("added")
+                    print(matching_row)
+
                     true_bipartitions.append(get_bipartition(node))
                 else:
+                    print("added")
+                    print(matching_row)
                     false_bipartitions.append(get_bipartition(node))
-
-    taxon_namespace = phylo_tree.get_leaf_names()
 
     with open(trees_pars, "r") as tree_file:
         score_max = -float(inf)
@@ -77,9 +79,9 @@ for test_set in all_dataset:
 
             for bipar in bipartitions:
                 if bipar in true_bipartitions:
-                   score += 1
+                    score += 1
                 elif bipar in false_bipartitions:
-                   score -= 1
+                    score -= 1
             if score > score_max:
                 score_max = score
                 best_tree = tree
@@ -88,15 +90,11 @@ for test_set in all_dataset:
 
         best_tree.write(outfile=test_set + "best_pars_tree.newick", format=1)
 
-
-
-
-
-
         original_path = os.path.join(os.pardir, "data/raw/reference_tree",
                                      test_set + ".newick")
 
-        command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", "-v", os.path.abspath(test_set + "best_pars_tree.newick"),
+        command = ["/home/wiegerjs/tqDist-1.0.2/bin/quartet_dist", "-v",
+                   os.path.abspath(test_set + "best_pars_tree.newick"),
                    os.path.abspath(original_path)]
         try:
             command_string = " ".join(command)
@@ -131,6 +129,3 @@ for test_set in all_dataset:
                                    "cons_comp_target_best_pars.csv"),
                       index=False,
                       mode='a', header=False)
-
-
-
