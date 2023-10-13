@@ -108,16 +108,8 @@ for file in filenames:
                                                    "std_pars_supp_child", "skw_pars_supp_child",
                                                    "irs_mean_right", "irs_mean_left", "irs_min_left", "irs_min_right",
                                                    "irs_max_left", "irs_max_right", "irs_std_left", "irs_std_right",
-                                                   "irs_skw_left", "irs_skw_right",
-                                                   "split_len_a_b", "split_min_entropy_diff", "split_max_entropy_diff",
-                                                   "split_std_entropy_diff",
-                                                   "split_mean_entropy_diff", "split_skw_entropy_diff",
-                                                   "split_min_ratio_topo", "split_max_ratio_topo",
-                                                   "split_std_ratio_topo", "split_mean_ratio_topo",
-                                                   "split_skw_ratio_topo", "split_min_ratio_branch",
-                                                   "split_max_ratio_branch", "split_max_ratio_branch",
-                                                   "split_mean_ratio_branch",
-                                                   "split_skw_ratio_branch", "split_std_ratio_branch"
+                                                   "irs_skw_left", "irs_skw_right"
+
                                                    ])
         result_df.to_csv(os.path.join(grandir, "data/processed/final/split_prediction.csv"))
 
