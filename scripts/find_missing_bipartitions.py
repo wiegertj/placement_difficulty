@@ -73,6 +73,7 @@ def are_bipartitions_compatible(bipartition1, bipartition2):
 
     bitmask_str1 = "".join(map(str, bitmask1))
     bitmask_str2 = "".join(map(str, bitmask2))
+    print(bitmask_str1)
 
     # Create Bipartition objects
     bip1 = Bipartition(bitmask_str1)
