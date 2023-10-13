@@ -61,13 +61,9 @@ for test_set in all_dataset:
                 matching_row = df_test[df_test['parsBranchId'] == node.name]
                 inML = int(matching_row["inML"].values[0])
                 if inML == 1:
-                    print("added")
-                    print(matching_row["inML"])
-                    print(matching_row)
-
                     true_bipartitions.append(get_bipartition(node))
                 else:
-                    print("added")
+                    print("not added")
                     print(matching_row)
                     false_bipartitions.append(get_bipartition(node))
 
