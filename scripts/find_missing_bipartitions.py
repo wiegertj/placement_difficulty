@@ -39,8 +39,7 @@ with open(consensus_path, "r") as cons:
         if not node.is_leaf():
             node.__setattr__("name", branch_id_counter_ref)
             matching_row = df_test[df_test['parsBranchId'] == node.name]
-            inML = matching_row["inML"].values
-            print(inML)
+            inML = matching_row["inML"].values[0]
             if inML == 1:
                 true_bipartitions.append(get_bipartition(node))
             else:
@@ -60,7 +59,7 @@ with open(trees_pars, "r") as tree_file:
         # Extract bipartitions from the tree
         bipartitions = set()
         for node in tree:
-            bipartitions.add(frozenset(node.leafset()))
+            bipartitions.add(frozenset(node.get_leaves()))
 
         # Check compatibility and add to the true list if criteria met
         add_to_true_list = True
