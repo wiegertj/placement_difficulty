@@ -12,19 +12,6 @@ test_set = df["dataset"].unique().tolist()[0]
 trees_pars = os.path.join(os.pardir, "scripts",
                           test_set + "_parsimony_1000_nomodel.raxml.startTree")
 
-def create_bitmask(bipartition, taxon_namespace):
-    # Create an empty bitmask with 0s
-    bitmask = [0] * len(taxon_namespace)
-    bipartition = bipartition[0]
-
-    # Set bits to 1 for taxa on one side of the bipartition
-    for taxon in bipartition:
-        index = taxon_namespace.index(taxon)
-        bitmask[index] = 1
-
-    return bitmask
-
-# Your taxon_namespace (list of taxa)
 
 def get_bipartition(node):
     if not node.is_leaf():
@@ -65,78 +52,22 @@ with open(consensus_path, "r") as cons:
 
 taxon_namespace = phylo_tree.get_leaf_names()
 
-# Define your threshold for compatibility (less than 50%)
-compatibility_threshold = 0.5
-def are_bipartitions_compatible(bipartition1, bipartition2):
-    # Check if bipartition1 is nested within bipartition2
-
-    bitmask1 = create_bitmask(bipartition1, taxon_namespace)
-    bitmask2 = create_bitmask(bipartition2, taxon_namespace)
-    bitmask_str1 = "".join(map(str, bitmask1))
-    bitmask_str2 = "".join(map(str, bitmask2))
-    filler = []
-    for i in range(0, len(bitmask_str1)-1):
-        if bitmask_str2[i] == str(0) and bitmask_str1[i] == str(0):
-            filler.append(str(1))
-        else:
-            filler.append(str(0))
-    filler_str = "".join(map(str, filler))
-
-    for bit1, bit2, fill_bit in zip(bitmask1, bitmask2, filler):
-        # If both bipartitions have the same taxon, they are incompatible
-        if bit1 == bit2 == 1:
-            return False
-        # If a taxon is in the fill bitmask but not in either bipartition, they are incompatible
-        if fill_bit == 1 and bit1 == bit2 == 0:
-            return False
-        # If no incompatibilities are found, the bipartitions are compatible
-    return True
-
-
-# Create a TaxonNamespace for your taxa
-# Read newick trees from the file and process them
 with open(trees_pars, "r") as tree_file:
     for line in tree_file:
-        # Parse the newick tree
+
         tree = Tree(line)
-
-        # Extract bipartitions from the tree
-
+        score = 0
         bipartitions = []
         for node in tree.traverse():
-            bipar_tmp = get_bipartition(node)
-            if bipar_tmp is not None:
-                bipartitions.append(get_bipartition(node))
-        print(bipartitions)
+            if not node.is_leaf():
+                bipar_tmp = get_bipartition(node)
+                if bipar_tmp is not None:
+                    bipartitions.append(get_bipartition(node))
 
         for bipar in bipartitions:
-            for bipar_true in true_bipartitions:
-                is_comp_true = are_bipartitions_compatible(bipar, bipar_true)
-                if is_comp_true:
-                    if bipar not in false_bipartitions:
-                        print("added")
-                        print(len(true_bipartitions))
-                        true_bipartitions.append(bipar)
-                        if len(true_bipartitions) == len(taxon_namespace) - 1:
-                            # Add all trivial bipartitions
-                            #for taxon in taxon_namespace:
-                             #   true_bipartitions.append({taxon})
+            if bipar in true_bipartitions:
+               score += 1
+            elif bipar in false_bipartitions:
+               score -= 1
 
-
-                            def bipartition_to_newick(bipartition):
-                                return "(".join(",".join(taxon for taxon in cluster) for cluster in bipartition) + ");"
-
-
-                            # Join the bipartitions in Newick format
-                            newick_tree = "(" + ",".join(bipartition_to_newick(bp) for bp in bipartitions) + ");"
-
-                            # Store the Newick tree in a file named "test.txt"
-                            with open("test.txt", "w") as tree_file:
-                                tree_file.write(newick_tree)
-
-                            # Exit the program
-                            sys.exit()
-
-
-
-# Now your true_bipartitions list contains bipartitions for your complete tree
+        print("Score: " + str(score))
