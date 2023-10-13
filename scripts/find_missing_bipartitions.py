@@ -79,10 +79,11 @@ def are_bipartitions_compatible(bipartition1, bipartition2):
     bip1 = Bipartition(bitmask=bitmask_str1)
     bip2 = Bipartition(bitmask=bitmask_str2)
 
-
+    filler = [1 for i, (bit1, bit2) in enumerate(zip(bitmask1, bitmask2)) if bit1 == 0 and bit2 == 0]
+    print(filler)
 
     # Check compatibility
-    compatible = Bipartition.is_compatible_bitmasks(bitmask1, bitmask2)
+    compatible = Bipartition.is_compatible_bitmasks(bitmask1, bitmask2, filler)
 
     print("Bipartition 1:", bip1)
     print("Bipartition 2:", bip2)
