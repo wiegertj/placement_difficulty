@@ -152,12 +152,11 @@ for file in filenames:
                      f"--tree {consensus_path}",
                      f"--bs-trees {trees_pars}",
                      "--redo",
-                     f"--prefix {output_prefix}"
-                     "--log ERROR"]
+                     f"--prefix {output_prefix}"]
 
     subprocess.run(" ".join(raxml_command), shell=True)
 
-    support_path = consensus_path.replace("consensusTreeMRE", "support").replace("nomodel", "nomodelsupport").replace("--log", "")
+    support_path = consensus_path.replace("consensusTreeMRE", "support").replace("nomodel", "nomodelsupport")
     print(support_path)
 
     with open(original_path, "r") as original_file:
