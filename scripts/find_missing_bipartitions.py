@@ -35,6 +35,7 @@ for test_set in all_dataset:
                               test_set + "_parsimony_1000_nomodel.raxml.startTree")
 
     df_test = df[df["dataset"] == test_set]
+    print(df_test.shape)
 
     consensus_path = os.path.join(os.pardir, "features/split_features",
                                   test_set + "_consensus1000nomodel_.raxml.consensusTreeMRE")
