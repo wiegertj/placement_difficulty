@@ -124,8 +124,11 @@ for test_set in all_dataset:
             print(nrf_distance)
             print(quartet_distance)
 
-        results = [(test_set, nrf_distance, nrf_distance_cons,quartet_distance)]
-        df_tmp = pd.DataFrame(results, columns=["dataset", "nrf","nrf_cons" ,"quartet"])
+            score_max = score_max / (len(true_bipartitions) + len(false_bipartitions))
+            print(score_max)
+
+        results = [(test_set, nrf_distance, nrf_distance_cons,quartet_distance, score_max)]
+        df_tmp = pd.DataFrame(results, columns=["dataset", "nrf","nrf_cons" ,"quartet", "relative_score"])
         if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                                            "cons_comp_target_best_pars_10000.csv")):
             df_tmp.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
