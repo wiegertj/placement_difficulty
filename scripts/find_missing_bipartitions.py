@@ -1,7 +1,7 @@
 from dendropy import Tree, TaxonNamespace
 import itertools
 from ete3 import Tree
-
+from dendropy import Bipartition
 import pandas as pd
 import os
 df = pd.read_csv(os.path.join(os.pardir, "data/processed/final/split_prediction.csv"))
@@ -9,6 +9,19 @@ test_set = df["dataset"].unique().tolist()[0]
 
 trees_pars = os.path.join(os.pardir, "scripts",
                           test_set + "_parsimony_1000_nomodel.raxml.startTree")
+
+def create_bitmask(bipartition, taxon_namespace):
+    # Create an empty bitmask with 0s
+    bitmask = [0] * len(taxon_namespace)
+
+    # Set bits to 1 for taxa on one side of the bipartition
+    for taxon in bipartition:
+        index = taxon_namespace.index(taxon)
+        bitmask[index] = 1
+
+    return bitmask
+
+# Your taxon_namespace (list of taxa)
 
 def get_bipartition(node):
     if not node.is_leaf():
@@ -33,6 +46,8 @@ false_bipartitions = []
 with open(consensus_path, "r") as cons:
     tree_str = cons.read()
     phylo_tree = Tree(tree_str)
+
+
     branch_id_counter_ref = 0
     for node in phylo_tree.traverse():
         branch_id_counter_ref += 1
@@ -45,23 +60,30 @@ with open(consensus_path, "r") as cons:
             else:
                 false_bipartitions.append(get_bipartition(node))
 
+taxon_namespace = phylo_tree.get_leaf_names()
 
 # Define your threshold for compatibility (less than 50%)
 compatibility_threshold = 0.5
 def are_bipartitions_compatible(bipartition1, bipartition2):
     # Check if bipartition1 is nested within bipartition2
-    print(bipartition1)
-    print(bipartition2)
-    if set(bipartition1).issubset(bipartition2):
-        return True
-    # Check if bipartition2 is nested within bipartition1
-    if set(bipartition2).issubset(bipartition1):
-        return True
-    # Check if the intersection of bipartition1 and bipartition2 is empty
-    if set(bipartition1) & set(bipartition2) == set():
-        return True
-    # If none of the conditions are met, bipartitions are not compatible
-    return False
+
+    bitmask1 = create_bitmask(bipartition1, taxon_namespace)
+    bitmask2 = create_bitmask(bipartition2, taxon_namespace)
+
+    bitmask_str1 = "".join(map(str, bitmask1))
+    bitmask_str2 = "".join(map(str, bitmask2))
+
+    # Create Bipartition objects
+    bip1 = Bipartition(taxon_namespace, bitmask_str1)
+    bip2 = Bipartition(taxon_namespace, bitmask_str2)
+
+    # Check compatibility
+    compatible = bip1.is_compatible_with(bip2)
+
+    print("Bipartition 1:", bip1)
+    print("Bipartition 2:", bip2)
+    print("Are they compatible?", compatible)
+    return compatible
 
 # Create a TaxonNamespace for your taxa
 # Read newick trees from the file and process them
