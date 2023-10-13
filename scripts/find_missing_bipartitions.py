@@ -123,8 +123,7 @@ with open(trees_pars, "r") as tree_file:
                                 true_bipartitions.append({taxon})
 
                             # Convert true bipartitions to Newick format
-                            newick_tree = "(" + ",".join(
-                                "({})".format(",".join(bp)) for bp in true_bipartitions) + ");"
+                            newick_tree = "(" + ",".join(bipartitions) + ");"
 
                             # Print the Newick tree (optional)
                             print(newick_tree)
