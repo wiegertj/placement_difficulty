@@ -1,5 +1,7 @@
 from dendropy import Tree, TaxonNamespace
 import itertools
+from ete3 import Tree
+
 import pandas as pd
 import os
 df = pd.read_csv(os.path.join(os.pardir, "data/processed/final/split_prediction.csv"))
@@ -30,7 +32,7 @@ false_bipartitions = []
 
 with open(consensus_path, "r") as cons:
     tree_str = cons.read()
-    phylo_tree = Tree.get(data=tree_str, schema="newick")
+    phylo_tree = Tree(tree_str)
     branch_id_counter_ref = 0
     for node in phylo_tree.traverse():
         branch_id_counter_ref += 1
@@ -54,7 +56,7 @@ taxon_namespace = TaxonNamespace()
 with open(trees_pars, "r") as tree_file:
     for line in tree_file:
         # Parse the newick tree
-        tree = Tree.get(data=line, schema="newick", taxon_namespace=taxon_namespace)
+        tree = Tree(line)
 
         # Extract bipartitions from the tree
         bipartitions = set()
