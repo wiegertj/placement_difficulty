@@ -198,7 +198,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "mean_model.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "mean_model90.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
@@ -303,7 +303,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     model_lo = QuantileRegressor(**best_params_lo, quantile=0.05, solver=solver).fit(X_train.drop(axis=1, columns=["group"]), y_train)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "low_model.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "low_model90.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(model_lo, file)
 
@@ -371,7 +371,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     model_hi = QuantileRegressor(**best_params_hi, quantile=0.95, solver=solver).fit(
         X_train.drop(axis=1, columns=["group"]), y_train)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "high_model.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "high_model90.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(model_hi, file)
 
