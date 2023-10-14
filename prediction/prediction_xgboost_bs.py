@@ -282,7 +282,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
             Xy_tmp = xgb.QuantileDMatrix(X_train_tmp, y_train_tmp)
             Xy_tmp_val = xgb.QuantileDMatrix(X_val, y_val)
-            model = xgb.train(**params, dtrain=Xy_tmp)
+            model = xgb.train(params, dtrain=Xy_tmp)
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.125)
             print("score: " + str(val_score))
@@ -298,7 +298,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_lo = study.best_params
     best_score_lo = study.best_value
 
-    booster_lo = xgb.train(best_params_lo)
+    booster_lo = xgb.train(best_params_lo, dtrain=Xy)
     y_pred_lo = booster_lo.inplace_predict(X_test)
 
     print(f"Best Params: {best_params_lo}")
