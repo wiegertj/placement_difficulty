@@ -364,7 +364,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimizeobjective_higher_bound(n_trials=50)
+    study.optimize(objective_higher_bound, n_trials=50)
 
     best_params_hi = study.best_params
     best_score_hi = study.best_value
