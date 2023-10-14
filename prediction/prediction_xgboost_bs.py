@@ -257,7 +257,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     #         "length", "length_relative","max_subst_freq", 'group', "avg_rel_rf_boot", "bl_ratio"]]
     #X_train = X_train[["parsimony_boot_support", "parsimony_support", "avg_subst_freq",
      #        "length", "length_relative","max_subst_freq", 'group', "avg_rel_rf_boot", "bl_ratio"]]
-    Xy = xgb.QuantileDMatrix(X_train, y_test)
+    Xy = xgb.QuantileDMatrix(X_train, y_train)
     Xy_test = xgb.QuantileDMatrix(X_test, y_test, ref=Xy)
 
     def objective_lower_bound(trial):
