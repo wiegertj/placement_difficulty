@@ -63,7 +63,7 @@ for tree_filename in filenames_filtered:
     if sequence_length >= 8000:
         print("Too large, skipped")
         continue
-    model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
+    model_path = os.path.abspath(os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt"))
 
 
 
