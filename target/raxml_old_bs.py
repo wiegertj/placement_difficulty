@@ -75,7 +75,7 @@ for tree_filename in filenames_filtered:
 
     raxml_command = [
         "raxmlHPC",
-        f"-m {model_path}",
+        f"-m GTRGAMMA",
         f"-s {msa_filepath}",
         f"-# {1000}",
         "-p 12345",
