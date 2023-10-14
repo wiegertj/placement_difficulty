@@ -119,7 +119,8 @@ sampled_data.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
 print(sampled_data.shape)
 print("Mean " + str(sampled_data["support"].median()))
 print(sampled_data.columns)
-
+sampled_data_test = sampled_data[df_merged["dataset"] == "15861_1"]
+print(sampled_data_test.shape)
 sampled_data.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support.csv"), index=False)
 
-print(df_merged.shape)
+#print(df_merged.shape)
