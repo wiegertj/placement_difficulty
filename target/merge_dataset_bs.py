@@ -65,6 +65,9 @@ df_merged = df_merged.merge(parsimony_features2, on=["dataset"], how="inner")
 
 df_merged = df_merged.merge(parsimony_features3, on=["dataset", "branchId"], how="inner")
 
+test = df_merged[df_merged["dataset"] == "15861_1"]
+print(test.shape)
+
 #df_merged['split_skw_ratio_topo'].fillna(-1, inplace=True)
 #df_merged['split_skw_ratio_branch'].fillna(-1, inplace=True)
 #df_merged['split_skw_entropy_diff'].fillna(-1, inplace=True)
