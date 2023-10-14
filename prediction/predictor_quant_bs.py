@@ -79,11 +79,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
              "std_pars_bootsupp_parents",
              "min_pars_supp_child",
              "min_pars_supp_child_w",
-             "num_children",
+             "rel_num_children",
              "mean_pars_supp_child_w",
              "std_pars_bootsupp_child",
              "mean_clo_sim_ratio",
-             "depth_relative",
              "min_pars_bootsupp_child_w"]]
 
 
