@@ -369,7 +369,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_hi = study.best_params
     best_score_hi = study.best_value
 
-    booster_lo = xgb.train(best_params_hi, dtrain=Xy)
+    booster_hi = xgb.train(best_params_hi, dtrain=Xy)
     y_pred_hi = booster_hi.inplace_predict(X_test)
 
     print(f"Best Params: {best_params_hi}")
