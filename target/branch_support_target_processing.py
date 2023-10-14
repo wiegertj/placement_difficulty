@@ -30,7 +30,7 @@ def calculate_support_statistics(support_file_path, dataset_name):
             farthest_branch = phylo_tree.get_farthest_leaf(topology_only=False)[1]
             length_relative = length / farthest_branch
             depth = node.get_distance(topology_only=True, target=phylo_tree.get_tree_root())
-            num_children = sum([1 for child in child.traverse()])  # Number of leaf children
+            num_children = sum([1 for child in node.traverse()])  # Number of leaf children
             num_children_inner = sum([1 for child in node.traverse() if not child.is_leaf()])
             num_children_leaf = sum([1 for child in node.traverse() if child.is_leaf()])
 
