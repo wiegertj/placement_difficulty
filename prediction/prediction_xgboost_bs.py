@@ -372,8 +372,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     booster_lo = xgb.train(best_params_hi, dtrain=Xy)
     y_pred_hi = booster_hi.inplace_predict(X_test)
 
-    print(f"Best Params: {best_params_lo}")
-    print(f"Best MAPE training: {best_score_lo}")
+    print(f"Best Params: {best_params_hi}")
+    print(f"Best MAPE training: {best_score_hi}")
 
     model_path = os.path.join(os.pardir, "data/processed/final", "high_model75_xgboost.pkl")
     with open(model_path, 'wb') as file:
