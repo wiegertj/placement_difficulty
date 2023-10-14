@@ -269,7 +269,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
                 'learning_rate': trial.suggest_uniform('learning_rate', 1e-5, 1.0),
                 "max_depth": trial.suggest_int('max_depth', 5, 50),
                 "num_boost_rount":  trial.suggest_int('max_depth', 5, 50),
-                "early_stopping_rounds": trial.suggest_int('early_stopping_rounds', 2, 5)}
+                #"early_stopping_rounds": trial.suggest_int('early_stopping_rounds', 2, 5),
+        }
 
 
 
@@ -293,7 +294,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=2)
+    study.optimize(objective_lower_bound, n_trials=50)
 
     best_params_lo = study.best_params
     best_score_lo = study.best_value
@@ -333,12 +334,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     ######################################################################################################
     def objective_higher_bound(trial):
-        # callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
-
-            'alpha': trial.suggest_float('alpha', 0.0001,0.1),
-
+            "objective": "reg:quantileerror",
+            "tree_method": "hist",
+            "quantile_alpha": 0.875,
+            'learning_rate': trial.suggest_uniform('learning_rate', 1e-5, 1.0),
+            "max_depth": trial.suggest_int('max_depth', 5, 50),
+            "num_boost_rount": trial.suggest_int('max_depth', 5, 50),
+            # "early_stopping_rounds": trial.suggest_int('early_stopping_rounds', 2, 5),
         }
 
         val_scores = []
@@ -348,12 +352,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
 
-            train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
-            val_data = lgb.Dataset(X_val, label=y_val)  # , reference=train_data)
-            # KEIN VALIDSETS?
-            model = QuantileRegressor(**params, quantile=0.95, solver=solver).fit(X_train_tmp, y_train_tmp)
-            val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.95)
+            Xy_tmp = xgb.QuantileDMatrix(X_train_tmp, y_train_tmp)
+            Xy_tmp_val = xgb.QuantileDMatrix(X_val)
+            model = xgb.train(params, dtrain=Xy_tmp)
+            val_preds = model.predict(Xy_tmp_val)
+            val_score = quantile_loss(y_val, val_preds, 0.875)
             print("score: " + str(val_score))
 
             val_scores.append(val_score)
@@ -361,45 +364,39 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_higher_bound, n_trials=100)
-    solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
+    study.optimizeobjective_higher_bound(n_trials=50)
 
     best_params_hi = study.best_params
     best_score_hi = study.best_value
 
-    print(f"Best Params: {best_params_hi}")
-    print(f"Best Q training: {best_score_hi}")
+    booster_lo = xgb.train(best_params_hi, dtrain=Xy)
+    y_pred_hi = booster_hi.inplace_predict(X_test)
 
-    model_hi = QuantileRegressor(**best_params_hi, quantile=0.95, solver=solver).fit(
-        X_train.drop(axis=1, columns=["group"]), y_train)
+    print(f"Best Params: {best_params_lo}")
+    print(f"Best MAPE training: {best_score_lo}")
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "high_model90.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "high_model75_xgboost.pkl")
     with open(model_path, 'wb') as file:
-        pickle.dump(model_hi, file)
+        pickle.dump(booster_lo, file)
 
-    y_pred_hi = model_hi.predict(X_test.drop(axis=1, columns=["group"]))
-
-    mse = mean_squared_error(y_test, y_pred_hi)
+    # y_pred_lo = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
+    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.875)
+    print(f"Quantile Loss Holdout: {quant_loss_lo}")
+    mse = mean_squared_error(y_test, y_pred_lo)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
-    mae = mean_absolute_error(y_test, y_pred_hi)
+    mae = mean_absolute_error(y_test, y_pred_lo)
     print(f"MAE on test set: {mae:.2f}")
 
-    mape = mean_absolute_percentage_error(y_test, y_pred_hi)
+    mape = mean_absolute_percentage_error(y_test, y_pred_lo)
     print(f"MAPE on test set: {mape}")
 
-    mdae = median_absolute_error(y_test, y_pred_hi)
+    mdae = median_absolute_error(y_test, y_pred_lo)
     print(f"MDAE on test set: {mdae}")
 
-    mbe = MBE(y_test, y_pred_hi)
+    mbe = MBE(y_test, y_pred_lo)
     print(f"MBE on test set: {mbe}")
-
-    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.05)
-    print(f"Quantile Loss Holdout: {quant_loss_lo}" )
-
-    quant_loss_hi = quantile_loss(y_test, y_pred_hi, 0.95)
-    print(f"Quantile Loss Holdout: {quant_loss_hi}" )
 
     X_test_["prediction_median"] = y_pred_median
     X_test_["prediction_low"] = y_pred_lo
@@ -408,6 +405,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["pred_error"] = y_test - y_pred_median
     X_test_["pi_width"] = y_pred_hi - y_pred_lo
 
-    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_90_final.csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_90_final_xgboost.csv"))
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
