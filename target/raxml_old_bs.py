@@ -74,7 +74,7 @@ for tree_filename in filenames_filtered:
     start_time = time.time()
 
     raxml_command = [
-        "raxmlHPC",
+        "raxmlHPC-PTHREADS",
         "-T 48"
         f"-m GTRGAMMA",
         f"-s {msa_filepath}",
