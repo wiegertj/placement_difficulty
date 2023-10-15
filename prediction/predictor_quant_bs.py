@@ -85,6 +85,34 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
              "mean_clo_sim_ratio",
              "min_pars_bootsupp_child_w"]]
 
+    column_name_mapping = {
+        "parsimony_boot_support": "parsimony_bootstrap_support",
+        "parsimony_support": "parsimony_support",
+        "avg_subst_freq": "mean_substitution_frequency",
+        "length_relative": "norm_branch_length",
+        "length": "branch_length",
+        "avg_rel_rf_boot": "mean_norm_rf_distance",
+        "max_subst_freq": "max_substitution_frequency",
+        "skw_pars_bootsupp_tree": "skewness_bootstrap_pars_support_tree",
+        "cv_subst_freq": "cv_substitution_frequency",
+        "bl_ratio": "branch_length_ratio_split",
+        "max_pars_bootsupp_child_w": "max_pars_bootstrap_support_children_w",
+        "sk_subst_freq": "skw_substitution_frequency",
+        "mean_pars_bootsupp_parents": "mean_pars_bootstrap_support_parents",
+        "max_pars_supp_child_w": "max_pars_support_children_weighted",
+        "std_pars_bootsupp_parents": "std_pars_bootstrap_support_parents",
+        "min_pars_supp_child": "min_pars_support_children",
+        "min_pars_supp_child_w": "min_pars_support_children_weighted",
+        "rel_num_children": "number_children_relative",
+        "mean_pars_supp_child_w": "mean_pars_support_children_weighted",
+        "std_pars_bootsupp_child": "std_pars_bootstrap_support_children",
+        "mean_clo_sim_ratio": "mean_closeness_centrality_ratio",
+        "min_pars_bootsupp_child_w": "min_pars_bootstrap_support_children_w"
+    }
+
+    # Rename the columns in the DataFrame
+    df = df.rename(columns=column_name_mapping)
+
 
 
     #df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
