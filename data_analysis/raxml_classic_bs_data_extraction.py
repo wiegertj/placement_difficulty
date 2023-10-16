@@ -63,20 +63,22 @@ for tree_filename in filenames_filtered:
 
     support_tree_path = "/hits/fast/cme/wiegerjs/placement_difficulty/data_analysis/" + tree_filename.replace(".newick",
                                                                                                               "") + "_1000_bs_raxml_classic.raxml.support"
+    try:
+        with open(support_tree_path, "r") as support_file:
+            tree_str = support_file.read()
+            tree = Tree(tree_str)  #
 
-    with open(support_tree_path, "r") as support_file:
-        tree_str = support_file.read()
-        tree = Tree(tree_str)  #
+            branch_id_counter = 0
 
-        branch_id_counter = 0
-
-        for node in tree.traverse():
-            all_supps = []
-            all_diff_supps = []
-            branch_id_counter += 1
-            node.__setattr__("name", branch_id_counter)
-            if node.support is not None and not node.is_leaf():
-                results.append((tree_filename.replace(".newick", ""), branch_id_counter, node.support))
+            for node in tree.traverse():
+                all_supps = []
+                all_diff_supps = []
+                branch_id_counter += 1
+                node.__setattr__("name", branch_id_counter)
+                if node.support is not None and not node.is_leaf():
+                    results.append((tree_filename.replace(".newick", ""), branch_id_counter, node.support))
+    except FileNotFoundError:
+        continue
 
 results_df = pd.DataFrame(results, columns=["dataset", "branchId", "support_raxml_classic"])
 results_df.to_csv("raxml_classic_supports.csv")
