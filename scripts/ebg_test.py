@@ -76,8 +76,8 @@ for tree_filename in filenames_filtered:
     raxml_command = [
         "ebg",
         f"-model {model_path}",
-        f"-msa {msa_filepath}",
-        f"-tree {tree_path}",
+        f"-msa {os.path.abspath(msa_filepath)}",
+        f"-tree {os.path.abspath(tree_path)}",
         "-pi 75",
         f"-o {output_prefix}"
     ]
