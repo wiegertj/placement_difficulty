@@ -28,6 +28,7 @@ filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verb
 filenames_filtered = filenames
 duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 accepted = []
+results = []
 counter = 0
 filenames_filtered = filenames_filtered[:300]
 for tree_filename in filenames_filtered:
@@ -60,4 +61,22 @@ for tree_filename in filenames_filtered:
 
     subprocess.run(" ".join(raxml_command), shell=True)
 
+    support_tree_path = "/hits/fast/cme/wiegerjs/placement_difficulty/data_analysis/" + tree_filename.replace(".newick",
+                                                                                                              "") + "_1000_bs_raxml_classic.raxml.support"
 
+    with open(support_tree_path, "r") as support_file:
+        tree_str = support_file.read()
+        tree = Tree(tree_str)  #
+
+        branch_id_counter = 0
+
+        for node in tree.traverse():
+            all_supps = []
+            all_diff_supps = []
+            branch_id_counter += 1
+            node.__setattr__("name", branch_id_counter)
+            if node.support is not None and not node.is_leaf():
+                results.append((tree_filename.replace(".newick", ""), branch_id_counter, node.support))
+
+results_df = pd.DataFrame(results, columns=["dataset", "branchId", "support_raxml_classic"])
+results_df.to_csv("raxml_classic_supports.csv")
