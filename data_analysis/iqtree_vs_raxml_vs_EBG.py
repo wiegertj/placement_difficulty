@@ -8,7 +8,7 @@ import pandas as pd
 
 
 
-file_path = "/hits/fast/cme/wiegerjs/placement_difficulty/prediction"
+file_path = "/hits/fast/cme/wiegerjs/placement_difficulty/tests"
 all_dataframes = []
 
 counter = 0
