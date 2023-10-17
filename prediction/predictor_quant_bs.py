@@ -130,24 +130,30 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
 
     target = "support"
-    # sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    # test = df[df['group'].isin(sample_dfs)]
-    # train = df[~df['group'].isin(sample_dfs)]
 
     ######
+    list_to_delete = ["17984_0", "10965_0", "17331_0", "18577_0", "21602_10"]
+    df = df[~df['dataset'].isin(list_to_delete)]
 
-    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    loo_selection = loo_selection[:200]
-    filenames = loo_selection["dataset"].values.tolist()
+    # loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    # loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
+    # loo_selection = loo_selection[:200]
+    # filenames = loo_selection["dataset"].values.tolist()
 
-    test = df[df['dataset'].isin(filenames)]
-    train = df[~df['dataset'].isin(filenames)]
+    # test = df[df['dataset'].isin(filenames)]
+    # train = df[~df['dataset'].isin(filenames)]
 
-    print(test.shape)
-    print(train.shape)
+    # print(test.shape)
+    # print(train.shape)
 
     #####
+
+
+    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    test = df[df['group'].isin(sample_dfs)]
+    train = df[~df['group'].isin(sample_dfs)]
+
+
 
     X_train = train.drop(axis=1, columns=target)
     y_train = train[target]
@@ -239,7 +245,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "mean_model75.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "mean_model75_big_test.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
@@ -344,7 +350,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     model_lo = QuantileRegressor(**best_params_lo, quantile=0.125, solver=solver).fit(
         X_train.drop(axis=1, columns=["group"]), y_train)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "low_model75.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "low_model75_big_test.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(model_lo, file)
 
@@ -409,7 +415,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     model_hi = QuantileRegressor(**best_params_hi, quantile=0.875, solver=solver).fit(
         X_train.drop(axis=1, columns=["group"]), y_train)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "high_model75.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "high_model75_big_test.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(model_hi, file)
 
