@@ -294,8 +294,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
 
     #####################################################################################################################
-    X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
-    X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
+    #X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
+    #X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
     X_test = X_test[["parsimony_boot_support", "parsimony_support", "avg_subst_freq",
              "length", "length_relative","max_subst_freq", 'group']]
     X_train = X_train[["parsimony_boot_support", "parsimony_support", "avg_subst_freq",
