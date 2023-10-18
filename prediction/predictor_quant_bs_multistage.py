@@ -53,7 +53,7 @@ def get_multistage_features(feature_df):
                         support_value = matching_row['pred_1'].values[0]
                         node.__setattr__("support", support_value)
                     else:
-                        node.__setattr__("support", None)
+                        node.__setattr__("support", -1)
             # collect parents and child predictions
             for node in tree.traverse():
                 if node.name in feature_df[feature_df["dataset"] == dataset]["branchId"].values.tolist():
@@ -64,12 +64,12 @@ def get_multistage_features(feature_df):
 
                 children_pred_1 = []
                 for child in children_list:
-                    if child.support is not None:
+                    if child.support is not -1:
                         children_pred_1.append(child.support)
 
                 parents_pred_1 = []
                 for parent in parents_list:
-                    if parent.support is not None:
+                    if parent.support is not -1:
                         parents_pred_1.append(parent.support)
 
                 min_par = min(parents_pred_1)
