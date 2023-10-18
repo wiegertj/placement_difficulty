@@ -426,7 +426,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     # Save the plot as an image file (e.g., PNG)
     plt.savefig("residual_plot.png")
 
-    feature_importance = final_model.feature_importance(importance_type='gain')
+    feature_importance = second_final_model.feature_importance(importance_type='gain')
     print(feature_importance)
 
     importance_df = pd.DataFrame(
