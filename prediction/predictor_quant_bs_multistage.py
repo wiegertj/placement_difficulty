@@ -230,6 +230,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     test = df[df['dataset'].isin(filenames)]
     train = df[~df['dataset'].isin(filenames)]
+    train = train.sample(100)
 
     # print(test.shape)
     # print(train.shape)
