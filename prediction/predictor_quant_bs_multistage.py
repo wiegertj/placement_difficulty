@@ -75,26 +75,35 @@ def get_multistage_features(feature_df):
                     min_par = min(parents_pred_1)
                     max_par = max(parents_pred_1)
                     mean_par = mean(parents_pred_1)
+                    feature_df.loc[(feature_df['branchId'] == node.name) & (
+                                feature_df['dataset'] == dataset), 'pred_1_parents_max'] = max_par
+                    feature_df.loc[(feature_df['branchId'] == node.name) & (
+                                feature_df['dataset'] == dataset), 'pred_1_parents_min'] = min_par
+                    feature_df.loc[(feature_df['branchId'] == node.name) & (
+                                feature_df['dataset'] == dataset), 'pred_1_parents_mean'] = mean_par
                 elif len(parents_pred_1) >= 2:
                     std_par = np.std(parents_pred_1)
+
+                    feature_df.loc[(feature_df['branchId'] == node.name) & (
+                                feature_df['dataset'] == dataset), 'pred_1_parents_std'] = std_par
 
                 if len(children_pred_1) >= 1:
                     min_ch = min(children_pred_1)
                     max_ch = max(children_pred_1)
                     mean_ch = mean(children_pred_1)
+                    feature_df.loc[(feature_df['branchId'] == node.name) & (
+                                feature_df['dataset'] == dataset), 'pred_1_childs_max'] = max_ch
+                    feature_df.loc[(feature_df['branchId'] == node.name) & (
+                                feature_df['dataset'] == dataset), 'pred_1_childs_min'] = min_ch
+                    feature_df.loc[(feature_df['branchId'] == node.name) & (
+                                feature_df['dataset'] == dataset), 'pred_1_childs_mean'] = mean_ch
                 elif len(children_pred_1) >= 2:
 
                     std_ch = np.std(children_pred_1)
+                    feature_df.loc[(feature_df['branchId'] == node.name) & (
+                                feature_df['dataset'] == dataset), 'pred_1_childs_std'] = std_ch
 
-                feature_df.loc[(feature_df['branchId'] == node.name) & (feature_df['dataset'] == dataset), 'pred_1_childs_max'] = max_ch
-                feature_df.loc[(feature_df['branchId'] == node.name) & (feature_df['dataset'] == dataset), 'pred_1_childs_min'] = min_ch
-                feature_df.loc[(feature_df['branchId'] == node.name) & (feature_df['dataset'] == dataset), 'pred_1_childs_mean'] = mean_ch
-                feature_df.loc[(feature_df['branchId'] == node.name) & (feature_df['dataset'] == dataset), 'pred_1_childs_std'] = std_ch
 
-                feature_df.loc[(feature_df['branchId'] == node.name) & (feature_df['dataset'] == dataset), 'pred_1_parents_max'] = max_par
-                feature_df.loc[(feature_df['branchId'] == node.name) & (feature_df['dataset'] == dataset), 'pred_1_parents_min'] = min_par
-                feature_df.loc[(feature_df['branchId'] == node.name) & (feature_df['dataset'] == dataset), 'pred_1_parents_mean'] = mean_par
-                feature_df.loc[(feature_df['branchId'] == node.name) & (feature_df['dataset'] == dataset), 'pred_1_parents_std'] = std_par
     feature_df.to_csv("test_multistage.csv")
 
     return feature_df
