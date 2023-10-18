@@ -225,12 +225,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    loo_selection = loo_selection[:1]
+    loo_selection = loo_selection[:200]
     filenames = loo_selection["dataset"].values.tolist()
 
     test = df[df['dataset'].isin(filenames)]
     train = df[~df['dataset'].isin(filenames)]
-    train = train.sample(30)
+    #train = train.sample(30)
 
     # print(test.shape)
     # print(train.shape)
