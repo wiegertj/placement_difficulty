@@ -381,7 +381,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     # Create a new Optuna study for the second model
     second_study = optuna.create_study(direction='minimize')
-    second_study.optimize(second_objective, n_trials=100)
+    second_study.optimize(second_objective, n_trials=10)
 
     second_best_params = second_study.best_params
     second_train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
@@ -421,7 +421,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     plt.ylabel("Residuals")
     plt.title("Residual Plot")
     plt.axhline(y=0, color='r', linestyle='--')  # Add a horizontal line at y=0 for reference
-    sys.exit()
     # Save the plot as an image file (e.g., PNG)
     plt.savefig("residual_plot.png")
 
@@ -444,6 +443,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     plt.ylabel('Importance')
     plt.title('Feature Importances')
     plt.tight_layout()
+    sys.exit()
+
 
     #####################################################################################################################
     # X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
