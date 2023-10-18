@@ -255,6 +255,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         X_test = X_test[selected_features]
 
     X_test_ = X_test
+    X_train_ = X_train
     if not rfe:
         X_train = X_train.drop(axis=1, columns=['dataset', 'branchId'])
         X_test = X_test.drop(axis=1, columns=['dataset', 'branchId'])
@@ -322,11 +323,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     ###########
 
-    X_train["pred_1"] = final_model.predict(X_train.drop(axis=1, columns=["group"]))
-    X_test["pred_1"] = final_model.predict(X_test.drop(axis=1, columns=["group"]))
+    X_train_["pred_1"] = final_model.predict(X_train.drop(axis=1, columns=["group"]))
+    X_test_["pred_1"] = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
-    X_train = get_multistage_features(X_train)
-    X_test = get_multistage_features(X_test)
+    X_train_ = get_multistage_features(X_train_)
+    X_test_ = get_multistage_features(X_test_)
+
+    X_train = X_train_.drop(axis=1, columns=['dataset', 'branchId'])
+    X_test = X_test_.drop(axis=1, columns=['dataset', 'branchId'])
+
     def second_objective(trial):
         params = {
             'objective': 'regression',
