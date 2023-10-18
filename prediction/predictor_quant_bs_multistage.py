@@ -225,11 +225,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    loo_selection = loo_selection[:200]
+    loo_selection = loo_selection[:1]
     filenames = loo_selection["dataset"].values.tolist()
 
     test = df[df['dataset'].isin(filenames)]
     train = df[~df['dataset'].isin(filenames)]
+    train = train.sample(5)
 
     # print(test.shape)
     # print(train.shape)
@@ -426,6 +427,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     plt.savefig("residual_plot.png")
 
     feature_importance = final_model.feature_importance(importance_type='gain')
+    print(feature_importance)
 
     importance_df = pd.DataFrame(
         {'Feature': X_train.drop(axis=1, columns=["group"]).columns, 'Importance': feature_importance})
