@@ -13,7 +13,7 @@ all_dataframes = []
 
 counter = 0
 for root, dirs, files in os.walk(file_path):
-    # Skip the "ebg_tmp" directory and its contents
+ #   # Skip the "ebg_tmp" directory and its contents
     if "ebg_tmp" in dirs:
         dirs.remove("ebg_tmp")
     for filename in files:
@@ -27,6 +27,7 @@ for root, dirs, files in os.walk(file_path):
 combined_dataframe = pd.concat(all_dataframes, ignore_index=True)
 
 combined_dataframe.to_csv("ebg_prediction_test.csv")
+print(combined_dataframe.shape)
 sys.exit()
 
 time_iq_tree = pd.read_csv(os.path.join(os.pardir, "data/pars_boot_times_iqrtree.csv"))
@@ -129,20 +130,20 @@ print(mean_absolute_error(df_merged["support"].values*100, df_merged["prediction
 print("MAE")
 print(median_absolute_error(df_merged["support"].values*100, df_merged["prediction_ebg_tool"].values))
 print("in 75%")
-within_range = df_merged[(df_merged['support']*100 >= df_merged['prediction_lower_75']) & (df_merged['prediction_ebg_tool'] <= df_merged['support']*100)]
+within_range = df_merged[(df_merged['support']*100 >= df_merged['prediction_lower_75']) & (df_merged['support']*100 <= df_merged['prediction_upper_75'])]
 percentage_within_range = (len(within_range) / len(df_merged)) * 100
 print(percentage_within_range)
 df_merged["pi_width_75"] = abs(df_merged['prediction_lower_75']-df_merged['prediction_upper_75'])
-data_to_plot = df_merged['pi_width_75']
+data_to_plot = df_merged['prediction_upper_75']
 print("Prediction Interval")
 print(mean(df_merged["pi_width_75"]))
 # Create a histogram
 plt.hist(data_to_plot, bins=8, color='skyblue', edgecolor='black')
 
 # Add labels and a title
-plt.xlabel('pi_width_75')
+plt.xlabel('Lower Bound')
 plt.ylabel('Frequency')
-plt.title('Histogram of pi_width_75')
+plt.title('Histogram of Lower Bound 75')
 
 # Show the plot
 plt.show()
