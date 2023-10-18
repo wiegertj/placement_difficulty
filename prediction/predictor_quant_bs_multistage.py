@@ -47,7 +47,8 @@ def get_multistage_features(feature_df):
                 branch_id_counter += 1
                 if not node.is_leaf():
                     node.__setattr__("name", branch_id_counter)
-                    matching_row = feature_df[feature_df['branchId'] == branch_id_counter and feature_df['dataset'] == dataset]
+                    matching_row = feature_df[
+                        (feature_df['branchId'] == branch_id_counter) & (feature_df['dataset'] == dataset)]
                     if not matching_row.empty:
                         support_value = matching_row['pred_1'].values[0]
                         node.__setattr__("support", support_value)
