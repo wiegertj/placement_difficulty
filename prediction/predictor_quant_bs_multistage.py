@@ -326,7 +326,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test["pred_1"] = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
     X_train = get_multistage_features(X_train)
-
+    X_test = get_multistage_features(X_test)
     def second_objective(trial):
         params = {
             'objective': 'regression',
