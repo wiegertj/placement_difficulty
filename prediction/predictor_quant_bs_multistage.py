@@ -33,9 +33,10 @@ def get_multistage_features(feature_df):
     feature_df["pred_1_parents_min"] = -1
     feature_df["pred_1_parents_std"] = -1
     feature_df["pred_1_parents_mean"] = -1
-
+    counter = 0
     for dataset in feature_df["dataset"].unique().tolist():
-
+        print(counter)
+        counter += 1
         tree_path = os.pardir + "/data/raw/reference_tree/" + dataset + ".newick"
 
         with open(tree_path, "r") as support_file:
