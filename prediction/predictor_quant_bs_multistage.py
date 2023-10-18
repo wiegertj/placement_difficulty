@@ -64,12 +64,12 @@ def get_multistage_features(feature_df):
 
                 children_pred_1 = []
                 for child in children_list:
-                    if child.support is not -1:
+                    if child.support != -1:
                         children_pred_1.append(child.support)
 
                 parents_pred_1 = []
                 for parent in parents_list:
-                    if parent.support is not -1:
+                    if parent.support != -1:
                         parents_pred_1.append(parent.support)
 
                 min_par = min(parents_pred_1)
