@@ -242,7 +242,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "mean_model75_test.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "mean_model90_test.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
@@ -321,11 +321,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             # KEIN VALIDSETS?
             solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
-            model = QuantileRegressor(**params, quantile=0.125, solver=solver)
+            model = QuantileRegressor(**params, quantile=0.05, solver=solver)
 
             model = model.fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.125)
+            val_score = quantile_loss(y_val, val_preds, 0.05)
             print("score: " + str(val_score))
 
             val_scores.append(val_score)
@@ -343,15 +343,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Params: {best_params_lo}")
     print(f"Best MAPE training: {best_score_lo}")
 
-    model_lo = QuantileRegressor(**best_params_lo, quantile=0.125, solver=solver).fit(
+    model_lo = QuantileRegressor(**best_params_lo, quantile=0.05, solver=solver).fit(
         X_train.drop(axis=1, columns=["group"]), y_train)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "low_model75_test.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "low_model90_test.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(model_lo, file)
 
     y_pred_lo = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
-    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.125)
+    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.05)
     print(f"Quantile Loss Holdout: {quant_loss_lo}")
     mse = mean_squared_error(y_test, y_pred_lo)
     rmse = math.sqrt(mse)
@@ -389,9 +389,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val)  # , reference=train_data)
             # KEIN VALIDSETS?
-            model = QuantileRegressor(**params, quantile=0.875, solver=solver).fit(X_train_tmp, y_train_tmp)
+            model = QuantileRegressor(**params, quantile=0.95, solver=solver).fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.875)
+            val_score = quantile_loss(y_val, val_preds, 0.95)
             print("score: " + str(val_score))
 
             val_scores.append(val_score)
@@ -408,10 +408,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Params: {best_params_hi}")
     print(f"Best Q training: {best_score_hi}")
 
-    model_hi = QuantileRegressor(**best_params_hi, quantile=0.875, solver=solver).fit(
+    model_hi = QuantileRegressor(**best_params_hi, quantile=0.95, solver=solver).fit(
         X_train.drop(axis=1, columns=["group"]), y_train)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "high_model75_test.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "high_model90_test.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(model_hi, file)
 
@@ -433,10 +433,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mbe = MBE(y_test, y_pred_hi)
     print(f"MBE on test set: {mbe}")
 
-    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.125)
+    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.05)
     print(f"Quantile Loss Holdout: {quant_loss_lo}")
 
-    quant_loss_hi = quantile_loss(y_test, y_pred_hi, 0.875)
+    quant_loss_hi = quantile_loss(y_test, y_pred_hi, 0.95)
     print(f"Quantile Loss Holdout: {quant_loss_hi}")
 
     X_test_["prediction_median"] = y_pred_median
@@ -446,7 +446,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["pred_error"] = y_test - y_pred_median
     X_test_["pi_width"] = y_pred_hi - y_pred_lo
 
-    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_75_final.csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_90_final.csv"))
 
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
