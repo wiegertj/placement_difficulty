@@ -134,16 +134,16 @@ within_range = df_merged[(df_merged['support']*100 >= df_merged['prediction_lowe
 percentage_within_range = (len(within_range) / len(df_merged)) * 100
 print(percentage_within_range)
 df_merged["pi_width_75"] = abs(df_merged['prediction_lower_75']-df_merged['prediction_upper_75'])
-data_to_plot = df_merged['prediction_upper_75']
+data_to_plot = df_merged['pi_width_75']
 print("Prediction Interval")
 print(mean(df_merged["pi_width_75"]))
 # Create a histogram
 plt.hist(data_to_plot, bins=8, color='skyblue', edgecolor='black')
 
 # Add labels and a title
-plt.xlabel('Lower Bound')
+plt.xlabel('pi_width_75')
 plt.ylabel('Frequency')
-plt.title('Histogram of Lower Bound 75')
+plt.title('pi_width_75')
 
 # Show the plot
 plt.show()
