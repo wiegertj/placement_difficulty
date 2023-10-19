@@ -8,27 +8,27 @@ import pandas as pd
 
 
 
-file_path = "/hits/fast/cme/wiegerjs/placement_difficulty/EBG_TEST_NO_UNI"
-all_dataframes = []
+#file_path = "/hits/fast/cme/wiegerjs/placement_difficulty/EBG_TEST_NO_UNI"
+#all_dataframes = []
 
-counter = 0
-for root, dirs, files in os.walk(file_path):
+#counter = 0
+#for root, dirs, files in os.walk(file_path):
  #   # Skip the "ebg_tmp" directory and its contents
-    if "ebg_tmp" in dirs:
-        dirs.remove("ebg_tmp")
-    for filename in files:
-        if filename.endswith('.csv'):
-            counter += 1
-            print(counter)
-            file_pathname = os.path.join(root, filename)
-            df = pd.read_csv(file_pathname)
-            all_dataframes.append(df)
+ #   if "ebg_tmp" in dirs:
+  #      dirs.remove("ebg_tmp")
+   # for filename in files:
+    #    if filename.endswith('.csv'):
+     #       counter += 1
+      #      print(counter)
+       #     file_pathname = os.path.join(root, filename)
+        #    df = pd.read_csv(file_pathname)
+         #   all_dataframes.append(df)
 
-combined_dataframe = pd.concat(all_dataframes, ignore_index=True)
+#combined_dataframe = pd.concat(all_dataframes, ignore_index=True)
 
-combined_dataframe.to_csv("ebg_prediction_test.csv")
-print(combined_dataframe.shape)
-sys.exit()
+#combined_dataframe.to_csv("ebg_prediction_test.csv")
+#print(combined_dataframe.shape)
+#sys.exit()
 
 time_iq_tree = pd.read_csv(os.path.join(os.pardir, "data/pars_boot_times_iqrtree.csv"))
 time_ebg_tree = pd.read_csv(os.path.join(os.pardir, "data/pars_boot_times_ebg.csv"))
@@ -90,7 +90,7 @@ from numpy import median
 from sklearn.metrics import mean_absolute_error, median_absolute_error
 
 df_iqtree = pd.read_csv(os.path.join(os.pardir, "data/iq_boots.csv"), usecols=lambda column: column != 'Unnamed: 0')
-df_ebg_prediction = pd.read_csv(os.path.join(os.pardir, "data/ebg_prediction_test.csv"))
+df_ebg_prediction = pd.read_csv(os.path.join(os.pardir, "data/ebg_prediction_test_nonuni.csv"))
 df_ebg_prediction["dataset"] = df_ebg_prediction["dataset"].str.replace("ebg_test", "")
 df_ebg_prediction["prediction_ebg_tool"] = df_ebg_prediction["prediction_median"]
 df_normal = pd.read_csv(os.path.join(os.pardir, "data/pred_interval_75_final.csv"))
@@ -98,6 +98,8 @@ df_normal["prediction_normal"] = df_normal["prediction_median"] * 100
 df_raxml = pd.read_csv(os.path.join(os.pardir, "data/raxml_classic_supports.csv"))
 
 df_merged = df_ebg_prediction.merge(df_normal, on=["branchId", "dataset"], how="inner")
+print(median_absolute_error(df_merged["support"].values*100, df_merged["prediction_ebg_tool"].values))
+print("-----"*5)
 df_merged = df_merged.merge(df_raxml, on=["dataset", "branchId"], how="inner")
 df_merged = df_merged.merge(df_iqtree, left_on=["dataset", "branchId"], right_on=["dataset", "branchId_true"], how="inner")
 
