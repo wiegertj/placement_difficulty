@@ -22,7 +22,7 @@ def light_gbm_regressor():
 
     # Create a TabularPandas object
     procs = [Categorify, FillMissing, Normalize]
-    cont_names = [col for col in df.columns if col != 'support']
+    cont_names = [col for col in train.columns if col != 'support']
 
     data = TabularPandas(train, procs=procs, cat_names=[], cont_names=cont_names, y_names="support")
 
