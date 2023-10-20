@@ -8,27 +8,27 @@ import pandas as pd
 
 
 
-#file_path = "/hits/fast/cme/wiegerjs/placement_difficulty/EBG_TEST_NO_UNI"
-#all_dataframes = []
+file_path = "/hits/fast/cme/wiegerjs/placement_difficulty/EBG_TEST_NO_UNI_FIN"
+all_dataframes = []
 
-#counter = 0
-#for root, dirs, files in os.walk(file_path):
+counter = 0
+for root, dirs, files in os.walk(file_path):
  #   # Skip the "ebg_tmp" directory and its contents
- #   if "ebg_tmp" in dirs:
-  #      dirs.remove("ebg_tmp")
-   # for filename in files:
-    #    if filename.endswith('.csv'):
-     #       counter += 1
-      #      print(counter)
-       #     file_pathname = os.path.join(root, filename)
-        #    df = pd.read_csv(file_pathname)
-         #   all_dataframes.append(df)
+    if "ebg_tmp" in dirs:
+        dirs.remove("ebg_tmp")
+    for filename in files:
+        if filename.endswith('.csv'):
+            counter += 1
+            print(counter)
+            file_pathname = os.path.join(root, filename)
+            df = pd.read_csv(file_pathname)
+            all_dataframes.append(df)
 
-#combined_dataframe = pd.concat(all_dataframes, ignore_index=True)
+combined_dataframe = pd.concat(all_dataframes, ignore_index=True)
 
-#combined_dataframe.to_csv("ebg_prediction_test.csv")
-#print(combined_dataframe.shape)
-#sys.exit()
+combined_dataframe.to_csv("ebg_prediction_test.csv")
+print(combined_dataframe.shape)
+sys.exit()
 
 time_iq_tree = pd.read_csv(os.path.join(os.pardir, "data/pars_boot_times_iqrtree.csv"))
 time_ebg_tree = pd.read_csv(os.path.join(os.pardir, "data/pars_boot_times_ebg.csv"))
@@ -58,9 +58,9 @@ plt.title('Total Elapsed Time for Different Methods')
 plt.show()
 
 # Create a line chart to show the development of the three times over time (len)
-plt.plot(sorted(time_merged['len']), sorted(time_merged['elapsed_time_iq']), label='IQTree')
+#plt.plot(sorted(time_merged['len']), sorted(time_merged['elapsed_time_iq']), label='IQTree')
 plt.plot(sorted(time_merged['len']), sorted(time_merged['elapsed_time_ebg']), label='Prediction')
-plt.plot(sorted(time_merged['len']), sorted(time_merged['elapsed_time_raxml']), label='RAxML Rapid BS')
+#plt.plot(sorted(time_merged['len']), sorted(time_merged['elapsed_time_raxml']), label='RAxML Rapid BS')
 
 plt.xlabel('Sequence Length')
 plt.ylabel('Elapsed Time (seconds)')
@@ -72,9 +72,9 @@ plt.legend()
 plt.show()
 
 # Create a line chart to show the development of the three times over time (len)
-#plt.plot(sorted(time_merged['num_seq']), sorted(time_merged['elapsed_time_iq']), label='IQTree')
+plt.plot(sorted(time_merged['num_seq']), sorted(time_merged['elapsed_time_iq']), label='IQTree')
 plt.plot(sorted(time_merged['num_seq']), sorted(time_merged['elapsed_time_ebg']), label='Prediction')
-#plt.plot(sorted(time_merged['num_seq']), sorted(time_merged['elapsed_time_raxml']), label='RAxML Rapid BS')
+plt.plot(sorted(time_merged['num_seq']), sorted(time_merged['elapsed_time_raxml']), label='RAxML Rapid BS')
 
 plt.xlabel('Number of Sequences')
 plt.ylabel('Elapsed Time (seconds)')
