@@ -16,7 +16,7 @@ def light_gbm_regressor():
 
     test = df[df['dataset'].isin(filenames)]
     y_test = test["support"].values
-    test = test.drop(columns=["support"], axis=1)
+    #test = test.drop(columns=["support"], axis=1)
     train = df[~df['dataset'].isin(filenames)]
 
     test = test.drop(columns=["dataset", "branchId"], axis=1)
@@ -40,10 +40,12 @@ def light_gbm_regressor():
     procs = [Categorify, FillMissing, Normalize]
     cont_names = [col for col in train.columns if col != 'support']
 
-    data = TabularPandas(test, procs=procs, cat_names=[], cont_names=cont_names, y_names="support")
+    test_data = data.new(test)
 
-    # Use the 'predict' method on the learner 'learn' to get predictions for the test data
-    preds = learn.get_preds(dl=data.dataloaders())[0]
+    test_dataloader = learn.dls.test_dl(test_data)
+
+    # Use the 'get_preds' method on the learner 'learn' to get predictions for the test data
+    preds = learn.get_preds(dl=test_dataloader)[0]
 
     # Calculate MAE on the test set
     mae = mean_absolute_error(y_test, preds)
