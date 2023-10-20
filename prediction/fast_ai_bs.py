@@ -42,7 +42,7 @@ def light_gbm_regressor():
     preds, _ = learn.get_preds(dl=test_dl)
 
     # Calculate MAE on the test set
-    mae = mean_absolute_error(test["support"], preds)
+    mae = mean_absolute_error(y_test, preds)
     print(f"Mean Absolute Error on test set: {mae}")
 
 # Call the function to run the Fastai Tabular Learner
