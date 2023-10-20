@@ -128,7 +128,7 @@ y_test = torch.tensor(y_test, dtype=torch.float32).reshape(-1, 1)
 
 # Define the model
 model = nn.Sequential(
-    nn.Linear(8, 24),
+    nn.Linear(22, 24),
     nn.ReLU(),
     nn.Linear(24, 12),
     nn.ReLU(),
