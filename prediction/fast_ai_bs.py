@@ -151,6 +151,7 @@ best_weights = None
 history = []
 
 for epoch in range(n_epochs):
+    print(epoch)
     model.train()
     with tqdm.tqdm(batch_start, unit="batch", mininterval=0, disable=True) as bar:
         bar.set_description(f"Epoch {epoch}")
