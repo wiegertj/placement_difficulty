@@ -141,7 +141,7 @@ model = nn.Sequential(
 loss_fn = nn.MSELoss()  # mean square error
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
-n_epochs = 100   # number of epochs to run
+n_epochs = 3   # number of epochs to run
 batch_size = 10  # size of each batch
 batch_start = torch.arange(0, len(X_train), batch_size)
 
