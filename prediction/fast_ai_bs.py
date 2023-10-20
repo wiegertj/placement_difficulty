@@ -15,6 +15,8 @@ def light_gbm_regressor():
     filenames = loo_selection["dataset"].values.tolist()
 
     test = df[df['dataset'].isin(filenames)]
+    y_test = test["support"].values
+    test = test.drop(columns=["support"], axis=1)
     train = df[~df['dataset'].isin(filenames)]
 
     test = test.drop(columns=["dataset", "branchId"], axis=1)
@@ -30,8 +32,7 @@ def light_gbm_regressor():
     dls = data.dataloaders(bs=64)  # Adjust batch size as needed
 
     # Create a regression learner with MAE as the loss function
-    learn = tabular_learner(dls, layers=[200, 100], metrics = mean_absolute_error
-)
+    learn = tabular_learner(dls, layers=[200, 100], metrics = [mean_absolute_error])
 
     # Train the model
     learn.fit_one_cycle(5)  # Modify the number of epochs as needed
@@ -41,7 +42,7 @@ def light_gbm_regressor():
     preds, _ = learn.get_preds(dl=test_dl)
 
     # Calculate MAE on the test set
-    mae = mean_absolute_error(test[dep_var], preds)
+    mae = mean_absolute_error(test["support"], preds)
     print(f"Mean Absolute Error on test set: {mae}")
 
 # Call the function to run the Fastai Tabular Learner
