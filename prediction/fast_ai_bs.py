@@ -65,13 +65,7 @@ column_name_mapping = {
 # Rename the columns in the DataFrame
 df = df.rename(columns=column_name_mapping)
 
-scaler = MinMaxScaler()
 
-# Fit the scaler on your DataFrame and transform the data
-scaled_data = scaler.fit_transform(df)
-
-# Create a new DataFrame with the scaled data
-df = pd.DataFrame(scaled_data, columns=df.columns)
 
 # df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 # df_diff["name"] = df_diff["name"].str.replace(".phy", "")
@@ -98,6 +92,9 @@ filenames = loo_selection["dataset"].values.tolist()
 
 test = df[df['dataset'].isin(filenames)]
 train = df[~df['dataset'].isin(filenames)]
+
+
+
 
 # print(test.shape)
 # print(train.shape)
@@ -134,6 +131,14 @@ X_train = torch.tensor(X_train, dtype=torch.float32)
 y_train = torch.tensor(y_train, dtype=torch.float32).reshape(-1, 1)
 X_test = torch.tensor(X_test, dtype=torch.float32)
 y_test = torch.tensor(y_test, dtype=torch.float32).reshape(-1, 1)
+
+scaler = MinMaxScaler()
+
+# Fit and transform the scaler on X_train
+X_train = scaler.fit_transform(X_train)
+
+# Transform X_test using the same scaler
+X_test = scaler.transform(X_test)
 
 # Define the model
 model = nn.Sequential(
