@@ -125,13 +125,6 @@ y_train = train[target].to_numpy()
 print(train.drop(axis=1, columns=[target, "dataset", "branchId", "group"]).shape)
 X_test = test.drop(axis=1, columns=[target, "dataset", "branchId", "group"]).to_numpy()
 y_test = test[target].to_numpy()
-
-# Convert to 2D PyTorch tensors
-X_train = torch.tensor(X_train, dtype=torch.float32)
-y_train = torch.tensor(y_train, dtype=torch.float32).reshape(-1, 1)
-X_test = torch.tensor(X_test, dtype=torch.float32)
-y_test = torch.tensor(y_test, dtype=torch.float32).reshape(-1, 1)
-
 scaler = MinMaxScaler()
 
 # Fit and transform the scaler on X_train
@@ -139,6 +132,15 @@ X_train = scaler.fit_transform(X_train)
 
 # Transform X_test using the same scaler
 X_test = scaler.transform(X_test)
+
+# Convert to 2D PyTorch tensors
+X_train = torch.tensor(X_train, dtype=torch.float32)
+y_train = torch.tensor(y_train, dtype=torch.float32).reshape(-1, 1)
+X_test = torch.tensor(X_test, dtype=torch.float32)
+y_test = torch.tensor(y_test, dtype=torch.float32).reshape(-1, 1)
+
+
+
 
 # Define the model
 model = nn.Sequential(
