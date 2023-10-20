@@ -40,10 +40,10 @@ def light_gbm_regressor():
     procs = [Categorify, FillMissing, Normalize]
     cont_names = [col for col in train.columns if col != 'support']
 
-    data = TabularPandas(test, procs=procs, cat_names=[], cont_names=cont_names, y_names="support")
+    data = TabularPandas(test, procs=procs, cat_names=[], cont_names=cont_names)
 
     # Use the 'predict' method on the learner 'learn' to get predictions for the test data
-    preds = learn.get_preds(dl=data.dataloaders())[0]
+    preds = learn.get_preds(dl=data.dataloaders(), ordered=True)[0]
 
     # Calculate MAE on the test set
     mae = mean_absolute_error(y_test, preds)
