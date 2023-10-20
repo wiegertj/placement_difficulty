@@ -115,10 +115,10 @@ y_test = test[target]
 # train = df[~df['group'].isin(sample_dfs)]
 
 X_train = train.drop(axis=1, columns=[target, "dataset", "branchId"]).to_numpy()
-y_train = train[target]
+y_train = train[target].to_numpy()
 
 X_test = test.drop(axis=1, columns=[target, "dataset", "branchId"]).to_numpy()
-y_test = test[target]
+y_test = test[target].to_numpy()
 
 # Convert to 2D PyTorch tensors
 X_train = torch.tensor(X_train, dtype=torch.float32)
