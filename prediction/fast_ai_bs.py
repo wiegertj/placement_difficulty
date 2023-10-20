@@ -144,11 +144,11 @@ y_test = torch.tensor(y_test, dtype=torch.float32).reshape(-1, 1)
 
 # Define the model
 model = nn.Sequential(
-    nn.Linear(22, 24),
+    nn.Linear(22, 40),
     nn.ReLU(),
-    nn.Linear(24, 12),
+    nn.Linear(40, 20),
     nn.ReLU(),
-    nn.Linear(12, 6),
+    nn.Linear(20, 6),
     nn.ReLU(),
     nn.Linear(6, 1)
 )
@@ -157,7 +157,7 @@ model = nn.Sequential(
 loss_fn = nn.MSELoss()  # mean square error
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
-n_epochs = 3   # number of epochs to run
+n_epochs = 100   # number of epochs to run
 batch_size = 10  # size of each batch
 batch_start = torch.arange(0, len(X_train), batch_size)
 
