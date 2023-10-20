@@ -76,8 +76,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     y_test = test[target]
 
     X_train.fillna(-1, inplace=True)
-    print("In prediction")
-    print(X_train.columns)
+
     X_train.replace([np.inf, -np.inf], -1, inplace=True)
 
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
@@ -146,6 +145,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         gkf = GroupKFold(n_splits=5)
         for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
+            print("In prediction")
+            print(X_train_tmp.columns)
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
 
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
