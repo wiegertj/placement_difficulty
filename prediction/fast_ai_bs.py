@@ -183,5 +183,11 @@ for epoch in range(n_epochs):
 model.load_state_dict(best_weights)
 print("MSE: %.2f" % best_mse)
 print("RMSE: %.2f" % np.sqrt(best_mse))
-plt.plot(history)
-plt.show()
+model.eval()
+with torch.no_grad():
+    y_pred = model(X_test)
+
+# Calculate MAE
+mae = torch.abs(y_pred - y_test).mean()
+
+print("Mean Absolute Error (MAE): %.2f" % mae)
