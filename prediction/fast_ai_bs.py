@@ -13,7 +13,7 @@ def light_gbm_regressor():
     loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
     loo_selection = loo_selection[:200]
     filenames = loo_selection["dataset"].values.tolist()
-
+    df.fillna(-1, inplace=True)
     test = df[df['dataset'].isin(filenames)]
     print(test)
     y_test = test["support"].values
