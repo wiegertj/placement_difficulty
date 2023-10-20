@@ -1,4 +1,5 @@
 import math
+import pickle
 import sys
 import random
 import shap
@@ -22,25 +23,7 @@ from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
 
 
-def MBE(y_true, y_pred):
-    '''
-    Parameters:
-        y_true (array): Array of observed values
-        y_pred (array): Array of prediction values
-
-    Returns:
-        mbe (float): Biais score
-    '''
-    y_true = np.array(y_true)
-    y_pred = np.array(y_pred)
-    y_true = y_true.reshape(len(y_true), 1)
-    y_pred = y_pred.reshape(len(y_pred), 1)
-    diff = (y_true - y_pred)
-    mbe = diff.mean()
-    return mbe
-
-
-def light_gbm_regressor(rfe=False, rfe_feature_n=25, shapley_calc=True):
+def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     df_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "msa_features.csv"), usecols=lambda column: column != 'Unnamed: 0')
     df_target = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "split_prediction.csv"), usecols=lambda column: column != 'Unnamed: 0')
     print("unique datasets: ")
@@ -181,6 +164,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=25, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
+    model_path = os.path.join(os.pardir, "data/processed/final", "branch_predictor.pkl")
+    with open(model_path, 'wb') as file:
+        pickle.dump(final_model, file)
+
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
     # Convert probabilities to class labels (binary classification)
@@ -298,4 +285,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=25, shapley_calc=True):
         plt.savefig("lgbm-300.png")
 
 
-light_gbm_regressor(rfe=False, shapley_calc=False)
+light_gbm_regressor(rfe=True, shapley_calc=False)
