@@ -15,10 +15,11 @@ def light_gbm_regressor():
     filenames = loo_selection["dataset"].values.tolist()
 
     test = df[df['dataset'].isin(filenames)]
+    print(test)
     y_test = test["support"].values
     #test = test.drop(columns=["support"], axis=1)
     train = df[~df['dataset'].isin(filenames)]
-
+    print(train)
     test = test.drop(columns=["dataset", "branchId"], axis=1)
     train = train.drop(columns=["dataset", "branchId"], axis=1)
 
