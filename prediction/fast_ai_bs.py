@@ -17,8 +17,8 @@ def light_gbm_regressor():
     test = df[df['dataset'].isin(filenames)]
     train = df[~df['dataset'].isin(filenames)]
 
-    test = test.drop(columns=["dataset", "branchId"])
-    train = train.drop(columns=["dataset", "branchId"])
+    test = test.drop(columns=["dataset", "branchId"], axis=1)
+    train = train.drop(columns=["dataset", "branchId"], axis=1)
 
     # Create a TabularPandas object
     procs = [Categorify, FillMissing, Normalize]
