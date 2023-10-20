@@ -22,7 +22,9 @@ def light_gbm_regressor():
 
     # Create a TabularPandas object
     procs = [Categorify, FillMissing, Normalize]
-    data = TabularPandas(train, procs=procs, cat_names=[], cont_names=df.columns, y_names="support")
+    cont_names = [col for col in df.columns if col != 'support']
+
+    data = TabularPandas(train, procs=procs, cat_names=[], cont_names=cont_names, y_names="support")
 
     # Create DataLoaders
     dls = data.dataloaders(bs=64)  # Adjust batch size as needed
