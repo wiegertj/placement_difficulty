@@ -30,7 +30,8 @@ def light_gbm_regressor():
     dls = data.dataloaders(bs=64)  # Adjust batch size as needed
 
     # Create a regression learner with MAE as the loss function
-    learn = tabular_learner(dls, layers=[200, 100], metrics=mae)
+    learn = tabular_learner(dls, layers=[200, 100], metrics = mean_absolute_error
+)
 
     # Train the model
     learn.fit_one_cycle(5)  # Modify the number of epochs as needed
