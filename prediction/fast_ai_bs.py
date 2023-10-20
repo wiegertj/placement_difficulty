@@ -37,9 +37,10 @@ def light_gbm_regressor():
     # Train the model
     learn.fit_one_cycle(5)  # Modify the number of epochs as needed
 
-    # Evaluate the model on the test set
-    test_dl = learn.dls.test_dl(test)
-    preds, _ = learn.get_preds(dl=test_dl)
+    test_data = data.new(test)
+
+    # Use the 'predict' method on the learner 'learn' to get predictions for the test data
+    preds = learn.get_preds(dl=test_data.dataloaders(), with_input=True)[0]
 
     # Calculate MAE on the test set
     mae = mean_absolute_error(y_test, preds)
