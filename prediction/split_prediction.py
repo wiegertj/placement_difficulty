@@ -76,6 +76,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     y_test = test[target]
 
     X_train.fillna(-1, inplace=True)
+    print("In prediction")
+    print(X_train.columns)
     X_train.replace([np.inf, -np.inf], -1, inplace=True)
 
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
