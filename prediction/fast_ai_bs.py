@@ -10,6 +10,7 @@ import tqdm
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_california_housing
+from sklearn.preprocessing import MinMaxScaler
 
 df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
 
@@ -63,6 +64,14 @@ column_name_mapping = {
 
 # Rename the columns in the DataFrame
 df = df.rename(columns=column_name_mapping)
+
+scaler = MinMaxScaler()
+
+# Fit the scaler on your DataFrame and transform the data
+scaled_data = scaler.fit_transform(df)
+
+# Create a new DataFrame with the scaled data
+df = pd.DataFrame(scaled_data, columns=df.columns)
 
 # df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 # df_diff["name"] = df_diff["name"].str.replace(".phy", "")
