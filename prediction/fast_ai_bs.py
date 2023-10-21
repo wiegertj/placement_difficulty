@@ -177,7 +177,7 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.Linear(15, 3)
 )
-quantiles = [0.125, 0.5, 0.875]
+quantiles = [0.125, 0.875]
 loss_fn = QuantileLoss(quantiles=quantiles)
 
 # loss function and optimizer
@@ -243,11 +243,11 @@ model.eval()
 with torch.no_grad():
     y_pred = model(X_test)
 
-quantile_column_names = ["lower75", "median_pred", "upper75"]
+quantile_column_names = ["lower75", "upper75"]
 quantile_df = pd.DataFrame(y_pred.numpy(), columns=quantile_column_names)
 
 # Concatenate the quantile predictions with the original X_test_df
 X_test_df = pd.concat([test, quantile_df], axis=1)
 
-print(mean_absolute_error(X_test_df["support"], X_test_df["median_pred"]))
+#print(mean_absolute_error(X_test_df["support"], X_test_df["median_pred"]))
 X_test_df.to_csv("pytorch_bs_pred.csv")
