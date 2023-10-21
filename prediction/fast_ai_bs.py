@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_california_housing
 from sklearn.preprocessing import MinMaxScaler
 from torch.optim.lr_scheduler import StepLR
-
+from pytorch_forecasting.data import QuantileLoss
 df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
 
 df = df[["dataset", "branchId", "support", "parsimony_boot_support",
@@ -156,9 +156,11 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.Linear(6, 1)
 )
+quantiles = [0.125, 0.875]
+loss_fn = QuantileLoss(quantiles=quantiles)
 
 # loss function and optimizer
-loss_fn = nn.MSELoss()  # mean square error
+#loss_fn = nn.MSELoss()  # mean square error
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 n_epochs = 200   # number of epochs to run
