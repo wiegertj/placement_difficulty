@@ -171,10 +171,8 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.Linear(50, 30),
     nn.ReLU(),
-    nn.Dropout(0.5),
     nn.Linear(30, 15),
     nn.ReLU(),
-    nn.Dropout(0.5),
     nn.Linear(15, 1)
 )
 
