@@ -340,7 +340,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'alpha': 0.05,
             'num_iterations': trial.suggest_int('num_iterations', 5, 500),
             'boosting_type': 'gbdt',
-            #'num_leaves': trial.suggest_int('num_leaves', 2, 200),
+            'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.01, 0.5),
             #'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
@@ -383,7 +383,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     final_model_lower_bound = lgb.train(best_params_lower_bound, train_data)
 
     y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"]))
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.125)))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.05)))
 
     #########################################################################################################
 
@@ -439,7 +439,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
 
     y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"]))
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.875)))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.95)))
     X_test_["prediction"] = y_pred
     X_test_["prediction_low"] = y_pred_lower
     X_test_["prediction_upper"] = y_pred_upper
