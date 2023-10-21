@@ -113,7 +113,7 @@ train = df[~df['dataset'].isin(filenames)]
 # sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
 # test = df[df['group'].isin(sample_dfs)]
 # train = df[~df['group'].isin(sample_dfs)]
-X_train, X_val, y_train, y_val = train_test_split(train.drop(columns=["support"], axis=1), train["support"].values, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = train_test_split(train.drop(columns=["support"], axis=1), train["support"], test_size=0.2, random_state=42)
 
 X_train = X_train.drop(axis=1, columns=["dataset", "branchId", "group"]).to_numpy()
 X_val = X_val.drop(axis=1, columns=["dataset", "branchId", "group"]).to_numpy()
