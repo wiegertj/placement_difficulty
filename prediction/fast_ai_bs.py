@@ -182,15 +182,15 @@ model = nn.Sequential(
 # Set the optimizer
 optimizer = optim.Adam(model.parameters(), lr=0.01)
 
-n_epochs = 200
-batch_size = 10
+n_epochs = 500
+batch_size = 20
 batch_start = torch.arange(0, len(X_train), batch_size)
 
 best_mse = np.inf
 best_weights = None
 history = []
 patience = 20
-scheduler = StepLR(optimizer, step_size=10, gamma=0.3)
+scheduler = StepLR(optimizer, step_size=15, gamma=0.5)
 
 # Training loop
 for epoch in range(n_epochs):
