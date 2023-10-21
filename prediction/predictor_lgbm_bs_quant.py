@@ -398,7 +398,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
             'objective': 'quantile',
-            'alpha': 0.90,
+            'alpha': 0.85,
             'num_iterations': trial.suggest_int('num_iterations', 2, 500),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
@@ -424,7 +424,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.90)
+            val_score = quantile_loss(y_val, val_preds, 0.85)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
@@ -436,7 +436,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_upper_bound["objective"] = "quantile"
     best_params_upper_bound["metric"] = "quantile"
     best_params_upper_bound["boosting_type"] = "gbdt"
-    best_params_upper_bound["alpha"] = 0.90
+    best_params_upper_bound["alpha"] = 0.85
     best_params_upper_bound["verbosity"] = -1
     best_score_upper_bound = study.best_value
 
