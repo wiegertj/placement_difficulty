@@ -8,6 +8,8 @@ import torch.nn as nn
 import torch.optim as optim
 import tqdm
 import os
+
+from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_california_housing
 from sklearn.preprocessing import MinMaxScaler
@@ -173,9 +175,9 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.Linear(30, 15),
     nn.ReLU(),
-    nn.Linear(15, 5)
+    nn.Linear(15, 3)
 )
-quantiles = [0.05, 0.125, 0.5, 0.875, 0.95]
+quantiles = [0.125, 0.5, 0.875]
 loss_fn = QuantileLoss(quantiles=quantiles)
 
 # loss function and optimizer
@@ -191,7 +193,7 @@ best_mse = np.inf   # init to infinity
 best_weights = None
 history = []
 patience = 10  # Number of epochs with no improvement to wait before early stopping
-scheduler = StepLR(optimizer, step_size=10, gamma=0.5)  # Decrease LR by half every 10 epochs
+scheduler = StepLR(optimizer, step_size=20, gamma=0.5)  # Decrease LR by half every 10 epochs
 
 for epoch in range(n_epochs):
     print(epoch)
@@ -241,9 +243,11 @@ model.eval()
 with torch.no_grad():
     y_pred = model(X_test)
 
-quantile_column_names = ["lower90", "lower75", "median_pred", "upper75", "upper90"]
+quantile_column_names = ["lower75", "median_pred", "upper75"]
 quantile_df = pd.DataFrame(y_pred.numpy(), columns=quantile_column_names)
 
 # Concatenate the quantile predictions with the original X_test_df
 X_test_df = pd.concat([test, quantile_df], axis=1)
+
+print(mean_absolute_error(X_test_df["support"], X_test_df["median_pred"]))
 X_test_df.to_csv("pytorch_bs_pred.csv")
