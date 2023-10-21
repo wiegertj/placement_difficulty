@@ -188,8 +188,8 @@ batch_start = torch.arange(0, len(X_train), batch_size)
 best_mse = np.inf
 best_weights = None
 history = []
-patience = 10
-scheduler = StepLR(optimizer, step_size=5, gamma=0.5)
+patience = 20
+scheduler = StepLR(optimizer, step_size=10, gamma=0.3)
 
 # Training loop
 for epoch in range(n_epochs):
