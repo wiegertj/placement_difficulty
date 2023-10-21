@@ -207,6 +207,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     study.optimize(objective_median, n_trials=1)
 
     best_params_median = study.best_params
+    best_params_median["objective"] = "quantile"
+    best_params_median["metric"] = "quantile"
+    best_params_median["boosting_type"] = "gbdt"
+    best_params_median["bagging_freq"] = 0
+    best_params_median["alpha"] = 0.5
+
     best_score_median = study.best_value
 
     print(f"Best Params: {best_params_median}")
