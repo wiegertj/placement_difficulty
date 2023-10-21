@@ -11,6 +11,7 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_california_housing
 from sklearn.preprocessing import MinMaxScaler
+from torch.optim.lr_scheduler import StepLR
 
 df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
 
@@ -167,6 +168,7 @@ best_mse = np.inf   # init to infinity
 best_weights = None
 history = []
 patience = 10  # Number of epochs with no improvement to wait before early stopping
+scheduler = StepLR(optimizer, step_size=10, gamma=0.5)  # Decrease LR by half every 10 epochs
 
 for epoch in range(n_epochs):
     print(epoch)
@@ -188,6 +190,9 @@ for epoch in range(n_epochs):
             # print progress
             bar.set_postfix(mse=float(loss))
     # evaluate accuracy at end of each epoch
+
+    scheduler.step()
+
     model.eval()
     y_pred = model(X_val)
     mse = loss_fn(y_pred, y_val)
