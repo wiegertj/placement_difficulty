@@ -37,7 +37,6 @@ def quantile_loss(y_true, y_pred, quantile):
     return mean(np.maximum(quantile * residual, (quantile - 1) * residual))
 
 
-
 def MBE(y_true, y_pred):
     '''
     Parameters:
@@ -128,8 +127,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test = test.drop(axis=1, columns=target)
     y_test = test[target]
 
-    #X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, test_size=0.2,
-     #                                                                              random_state=42)
+    # X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, test_size=0.2,
+    #                                                                              random_state=42)
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
@@ -159,11 +158,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     #####################################################################################################################
 
-
-
-
     def objective_median(trial):
-        #callbacks = [LightGBMPruningCallback(trial, 'l1')]
+        # callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
             'objective': 'quantile',
@@ -174,14 +170,14 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.5),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
+            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
             'bagging_freq': 0,
             "verbosity": -1
 
-            #'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
+            # 'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
         }
 
         val_scores = []
@@ -192,9 +188,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
 
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
-            val_data = lgb.Dataset(X_val, label=y_val)#, reference=train_data)
+            val_data = lgb.Dataset(X_val, label=y_val)  # , reference=train_data)
             # KEIN VALIDSETS?
-            model = lgb.train(params, train_data)#, valid_sets=[val_data])
+            model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.5)
             print("score: " + str(val_score))
@@ -204,7 +200,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_median, n_trials=100)
+    study.optimize(objective_median, n_trials=2)
 
     best_params_median = study.best_params
     best_params_median["objective"] = "quantile"
@@ -221,7 +217,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
     final_model_median = lgb.train(best_params_median, train_data)
-
 
     y_pred = final_model_median.predict(X_test.drop(axis=1, columns=["group"]))
 
@@ -240,7 +235,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     mbe = MBE(y_test, y_pred)
     print(f"MBE on test set: {mbe}")
-
 
     residuals = y_test - y_pred
 
@@ -351,7 +345,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.9),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
+            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
@@ -368,7 +362,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
-            model = lgb.train(params, train_data)#, valid_sets=[val_data])
+            model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.05)
             val_scores.append(val_score)
@@ -376,7 +370,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=100)
+    study.optimize(objective_lower_bound, n_trials=2)
 
     best_params_lower_bound = study.best_params
     best_params_lower_bound["objective"] = "quantile"
@@ -406,12 +400,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'objective': 'quantile',
             'metric': 'quantile',
             'alpha': 0.95,
-            'num_iterations': trial.suggest_int('num_iterations', 50, 300),
+            'num_iterations': trial.suggest_int('num_iterations', 10, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.9),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
+            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
@@ -429,7 +423,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
-            model = lgb.train(params, train_data)#, valid_sets=[val_data])
+            model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
             val_score = quantile_loss(y_val, val_preds, 0.95)
             val_scores.append(val_score)
@@ -455,12 +449,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_upper_bound = lgb.train(best_params_upper_bound, train_data)
 
-
     y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"]))
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.95)))
     X_test_["prediction"] = y_pred
     X_test_["prediction_low"] = y_pred_lower
     X_test_["prediction_upper"] = y_pred_upper
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "proper_pred_lightgbm.csv"))
+
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
