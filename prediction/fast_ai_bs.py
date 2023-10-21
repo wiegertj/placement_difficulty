@@ -166,7 +166,7 @@ y_train = torch.tensor(y_train, dtype=torch.float32).reshape(-1, 1)
 # Define the model with dropout layers
 model = nn.Sequential(
     nn.Linear(22, 80),
-    nn.Dropout(0.2),
+    nn.Dropout(0.1),
     nn.ReLU(),
     nn.Linear(80, 50),
     nn.ReLU(),
