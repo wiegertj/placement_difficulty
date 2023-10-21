@@ -338,7 +338,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
             'objective': 'quantile',
             'alpha': 0.125,
-            'num_iterations': trial.suggest_int('num_iterations', 100, 300),
+            'num_iterations': trial.suggest_int('num_iterations', 5, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
@@ -393,7 +393,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
             'objective': 'quantile',
             'alpha': 0.875,
-            'num_iterations': trial.suggest_int('num_iterations', 100, 300),
+            'num_iterations': trial.suggest_int('num_iterations', 5, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
