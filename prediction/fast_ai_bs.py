@@ -165,17 +165,17 @@ y_train = torch.tensor(y_train, dtype=torch.float32).reshape(-1, 1)
 model = nn.Sequential(
     nn.Linear(22, 100),
     nn.ReLU(),
-    nn.Linear(100, 50),
+    nn.Linear(100, 80),
+    nn.ReLU(),
+    nn.Linear(80, 50),
     nn.ReLU(),
     nn.Linear(50, 30),
     nn.ReLU(),
     nn.Linear(30, 15),
     nn.ReLU(),
-    nn.Linear(15, 6),
-    nn.ReLU(),
-    nn.Linear(6, 2)
+    nn.Linear(15, 5)
 )
-quantiles = [0.125, 0.875]
+quantiles = [0.05, 0.125, 0.5, 0.875, 0.95]
 loss_fn = QuantileLoss(quantiles=quantiles)
 
 # loss function and optimizer
@@ -241,7 +241,8 @@ model.eval()
 with torch.no_grad():
     y_pred = model(X_test)
 
-# Calculate MAE
-mae = torch.abs(y_pred - y_test).mean()
+quantile_column_names = ["lower90", "lower75", "median_pred", "upper75", "upper90"]
+quantile_df = pd.DataFrame(y_pred.numpy(), columns=quantile_column_names)
 
-print("Mean Absolute Error (MAE): %.2f" % mae)
+# Concatenate the quantile predictions with the original X_test_df
+X_test_df = pd.concat([test, quantile_df], axis=1)
