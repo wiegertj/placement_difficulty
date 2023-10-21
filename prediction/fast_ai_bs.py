@@ -173,7 +173,7 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.Linear(15, 6),
     nn.ReLU(),
-    nn.Linear(6, 1)
+    nn.Linear(6, 2)
 )
 quantiles = [0.125, 0.875]
 loss_fn = QuantileLoss(quantiles=quantiles)
