@@ -1,4 +1,5 @@
 import copy
+from statistics import mean
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -66,7 +67,22 @@ column_name_mapping = {
 # Rename the columns in the DataFrame
 df = df.rename(columns=column_name_mapping)
 
+def quantile_loss(y_true, y_pred, quantile):
+    """
 
+    Parameters
+    ----------
+    y_true : 1d ndarray
+        Target value.
+
+    y_pred : 1d ndarray
+        Predicted value.
+
+    quantile : float, 0. ~ 1.
+        Quantile to be evaluated, e.g., 0.5 for median.
+    """
+    residual = y_true - y_pred
+    return mean(np.maximum(quantile * residual, (quantile - 1) * residual))
 
 # df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 # df_diff["name"] = df_diff["name"].str.replace(".phy", "")
@@ -157,7 +173,7 @@ model = nn.Sequential(
     nn.Linear(6, 1)
 )
 quantiles = [0.125, 0.875]
-loss_fn = QuantileLoss(quantiles=quantiles)
+#loss_fn = QuantileLoss(quantiles=quantiles)
 
 # loss function and optimizer
 #loss_fn = nn.MSELoss()  # mean square error
@@ -185,7 +201,7 @@ for epoch in range(n_epochs):
             y_batch = y_train[start:start+batch_size]
             # forward pass
             y_pred = model(X_batch)
-            loss = loss_fn(y_pred, y_batch)
+            loss = quantile_loss(y_pred, y_batch, 0.125)
             # backward pass
             optimizer.zero_grad()
             loss.backward()
@@ -199,7 +215,7 @@ for epoch in range(n_epochs):
 
     model.eval()
     y_pred = model(X_val)
-    mse = loss_fn(y_pred, y_val)
+    mse = quantile_loss(y_pred, y_val, 0.125)
     mse = float(mse)
 
     # Check if validation loss (MSE) has improved
