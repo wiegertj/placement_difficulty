@@ -375,7 +375,7 @@ best_mse = np.inf   # init to infinity
 best_weights = None
 history = []
 patience = 10  # Number of epochs with no improvement to wait before early stopping
-scheduler = StepLR(optimizer, step_size=10, gamma=0.5)  # Decrease LR by half every 10 epochs
+scheduler = StepLR(optimizer, step_size=5, gamma=0.5)  # Decrease LR by half every 10 epochs
 
 for epoch in range(n_epochs):
     print(epoch)
