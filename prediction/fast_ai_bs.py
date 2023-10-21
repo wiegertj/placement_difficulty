@@ -95,6 +95,25 @@ test = df[df['dataset'].isin(filenames)]
 train = df[~df['dataset'].isin(filenames)]
 
 
+class QuantileLoss(nn.Module):
+    def __init__(self, quantiles):
+        super().__init__()
+        self.quantiles = quantiles
+
+    def forward(self, preds, target):
+        assert not target.requires_grad
+        assert preds.size(0) == target.size(0)
+        losses = []
+        for i, q in enumerate(self.quantiles):
+            errors = target - preds[:, i]
+            losses.append(
+                torch.max(
+                    (q - 1) * errors,
+                    q * errors
+                ).unsqueeze(1))
+        loss = torch.mean(
+            torch.sum(torch.cat(losses, dim=1), dim=1))
+        return loss
 
 
 # print(test.shape)
@@ -185,7 +204,7 @@ for epoch in range(n_epochs):
             y_batch = y_train[start:start+batch_size]
             # forward pass
             y_pred = model(X_batch)
-            loss = loss_fn(y_pred, y_batch.unsqueeze(1))
+            loss = loss_fn(y_pred, y_batch)
             # backward pass
             optimizer.zero_grad()
             loss.backward()
@@ -199,7 +218,7 @@ for epoch in range(n_epochs):
 
     model.eval()
     y_pred = model(X_val)
-    mse = loss_fn(y_pred, y_val.unsqueeze(1))
+    mse = loss_fn(y_pred, y_val)
     mse = float(mse)
 
     # Check if validation loss (MSE) has improved
