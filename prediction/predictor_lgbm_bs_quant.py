@@ -398,8 +398,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
             'objective': 'quantile',
-            'metric': 'quantile',
-            'alpha': 0.875,
+            'alpha': 0.95,
             'num_iterations': trial.suggest_int('num_iterations', 2, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
@@ -409,7 +408,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
-            'bagging_freq': 0,
+            'bagging_freq': trial.suggest_uniform('bagging_freq', 0.1, 1.0),
             "verbosity": -1
         }
 
@@ -425,7 +424,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.875)
+            val_score = quantile_loss(y_val, val_preds, 0.95)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
@@ -437,8 +436,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_upper_bound["objective"] = "quantile"
     best_params_upper_bound["metric"] = "quantile"
     best_params_upper_bound["boosting_type"] = "gbdt"
-    best_params_upper_bound["bagging_freq"] = 0
-    best_params_upper_bound["alpha"] = 0.875
+    best_params_upper_bound["alpha"] = 0.95
     best_params_upper_bound["verbosity"] = -1
     best_score_upper_bound = study.best_value
 
@@ -450,7 +448,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     final_model_upper_bound = lgb.train(best_params_upper_bound, train_data)
 
     y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"]))
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.875)))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.95)))
     X_test_["prediction"] = y_pred
     X_test_["prediction_low"] = y_pred_lower
     X_test_["prediction_upper"] = y_pred_upper
