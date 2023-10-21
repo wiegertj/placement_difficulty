@@ -401,14 +401,14 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'metric': 'quantile',
             'alpha': 0.95,
             'num_iterations': trial.suggest_int('num_iterations', 100, 300),
-            'boosting_type': 'rf',
+            'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.5),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
-            'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
-            'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
-            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
+            'lambda_l1': trial.suggest_uniform('lambda_l1', 0, 1.0),
+            'lambda_l2': trial.suggest_uniform('lambda_l2', 0, 1.0),
+            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.5),
             "verbosity": -1
         }
 
@@ -424,7 +424,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.87)
+            val_score = quantile_loss(y_val, val_preds, 0.95)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
@@ -435,7 +435,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_upper_bound = study.best_params
     best_params_upper_bound["objective"] = "quantile"
     best_params_upper_bound["metric"] = "quantile"
-    best_params_upper_bound["boosting_type"] = "rf"
+    best_params_upper_bound["boosting_type"] = "gbdt"
     best_params_upper_bound["alpha"] = 0.95
     best_params_upper_bound["verbosity"] = -1
     best_score_upper_bound = study.best_value
