@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 import tqdm
 import os
+import torch.nn.functional as F  # Add this import
 
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
@@ -162,36 +163,45 @@ y_val = torch.tensor(y_val, dtype=torch.float32).reshape(-1, 1)
 y_train = torch.tensor(y_train, dtype=torch.float32).reshape(-1, 1)
 
 
+# Define the model as a Bayesian Neural Network with dropout
+class BayesianNN(nn.Module):
+    def __init__(self, input_size):
+        super(BayesianNN, self).__init__()
+        self.fc1 = nn.Linear(input_size, 80)
+        self.fc2 = nn.Linear(80, 50)
+        self.fc3 = nn.Linear(50, 30)
+        self.fc4 = nn.Linear(30, 15)
+        self.fc5 = nn.Linear(15, 1)
+        self.dropout = nn.Dropout(0.5)  # Adjust dropout probability
 
-# Define the model
-model = nn.Sequential(
-    nn.Linear(22, 80),
-    nn.ReLU(),
-    nn.Linear(80, 50),
-    nn.ReLU(),
-    nn.Linear(50, 30),
-    nn.ReLU(),
-    nn.Linear(30, 15),
-    nn.ReLU(),
-    nn.Linear(15, 1)
-)
-quantiles = [0.125]
-loss_fn = QuantileLoss(quantiles=quantiles)
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = self.dropout(x)  # Apply dropout
+        x = F.relu(self.fc2(x))
+        x = self.dropout(x)
+        x = F.relu(self.fc3(x))
+        x = self.dropout(x)
+        x = F.relu(self.fc4(x))
+        x = self.dropout(x)
+        x = self.fc5(x)
+        return x
 
-# loss function and optimizer
-#loss_fn = nn.MSELoss()  # mean square error
-optimizer = optim.Adam(model.parameters(), lr=0.1)
 
-n_epochs = 200   # number of epochs to run
-batch_size = 25  # size of each batch
+model = BayesianNN(input_size=22)
+
+# Use Mean Squared Error loss
+loss_fn = nn.MSELoss()
+
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+n_epochs = 200
+batch_size = 25
 batch_start = torch.arange(0, len(X_train), batch_size)
 
-# Hold the best model
-best_mse = np.inf   # init to infinity
+best_mse = np.inf
 best_weights = None
 history = []
-patience = 10  # Number of epochs with no improvement to wait before early stopping
-scheduler = StepLR(optimizer, step_size=10, gamma=0.5)  # Decrease LR by half every 10 epochs
+patience = 10
+scheduler = StepLR(optimizer, step_size=5, gamma=0.5)
 
 for epoch in range(n_epochs):
     print(epoch)
@@ -199,20 +209,16 @@ for epoch in range(n_epochs):
     with tqdm.tqdm(batch_start, unit="batch", mininterval=0, disable=True) as bar:
         bar.set_description(f"Epoch {epoch}")
         for start in bar:
-            # take a batch
-            X_batch = X_train[start:start+batch_size]
-            y_batch = y_train[start:start+batch_size]
-            # forward pass
+            X_batch = X_train[start:start + batch_size]
+            y_batch = y_train[start:start + batch_size]
+
             y_pred = model(X_batch)
             loss = loss_fn(y_pred, y_batch)
-            # backward pass
+
             optimizer.zero_grad()
             loss.backward()
-            # update weights
             optimizer.step()
-            # print progress
             bar.set_postfix(mse=float(loss))
-    # evaluate accuracy at end of each epoch
 
     scheduler.step()
 
@@ -221,11 +227,10 @@ for epoch in range(n_epochs):
     mse = loss_fn(y_pred, y_val)
     mse = float(mse)
 
-    # Check if validation loss (MSE) has improved
     if mse < best_mse:
         best_mse = mse
         best_weights = copy.deepcopy(model.state_dict())
-        count = 0  # Reset the patience counter
+        count = 0
     else:
         count += 1
 
@@ -233,201 +238,36 @@ for epoch in range(n_epochs):
         print(f"Early stopping after {epoch} epochs without improvement.")
         break
 
-# restore model and return best accuracy
 model.load_state_dict(best_weights)
 print("MSE: %.2f" % best_mse)
-print("RMSE: %.2f" % np.sqrt(best_mse))
-model.eval()
-with torch.no_grad():
-    y_pred_low = model(X_test)
+print("RMSE: %.2f" % np.sqrt(best_mse)
 
-test["prediction_low"] = y_pred_low
-
-
-
-
-
-
-
-
-
-
-# Define the model
-model = nn.Sequential(
-    nn.Linear(22, 80),
-    nn.ReLU(),
-    nn.Linear(80, 50),
-    nn.ReLU(),
-    nn.Linear(50, 30),
-    nn.ReLU(),
-    nn.Linear(30, 15),
-    nn.ReLU(),
-    nn.Linear(15, 1)
-)
-quantiles = [0.875]
-loss_fn = QuantileLoss(quantiles=quantiles)
-
-# loss function and optimizer
-#loss_fn = nn.MSELoss()  # mean square error
-optimizer = optim.Adam(model.parameters(), lr=0.1)
-
-n_epochs = 200   # number of epochs to run
-batch_size = 25  # size of each batch
-batch_start = torch.arange(0, len(X_train), batch_size)
-
-# Hold the best model
-best_mse = np.inf   # init to infinity
-best_weights = None
-history = []
-patience = 10  # Number of epochs with no improvement to wait before early stopping
-scheduler = StepLR(optimizer, step_size=10, gamma=0.5)  # Decrease LR by half every 10 epochs
-
-for epoch in range(n_epochs):
-    print(epoch)
-    model.train()
-    with tqdm.tqdm(batch_start, unit="batch", mininterval=0, disable=True) as bar:
-        bar.set_description(f"Epoch {epoch}")
-        for start in bar:
-            # take a batch
-            X_batch = X_train[start:start+batch_size]
-            y_batch = y_train[start:start+batch_size]
-            # forward pass
-            y_pred = model(X_batch)
-            loss = loss_fn(y_pred, y_batch)
-            # backward pass
-            optimizer.zero_grad()
-            loss.backward()
-            # update weights
-            optimizer.step()
-            # print progress
-            bar.set_postfix(mse=float(loss))
-    # evaluate accuracy at end of each epoch
-
-    scheduler.step()
-
-    model.eval()
-    y_pred = model(X_val)
-    mse = loss_fn(y_pred, y_val)
-    mse = float(mse)
-
-    # Check if validation loss (MSE) has improved
-    if mse < best_mse:
-        best_mse = mse
-        best_weights = copy.deepcopy(model.state_dict())
-        count = 0  # Reset the patience counter
-    else:
-        count += 1
-
-    if count >= patience:
-        print(f"Early stopping after {epoch} epochs without improvement.")
-        break
-
-# restore model and return best accuracy
-model.load_state_dict(best_weights)
-print("MSE: %.2f" % best_mse)
-print("RMSE: %.2f" % np.sqrt(best_mse))
-model.eval()
-with torch.no_grad():
-    y_pred_high = model(X_test)
-
-test["prediction_hi"] = y_pred_high
-
-
-
-
-
-
-
-
-
-
-# Define the model
-model = nn.Sequential(
-    nn.Linear(22, 80),
-    nn.ReLU(),
-    nn.Linear(80, 50),
-    nn.ReLU(),
-    nn.Linear(50, 30),
-    nn.ReLU(),
-    nn.Linear(30, 15),
-    nn.ReLU(),
-    nn.Linear(15, 1)
-)
-quantiles = [0.5]
-loss_fn = QuantileLoss(quantiles=quantiles)
-
-# loss function and optimizer
-#loss_fn = nn.MSELoss()  # mean square error
-optimizer = optim.Adam(model.parameters(), lr=0.1)
-
-n_epochs = 200   # number of epochs to run
-batch_size = 25  # size of each batch
-batch_start = torch.arange(0, len(X_train), batch_size)
-
-# Hold the best model
-best_mse = np.inf   # init to infinity
-best_weights = None
-history = []
-patience = 10  # Number of epochs with no improvement to wait before early stopping
-scheduler = StepLR(optimizer, step_size=5, gamma=0.5)  # Decrease LR by half every 10 epochs
-
-for epoch in range(n_epochs):
-    print(epoch)
-    model.train()
-    with tqdm.tqdm(batch_start, unit="batch", mininterval=0, disable=True) as bar:
-        bar.set_description(f"Epoch {epoch}")
-        for start in bar:
-            # take a batch
-            X_batch = X_train[start:start+batch_size]
-            y_batch = y_train[start:start+batch_size]
-            # forward pass
-            y_pred = model(X_batch)
-            loss = loss_fn(y_pred, y_batch)
-            # backward pass
-            optimizer.zero_grad()
-            loss.backward()
-            # update weights
-            optimizer.step()
-            # print progress
-            bar.set_postfix(mse=float(loss))
-    # evaluate accuracy at end of each epoch
-
-    scheduler.step()
-
-    model.eval()
-    y_pred = model(X_val)
-    mse = loss_fn(y_pred, y_val)
-    mse = float(mse)
-
-    # Check if validation loss (MSE) has improved
-    if mse < best_mse:
-        best_mse = mse
-        best_weights = copy.deepcopy(model.state_dict())
-        count = 0  # Reset the patience counter
-    else:
-        count += 1
-
-    if count >= patience:
-        print(f"Early stopping after {epoch} epochs without improvement.")
-        break
-
-# restore model and return best accuracy
-model.load_state_dict(best_weights)
-print("MSE: %.2f" % best_mse)
-print("RMSE: %.2f" % np.sqrt(best_mse))
+# Calculate MSE for test data
 model.eval()
 with torch.no_grad():
     y_pred_median = model(X_test)
 
+mse_test = loss_fn(y_pred_median, y_test)
+mse_test = float(mse_test)
+
+print("MSE on test data: %.2f" % mse_test)
+
+# Get uncertainty estimate for all test samples
+with torch.no_grad():
+    num_samples = 100  # You can adjust the number of samples
+predictions = torch.zeros((num_samples, len(X_test)))
+
+for i in range(num_samples):
+    y_pred = model(X_test)
+predictions[i] = y_pred.view(-1)
+
+std_dev = torch.std(predictions, dim=0)
+print("Uncertainty (Standard Deviation) for each prediction:")
+print(std_dev)
+
+# Store the predictions and uncertainty in your dataframe
 test["prediction_median"] = y_pred_median
+test["uncertainty"] = std_dev
 
-
-
-
-
-
-
-
-
-
-test.to_csv("pytorch_bs_pred.csv")
+# Save the updated dataframe
+test.to_csv("pytorch_bs_pred_with_uncertainty.csv")
