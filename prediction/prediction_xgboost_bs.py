@@ -189,6 +189,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     study.optimize(objective, n_trials=2)
 
     best_params = study.best_params
+    best_params["objective"] = "regression"
+    best_params["metric"] = "l1"
+    best_params["boosting_type"] = "gbdt"
+    best_params["bagging_freq"] = 0
     best_score = study.best_value
 
     print(f"Best Params: {best_params}")
@@ -265,7 +269,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
                 "objective": "reg:quantileerror",
                 "tree_method": "hist",
-                "quantile_alpha": 0.125,
+                "quantile_alpha": 0.05,
                 'learning_rate': trial.suggest_uniform('learning_rate', 1e-5, 1.0),
                 "max_depth": trial.suggest_int('max_depth', 5, 50),
                 "num_boost_rount":  trial.suggest_int('max_depth', 5, 50),
@@ -285,7 +289,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             Xy_tmp_val = xgb.QuantileDMatrix(X_val)
             model = xgb.train(params, dtrain=Xy_tmp)
             val_preds = model.predict(Xy_tmp_val)
-            val_score = quantile_loss(y_val, val_preds, 0.125)
+            val_score = quantile_loss(y_val, val_preds, 0.05)
             print("score: " + str(val_score))
 
             val_scores.append(val_score)
@@ -297,6 +301,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     study.optimize(objective_lower_bound, n_trials=50)
 
     best_params_lo = study.best_params
+    best_params_lo["objective"] = "reg:quantileerror"
+    best_params_lo["tree_method"] = "hist"
+    best_params_lo["quantile_alpha"] = 0.05
     best_score_lo = study.best_value
 
     booster_lo = xgb.train(best_params_lo, dtrain=Xy)
@@ -311,7 +318,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         pickle.dump(booster_lo, file)
 
     #y_pred_lo = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
-    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.125)
+    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.05)
     print(f"Quantile Loss Holdout: {quant_loss_lo}" )
     mse = mean_squared_error(y_test, y_pred_lo)
     rmse = math.sqrt(mse)
@@ -338,7 +345,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
             "objective": "reg:quantileerror",
             "tree_method": "hist",
-            "quantile_alpha": 0.875,
+            "quantile_alpha": 0.95,
             'learning_rate': trial.suggest_uniform('learning_rate', 1e-5, 1.0),
             "max_depth": trial.suggest_int('max_depth', 5, 50),
             "num_boost_rount": trial.suggest_int('max_depth', 5, 50),
@@ -356,7 +363,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             Xy_tmp_val = xgb.QuantileDMatrix(X_val)
             model = xgb.train(params, dtrain=Xy_tmp)
             val_preds = model.predict(Xy_tmp_val)
-            val_score = quantile_loss(y_val, val_preds, 0.875)
+            val_score = quantile_loss(y_val, val_preds, 0.95)
             print("score: " + str(val_score))
 
             val_scores.append(val_score)
@@ -367,6 +374,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     study.optimize(objective_higher_bound, n_trials=50)
 
     best_params_hi = study.best_params
+    best_params_hi["objective"] = "reg:quantileerror"
+    best_params_hi["tree_method"] = "hist"
+    best_params_hi["quantile_alpha"] = 0.95
     best_score_hi = study.best_value
 
     booster_hi = xgb.train(best_params_hi, dtrain=Xy)
@@ -380,7 +390,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         pickle.dump(booster_lo, file)
 
     # y_pred_lo = model_lo.predict(X_test.drop(axis=1, columns=["group"]))
-    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.875)
+    quant_loss_lo = quantile_loss(y_test, y_pred_lo, 0.95)
     print(f"Quantile Loss Holdout: {quant_loss_lo}")
     mse = mean_squared_error(y_test, y_pred_lo)
     rmse = math.sqrt(mse)
@@ -405,6 +415,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["pred_error"] = y_test - y_pred_median
     X_test_["pi_width"] = y_pred_hi - y_pred_lo
 
-    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "pred_interval_90_final_xgboost.csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "proper_xgboost.csv"))
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
