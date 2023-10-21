@@ -115,6 +115,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     #####################################################################################################################
 
+
+
+
     def objective_median(trial):
         #callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
@@ -291,7 +294,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
             'objective': 'quantile',
             'metric': 'quantile',
-            'alpha': 0.05,
+            'alpha': 0.125,
             'num_iterations': trial.suggest_int('num_iterations', 100, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
@@ -309,22 +312,22 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         val_scores = []
 
-        gkf = GroupKFold(n_splits=10)
+        gkf = GroupKFold(n_splits=5)
         for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
-            train_data = lgb.Dataset(X_train_tmp[["parsimony_support", "length"]], label=y_train_tmp)
+            train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)#, valid_sets=[val_data])
-            val_preds = model.predict(X_val[["parsimony_support", "length"]])
-            val_score = quantile_loss(y_val, val_preds, 0.05)
+            val_preds = model.predict(X_val)
+            val_score = quantile_loss(y_val, val_preds, 0.125)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=20)
+    study.optimize(objective_lower_bound, n_trials=100)
 
     best_params_lower_bound = study.best_params
     best_score_lower_bound = study.best_value
@@ -332,12 +335,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Params: {best_params_lower_bound}")
     print(f"Best Quantile Loss: {best_score_lower_bound}")
 
-    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"])[["parsimony_support", "length"]], label=y_train)
+    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
     final_model_lower_bound = lgb.train(best_params_lower_bound, train_data)
 
-    y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"])[["parsimony_support", "length"]])
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.05)))
+    y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"]))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.125)))
 
     #########################################################################################################
 
@@ -347,7 +350,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
             'objective': 'quantile',
             'metric': 'quantile',
-            'alpha': 0.95,
+            'alpha': 0.875,
             'num_iterations': trial.suggest_int('num_iterations', 100, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
@@ -369,18 +372,18 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
 
-            train_data = lgb.Dataset(X_train_tmp[["parsimony_support", "length"]], label=y_train_tmp)
+            train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)#, valid_sets=[val_data])
-            val_preds = model.predict(X_val[["parsimony_support", "length"]])
-            val_score = quantile_loss(y_val, val_preds, 0.95)
+            val_preds = model.predict(X_val)
+            val_score = quantile_loss(y_val, val_preds, 0.875)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_upper_bound, n_trials=20)
+    study.optimize(objective_upper_bound, n_trials=100)
 
     best_params_upper_bound = study.best_params
     best_score_upper_bound = study.best_value
@@ -388,16 +391,16 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"Best Params: {best_params_upper_bound}")
     print(f"Best Quantile Loss: {best_score_upper_bound}")
 
-    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"])[["parsimony_support", "length"]], label=y_train)
+    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
     final_model_upper_bound = lgb.train(best_params_upper_bound, train_data)
 
 
-    y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"])[["parsimony_support", "length"]])
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.95)))
+    y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"]))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.875)))
     X_test_["prediction"] = y_pred
     X_test_["prediction_low"] = y_pred_lower
     X_test_["prediction_upper"] = y_pred_upper
-    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "bs_support_pred_quant_90lgbm.csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "bs_support_pred_quant_75lgbm.csv"))
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
