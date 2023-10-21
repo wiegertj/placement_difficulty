@@ -436,7 +436,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_upper_bound["objective"] = "quantile"
     best_params_upper_bound["metric"] = "quantile"
     best_params_upper_bound["boosting_type"] = "gbdt"
-    best_params_upper_bound["alpha"] = 0.93
+    best_params_upper_bound["alpha"] = 0.90
     best_params_upper_bound["verbosity"] = -1
     best_score_upper_bound = study.best_value
 
