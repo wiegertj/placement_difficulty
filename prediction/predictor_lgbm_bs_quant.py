@@ -403,7 +403,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'num_iterations': trial.suggest_int('num_iterations', 5, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.0001, 0.5),
+            'learning_rate': trial.suggest_uniform('learning_rate', 0.0001, 0.9),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 0, 1.0),
@@ -430,7 +430,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_upper_bound, n_trials=50)
+    study.optimize(objective_upper_bound, n_trials=500)
 
     best_params_upper_bound = study.best_params
     best_params_upper_bound["objective"] = "quantile"
@@ -448,7 +448,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     final_model_upper_bound = lgb.train(best_params_upper_bound, train_data)
 
     y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"]))
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.90)))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.95)))
     X_test_["prediction"] = y_pred
     X_test_["prediction_low"] = y_pred_lower
     X_test_["prediction_upper"] = y_pred_upper
