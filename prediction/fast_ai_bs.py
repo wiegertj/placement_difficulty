@@ -11,7 +11,7 @@ import tqdm
 import os
 import torch.nn.functional as F  # Add this import
 
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_california_housing
 from sklearn.preprocessing import MinMaxScaler
@@ -260,6 +260,7 @@ test["prediction_mean"] = prediction_mean
 test["prediction_std"] = prediction_std
 print(mean(test["prediction_std"]))
 print(mean_absolute_error(test["support"], test["prediction_mean"]))
+print(mean_squared_error(test["support"], test["prediction_mean"], squared=False))
 
 # Save the results to a CSV file
 test.to_csv("pytorch_bs_pred_with_uncertainty.csv")
