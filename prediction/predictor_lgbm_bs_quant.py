@@ -405,7 +405,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
+            'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
@@ -454,6 +454,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["prediction"] = y_pred
     X_test_["prediction_low"] = y_pred_lower
     X_test_["prediction_upper"] = y_pred_upper
+    print(y_pred_upper)
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "proper_pred_lightgbm.csv"))
 
 
