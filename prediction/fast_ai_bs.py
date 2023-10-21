@@ -161,14 +161,14 @@ loss_fn = nn.MSELoss()  # mean square error
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 n_epochs = 100   # number of epochs to run
-batch_size = 50  # size of each batch
+batch_size = 25  # size of each batch
 batch_start = torch.arange(0, len(X_train), batch_size)
 
 # Hold the best model
 best_mse = np.inf   # init to infinity
 best_weights = None
 history = []
-patience = 5  # Number of epochs with no improvement to wait before early stopping
+patience = 10  # Number of epochs with no improvement to wait before early stopping
 
 for epoch in range(n_epochs):
     print(epoch)
