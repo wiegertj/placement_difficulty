@@ -190,7 +190,7 @@ for epoch in range(n_epochs):
     # evaluate accuracy at end of each epoch
     model.eval()
     y_pred = model(X_test)
-    mse = loss_fn(X_val, y_val)
+    mse = loss_fn(y_pred, y_val)
     mse = float(mse)
 
     # Check if validation loss (MSE) has improved
