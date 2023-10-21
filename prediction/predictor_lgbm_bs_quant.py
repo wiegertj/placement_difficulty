@@ -263,6 +263,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     scaler = MinMaxScaler()
     importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     importance_df = importance_df.nlargest(30, 'Importance')
+    importance_df.to_csv("median_bound_importances.csv")
 
     plt.figure(figsize=(10, 6))
     plt.bar(importance_df['Feature'], importance_df['Importance'])
@@ -286,7 +287,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["prediction"] = y_pred
     X_test_["support"] = y_test
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
-
+    sys.exit()
     if shapley_calc:
         # X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
         #       (X_test_['entropy'] < 0.1) | (X_test_['entropy'] > 0.9))]
@@ -404,6 +405,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     scaler = MinMaxScaler()
     importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     importance_df = importance_df.nlargest(30, 'Importance')
+    importance_df.to_csv("lower_bound_importances.csv")
 
     print("Feature Importances (Normalized):")
     for index, row in importance_df.iterrows():
@@ -481,6 +483,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     scaler = MinMaxScaler()
     importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     importance_df = importance_df.nlargest(30, 'Importance')
+    importance_df.to_csv("upper_bound_importances.csv")
 
     print("Feature Importances (Normalized):")
     for index, row in importance_df.iterrows():
