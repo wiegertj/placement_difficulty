@@ -5,7 +5,10 @@ import shap
 import lightgbm as lgb
 import os
 import optuna
+from sklearn.linear_model import QuantileRegressor
 import numpy as np
+from sklearn.utils.fixes import sp_version, parse_version
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from statistics import mean
@@ -200,7 +203,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_median, n_trials=50)
+    study.optimize(objective_median, n_trials=2)
 
     best_params_median = study.best_params
     best_params_median["objective"] = "quantile"
@@ -370,7 +373,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=50)
+    study.optimize(objective_lower_bound, n_trials=2)
 
     best_params_lower_bound = study.best_params
     best_params_lower_bound["objective"] = "quantile"
@@ -392,24 +395,18 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.05)))
 
     #########################################################################################################
+    X_test = X_test[["parsimony_bootstrap_support", "parsimony_support", "mean_substitution_frequency",
+                     "branch_length", "norm_branch_length", "max_substitution_frequency", 'group']]
+    X_train = X_train[["parsimony_bootstrap_support", "parsimony_support", "mean_substitution_frequency",
+                       "branch_length", "norm_branch_length", "max_substitution_frequency", 'group']]
 
-    def objective_upper_bound(trial):
+    def objective_higher_bound(trial):
         # callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
-            'objective': 'quantile',
-            'metric': 'quantile',
-            'alpha': 0.85,
-            'num_iterations': trial.suggest_int('num_iterations', 5, 300),
-            'boosting_type': 'gbdt',
-            'num_leaves': trial.suggest_int('num_leaves', 2, 200),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.0001, 0.9),
-            'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
-            'lambda_l1': trial.suggest_uniform('lambda_l1', 0, 1.0),
-            'lambda_l2': trial.suggest_uniform('lambda_l2', 0, 1.0),
-            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.5),
-            "verbosity": -1
+
+            'alpha': trial.suggest_float('alpha', 0.0001, 0.1),
+
         }
 
         val_scores = []
@@ -420,39 +417,40 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
 
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
-            val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
+            val_data = lgb.Dataset(X_val, label=y_val)  # , reference=train_data)
             # KEIN VALIDSETS?
-            model = lgb.train(params, train_data)  # , valid_sets=[val_data])
+            model = QuantileRegressor(**params, quantile=0.95, solver=solver).fit(X_train_tmp, y_train_tmp)
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.85)
+            val_score = quantile_loss(y_val, val_preds, 0.95)
+            print("score: " + str(val_score))
+
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_upper_bound, n_trials=50)
+    study.optimize(objective_higher_bound, n_trials=2)
+    solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
-    best_params_upper_bound = study.best_params
-    best_params_upper_bound["objective"] = "quantile"
-    best_params_upper_bound["metric"] = "quantile"
-    best_params_upper_bound["boosting_type"] = "gbdt"
-    best_params_upper_bound["alpha"] = 0.85
-    best_params_upper_bound["verbosity"] = -1
-    best_score_upper_bound = study.best_value
+    best_params_hi = study.best_params
+    best_score_hi = study.best_value
 
-    print(f"Best Params: {best_params_upper_bound}")
-    print(f"Best Quantile Loss: {best_score_upper_bound}")
+    print(f"Best Params: {best_params_hi}")
+    print(f"Best Q training: {best_score_hi}")
 
-    train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
+    model_hi = QuantileRegressor(**best_params_hi, quantile=0.95, solver=solver).fit(
+        X_train.drop(axis=1, columns=["group"]), y_train)
 
-    final_model_upper_bound = lgb.train(best_params_upper_bound, train_data)
+    model_path = os.path.join(os.pardir, "data/processed/final", "high_model90_test.pkl")
+    with open(model_path, 'wb') as file:
+        pickle.dump(model_hi, file)
 
-    y_pred_upper = final_model_upper_bound.predict(X_test.drop(axis=1, columns=["group"]))
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_upper, 0.85)))
+    y_pred_hi = model_hi.predict(X_test.drop(axis=1, columns=["group"]))
+
     X_test_["prediction"] = y_pred
     X_test_["prediction_low"] = y_pred_lower
-    X_test_["prediction_upper"] = y_pred_upper
-    print(y_pred_upper)
+    X_test_["prediction_upper"] = y_pred_hi
+    print(y_pred_hi)
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "proper_pred_lightgbm.csv"))
 
 
