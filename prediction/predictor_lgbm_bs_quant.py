@@ -8,7 +8,7 @@ import optuna
 from sklearn.linear_model import QuantileRegressor
 import numpy as np
 from sklearn.utils.fixes import sp_version, parse_version
-
+import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
 from statistics import mean
@@ -221,6 +221,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_median = lgb.train(best_params_median, train_data)
 
+    model_path = os.path.join(os.pardir, "data/processed/final", "median_model90_test_skl.pkl")
+    with open(model_path, 'wb') as file:
+        pickle.dump(final_model_median, file)
+
     y_pred = final_model_median.predict(X_test.drop(axis=1, columns=["group"]))
 
     mse = mean_squared_error(y_test, y_pred)
@@ -391,6 +395,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_lower_bound = lgb.train(best_params_lower_bound, train_data)
 
+    model_path = os.path.join(os.pardir, "data/processed/final", "low_model90_test_skl.pkl")
+    with open(model_path, 'wb') as file:
+        pickle.dump(final_model_lower_bound, file)
+
     y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"]))
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.05)))
 
@@ -443,7 +451,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     model_hi = QuantileRegressor(**best_params_hi, quantile=0.95, solver=solver).fit(
         X_train.drop(axis=1, columns=["group"]), y_train)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "high_model90_test.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "high_model90_test_skl.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(model_hi, file)
 
