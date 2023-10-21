@@ -246,3 +246,4 @@ quantile_df = pd.DataFrame(y_pred.numpy(), columns=quantile_column_names)
 
 # Concatenate the quantile predictions with the original X_test_df
 X_test_df = pd.concat([test, quantile_df], axis=1)
+X_test_df.to_csv("pytorch_bs_pred.csv")
