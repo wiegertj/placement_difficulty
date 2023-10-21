@@ -91,7 +91,7 @@ print(test.shape)
 #df_merged = df_merged.drop(columns=columns_to_drop)
 
 step_size = 0.1
-max_samples_per_interval = 18000
+max_samples_per_interval = 7000
 
 # Initialize an empty DataFrame to store the sampled data
 sampled_data = pd.DataFrame()
@@ -116,7 +116,7 @@ for support_start in np.arange(0, 1, step_size):
 
 # Display the sampled data
 sampled_data.drop_duplicates(inplace=True, subset=["dataset", "branchId"])
-sampled_data = df_merged
+#sampled_data = df_merged
 print(sampled_data.shape)
 print("Mean " + str(sampled_data["support"].median()))
 print(sampled_data.columns)
