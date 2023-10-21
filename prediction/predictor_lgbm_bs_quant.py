@@ -409,7 +409,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
-            'bagging_freq': 0.5,
             "verbosity": -1
         }
 
@@ -437,7 +436,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_upper_bound["objective"] = "quantile"
     best_params_upper_bound["metric"] = "quantile"
     best_params_upper_bound["boosting_type"] = "rf"
-    best_params_upper_bound["bagging_freq"] = 0.5
     best_params_upper_bound["alpha"] = 0.95
     best_params_upper_bound["verbosity"] = -1
     best_score_upper_bound = study.best_value
