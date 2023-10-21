@@ -105,11 +105,6 @@ train = df[~df['dataset'].isin(filenames)]
 # test = df[df['group'].isin(sample_dfs)]
 # train = df[~df['group'].isin(sample_dfs)]
 
-X_train = train.drop(axis=1, columns=target)
-y_train = train[target]
-
-
-
 # print(test.shape)
 # print(train.shape)
 
@@ -118,12 +113,12 @@ y_train = train[target]
 # sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
 # test = df[df['group'].isin(sample_dfs)]
 # train = df[~df['group'].isin(sample_dfs)]
-X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = train_test_split(train.drop(columns=["support"], axis=1), train["support"], test_size=0.2, random_state=42)
 
 X_train = X_train.drop(axis=1, columns=["dataset", "branchId", "group"]).to_numpy()
-y_train = y_train[target].to_numpy()
+y_train = y_train.to_numpy()
 X_val = X_val.drop(axis=1, columns=["dataset", "branchId", "group"]).to_numpy()
-y_val = y_val[target].to_numpy()
+y_val = y_val.to_numpy()
 print(train.drop(axis=1, columns=[target, "dataset", "branchId", "group"]).shape)
 X_test = test.drop(axis=1, columns=[target, "dataset", "branchId", "group"]).to_numpy()
 y_test = test[target].to_numpy()
