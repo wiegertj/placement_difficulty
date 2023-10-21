@@ -174,8 +174,6 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.Linear(30, 15),
     nn.ReLU(),
-    nn.Dropout(0.1),
-
     nn.Linear(15, 1)
 )
 
