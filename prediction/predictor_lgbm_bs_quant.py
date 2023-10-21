@@ -401,7 +401,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'metric': 'quantile',
             'alpha': 0.95,
             'num_iterations': trial.suggest_int('num_iterations', 100, 300),
-            'boosting_type': 'dart',
+            'boosting_type': 'rf',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.5),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
@@ -436,7 +436,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_upper_bound = study.best_params
     best_params_upper_bound["objective"] = "quantile"
     best_params_upper_bound["metric"] = "quantile"
-    best_params_upper_bound["boosting_type"] = "dart"
+    best_params_upper_bound["boosting_type"] = "rf"
     best_params_upper_bound["alpha"] = 0.95
     best_params_upper_bound["verbosity"] = -1
     best_score_upper_bound = study.best_value
