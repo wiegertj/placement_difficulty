@@ -204,7 +204,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_median, n_trials=1)
+    study.optimize(objective_median, n_trials=100)
 
     best_params_median = study.best_params
     best_params_median["objective"] = "quantile"
@@ -212,7 +212,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_median["boosting_type"] = "gbdt"
     best_params_median["bagging_freq"] = 0
     best_params_median["alpha"] = 0.5
-
+    best_params_median["verbosity"] = -1
     best_score_median = study.best_value
 
     print(f"Best Params: {best_params_median}")
@@ -344,20 +344,19 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
             'objective': 'quantile',
+            'metric': 'quantile',
             'alpha': 0.05,
-            'num_iterations': trial.suggest_int('num_iterations', 5, 500),
+            'num_iterations': trial.suggest_int('num_iterations', 50, 300),
             'boosting_type': 'gbdt',
-            #'num_leaves': trial.suggest_int('num_leaves', 2, 200),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.01, 0.8),
+            'num_leaves': trial.suggest_int('num_leaves', 2, 200),
+            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.9),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
-            #'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
-            #'bagging_freq': 0,
+            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
+            'bagging_freq': 0,
             "verbosity": -1
-
-            #'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
         }
 
         val_scores = []
@@ -377,9 +376,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=50)
+    study.optimize(objective_lower_bound, n_trials=100)
 
     best_params_lower_bound = study.best_params
+    best_params_lower_bound["objective"] = "quantile"
+    best_params_lower_bound["metric"] = "quantile"
+    best_params_lower_bound["boosting_type"] = "gbdt"
+    best_params_lower_bound["bagging_freq"] = 0
+    best_params_lower_bound["alpha"] = 0.05
+    best_params_lower_bound["verbosity"] = -1
     best_score_lower_bound = study.best_value
 
     print(f"Best Params: {best_params_lower_bound}")
@@ -399,19 +404,19 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         params = {
             'objective': 'quantile',
+            'metric': 'quantile',
             'alpha': 0.95,
-            'num_iterations': trial.suggest_int('num_iterations', 5, 500),
+            'num_iterations': trial.suggest_int('num_iterations', 50, 300),
             'boosting_type': 'gbdt',
-            #'num_leaves': trial.suggest_int('num_leaves', 2, 200),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.01, 0.8),
+            'num_leaves': trial.suggest_int('num_leaves', 2, 200),
+            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.9),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
+            #'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
-            #'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
-            #'bagging_freq': 0,
+            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
+            'bagging_freq': 0,
             "verbosity": -1
-            # 'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
         }
 
         val_scores = []
@@ -432,9 +437,15 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_upper_bound, n_trials=50)
+    study.optimize(objective_upper_bound, n_trials=100)
 
     best_params_upper_bound = study.best_params
+    best_params_upper_bound["objective"] = "quantile"
+    best_params_upper_bound["metric"] = "quantile"
+    best_params_upper_bound["boosting_type"] = "gbdt"
+    best_params_upper_bound["bagging_freq"] = 0
+    best_params_upper_bound["alpha"] = 0.95
+    best_params_upper_bound["verbosity"] = -1
     best_score_upper_bound = study.best_value
 
     print(f"Best Params: {best_params_upper_bound}")
@@ -450,6 +461,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["prediction"] = y_pred
     X_test_["prediction_low"] = y_pred_lower
     X_test_["prediction_upper"] = y_pred_upper
-    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "bs_support_pred_quant_75lgbm.csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "proper_pred_lightgbm.csv"))
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
