@@ -216,7 +216,7 @@ for epoch in range(n_epochs):
     scheduler.step()
     model.eval()
     y_pred = model(X_val)
-    mse = nn.MSELoss()(y_pred, y_val)
+    mse = nn.MSELoss(y_pred, y_val)
     mse = float(mse)
 
     # Check if validation loss (MSE) has improved
