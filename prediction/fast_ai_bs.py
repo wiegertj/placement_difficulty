@@ -240,7 +240,7 @@ for epoch in range(n_epochs):
 
 model.load_state_dict(best_weights)
 print("MSE: %.2f" % best_mse)
-print("RMSE: %.2f" % np.sqrt(best_mse)
+print("RMSE: %.2f" % np.sqrt(best_mse))
 
 # Calculate MSE for test data
 model.eval()
