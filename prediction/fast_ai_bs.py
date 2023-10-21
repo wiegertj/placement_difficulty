@@ -120,9 +120,9 @@ y_train = train[target]
 # train = df[~df['group'].isin(sample_dfs)]
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
 
-X_train = X_train.drop(axis=1, columns=[target, "dataset", "branchId", "group"]).to_numpy()
+X_train = X_train.drop(axis=1, columns=["dataset", "branchId", "group"]).to_numpy()
 y_train = y_train[target].to_numpy()
-X_val = X_val.drop(axis=1, columns=[target, "dataset", "branchId", "group"]).to_numpy()
+X_val = X_val.drop(axis=1, columns=["dataset", "branchId", "group"]).to_numpy()
 y_val = y_val[target].to_numpy()
 print(train.drop(axis=1, columns=[target, "dataset", "branchId", "group"]).shape)
 X_test = test.drop(axis=1, columns=[target, "dataset", "branchId", "group"]).to_numpy()
