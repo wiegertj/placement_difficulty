@@ -451,7 +451,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["prediction_low"] = y_pred_lower
     X_test_["prediction_upper"] = y_pred_hi
     print(y_pred_hi)
-    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "proper_pred_lightgbm.csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "proper_pred_lightgbm_sk.csv"))
 
 
 light_gbm_regressor(rfe=False, shapley_calc=False)
