@@ -167,9 +167,7 @@ y_train = torch.tensor(y_train, dtype=torch.float32).reshape(-1, 1)
 model = nn.Sequential(
     nn.Linear(22, 100),
     nn.ReLU(),
-    nn.Linear(100, 80),
-    nn.ReLU(),
-    nn.Linear(80, 50),
+    nn.Linear(100, 50),
     nn.ReLU(),
     nn.Linear(50, 30),
     nn.ReLU(),
@@ -258,9 +256,7 @@ test["prediction_low"] = y_pred_low
 model = nn.Sequential(
     nn.Linear(22, 100),
     nn.ReLU(),
-    nn.Linear(100, 80),
-    nn.ReLU(),
-    nn.Linear(80, 50),
+    nn.Linear(100, 50),
     nn.ReLU(),
     nn.Linear(50, 30),
     nn.ReLU(),
@@ -349,9 +345,7 @@ test["prediction_hi"] = y_pred_high
 model = nn.Sequential(
     nn.Linear(22, 100),
     nn.ReLU(),
-    nn.Linear(100, 80),
-    nn.ReLU(),
-    nn.Linear(80, 50),
+    nn.Linear(100, 50),
     nn.ReLU(),
     nn.Linear(50, 30),
     nn.ReLU(),
