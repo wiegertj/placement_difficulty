@@ -318,7 +318,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         val_scores = []
 
-        gkf = GroupKFold(n_splits=4)
+        gkf = GroupKFold(n_splits=3)
         for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
@@ -342,7 +342,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     solver = "highs" if sp_version >= parse_version("1.6.0") else "interior-point"
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=20)
+    study.optimize(objective_lower_bound, n_trials=5)
 
     best_params_lo = study.best_params
     best_score_lo = study.best_value
