@@ -178,7 +178,7 @@ model = nn.Sequential(
 )
 
 # Set the optimizer
-optimizer = optim.Adam(model.parameters(), lr=0.1)
+optimizer = optim.Adam(model.parameters(), lr=0.01)
 
 n_epochs = 200
 batch_size = 10
