@@ -182,7 +182,7 @@ model = nn.Sequential(
 optimizer = optim.Adam(model.parameters(), lr=0.1)
 
 n_epochs = 200
-batch_size = 25
+batch_size = 10
 batch_start = torch.arange(0, len(X_train), batch_size)
 
 best_mse = np.inf
