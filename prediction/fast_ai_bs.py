@@ -1,4 +1,5 @@
 import copy
+from statistics import mean
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -257,6 +258,8 @@ prediction_std = predictions.std(dim=1)
 # Store prediction_mean and prediction_std for each test sample
 test["prediction_mean"] = prediction_mean
 test["prediction_std"] = prediction_std
+print(mean(test["prediction_std"]))
+print(mean_absolute_error(test["support"], test["prediction_mean"]))
 
 # Save the results to a CSV file
 test.to_csv("pytorch_bs_pred_with_uncertainty.csv")
