@@ -163,36 +163,26 @@ y_val = torch.tensor(y_val, dtype=torch.float32).reshape(-1, 1)
 y_train = torch.tensor(y_train, dtype=torch.float32).reshape(-1, 1)
 
 
-# Define the model as a Bayesian Neural Network with dropout
-class BayesianNN(nn.Module):
-    def __init__(self, input_size):
-        super(BayesianNN, self).__init__()
-        self.fc1 = nn.Linear(input_size, 80)
-        self.fc2 = nn.Linear(80, 50)
-        self.fc3 = nn.Linear(50, 30)
-        self.fc4 = nn.Linear(30, 15)
-        self.fc5 = nn.Linear(15, 1)
-        self.dropout = nn.Dropout(0.5)  # Adjust dropout probability
+# Define the model with dropout layers
+model = nn.Sequential(
+    nn.Linear(22, 80),
+    nn.ReLU(),
+    nn.Dropout(0.5),  # Add dropout layer
+    nn.Linear(80, 50),
+    nn.ReLU(),
+    nn.Dropout(0.5),
+    nn.Linear(50, 30),
+    nn.ReLU(),
+    nn.Dropout(0.5),
+    nn.Linear(30, 15),
+    nn.ReLU(),
+    nn.Dropout(0.5),
+    nn.Linear(15, 1)
+)
 
-    def forward(self, x):
-        x = F.relu(self.fc1(x))
-        x = self.dropout(x)  # Apply dropout
-        x = F.relu(self.fc2(x))
-        x = self.dropout(x)
-        x = F.relu(self.fc3(x))
-        x = self.dropout(x)
-        x = F.relu(self.fc4(x))
-        x = self.dropout(x)
-        x = self.fc5(x)
-        return x
+# Set the optimizer
+optimizer = optim.Adam(model.parameters(), lr=0.1)
 
-
-model = BayesianNN(input_size=22)
-
-# Use Mean Squared Error loss
-loss_fn = nn.MSELoss()
-
-optimizer = optim.Adam(model.parameters(), lr=0.001)
 n_epochs = 200
 batch_size = 25
 batch_start = torch.arange(0, len(X_train), batch_size)
@@ -203,34 +193,39 @@ history = []
 patience = 10
 scheduler = StepLR(optimizer, step_size=5, gamma=0.5)
 
+# Training loop
 for epoch in range(n_epochs):
     print(epoch)
     model.train()
     with tqdm.tqdm(batch_start, unit="batch", mininterval=0, disable=True) as bar:
         bar.set_description(f"Epoch {epoch}")
         for start in bar:
-            X_batch = X_train[start:start + batch_size]
-            y_batch = y_train[start:start + batch_size]
-
+            # Take a batch
+            X_batch = X_train[start:start+batch_size]
+            y_batch = y_train[start:start+batch_size]
+            # Forward pass
             y_pred = model(X_batch)
-            loss = loss_fn(y_pred, y_batch)
-
+            loss = nn.MSELoss()(y_pred, y_batch)  # Use MSE as the loss function
+            # Backward pass
             optimizer.zero_grad()
             loss.backward()
+            # Update weights
             optimizer.step()
+            # Print progress
             bar.set_postfix(mse=float(loss))
 
+    # Evaluate accuracy at the end of each epoch
     scheduler.step()
-
     model.eval()
     y_pred = model(X_val)
-    mse = loss_fn(y_pred, y_val)
+    mse = nn.MSELoss()(y_pred, y_val)
     mse = float(mse)
 
+    # Check if validation loss (MSE) has improved
     if mse < best_mse:
         best_mse = mse
         best_weights = copy.deepcopy(model.state_dict())
-        count = 0
+        count = 0  # Reset the patience counter
     else:
         count += 1
 
@@ -238,36 +233,32 @@ for epoch in range(n_epochs):
         print(f"Early stopping after {epoch} epochs without improvement.")
         break
 
+# Restore the model with the best accuracy
 model.load_state_dict(best_weights)
 print("MSE: %.2f" % best_mse)
 print("RMSE: %.2f" % np.sqrt(best_mse))
 
-# Calculate MSE for test data
+# Set the model to evaluation mode for Monte Carlo Dropout
 model.eval()
-with torch.no_grad():
-    y_pred_median = model(X_test)
 
-mse_test = loss_fn(y_pred_median, y_test)
-mse_test = float(mse_test)
+# Number of Monte Carlo samples for uncertainty estimation
+num_samples = 100
+predictions = []
 
-print("MSE on test data: %.2f" % mse_test)
+for _ in range(num_samples):
+    with torch.no_grad():
+        y_pred = model(X_test)
+        predictions.append(y_pred)
 
-# Get uncertainty estimate for all test samples
-with torch.no_grad():
-    num_samples = 100  # You can adjust the number of samples
-predictions = torch.zeros((num_samples, len(X_test)))
+# Calculate mean and standard deviation across Monte Carlo samples
+predictions = torch.cat(predictions, dim=1)
+prediction_mean = predictions.mean(dim=1)
+prediction_std = predictions.std(dim=1)
 
-for i in range(num_samples):
-    y_pred = model(X_test)
-predictions[i] = y_pred.view(-1)
+# Store prediction_mean and prediction_std for each test sample
+test["prediction_mean"] = prediction_mean
+test["prediction_std"] = prediction_std
 
-std_dev = torch.std(predictions, dim=0)
-print("Uncertainty (Standard Deviation) for each prediction:")
-print(std_dev)
-
-# Store the predictions and uncertainty in your dataframe
-test["prediction_median"] = y_pred_median
-test["uncertainty"] = std_dev
-
-# Save the updated dataframe
+# Save the results to a CSV file
 test.to_csv("pytorch_bs_pred_with_uncertainty.csv")
+
