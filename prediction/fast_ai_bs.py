@@ -138,17 +138,20 @@ X_train = torch.tensor(X_train, dtype=torch.float32)
 y_train = torch.tensor(y_train, dtype=torch.float32).reshape(-1, 1)
 X_test = torch.tensor(X_test, dtype=torch.float32)
 y_test = torch.tensor(y_test, dtype=torch.float32).reshape(-1, 1)
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
 
 
 
 
 # Define the model
 model = nn.Sequential(
-    nn.Linear(22, 40),
+    nn.Linear(22, 50),
     nn.ReLU(),
-    nn.Linear(40, 20),
+    nn.Linear(50, 30),
     nn.ReLU(),
-    nn.Linear(20, 6),
+    nn.Linear(30, 15),
+    nn.ReLU(),
+    nn.Linear(15, 6),
     nn.ReLU(),
     nn.Linear(6, 1)
 )
@@ -165,6 +168,7 @@ batch_start = torch.arange(0, len(X_train), batch_size)
 best_mse = np.inf   # init to infinity
 best_weights = None
 history = []
+patience = 5  # Number of epochs with no improvement to wait before early stopping
 
 for epoch in range(n_epochs):
     print(epoch)
@@ -188,12 +192,20 @@ for epoch in range(n_epochs):
     # evaluate accuracy at end of each epoch
     model.eval()
     y_pred = model(X_test)
-    mse = loss_fn(y_pred, y_test)
+    mse = loss_fn(X_val, y_val)
     mse = float(mse)
-    history.append(mse)
+
+    # Check if validation loss (MSE) has improved
     if mse < best_mse:
         best_mse = mse
         best_weights = copy.deepcopy(model.state_dict())
+        count = 0  # Reset the patience counter
+    else:
+        count += 1
+
+    if count >= patience:
+        print(f"Early stopping after {epoch} epochs without improvement.")
+        break
 
 # restore model and return best accuracy
 model.load_state_dict(best_weights)
