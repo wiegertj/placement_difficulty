@@ -185,7 +185,7 @@ for epoch in range(n_epochs):
             y_batch = y_train[start:start+batch_size]
             # forward pass
             y_pred = model(X_batch)
-            loss = loss_fn(y_pred, y_batch)
+            loss = loss_fn(y_pred, y_batch.unsqueeze(1))
             # backward pass
             optimizer.zero_grad()
             loss.backward()
@@ -199,7 +199,7 @@ for epoch in range(n_epochs):
 
     model.eval()
     y_pred = model(X_val)
-    mse = loss_fn(y_pred, y_val)
+    mse = loss_fn(y_pred, y_val.unsqueeze(1))
     mse = float(mse)
 
     # Check if validation loss (MSE) has improved
