@@ -221,8 +221,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
     final_model_median = lgb.train(best_params_median, train_data)
-    model_params = final_model_median.dump_model()
-    print(model_params)
+
 
     y_pred = final_model_median.predict(X_test.drop(axis=1, columns=["group"]))
 
