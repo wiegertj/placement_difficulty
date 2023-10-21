@@ -189,7 +189,7 @@ for epoch in range(n_epochs):
             bar.set_postfix(mse=float(loss))
     # evaluate accuracy at end of each epoch
     model.eval()
-    y_pred = model(X_test)
+    y_pred = model(X_val)
     mse = loss_fn(y_pred, y_val)
     mse = float(mse)
 
