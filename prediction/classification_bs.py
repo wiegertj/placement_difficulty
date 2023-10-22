@@ -79,10 +79,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
     df.loc[df['support'] >= 0.8, 'is_valid'] = 1
-    sys.exit()
     print(df["is_valid"].value_counts())
     print(df.columns)
     print(df.shape)
+    sys.exit()
 
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     target = "is_valid"
