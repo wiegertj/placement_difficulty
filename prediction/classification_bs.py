@@ -178,7 +178,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         return np.mean(val_scores)  # sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='maximize')
-    study.optimize(objective, n_trials=100)
+    study.optimize(objective, n_trials=1)
 
     best_params = study.best_params
     best_params["objective"] = "binary"
@@ -205,16 +205,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     not_probability = 1 - used_probability
     df["used_probability"] = used_probability
     df["not_probability"] = not_probability
+    df["entropy"] = -1
 
-    entropy_per_row = []
     for index, row in df.iterrows():
-        probabilities = row.values  # Get the probabilities from the row
-        probabilities = probabilities / np.sum(probabilities)  # Normalize the probabilities
-        entropy_row = entropy(probabilities, base=2)  # Compute Shannon entropy
-        entropy_per_row.append(entropy_row)
-
-    # Add the computed Shannon entropy values to the DataFrame
-    df['entropy'] = entropy_per_row
+        entropy_row = entropy([row["used_probability"], row["not_probability"]], base=2)  # Compute Shannon entropy
+        df.loc[index, 'entropy'] = entropy_row
 
     # Calculate classification metrics
     accuracy = accuracy_score(y_test, y_pred_binary)
