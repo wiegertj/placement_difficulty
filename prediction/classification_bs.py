@@ -201,9 +201,20 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     # Convert probabilities to class labels (binary classification)
     y_pred_binary = (y_pred >= 0.5).astype(int)
-    uncertainty = np.where(y_pred_binary == 1, y_pred, 1 - y_pred)
-    uncertainty = 1- uncertainty
+    used_probability = np.where(y_pred_binary == 1, y_pred, 1 - y_pred)
+    not_probability = 1 - used_probability
+    df["used_probability"] = used_probability
+    df["not_probability"] = not_probability
 
+    entropy_per_row = []
+    for index, row in df.iterrows():
+        probabilities = row.values  # Get the probabilities from the row
+        probabilities = probabilities / np.sum(probabilities)  # Normalize the probabilities
+        entropy_row = entropy(probabilities, base=2)  # Compute Shannon entropy
+        entropy_per_row.append(entropy_row)
+
+    # Add the computed Shannon entropy values to the DataFrame
+    df['entropy'] = entropy_per_row
 
     # Calculate classification metrics
     accuracy = accuracy_score(y_test, y_pred_binary)
