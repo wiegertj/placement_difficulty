@@ -145,7 +145,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
             'num_iterations': trial.suggest_int('num_iterations', 10, 200),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 300),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
+            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
@@ -161,8 +161,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         gkf = GroupKFold(n_splits=5)
         for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
-            print("In prediction")
-            print(X_train_tmp.columns)
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
 
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
