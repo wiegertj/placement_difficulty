@@ -79,7 +79,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
     df["is_valid"] = 0
-    df.loc[df['support'] >= 0.7, 'is_valid'] = 1
+    df.loc[df['support'] >= 0.8, 'is_valid'] = 1
     print(df["is_valid"].value_counts())
     print(df.columns)
     print(df.shape)
@@ -266,7 +266,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     X_test_["prediction"] = y_pred
     X_test_["prediction_binary"] = y_pred_binary
-
     X_test_["support"] = y_test
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results_classifier" + name + ".csv"))
 
