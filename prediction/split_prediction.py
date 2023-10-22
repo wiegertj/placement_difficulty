@@ -169,10 +169,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     study = optuna.create_study(direction='maximize')
     study.optimize(objective, n_trials=100)
+    best_params = study.best_params
     best_params["objective"] = "binary"
     best_params["metric"] = "binary_logloss"
     best_params["bagging_freq"] = 0
-    best_params = study.best_params
     best_score = study.best_value
 
     print(f"Best Params: {best_params}")
