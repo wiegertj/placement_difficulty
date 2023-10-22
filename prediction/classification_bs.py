@@ -168,7 +168,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
-            val_preds_binary = (val_preds > 0.55).astype(int)
+            val_preds_binary = (val_preds > 0.45).astype(int)
 
             # val_score = mean_squared_error(y_val, val_preds)
             # val_score = math.sqrt(val_score)
@@ -200,7 +200,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
     # Convert probabilities to class labels (binary classification)
-    y_pred_binary = (y_pred > 0.55).astype(int)
+    y_pred_binary = (y_pred > 0.45).astype(int)
     entropy_values = [entropy([p, 1 - p], base=2) for p in y_pred]
 
     # Calculate classification metrics
