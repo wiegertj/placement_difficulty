@@ -25,28 +25,28 @@ from optuna.integration import LightGBMPruningCallback
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
-    df = df[["dataset", "branchId", "support", "parsimony_boot_support",
-             "parsimony_support",
-             "avg_subst_freq",
-             "length_relative",
-             "length",
-             "avg_rel_rf_boot",
-             "max_subst_freq",
-             "skw_pars_bootsupp_tree",
-             "cv_subst_freq",
-             "bl_ratio",
-             "max_pars_bootsupp_child_w",
-             "sk_subst_freq",
-             "mean_pars_bootsupp_parents",
-             "max_pars_supp_child_w",
-             "std_pars_bootsupp_parents",
-             "min_pars_supp_child",
-             "min_pars_supp_child_w",
-             "rel_num_children",
-             "mean_pars_supp_child_w",
-             "std_pars_bootsupp_child",
-             "mean_clo_sim_ratio",
-             "min_pars_bootsupp_child_w"]]
+    #df = df[["dataset", "branchId", "support", "parsimony_boot_support",
+     #        "parsimony_support",
+      #       "avg_subst_freq",
+       #      "length_relative",
+        #     "length",
+         #    "avg_rel_rf_boot",
+          #   "max_subst_freq",
+     #        "skw_pars_bootsupp_tree",
+      #       "cv_subst_freq",
+       #      "bl_ratio",
+        #     "max_pars_bootsupp_child_w",
+         #    "sk_subst_freq",
+          #   "mean_pars_bootsupp_parents",
+     #      #  "max_pars_supp_child_w",
+      #       "std_pars_bootsupp_parents",
+       #      "min_pars_supp_child",
+        #     "min_pars_supp_child_w",
+           #  "rel_num_children",
+         #    "mean_pars_supp_child_w",
+          #   "std_pars_bootsupp_child",
+             #"mean_clo_sim_ratio",
+            # "min_pars_bootsupp_child_w"]]
 
     column_name_mapping = {
         "parsimony_boot_support": "parsimony_bootstrap_support",
@@ -79,7 +79,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
     df["is_valid"] = 0
-    df.loc[df['support'] >= 0.8, 'is_valid'] = 1
+    df.loc[df['support'] >= 0.7, 'is_valid'] = 1
     print(df["is_valid"].value_counts())
     print(df.columns)
     print(df.shape)
