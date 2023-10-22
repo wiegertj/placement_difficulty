@@ -175,7 +175,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
             # val_score = mean_squared_error(y_val, val_preds)
             # val_score = math.sqrt(val_score)
-            val_score = accuracy_score(y_val, val_preds_binary)
+            val_score = f1_score(y_val, val_preds_binary)
             val_scores.append(val_score)
 
         return np.mean(val_scores)  # sum(val_scores) / len(val_scores) #median?
@@ -196,7 +196,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "branch_predictor.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "branch_predictor_class.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
