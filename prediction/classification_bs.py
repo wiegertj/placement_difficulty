@@ -209,7 +209,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     for index, row in X_test_.iterrows():
         entropy_row = entropy([row["used_probability"], row["not_probability"]], base=2)  # Compute Shannon entropy
-        df.loc[index, 'entropy'] = entropy_row
+        X_test_.loc[index, 'entropy'] = entropy_row
 
     # Calculate classification metrics
     accuracy = accuracy_score(y_test, y_pred_binary)
