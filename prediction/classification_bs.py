@@ -273,7 +273,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     X_test_["prediction_binary"] = y_pred_binary
 
     X_test_["support"] = y_test
-    X_test_["uncertainty"] = uncertainty
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results_classifier" + name + ".csv"))
 
     if shapley_calc:
