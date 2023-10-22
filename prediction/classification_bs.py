@@ -105,17 +105,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
-    X_train = X_train[["dataset",'pars_support_cons', 'std_pars_supp_parents', 'min_pars_supp_child_w',
-       'std_pars_supp_child_w', 'min_pars_supp_child', 'mean_pars_supp_child',
-       'std_pars_supp_child', 'irs_std_right', 'irs_skw_right',
-       'avg_rf_no_boot', 'group']]
     y_train = train[target]
 
     X_test = test.drop(axis=1, columns=target)
-    X_test = X_test[["dataset", 'pars_support_cons', 'std_pars_supp_parents', 'min_pars_supp_child_w',
-       'std_pars_supp_child_w', 'min_pars_supp_child', 'mean_pars_supp_child',
-       'std_pars_supp_child', 'irs_std_right', 'irs_skw_right',
-       'avg_rf_no_boot', 'group']]
+
     y_test = test[target]
 
     X_train.fillna(-1, inplace=True)
