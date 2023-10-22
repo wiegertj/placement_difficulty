@@ -203,11 +203,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     y_pred_binary = (y_pred >= 0.5).astype(int)
     used_probability = np.where(y_pred_binary == 1, y_pred, 1 - y_pred)
     not_probability = 1 - used_probability
-    df["used_probability"] = used_probability
-    df["not_probability"] = not_probability
-    df["entropy"] = -1
+    X_test_["used_probability"] = used_probability
+    X_test_["not_probability"] = not_probability
+    X_test_["entropy"] = -1
 
-    for index, row in df.iterrows():
+    for index, row in X_test_.iterrows():
         entropy_row = entropy([row["used_probability"], row["not_probability"]], base=2)  # Compute Shannon entropy
         df.loc[index, 'entropy'] = entropy_row
 
