@@ -259,7 +259,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         print(f"{row['Feature']}: {row['Importance']:.4f}")
 
     X_test_["prediction"] = y_pred
-    X_test_["prediction"] = y_pred_binary
+    X_test_["prediction_binary"] = y_pred_binary
 
     X_test_["support"] = y_test
     X_test_["uncertainty"] = uncertainty
