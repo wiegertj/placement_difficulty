@@ -200,7 +200,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
     # Convert probabilities to class labels (binary classification)
-    y_pred_binary = (y_pred > 0.5).astype(int)
+    y_pred_binary = (y_pred > 0.55).astype(int)
     entropy_values = [entropy([p, 1 - p], base=2) for p in y_pred]
 
     # Calculate classification metrics
