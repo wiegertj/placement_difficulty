@@ -201,7 +201,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     # Convert probabilities to class labels (binary classification)
     y_pred_binary = (y_pred >= 0.5).astype(int)
-    entropy_values = [entropy([p, 1 - p], base=2) for p in y_pred]
+    uncertainty = np.where(y_pred_binary == 1, y_pred, 1 - y_pred)
+
 
     # Calculate classification metrics
     accuracy = accuracy_score(y_test, y_pred_binary)
@@ -258,7 +259,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     X_test_["prediction"] = y_pred
     X_test_["support"] = y_test
-    X_test_["uncertainty"] = entropy_values
+    X_test_["uncertainty"] = uncertainty
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results_classifier" + name + ".csv"))
 
     if shapley_calc:
