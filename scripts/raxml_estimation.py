@@ -5,11 +5,13 @@ import os
 import subprocess
 # Specify the path to the directory containing your folders
 path = os.pardir + "/data/raxml_data"
-
+counter=0
 # Loop over each subdirectory (folder) within the specified path
 for folder_name in os.listdir(path):
     folder_path = os.path.join(path, folder_name)
-
+    print(folder_name)
+    counter += 1
+    print(counter)
     if os.path.isdir(folder_path):
         msa_file_path = os.path.join(folder_path, 'msa.fasta')
 
@@ -30,3 +32,6 @@ for folder_name in os.listdir(path):
                 ]
 
                 subprocess.run(" ".join(raxml_command), shell=True)
+
+                model_path = ""
+
