@@ -142,7 +142,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         params = {
             'objective': 'binary',
             'metric': 'binary_logloss',  # Use 'binary_logloss' for binary classification
-            'num_iterations': trial.suggest_int('num_iterations', 10, 200),
+            'num_iterations': trial.suggest_int('num_iterations', 10, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 300),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
@@ -150,7 +150,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
             # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
-            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.1),
+            'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
             'bagging_freq': 0,
             'verbosity': -1
             # 'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
