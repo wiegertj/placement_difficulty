@@ -34,8 +34,8 @@ for folder_name in list_foldernames:
 
                 subprocess.run(" ".join(raxml_command), shell=True)
 
-                model_path = path + "/" + str(folder_name) + ".raxml.bestModel"
-                tree_path = path + "/" + str(folder_name) + ".raxml.bestTree"
+                model_path = path + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.bestModel"
+                tree_path = path + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.bestTree"
 
                 raxml_command = [
                     "raxml-ng",
