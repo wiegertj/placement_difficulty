@@ -10,7 +10,7 @@ counter=0
 # Loop over each subdirectory (folder) within the specified path
 for folder_name in list_foldernames:
     folder_path = os.path.join(path, str(folder_name))
-    print(folder_name)
+    print(folder_path)
     counter += 1
     print(counter)
     if os.path.isdir(folder_path):
