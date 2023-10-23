@@ -5,11 +5,10 @@ import os
 import subprocess
 # Specify the path to the directory containing your folders
 list_foldernames = pd.read_csv(os.pardir + "/data/folder_names_raxml.csv")["folder_name"].values.tolist()
-path = os.pardir + "/data/raxml_data"
 counter=0
 # Loop over each subdirectory (folder) within the specified path
 for folder_name in list_foldernames:
-    folder_path = os.path.abspath(os.path.join(path, str(folder_name)))
+    folder_path = os.path.abspath(os.path.join(os.pardir, "raxml_data",str(folder_name)))
     print(folder_path)
     counter += 1
     print(counter)
