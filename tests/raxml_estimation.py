@@ -60,3 +60,4 @@ for folder_name in list_foldernames:
 
                 subprocess.run(" ".join(raxml_command), shell=True)
                 os.chdir(os.pardir)
+                os.chdir(os.pardir)
