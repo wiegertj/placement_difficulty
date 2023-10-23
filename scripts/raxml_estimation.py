@@ -4,6 +4,7 @@ import pandas as pd
 import os
 import subprocess
 # Specify the path to the directory containing your folders
+list_foldernames = pd.read_csv(os.pardir + "/data/folder_names_raxml.csv")["folder_name"].values.tolist()
 path = os.pardir + "/data/raxml_data"
 counter=0
 # Loop over each subdirectory (folder) within the specified path
