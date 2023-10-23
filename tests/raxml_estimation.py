@@ -50,7 +50,7 @@ for folder_name in list_foldernames:
                 subprocess.run(" ".join(raxml_command), shell=True)
 
                 print(f"Bootstrap analysis for {folder_name} completed.")
-                boot_path = os.path.abspath(os.pardir + "/" + str(folder_name) + ".raxml.bootstraps")
+                boot_path = os.path.abspath(os.pardir + "/" + str(folder_name)+ "/" + str(folder_name) + ".raxml.bootstraps")
                 raxml_command = [
                     "raxml-ng",
                 "--support",
