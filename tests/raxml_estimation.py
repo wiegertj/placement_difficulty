@@ -28,14 +28,14 @@ for folder_name in list_foldernames:
                 f"--model GTR+G",
                 f"--msa {abs_msa_file_path}",
                 "--redo",
-                "--tree pars{50} rand{50}",
+                "--tree pars{50},rand{50}",
                 f"--prefix {folder_name}"
                 ]
 
                 subprocess.run(" ".join(raxml_command), shell=True)
 
-                model_path = path + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.bestModel"
-                tree_path = path + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.bestTree"
+                model_path =  os.path.abspath(path + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.bestModel")
+                tree_path = os.path.abspath(path + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.bestTree")
 
                 raxml_command = [
                     "raxml-ng",
