@@ -34,8 +34,8 @@ for folder_name in list_foldernames:
 
                 subprocess.run(" ".join(raxml_command), shell=True)
 
-                model_path = path + "/" + folder_name + ".raxml.bestModel"
-                tree_path = path + "/" + folder_name + ".raxml.bestTree"
+                model_path = path + "/" + str(folder_name) + ".raxml.bestModel"
+                tree_path = path + "/" + str(folder_name) + ".raxml.bestTree"
 
                 raxml_command = [
                     "raxml-ng",
@@ -50,7 +50,7 @@ for folder_name in list_foldernames:
                 subprocess.run(" ".join(raxml_command), shell=True)
 
                 print(f"Bootstrap analysis for {folder_name} completed.")
-                boot_path = path + "/" + folder_name + ".raxml.bootstraps"
+                boot_path = path + "/" + str(folder_name) + ".raxml.bootstraps"
                 raxml_command = [
                     "raxml-ng",
                 "--support",
