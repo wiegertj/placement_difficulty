@@ -15,10 +15,9 @@ for folder_name in list_foldernames:
     print(counter)
     if os.path.isdir(folder_path):
         msa_file_path = os.path.join(folder_path, 'msa.fasta')
-
-        if os.path.exists(msa_file_path):
+        abs_msa_file_path = os.path.abspath(msa_file_path)
+        if os.path.exists(abs_msa_file_path):
             with open(msa_file_path, 'r') as msa_file:
-                abs_msa_file_path = os.path.abspath(msa_file_path)
                 os.chdir(folder_path)
 
                 print("found " + abs_msa_file_path)
