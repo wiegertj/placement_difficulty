@@ -51,7 +51,7 @@ for tree_filename in filenames_filtered:
     start_time = time.time()
 
     raxml_command = [
-        "iqtree",
+        "/home/wiegerjs/iqtree-2.2.2.6-Linux/bin/iqtree2",
         f"-m GTR+G",
         f"-s {msa_filepath}",
         f"-B {1000}",
