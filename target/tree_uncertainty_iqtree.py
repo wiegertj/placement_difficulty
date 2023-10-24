@@ -56,7 +56,8 @@ for tree_filename in filenames_filtered:
         f"-s {msa_filepath}",
         f"-B {1000}",
         "--redo",
-        "--threads-max 60"
+        "--threads-max 60",
+        "--T 60"
     ]
 
     # print("Boot")
