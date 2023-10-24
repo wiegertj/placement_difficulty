@@ -55,9 +55,9 @@ for tree_filename in filenames_filtered:
         f"-m GTR+G",
         f"-s {msa_filepath}",
         f"-B {1000}",
-        "--redo",
-        "-T AUTO",
-        "--threads-max 60"
+        "--redo"
+        #"-T AUTO",
+        #"--threads-max 60"
     ]
 
     # print("Boot")
@@ -101,11 +101,11 @@ for tree_filename in filenames_filtered:
     time_dat = pd.DataFrame(data)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "bootstrap_times_iqtree_latest.csv")):
+                                       "bootstrap_times_iqtree_nomp.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "bootstrap_times_iqtree_latest.csv")), index=False)
+                                                  "bootstrap_times_iqtree_nomp.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "bootstrap_times_iqtree_latest.csv"),
+                                     "bootstrap_times_iqtree_nomp.csv"),
                         index=False,
                         mode='a', header=False)
