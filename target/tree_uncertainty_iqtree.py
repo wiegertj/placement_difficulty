@@ -57,7 +57,7 @@ for tree_filename in filenames_filtered:
         f"-B {1000}",
         "--redo",
         "--threads-max 60",
-        "-T 30"
+        "-T 60"
     ]
 
     # print("Boot")
