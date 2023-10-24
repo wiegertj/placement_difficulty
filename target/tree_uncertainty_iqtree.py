@@ -91,6 +91,7 @@ for tree_filename in filenames_filtered:
     print("Length of Alignment:", alignment_length)
 
     data = {
+        'dataset': tree_filename.replace(".newick", ""),
         'elapsed_time': [int(elapsed_time)],
         'num_seq': [num_sequences],
         'len': [alignment_length]
