@@ -12,8 +12,11 @@ base_path = "/hits/fast/cme/wiegerjs/placement_difficulty/tests/"
 for folder_name in list_foldernames:
 
     folder_path = base_path + str(folder_name) + "/" + str(folder_name) + ".csv"
-    df_tmp = pd.read_csv(folder_path)
-    df_tmps.append(df_tmp)
+    if os.path.exists(folder_path):
+        counter += 1
+        print(counter)
+        df_tmp = pd.read_csv(folder_path)
+        df_tmps.append(df_tmp)
 
 result_df = pd.concat(df_tmps, ignore_index=True)
 print(result_df.shape)
