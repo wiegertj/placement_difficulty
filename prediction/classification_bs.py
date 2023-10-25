@@ -193,7 +193,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "branch_predictor_class.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "branch_predictor_class_70.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
