@@ -16,6 +16,7 @@ for folder_name in list_foldernames:
         counter += 1
         print(counter)
         df_tmp = pd.read_csv(folder_path)
+        df_tmp["dataset"] = str(folder_name)
         df_tmps.append(df_tmp)
 
 result_df = pd.concat(df_tmps, ignore_index=True)
