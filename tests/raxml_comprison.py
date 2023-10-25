@@ -29,8 +29,8 @@ print(df_merged.shape)
 
 df_merged["prediction_o70"] = 0
 df_merged["prediction_o80"] = 0
-df_merged.loc[df_merged["prediction_over_70"] >= 0.5, "prediction_o70"] = 1
-df_merged.loc[df_merged["prediction_over_80"] >= 0.5, "prediction_o80"] = 1
+df_merged.loc[df_merged["prediction_bs_over_70"] >= 0.5, "prediction_o70"] = 1
+df_merged.loc[df_merged["prediction_bs_over_80"] >= 0.5, "prediction_o80"] = 1
 
 df_merged["o70_true"] = 0
 df_merged["o80_true"] = 0
