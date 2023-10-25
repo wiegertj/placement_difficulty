@@ -18,6 +18,10 @@ for folder_name in list_foldernames:
         support_path = os.path.abspath(os.pardir + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.support")
         print(support_path)
 
+        if not os.path.exists(support_path):
+            print("not found")
+            continue
+
         with open(support_path, "r") as support_file:
             tree_str = support_file.read()
             phylo_tree = Tree(tree_str)
