@@ -114,8 +114,30 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = df.rename(columns=column_name_mapping)
 
     df_raxml = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "df_pred.csv"), usecols=lambda column: column != 'Unnamed: 0' and column != 'Unnamed: 0_x' and column != 'Unnamed: 0_y')
+    df_raxml_filtered = df_raxml[["dataset", "branchId", "support", "parsimony_boot_support",
+             "parsimony_support",
+             "avg_subst_freq",
+             "length_relative",
+             "length",
+             "avg_rel_rf_boot",
+             "max_subst_freq",
+             "skw_pars_bootsupp_tree",
+             "cv_subst_freq",
+             "bl_ratio",
+             "max_pars_bootsupp_child_w",
+             "sk_subst_freq",
+             "mean_pars_bootsupp_parents",
+             "max_pars_supp_child_w",
+             "std_pars_bootsupp_parents",
+             "min_pars_supp_child",
+             "min_pars_supp_child_w",
+             "rel_num_children",
+             "mean_pars_supp_child_w",
+             "std_pars_bootsupp_child",
+             "mean_clo_sim_ratio",
+             "min_pars_bootsupp_child_w"]]
     print(df.shape)
-    df = pd.concat([df, df_raxml])
+    df = pd.concat([df, df_raxml_filtered])
     print(df.shape)
     print(df.columns)
     # df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
