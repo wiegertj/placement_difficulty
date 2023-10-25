@@ -59,12 +59,7 @@ def MBE(y_true, y_pred):
 
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
-    df_classic = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
-    print(df_classic.shape)
-
-    df_raxml = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "df_pred.csv"))
-    df = pd.concat([df_raxml, df_classic])
-    print(df.shape)
+    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
 
 
     df = df[["dataset", "branchId", "support", "parsimony_boot_support",
@@ -117,6 +112,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     # Rename the columns in the DataFrame
     df = df.rename(columns=column_name_mapping)
+
+    df_raxml = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "df_pred.csv"))
+    print(df.shape)
+    df = pd.concat([df, df_raxml])
+    print(df.shape)
 
     # df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
     # df_diff["name"] = df_diff["name"].str.replace(".phy", "")
