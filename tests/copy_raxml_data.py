@@ -25,7 +25,7 @@ for folder_name in list_foldernames:
             msa_file_path = os.path.abspath(os.path.join(folder_path, 'msa.fasta'))
             msa_file_to = os.path.join(os.pardir, '/data/raw/msa/' + str(folder_name) + '_reference.fasta')
             tree_path = os.path.join(folder_path, str(folder_name) + ".raxml.bestTree")
-            tree_path_to =  msa_file_to = os.path.join(os.pardir, '/data/raw/reference_tree/' + str(folder_name) + '.newick')
+            tree_path_to = os.path.join(os.pardir, '/data/raw/reference_tree/' + str(folder_name) + '.newick')
 
             shutil.copy(model_path, model_path_to)
             shutil.copy(msa_file_path, msa_file_to)
