@@ -63,7 +63,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(df_classic.shape)
 
     df_raxml = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "df_pred.csv"))
-    df = pd.concat(df_raxml, df_classic)
+    df = pd.concat([df_raxml, df_classic])
     print(df.shape)
 
 
