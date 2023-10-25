@@ -10,9 +10,7 @@ base_path = "/hits/fast/cme/wiegerjs/placement_difficulty/tests/"
 # Loop over each subdirectory (folder) within the specified path
 
 for folder_name in list_foldernames:
-    counter += 1
-    if counter < 50:
-        continue
+
     folder_path = base_path + folder_name + "/" + folder_name + ".csv"
     df_tmp = pd.read_csv(folder_path)
     df_tmps.append(df_tmp)
