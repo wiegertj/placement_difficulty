@@ -141,6 +141,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
                         "std_pars_bootstrap_support_children",
                         "mean_closeness_centrality_ratio",
                         "min_pars_bootstrap_support_children_w"]]
+    df_raxml_filtered["support"] = df_raxml_filtered["support"] / 100
     print(df.shape)
     df = pd.concat([df, df_raxml_filtered])
     print(df.shape)
