@@ -183,8 +183,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     X_test_ = X_test
     if not rfe:
-        X_train = X_train.drop(axis=1, columns=['dataset', 'branchId'])
-        X_test = X_test.drop(axis=1, columns=['dataset', 'branchId'])
+        X_train = X_train.drop(axis=1, columns=['dataset'])
+        X_test = X_test.drop(axis=1, columns=['dataset'])
 
     ######################################
 
