@@ -59,7 +59,13 @@ def MBE(y_true, y_pred):
 
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
-    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
+    df_classic = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
+    print(df_classic.shape)
+
+    df_raxml = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "df_pred.csv"))
+    df = pd.concat(df_raxml, df_classic)
+    print(df.shape)
+
 
     df = df[["dataset", "branchId", "support", "parsimony_boot_support",
              "parsimony_support",
@@ -298,7 +304,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     plt.title('Feature Importances')
     plt.tight_layout()
 
-    sys.exit()
 
     #####################################################################################################################
     # X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
