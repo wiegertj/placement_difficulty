@@ -15,8 +15,8 @@ filenames = loo_selection["dataset"].values.tolist()
 # Loop over each subdirectory (folder) within the specified path
 counter = 0
 for file in filenames:
-    msa_filepath = os.path.join(os.pardir, "data/raw/msa", file.replace(".newick", "_reference.fasta"))
-    model_path = os.path.join(os.pardir, "data/processed/loo", file.replace(".newick", "") + "_msa_model.txt")
+    msa_filepath = os.path.join(os.pardir, "data/raw/msa", file + "_reference.fasta")
+    model_path = os.path.join(os.pardir, "data/processed/loo", file + "_msa_model.txt")
 
     counter += 1
     start = time.time()
@@ -35,7 +35,8 @@ for file in filenames:
         'dataset': file.replace(".newick", ""),
         'elapsed_time': int(elpased_time)
     }
-    time_dat = pd.DataFrame(data)
+    data_lost = [data]
+    time_dat = pd.DataFrame(data_lost)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                                        "bootstrap_times_standard.csv")):
