@@ -28,5 +28,6 @@ for folder_name in list_foldernames:
             tree_path_to = os.path.join(os.pardir, '/data/raw/reference_tree/' + str(folder_name) + '.newick')
 
             shutil.copy(model_path, model_path_to)
+            print(msa_file_to)
             shutil.copy(msa_file_path, msa_file_to)
             shutil.copy(tree_path, tree_path_to)
