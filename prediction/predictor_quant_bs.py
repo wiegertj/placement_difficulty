@@ -59,7 +59,7 @@ def MBE(y_true, y_pred):
 
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
-    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"), , usecols=lambda column: column != 'Unnamed: 0')
+    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"),  usecols=lambda column: column != 'Unnamed: 0')
 
 
     df = df[["dataset", "branchId", "support", "parsimony_boot_support",
