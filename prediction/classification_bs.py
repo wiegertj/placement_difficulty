@@ -78,7 +78,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
     df["is_valid"] = 0
-    df.loc[df['support'] >= 0.8, 'is_valid'] = 1
+    df.loc[df['support'] >= 0.7, 'is_valid'] = 1
     print(df["is_valid"].value_counts())
     print(df.columns)
     print(df.shape)
@@ -191,7 +191,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "branch_predictor_class_80.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "branch_predictor_class_70.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
