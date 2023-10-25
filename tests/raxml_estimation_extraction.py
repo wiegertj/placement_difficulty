@@ -16,6 +16,7 @@ for folder_name in list_foldernames:
     print(counter)
     if os.path.isdir(folder_path):
         support_path = os.path.abspath(os.pardir + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.support")
+        print(support_path)
 
         with open(support_path, "r") as support_file:
             tree_str = support_file.read()
