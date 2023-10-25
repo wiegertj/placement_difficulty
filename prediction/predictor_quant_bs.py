@@ -113,7 +113,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     # Rename the columns in the DataFrame
     df = df.rename(columns=column_name_mapping)
 
-    df_raxml = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "df_pred.csv"), usecols=lambda column: column != 'Unnamed: 0')
+    df_raxml = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "df_pred.csv"), usecols=lambda column: column != 'Unnamed: 0' and column != 'Unnamed: 0_x' and column != 'Unnamed: 0_y')
     print(df.shape)
     df = pd.concat([df, df_raxml])
     print(df.shape)
