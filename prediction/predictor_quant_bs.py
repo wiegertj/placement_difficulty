@@ -1,7 +1,6 @@
 import math
 import sys
 import random
-import shap
 import lightgbm as lgb
 import os
 import pickle
