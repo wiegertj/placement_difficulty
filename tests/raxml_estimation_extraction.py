@@ -11,11 +11,11 @@ results = []
 # Loop over each subdirectory (folder) within the specified path
 for folder_name in list_foldernames:
     folder_path = os.path.abspath(os.path.join(os.pardir, "data/raxml_data",str(folder_name)))
-    print(folder_path)
+    #print(folder_path)
     counter += 1
     print(counter)
     if os.path.isdir(folder_path):
-        support_path = os.path.abspath(os.pardir + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.support")
+        support_path = os.path.abspath(os.pardir + "/raxml_data/" + str(folder_name) + "/" + str(folder_name) + ".raxml.support")
         print(support_path)
 
         if not os.path.exists(support_path):
