@@ -15,7 +15,7 @@ for folder_name in list_foldernames:
     counter += 1
     print(counter)
     if os.path.isdir(folder_path):
-        support_path = os.path.abspath(os.pardir + "/raxml_data/" + str(folder_name) + "/" + str(folder_name) + ".raxml.support")
+        support_path = os.path.abspath(os.pardir + "/data/raxml_data/" + str(folder_name) + "/" + str(folder_name) + ".raxml.support")
         print(support_path)
 
         if not os.path.exists(support_path):
