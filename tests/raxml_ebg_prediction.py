@@ -14,6 +14,9 @@ for folder_name in list_foldernames:
     # print(folder_path)
     counter += 1
     print(counter)
+    if os.path.exists(tree_path):
+        print("not found tree")
+        continue
     if os.path.isdir(folder_path):
         model_path = os.path.abspath(os.pardir + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.bestModel")
         tree_path = os.path.abspath(os.pardir + "/" + str(folder_name) + "/" + str(folder_name) + ".raxml.bestTree")
