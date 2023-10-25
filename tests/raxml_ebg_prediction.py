@@ -13,6 +13,8 @@ for folder_name in list_foldernames:
     folder_path = os.path.abspath(os.path.join(os.pardir, "data/raxml_data", str(folder_name)))
     # print(folder_path)
     counter += 1
+    if (counter < 50 and counter != 1):
+        continue
     print(counter)
     tree_path = os.path.abspath(os.pardir + "/data/raxml_data/" + str(folder_name) + "/" + str(folder_name) + ".raxml.bestTree")
 
