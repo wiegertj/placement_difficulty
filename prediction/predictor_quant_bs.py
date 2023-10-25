@@ -117,7 +117,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(df.shape)
     df = pd.concat([df, df_raxml])
     print(df.shape)
-
+    print(df.columns)
     # df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
     # df_diff["name"] = df_diff["name"].str.replace(".phy", "")
     # df = df.merge(df_diff, left_on="dataset", right_on="name", how="inner")
