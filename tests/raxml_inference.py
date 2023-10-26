@@ -27,7 +27,8 @@ for file in filenames:
         f"--msa {msa_filepath}",
         "--model GTR+G",
         "--tree pars{50},rand{50}",
-        "--threads auto{60}"
+        "--threads auto{60}",
+        "--redo"
     ]
     subprocess.run(" ".join(raxml_command), shell=True)
     elpased_time = time.time() - start
