@@ -14,11 +14,16 @@ loo_selection = loo_selection[:180]
 filenames = loo_selection["dataset"].values.tolist()
 # Loop over each subdirectory (folder) within the specified path
 counter = 0
+
 for file in filenames:
+    if file == "20675_0":
+        continue
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", file + "_reference.fasta")
     model_path = os.path.join(os.pardir, "data/processed/loo", file + "_msa_model.txt")
 
     counter += 1
+    if counter <= 148:
+        continue
     start = time.time()
 
     raxml_command = [
