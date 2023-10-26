@@ -75,6 +75,7 @@ for tree_filename in filenames_filtered:
         f"-# {1000}",
         "-p 12345",
         "-x 12345",
+        "-w /hits/fast/cme/wiegerjs/placement_difficulty/data/processed/raxml_rapid_bs"
         f"-n {output_prefix}"    ]
 
     #print("Boot")
