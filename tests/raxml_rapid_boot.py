@@ -75,9 +75,7 @@ for tree_filename in filenames_filtered:
         f"-# {1000}",
         "-p 12345",
         "-x 12345",
-        f"-n {output_prefix}",
-        "--redo"
-    ]
+        f"-n {output_prefix}"    ]
 
     #print("Boot")
     print("Started")
