@@ -106,7 +106,7 @@ for tree_filename in filenames_filtered:
         'len': alignment_length
     }
     data_res = [data]
-    time_dat = pd.DataFrame(data)
+    time_dat = pd.DataFrame(data_res)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                                        "benchmark_rapid_bootstrap.csv")):
