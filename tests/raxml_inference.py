@@ -33,7 +33,7 @@ for file in filenames:
     elpased_time = time.time() - start
     data = {
         'dataset': file.replace(".newick", ""),
-        'elapsed_time': int(elpased_time)
+        'elapsed_time_inference': int(elpased_time)
     }
     data_lost = [data]
     time_dat = pd.DataFrame(data_lost)
