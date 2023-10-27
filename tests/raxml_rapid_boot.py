@@ -1,5 +1,5 @@
 import time
-
+import numpy as np
 print("Started")
 
 import pandas as pd
@@ -52,6 +52,23 @@ for tree_filename in filenames_filtered:
 
 
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
+
+    alignment = AlignIO.read(msa_filepath, "fasta")
+
+    sequence_data = [list(record.seq) for record in alignment]
+
+    alignment_array = np.array(sequence_data)
+    no_col = alignment.get_alignment_length()
+
+    set_cols = set()
+
+    for col in range(0, no_col):
+        replicate_alignment = alignment_array[:, no_col]
+        set_cols.add(replicate_alignment)
+
+    print(len(set_cols))
+    print(no_col)
+
 
     for record in SeqIO.parse(msa_filepath, "fasta"):
         sequence_length = len(record.seq)
