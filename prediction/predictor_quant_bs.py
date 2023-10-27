@@ -221,7 +221,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         X_test = X_test.drop(axis=1, columns=['dataset'])
 
     ######################################
-
+    val_scores_median = []
     def objective_median(trial):
         # callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
@@ -260,12 +260,17 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             print("score: " + str(val_score))
 
             val_scores.append(val_score)
+            val_scores_median.append(val_score)
 
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
     study.optimize(objective_median, n_trials=100)
+    # Create a DataFrame from the list
+    df = pd.DataFrame({'Value': val_scores_median})
 
+    # Save the DataFrame as a CSV file
+    df.to_csv('val_scores.csv', index=False)
     best_params = study.best_params
     best_params["objective"] = "quantile"
     best_params["metric"] = "quantile"
