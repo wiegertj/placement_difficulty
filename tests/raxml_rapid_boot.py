@@ -66,9 +66,9 @@ for tree_filename in filenames_filtered:
         column = "".join(alignment_array[:, col].tolist())
         set_cols.add(column)
 
-    print(len(set_cols))
-    print(no_col)
-
+    print("Unique cols: " + str(len(set_cols)))
+    print("Number of Sequences:", num_sequences)
+    print("Length of Alignment:", alignment_length)
 
     for record in SeqIO.parse(msa_filepath, "fasta"):
         sequence_length = len(record.seq)
