@@ -73,6 +73,8 @@ for tree_filename in filenames_filtered:
     print("Number of Sequences:", num_sequences)
     print("Length of Alignment:", alignment_length)
 
+    thread_num = int((len(set_cols) / 500))
+
     for record in SeqIO.parse(msa_filepath, "fasta"):
         sequence_length = len(record.seq)
         break
@@ -89,7 +91,7 @@ for tree_filename in filenames_filtered:
 
     raxml_command = [
         "raxmlHPC-PTHREADS",
-        "-T 60",
+        f"-T {thread_num}",
         f"-m GTRGAMMA",
         f"-s {msa_filepath}",
         f"-# {1000}",
