@@ -466,7 +466,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["prediction_median"] = y_pred_median
     X_test_["prediction_low"] = y_pred_lower
     X_test_["prediction_hi"] = y_pred_higher
-    print(y_pred_higher)
+    print(mean(y_pred_higher))
     X_test_["support"] = y_test
     X_test_["pred_error"] = y_test - y_pred_median
     X_test_["pi_width"] = y_pred_higher - y_pred_lower
