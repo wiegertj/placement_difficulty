@@ -74,6 +74,9 @@ for tree_filename in filenames_filtered:
     print("Length of Alignment:", alignment_length)
 
     thread_num = int((len(set_cols) / 500))
+    if thread_num > 60:
+        thread_num = 60
+    print("Chosen threads:" + str(thread_num))
 
     for record in SeqIO.parse(msa_filepath, "fasta"):
         sequence_length = len(record.seq)
