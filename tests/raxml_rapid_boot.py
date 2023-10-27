@@ -63,7 +63,7 @@ for tree_filename in filenames_filtered:
     set_cols = set()
 
     for col in range(0, no_col - 1):
-        column = alignment_array[:, col].tolist()
+        column = "".join(alignment_array[:, col].tolist())
         set_cols.add(column)
 
     print(len(set_cols))
