@@ -314,12 +314,16 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     feature_importance = final_model.feature_importance(importance_type='gain')
 
-    importance_df = pd.DataFrame(
-        {'Feature': X_train.drop(axis=1, columns=["group"]).columns, 'Importance': feature_importance})
-    importance_df = importance_df.sort_values(by='Importance', ascending=False)
+    # Calculate the total sum of feature importances
+    total_importance = feature_importance.sum()
 
-    scaler = MinMaxScaler()
-    importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
+    # Calculate the percentages
+    importance_percentages = (feature_importance / total_importance) * 100
+
+    importance_df = pd.DataFrame(
+        {'Feature': X_train.drop(axis=1, columns=["group"]).columns, 'Importance': importance_percentages})
+    importance_df = importance_df.sort_values(by='Importance', ascending=False)
+    importance_df.to_csv("final_importances.csv")
     importance_df = importance_df.nlargest(30, 'Importance')
 
     print(importance_df)
