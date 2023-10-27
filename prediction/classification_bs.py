@@ -74,11 +74,41 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     # Rename the columns in the DataFrame
     df = df.rename(columns=column_name_mapping)
+
+    df_raxml = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "df_pred.csv"), usecols=lambda
+        column: column != 'Unnamed: 0' and column != 'Unnamed: 0_x' and column != 'Unnamed: 0_y')
+    df_raxml_filtered = df_raxml[["dataset", "branchId", "support", "parsimony_bootstrap_support",
+                                  "parsimony_support",
+                                  "mean_substitution_frequency",
+                                  "norm_branch_length",
+                                  "branch_length",
+                                  "mean_norm_rf_distance",
+                                  "max_substitution_frequency",
+                                  "skewness_bootstrap_pars_support_tree",
+                                  "cv_substitution_frequency",
+                                  "branch_length_ratio_split",
+                                  "max_pars_bootstrap_support_children_w",
+                                  "skw_substitution_frequency",
+                                  "mean_pars_bootstrap_support_parents",
+                                  "max_pars_support_children_weighted",
+                                  "std_pars_bootstrap_support_parents",
+                                  "min_pars_support_children",
+                                  "min_pars_support_children_weighted",
+                                  "number_children_relative",
+                                  "mean_pars_support_children_weighted",
+                                  "std_pars_bootstrap_support_children",
+                                  "mean_closeness_centrality_ratio",
+                                  "min_pars_bootstrap_support_children_w"]]
+    df_raxml_filtered["support"] = df_raxml_filtered["support"] / 100
+    print(df.shape)
+    df = pd.concat([df, df_raxml_filtered])
+    print(df.shape)
+
     print("Median Support: ")
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
     df["is_valid"] = 0
-    df.loc[df['support'] >= 0.7, 'is_valid'] = 1
+    df.loc[df['support'] > 0.7, 'is_valid'] = 1
     print(df["is_valid"].value_counts())
     print(df.columns)
     print(df.shape)
@@ -92,7 +122,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    loo_selection = loo_selection[:200]
+    loo_selection = loo_selection[:180]
     filenames = loo_selection["dataset"].values.tolist()
 
     test = df[df['dataset'].isin(filenames)]
@@ -176,7 +206,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         return np.mean(val_scores)  # sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='maximize')
-    study.optimize(objective, n_trials=50)
+    study.optimize(objective, n_trials=100)
 
     best_params = study.best_params
     best_params["objective"] = "binary"
@@ -191,7 +221,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "branch_predictor_class_70.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "final_class_70.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
