@@ -344,7 +344,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'objective': 'quantile',
             'metric': 'quantile',
             'alpha': 0.05,
-            'num_iterations': trial.suggest_int('num_iterations', 50, 300),
+            'num_iterations': trial.suggest_int('num_iterations', 10, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.9),
@@ -408,12 +408,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             'objective': 'quantile',
             'metric': 'quantile',
             'alpha': 0.95,
-            'num_iterations': trial.suggest_int('num_iterations', 50, 300),
+            'num_iterations': trial.suggest_int('num_iterations', 5, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.9),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
+            'feature_fraction': trial.suggest_uniform('feature_fraction', 0.1, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
@@ -438,7 +438,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_higher_bound, n_trials=1)
+    study.optimize(objective_higher_bound, n_trials=20)
 
     best_params_higher_bound = study.best_params
     best_params_higher_bound["objective"] = "quantile"
