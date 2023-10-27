@@ -65,7 +65,10 @@ for tree_filename in filenames_filtered:
     for col in range(0, no_col - 1):
         column = "".join(alignment_array[:, col].tolist())
         set_cols.add(column)
+    num_sequences = len(alignment)
 
+    # Get the length of the alignment
+    alignment_length = alignment.get_alignment_length()
     print("Unique cols: " + str(len(set_cols)))
     print("Number of Sequences:", num_sequences)
     print("Length of Alignment:", alignment_length)
