@@ -19,7 +19,9 @@ for root, dirs, files in os.walk(file_path):
             counter += 1
             print(counter)
             file_pathname = os.path.join(root, filename)
+            filename_data = filename.replace("ebg_test", "")
             df = pd.read_csv(file_pathname)
+            df["dataset"] = filename_data
             all_dataframes.append(df)
 
 combined_dataframe = pd.concat(all_dataframes, ignore_index=True)
@@ -30,21 +32,23 @@ sys.exit()
 
 #################################### TIME ####################################
 
-time_iq_tree = pd.read_csv(os.path.join(os.pardir, "data/pars_boot_times_iqrtree.csv"))
-time_ebg_tree = pd.read_csv(os.path.join(os.pardir, "data/pars_boot_times_ebg.csv"))
-time_raxml_tree = pd.read_csv(os.path.join(os.pardir, "data/pars_boot_times_raxml_classic.csv"))
+time_iq_tree = pd.read_csv(os.path.join(os.pardir, "tests/final_times/iqtree_final.csv"))
+time_ebg_tree = pd.read_csv(os.path.join(os.pardir, "tests/final_times/benchmark_ebg.csv"))
+time_raxml_tree = pd.read_csv(os.path.join(os.pardir, "tests/final_times/inference_times_standard.csv"))
+boot = pd.read_csv(os.path.join(os.pardir, "tests/final_times/bootstrap_times_standard.csv"))
 
 time_merged = time_iq_tree.merge(time_ebg_tree, on=["dataset"], how="inner")
 time_merged = time_merged.merge(time_raxml_tree, on=["dataset"], how="inner")
-
+time_merged = time_merged.merge(boot, on=["dataset"], how="inner")
 time_merged["msa_size"] = time_merged["len"] * time_merged["num_seq"]
-
+time_merged["elapsed_time_ebg_inf"] = time_merged["elapsed_time_ebg"] + time_merged["elapsed_time_inference"]
 print(time_merged.shape)
 
 
 sum_iq = time_merged['elapsed_time_iq'].sum()
 sum_ebg = time_merged['elapsed_time_ebg'].sum()
 sum_raxml = time_merged['elapsed_time_raxml'].sum()
+sum_raxml = time_merged['elapsed_time_ebg_inf'].sum()
 print("1:" + str(sum_iq/sum_ebg) + ":" + str(sum_raxml/sum_ebg))
 
 columns = ['Prediction', 'IQTree UFB', 'RAxML Rapid Bootstrap']
@@ -61,8 +65,9 @@ plt.show()
 plt.plot(sorted(time_merged['msa_size']), sorted(time_merged['elapsed_time_iq']), label='IQTree')
 plt.plot(sorted(time_merged['msa_size']), sorted(time_merged['elapsed_time_ebg']), label='Prediction')
 plt.plot(sorted(time_merged['msa_size']), sorted(time_merged['elapsed_time_raxml']), label='RAxML Rapid BS')
+plt.plot(sorted(time_merged['msa_size']), sorted(time_merged['elapsed_time_ebg_inf']), label='RAxML Rapid BS')
 plt.xlabel('Number of sequences * sequence length')
-plt.yscale('log')
+#plt.yscale('log')
 plt.ylabel('Elapsed Time (seconds)')
 plt.legend()
 plt.show()
