@@ -170,7 +170,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    loo_selection = loo_selection[:200]
+    loo_selection = loo_selection[:180]
     filenames = loo_selection["dataset"].values.tolist()
 
     test = df[df['dataset'].isin(filenames)]
