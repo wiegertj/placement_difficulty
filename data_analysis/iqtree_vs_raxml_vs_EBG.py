@@ -6,7 +6,7 @@ import pandas as pd
 
 
 
-file_path = "/hits/fast/cme/wiegerjs/placement_difficulty/EBG_BENCHMARK"
+file_path = "/hits/fast/cme/wiegerjs/placement_difficulty/BENCHMARK_EBG"
 all_dataframes = []
 
 counter = 0
