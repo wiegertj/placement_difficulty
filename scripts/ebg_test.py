@@ -39,19 +39,12 @@ for tree_filename in filenames_filtered:
     #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
     #    print("Skipped, already found: " + tree_filename)
     #    continue 13808_7
-    if tree_filename == "11762_1.newick" or tree_filename == "11762_0.newick" or tree_filename == "20632_1.newick":
-        print("skipped too large!")
-        continue
+
 
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
 
     t = Tree(tree_path)
     num_leaves = len(t.get_leaves())
-
-    if num_leaves >= 800:
-        print("Too large, skipped")
-        continue
-
 
 
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
@@ -60,9 +53,6 @@ for tree_filename in filenames_filtered:
         sequence_length = len(record.seq)
         break
 
-    if sequence_length >= 8000:
-        print("Too large, skipped")
-        continue
     model_path = os.path.abspath(os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt"))
 
 
@@ -78,7 +68,7 @@ for tree_filename in filenames_filtered:
         f"-model {model_path}",
         f"-msa {os.path.abspath(msa_filepath)}",
         f"-tree {os.path.abspath(tree_path)}",
-        "-pi 75",
+        "-t b",
         f"-o {output_prefix}"
     ]
 
@@ -113,12 +103,12 @@ for tree_filename in filenames_filtered:
     time_dat = pd.DataFrame(data)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "pars_boot_times_ebg.csv")):
+                                       "benchmark_ebg.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "pars_boot_times_ebg.csv")), index=False)
+                                                  "benchmark_ebg.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "pars_boot_times_ebg.csv"),
+                                     "benchmark_ebg.csv"),
                         index=False,
                         mode='a', header=False)
 
