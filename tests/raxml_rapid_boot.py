@@ -101,7 +101,7 @@ for tree_filename in filenames_filtered:
         f"-# {1000}",
         "-p 12345",
         "-x 12345",
-        "-w /hits/fast/cme/wiegerjs/placement_difficulty/data/processed/raxml_rapid_bs",
+        "-w /hits/fast/cme/wiegerjs/placement_difficulty/data/processed/raxml_rapid_bs_fry",
         f"-n {output_prefix}"    ]
 
     #print("Boot")
@@ -136,12 +136,12 @@ for tree_filename in filenames_filtered:
     time_dat = pd.DataFrame(data_res)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "benchmark_rapid_bootstrap.csv")):
+                                       "benchmark_rapid_bootstrap_fry.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "benchmark_rapid_bootstrap.csv")), index=False)
+                                                  "benchmark_rapid_bootstrap_fry.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "benchmark_rapid_bootstrap.csv"),
+                                     "benchmark_rapid_bootstrap_fry.csv"),
                         index=False,
                         mode='a', header=False)
 
