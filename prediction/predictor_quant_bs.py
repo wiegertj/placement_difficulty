@@ -407,7 +407,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
             'objective': 'quantile',
             'metric': 'quantile',
-            'alpha': 0.90,
+            'alpha': 0.875,
             'num_iterations': trial.suggest_int('num_iterations', 5, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
@@ -432,7 +432,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.90)
+            val_score = quantile_loss(y_val, val_preds, 0.875)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
@@ -445,7 +445,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_higher_bound["metric"] = "quantile"
     best_params_higher_bound["boosting_type"] = "gbdt"
     best_params_higher_bound["bagging_freq"] = 0
-    best_params_higher_bound["alpha"] = 0.90
+    best_params_higher_bound["alpha"] = 0.875
     best_params_higher_bound["verbosity"] = -1
     best_score_higher_bound = study.best_value
 
@@ -461,7 +461,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         pickle.dump(final_model_higher_bound, file)
 
     y_pred_higher = final_model_higher_bound.predict(X_test.drop(axis=1, columns=["group"]))
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_higher, 0.90)))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_higher, 0.875)))
 
     X_test_["prediction_median"] = y_pred_median
     X_test_["prediction_low"] = y_pred_lower
