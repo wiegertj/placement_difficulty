@@ -1,3 +1,4 @@
+import math
 import time
 import numpy as np
 print("Started")
@@ -73,7 +74,7 @@ for tree_filename in filenames_filtered:
     print("Number of Sequences:", num_sequences)
     print("Length of Alignment:", alignment_length)
 
-    thread_num = int((len(set_cols) / 500))
+    thread_num = math.ceil((len(set_cols) / 500))
     if thread_num > 60:
         thread_num = 60
     print("Chosen threads:" + str(thread_num))
