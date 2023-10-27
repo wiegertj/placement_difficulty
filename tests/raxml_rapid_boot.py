@@ -62,7 +62,7 @@ for tree_filename in filenames_filtered:
 
     set_cols = set()
 
-    for col in range(0, no_col):
+    for col in range(0, no_col - 1):
         replicate_alignment = alignment_array[:, no_col]
         set_cols.add(replicate_alignment)
 
