@@ -58,7 +58,7 @@ def MBE(y_true, y_pred):
     return mbe
 
 
-def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, i):
+def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"),  usecols=lambda column: column != 'Unnamed: 0')
 
 
