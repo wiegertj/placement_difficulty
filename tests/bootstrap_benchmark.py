@@ -18,7 +18,8 @@ for file in filenames:
     model_path = os.path.join(os.pardir, "data/processed/loo", file + "_msa_model.txt")
 
     counter += 1
-
+    print(counter)
+    print(len(filenames))
     start = time.time()
     raxml_command = [
         "raxml-ng",
