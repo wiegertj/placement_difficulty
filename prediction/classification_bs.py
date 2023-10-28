@@ -222,8 +222,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     final_model = lgb.train(best_params, train_data)
 
     model_path = os.path.join(os.pardir, "data/processed/final", "final_class_80.pkl")
-    with open(model_path, 'wb') as file:
-        pickle.dump(final_model, file)
+    #with open(model_path, 'wb') as file:
+     #   pickle.dump(final_model, file)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
@@ -269,12 +269,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     time_dat = pd.DataFrame(data_list)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "performance_metrics_class.csv")):
+                                       "performance_metrics_class8.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "performance_metrics_class.csv")), index=False)
+                                                  "performance_metrics_class8.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "performance_metrics_class.csv"),
+                                     "performance_metrics_class8.csv"),
                         index=False,
                         mode='a', header=False)
 
