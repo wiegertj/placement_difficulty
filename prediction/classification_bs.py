@@ -108,7 +108,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
     df["is_valid"] = 0
-    df.loc[df['support'] > 0.8, 'is_valid'] = 1
+    df.loc[df['support'] > 0.7, 'is_valid'] = 1
     print(df["is_valid"].value_counts())
     print(df.columns)
     print(df.shape)
@@ -269,12 +269,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     time_dat = pd.DataFrame(data_list)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "performance_metrics_class8.csv")):
+                                       "performance_metrics_class7.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "performance_metrics_class8.csv")), index=False)
+                                                  "performance_metrics_class7.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "performance_metrics_class8.csv"),
+                                     "performance_metrics_class7.csv"),
                         index=False,
                         mode='a', header=False)
 
