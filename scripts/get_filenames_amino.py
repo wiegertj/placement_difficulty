@@ -36,7 +36,7 @@ for i in range(len(difficulty_ranges) - 1):
     if len(subset) < 4:
         selected_subset = subset
     else:
-        selected_subset = subset.sample(6)
+        selected_subset = subset.sample(10)
     print("Subset size " + str(lower_bound) + " - " + str(upper_bound))
     print(subset.shape)
     samples.append(selected_subset)
