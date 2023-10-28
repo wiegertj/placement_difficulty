@@ -58,7 +58,7 @@ def MBE(y_true, y_pred):
     return mbe
 
 
-def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
+def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, i):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"),  usecols=lambda column: column != 'Unnamed: 0')
 
 
@@ -168,22 +168,22 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     # list_to_delete = ["17984_0", "10965_0", "17331_0", "18577_0", "21602_10"]
     # df = df[~df['dataset'].isin(list_to_delete)]
 
-    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    loo_selection = loo_selection[:180]
-    filenames = loo_selection["dataset"].values.tolist()
+    #loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    #loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
+    #loo_selection = loo_selection[:180]
+    #filenames = loo_selection["dataset"].values.tolist()
 
-    test = df[df['dataset'].isin(filenames)]
-    train = df[~df['dataset'].isin(filenames)]
+    #test = df[df['dataset'].isin(filenames)]
+    #train = df[~df['dataset'].isin(filenames)]
 
     # print(test.shape)
     # print(train.shape)
 
     #####
 
-    # sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    # test = df[df['group'].isin(sample_dfs)]
-    # train = df[~df['group'].isin(sample_dfs)]
+    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    test = df[df['group'].isin(sample_dfs)]
+    train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
     y_train = train[target]
@@ -416,7 +416,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         params = {
             'objective': 'quantile',
             'metric': 'quantile',
-            'alpha': 0.85,
+            'alpha': 0.80,
             'num_iterations': trial.suggest_int('num_iterations', 5, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
@@ -441,7 +441,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.85)
+            val_score = quantile_loss(y_val, val_preds, 0.80)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
@@ -454,7 +454,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_higher_bound["metric"] = "quantile"
     best_params_higher_bound["boosting_type"] = "gbdt"
     best_params_higher_bound["bagging_freq"] = 0
-    best_params_higher_bound["alpha"] = 0.85
+    best_params_higher_bound["alpha"] = 0.80
     best_params_higher_bound["verbosity"] = -1
     best_score_higher_bound = study.best_value
 
@@ -465,12 +465,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_higher_bound = lgb.train(best_params_higher_bound, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "high_model_final.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", str(i)+"high_model_final.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model_higher_bound, file)
 
     y_pred_higher = final_model_higher_bound.predict(X_test.drop(axis=1, columns=["group"]))
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_higher, 0.85)))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_higher, 0.80)))
 
     X_test_["prediction_median"] = y_pred_median
     X_test_["prediction_low"] = y_pred_lower
@@ -480,7 +480,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["pred_error"] = y_test - y_pred_median
     X_test_["pi_width"] = y_pred_higher - y_pred_lower
 
-    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", "test_final.csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", str(i)+ "test_final.csv"))
 
+for i in range(0,9):
+    light_gbm_regressor(rfe=False, shapley_calc=False, i)
 
-light_gbm_regressor(rfe=False, shapley_calc=False)
