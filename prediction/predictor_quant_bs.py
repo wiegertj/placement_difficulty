@@ -505,5 +505,5 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", str(i)+ "test_final.csv"))
 
 for i in range(0,9):
-    light_gbm_regressor(rfe=False, shapley_calc=False, i)
+    light_gbm_regressor(i, rfe=False, shapley_calc=False)
 
