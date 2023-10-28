@@ -205,6 +205,26 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(f'F1 Score: {f1:.2f}')
     print(f'ROC AUC: {roc_auc:.2f}')
 
+    data = {"acc": accuracy,
+            "pre": precision,
+            "rec": recall,
+            "roc_auc": roc_auc,
+            "f1": f1
+            }
+    data_list = [data]
+
+    time_dat = pd.DataFrame(data_list)
+
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "performance_metrics_class.csv")):
+        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                  "performance_metrics_class.csv")), index=False)
+    else:
+        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                     "performance_metrics_class.csv"),
+                        index=False,
+                        mode='a', header=False)
+
     residuals = y_test - y_pred
 
     plt.scatter(y_pred, residuals)
@@ -303,4 +323,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.savefig("lgbm-300.png")
 
 
-light_gbm_regressor(rfe=False, shapley_calc=False)
+
+for i in range(0, 9):
+    light_gbm_regressor(rfe=False, shapley_calc=False)
