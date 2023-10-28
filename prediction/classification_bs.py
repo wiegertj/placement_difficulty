@@ -120,18 +120,18 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     #test = df[df['group'].isin(sample_dfs)]
     #train = df[~df['group'].isin(sample_dfs)]
 
-    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    loo_selection = loo_selection[:180]
-    filenames = loo_selection["dataset"].values.tolist()
+    #loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    #loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
+    #loo_selection = loo_selection[:180]
+    #filenames = loo_selection["dataset"].values.tolist()
 
-    test = df[df['dataset'].isin(filenames)]
-    train = df[~df['dataset'].isin(filenames)]
+    #test = df[df['dataset'].isin(filenames)]
+    #train = df[~df['dataset'].isin(filenames)]
 
 
-    #sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    #test = df[df['group'].isin(sample_dfs)]
-    #train = df[~df['group'].isin(sample_dfs)]
+    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    test = df[df['group'].isin(sample_dfs)]
+    train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
     y_train = train[target]
@@ -251,6 +251,32 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(f'Recall: {recall:.2f}')
     print(f'F1 Score: {f1:.2f}')
     print(f'ROC AUC: {roc_auc:.2f}')
+
+    print(f'Accuracy: {accuracy:.2f}')
+    print(f'Precision: {precision:.2f}')
+    print(f'Recall: {recall:.2f}')
+    print(f'F1 Score: {f1:.2f}')
+    print(f'ROC AUC: {roc_auc:.2f}')
+
+    data = {"acc": accuracy,
+            "pre": precision,
+            "rec": recall,
+            "roc_auc": roc_auc,
+            "f1": f1
+            }
+    data_list = [data]
+
+    time_dat = pd.DataFrame(data_list)
+
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "performance_metrics_class.csv")):
+        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                  "performance_metrics_class.csv")), index=False)
+    else:
+        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                     "performance_metrics_class.csv"),
+                        index=False,
+                        mode='a', header=False)
 
     residuals = y_test - y_pred
 
