@@ -8,9 +8,8 @@ import os
 import subprocess
 
 # Specify the path to the directory containing your folders
-loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))
 loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-loo_selection = loo_selection[:180]
 filenames = loo_selection["dataset"].values.tolist()
 # Loop over each subdirectory (folder) within the specified path
 counter = 0
@@ -19,10 +18,7 @@ for file in filenames:
     model_path = os.path.join(os.pardir, "data/processed/loo", file + "_msa_model.txt")
 
     counter += 1
-    if counter <= 122:
-        continue
-    if file == "20675_0":
-        continue
+
     start = time.time()
     raxml_command = [
         "raxml-ng",
