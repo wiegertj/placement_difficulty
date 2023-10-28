@@ -287,7 +287,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, i):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "median_model_final.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", str(i)+"median_model_final.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
@@ -303,8 +303,30 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, i):
     mae = mean_absolute_error(y_test, y_pred_median)
     print(f"MAE on test set: {mae:.2f}")
 
-    mape = median_absolute_error(y_test, y_pred_median)
-    print(f"MdAE on test set: {mape}")
+    mbe = MBE(y_test, y_pred_median)
+
+    mdae = median_absolute_error(y_test, y_pred_median)
+    print(f"MdAE on test set: {mdae}")
+
+    data = {"rmse": rmse,
+          "mse": mse,
+          "mae": mae,
+          "mbe": mbe,
+          "mdae": mdae
+          }
+    data_list = [data]
+
+    time_dat = pd.DataFrame(data_list)
+
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "performance_metrics.csv")):
+        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                  "performance_metrics.csv")), index=False)
+    else:
+        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                     "performance_metrics.csv"),
+                        index=False,
+                        mode='a', header=False)
 
     residuals = y_test - y_pred_median
 
@@ -401,7 +423,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, i):
 
     final_model_lower_bound = lgb.train(best_params_lower_bound, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "low_model_final.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "low_model_final.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model_lower_bound, file)
 
