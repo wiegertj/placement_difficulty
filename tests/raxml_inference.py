@@ -9,8 +9,14 @@ import subprocess
 
 # Specify the path to the directory containing your folders
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+loo_selection_aa = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))
+
 loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
 loo_selection = loo_selection[:180]
+loo_selection = pd.concat([loo_selection, loo_selection_aa])
+print(loo_selection)
+print(loo_selection.shape)
+
 filenames = loo_selection["dataset"].values.tolist()
 # Loop over each subdirectory (folder) within the specified path
 counter = 0
@@ -22,8 +28,7 @@ for file in filenames:
     model_path = os.path.join(os.pardir, "data/processed/loo", file + "_msa_model.txt")
 
     counter += 1
-    if counter <= 148:
-        continue
+    print(counter)
     start = time.time()
 
     raxml_command = [
@@ -50,12 +55,12 @@ for file in filenames:
     time_dat = pd.DataFrame(data_lost)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "inference_times_standard.csv")):
+                                       "inference_times_standard_120.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "inference_times_standard.csv")), index=False)
+                                                  "inference_times_standard_120.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "inference_times_standard.csv"),
+                                     "inference_times_standard_120.csv"),
                         index=False,
                         mode='a', header=False)
 
