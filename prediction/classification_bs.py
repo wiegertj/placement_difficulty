@@ -375,5 +375,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm-300.png")
 
-
-light_gbm_regressor(rfe=False, shapley_calc=False)
+for i in range(0, 9):
+    light_gbm_regressor(rfe=False, shapley_calc=False)
