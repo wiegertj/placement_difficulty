@@ -46,7 +46,7 @@ if len(samples) == 1:
 else:
     result = pd.concat(samples)
 
-result = df_used
+#result = df_used
 print(result)
 # Create reference MSA and Query file
 for file in result["verbose_name"].unique():
