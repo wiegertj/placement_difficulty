@@ -125,8 +125,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     #loo_selection = loo_selection[:180]
     #filenames = loo_selection["dataset"].values.tolist()
 
-    test = df[df['dataset'].isin(filenames)]
-    train = df[~df['dataset'].isin(filenames)]
+    #test = df[df['dataset'].isin(filenames)]
+    #train = df[~df['dataset'].isin(filenames)]
 
 
     #sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
