@@ -374,3 +374,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.yticks(fontsize=12)  # Adjust y-axis tick font size
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm-300.png")
+
+light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=False)
