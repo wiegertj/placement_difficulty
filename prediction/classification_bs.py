@@ -108,7 +108,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
     df["is_valid"] = 0
-    df.loc[df['support'] > 0.8, 'is_valid'] = 1
+    df.loc[df['support'] > 0.75, 'is_valid'] = 1
     print(df["is_valid"].value_counts())
     print(df.columns)
     print(df.shape)
@@ -120,18 +120,18 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     #test = df[df['group'].isin(sample_dfs)]
     #train = df[~df['group'].isin(sample_dfs)]
 
-    #loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    #loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    #loo_selection = loo_selection[:180]
-    #filenames = loo_selection["dataset"].values.tolist()
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
+    loo_selection = loo_selection[:180]
+    filenames = loo_selection["dataset"].values.tolist()
 
-    #test = df[df['dataset'].isin(filenames)]
-    #train = df[~df['dataset'].isin(filenames)]
+    test = df[df['dataset'].isin(filenames)]
+    train = df[~df['dataset'].isin(filenames)]
 
 
-    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    test = df[df['group'].isin(sample_dfs)]
-    train = df[~df['group'].isin(sample_dfs)]
+    #sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    #test = df[df['group'].isin(sample_dfs)]
+    #train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
     y_train = train[target]
@@ -221,9 +221,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "final_class_80.pkl")
-    #with open(model_path, 'wb') as file:
-     #   pickle.dump(final_model, file)
+    model_path = os.path.join(os.pardir, "data/processed/final", "final_class_75.pkl")
+    with open(model_path, 'wb') as file:
+        pickle.dump(final_model, file)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
@@ -269,12 +269,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     time_dat = pd.DataFrame(data_list)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "performance_metrics_class8.csv")):
+                                       "performance_metrics_class75.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "performance_metrics_class8.csv")), index=False)
+                                                  "performance_metrics_class75.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "performance_metrics_class8.csv"),
+                                     "performance_metrics_class75.csv"),
                         index=False,
                         mode='a', header=False)
 
@@ -321,7 +321,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     X_test_["prediction"] = y_pred
     X_test_["prediction_binary"] = y_pred_binary
     X_test_["support"] = y_test
-    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results_classifier80" + name + ".csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results_classifier75" + name + ".csv"))
 
     if shapley_calc:
         # X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
@@ -374,6 +374,3 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.yticks(fontsize=12)  # Adjust y-axis tick font size
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm-300.png")
-
-for i in range(0, 9):
-    light_gbm_regressor(rfe=False, shapley_calc=False)
