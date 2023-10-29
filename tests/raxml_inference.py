@@ -38,7 +38,7 @@ for file in filenames:
         "--model GTR+G",
         "--tree pars{50},rand{50}",
         "--redo",
-        "--threads auto{60}"
+        "--threads 1"
 
     ]
 
@@ -55,12 +55,12 @@ for file in filenames:
     time_dat = pd.DataFrame(data_lost)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "inference_times_standard_120.csv")):
+                                       "inference_times_standard_nomt.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "inference_times_standard_120.csv")), index=False)
+                                                  "inference_times_standard_nomt.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "inference_times_standard_120.csv"),
+                                     "inference_times_standard_nomt.csv"),
                         index=False,
                         mode='a', header=False)
 
