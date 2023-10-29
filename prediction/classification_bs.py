@@ -222,8 +222,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     final_model = lgb.train(best_params, train_data)
 
     model_path = os.path.join(os.pardir, "data/processed/final", "final_class_75.pkl")
-    with open(model_path, 'wb') as file:
-        pickle.dump(final_model, file)
+    #with open(model_path, 'wb') as file:
+     #   pickle.dump(final_model, file)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
@@ -375,4 +375,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm-300.png")
 
-light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=False)
+for i in range(0,9):
+    light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=False)
