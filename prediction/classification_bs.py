@@ -114,12 +114,17 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
               'rb') as model_file:
         regression_median = pickle.load(model_file)
 
-    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/low_model_final.pkl",
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/10low_model_10_final.pkl",
               'rb') as model_file:
-        regression_lower = pickle.load(model_file)
+        regression_lower10 = pickle.load(model_file)
+
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/10low_model_5_final.pkl",
+              'rb') as model_file:
+        regression_lower5 = pickle.load(model_file)
 
     df["median_pred"] = regression_median.predict(df_reg_pred)
-    df["lower_bound"] = regression_lower.predict(df_reg_pred)
+    df["lower_bound_10"] = regression_lower10.predict(df_reg_pred)
+    df["lower_bound_5"] = regression_lower5.predict(df_reg_pred)
 
 
 
@@ -138,6 +143,20 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(df["is_valid"].value_counts())
     print(df.columns)
     print(df.shape)
+
+    print("####" * 10)
+    print("Baseline")
+    accuracy_best = -10
+    for cutoff_median in range(1, 99):
+        val_preds_binary_baseline = (df["median_pred"] > cutoff_median).astype(int)
+
+        accuracy = accuracy_score(df["is_valid"], val_preds_binary_baseline)
+        if accuracy >= accuracy_best:
+            accuracy_best = accuracy
+            best_one_cut = cutoff_median
+    print(accuracy_best)
+    print(best_one_cut)
+    print("####" * 10)
 
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     target = "is_valid"
