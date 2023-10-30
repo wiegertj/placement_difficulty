@@ -139,6 +139,8 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
     df["is_valid"] = 0
+    print(df["support"])
+    print(df["parsimony_bootstrap_support"])
     df.loc[df['support'] > cutoff, 'is_valid'] = 1
     print(df["is_valid"].value_counts())
     print(df.columns)
@@ -424,6 +426,6 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm-300.png")
 
-for cutoff in ["70", "75", "80", "90"]:
-    for i in range(0,9):
+for cutoff in [0.7, 0.75, 0.8, 0.85]:
+    for i in range(0,10):
         light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=False)
