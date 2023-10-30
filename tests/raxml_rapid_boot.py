@@ -33,6 +33,11 @@ duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_n
 accepted = []
 counter = 0
 filenames_filtered = filenames_filtered[:180]
+print(filenames_filtered)
+loo_selection_aa = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))["verbose_name"].str.replace(".phy", ".newick").values.tolist()
+print(loo_selection_aa)
+filenames_filtered = filenames_filtered + loo_selection_aa
+
 for tree_filename in filenames_filtered:
     if tree_filename == "20675_0.newick":
         continue
@@ -95,7 +100,7 @@ for tree_filename in filenames_filtered:
 
     raxml_command = [
         "raxmlHPC-PTHREADS",
-        f"-T {24}",
+        f"-T {thread_num}",
         f"-m GTRGAMMA",
         f"-s {msa_filepath}",
         f"-# {1000}",
