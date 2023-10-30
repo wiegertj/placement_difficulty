@@ -59,7 +59,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     for cutoff in range(1, 99):
         val_preds_binary_baseline = (df["pars_support_cons"] > cutoff).astype(int)
 
-        accuracy = accuracy(df["inML"], val_preds_binary_baseline)
+        accuracy = accuracy_score(df["inML"], val_preds_binary_baseline)
         if accuracy >= accuracy_best:
             accuracy_best = accuracy
             best_one = cutoff
