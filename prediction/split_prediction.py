@@ -56,8 +56,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print("####"*10)
     print("Baseline")
     accuracy_best = -10
-    for cutoff in range(50, 99):
-        print(df["pars_support_cons"] )
+    for cutoff in range(1, 99):
         val_preds_binary_baseline = (df["min_pars_supp_child"] > cutoff).astype(int)
 
         accuracy = accuracy_score(df["inML"], val_preds_binary_baseline)
