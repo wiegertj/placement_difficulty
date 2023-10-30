@@ -109,7 +109,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
 
 
-    df_reg_pred = df.drop(columns=["dataset"], axis=1)
+    df_reg_pred = df.drop(columns=["dataset", "support"], axis=1)
     with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/median_model_final.pkl",
               'rb') as model_file:
         regression_median = pickle.load(model_file)
