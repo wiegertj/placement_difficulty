@@ -488,7 +488,7 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
         pickle.dump(final_model_lower_bound_10, file)
 
     y_pred_lower_10 = final_model_lower_bound_10.predict(X_test.drop(axis=1, columns=["group"]))
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.1)))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower_10, 0.1)))
 
     #####################################################################################
     X_test_["prediction_median"] = y_pred_median
