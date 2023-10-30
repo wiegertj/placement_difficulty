@@ -104,11 +104,37 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     df = pd.concat([df, df_raxml_filtered])
     print(df.shape)
 
+
+
+
+
+
+    df_reg_pred = df.drop(columns=["dataset"], axis=1)
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/median_model_final.pkl",
+              'rb') as model_file:
+        regression_median = pickle.load(model_file)
+
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/lower_model_final.pkl",
+              'rb') as model_file:
+        regression_lower = pickle.load(model_file)
+
+    df["median_pred"] = regression_median.predict(df_reg_pred)
+    df["lower_bound"] = regression_lower.predict(df_reg_pred)
+
+
+
+
+
+
+
+
+
+
     print("Median Support: ")
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
     df["is_valid"] = 0
-    df.loc[df['support'] > 0.75, 'is_valid'] = 1
+    df.loc[df['support'] > 0.70, 'is_valid'] = 1
     print(df["is_valid"].value_counts())
     print(df.columns)
     print(df.shape)
@@ -269,12 +295,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     time_dat = pd.DataFrame(data_list)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "performance_metrics_class75.csv")):
+                                       "performance_metrics_class_with_reg.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "performance_metrics_class75.csv")), index=False)
+                                                  "performance_metrics_class_with_reg.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "performance_metrics_class75.csv"),
+                                     "performance_metrics_class_with_reg.csv"),
                         index=False,
                         mode='a', header=False)
 
