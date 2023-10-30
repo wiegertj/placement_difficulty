@@ -150,12 +150,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     print("Baseline")
     accuracy_best = -10
 
-    val_preds_binary_baseline = (df["parsimony_bootstrap_support"] > (cutoff / 100)).astype(int)
-    accuracy_baseline = accuracy_score(df["is_valid"], val_preds_binary_baseline)
-    f1_baseline = f1_score(df["is_valid"], val_preds_binary_baseline)
-    roc_baseline = roc_auc_score(df["is_valid"], val_preds_binary_baseline)
-    precision_baseline = precision_score(df["is_valid"], val_preds_binary_baseline)
-    recall_baseline = recall_score(df["is_valid"], val_preds_binary_baseline)
+
 
     print("####" * 10)
 
@@ -165,6 +160,13 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
     test = df[df['group'].isin(sample_dfs)]
     train = df[~df['group'].isin(sample_dfs)]
+
+    val_preds_binary_baseline = (test["parsimony_bootstrap_support"] > (cutoff / 100)).astype(int)
+    accuracy_baseline = accuracy_score(test["is_valid"], val_preds_binary_baseline)
+    f1_baseline = f1_score(test["is_valid"], val_preds_binary_baseline)
+    roc_baseline = roc_auc_score(test["is_valid"], val_preds_binary_baseline)
+    precision_baseline = precision_score(test["is_valid"], val_preds_binary_baseline)
+    recall_baseline = recall_score(test["is_valid"], val_preds_binary_baseline)
 
     #loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
     #loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
