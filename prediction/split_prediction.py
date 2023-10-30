@@ -56,15 +56,19 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print("####"*10)
     print("Baseline")
     accuracy_best = -10
-    for cutoff in range(1, 99):
-        val_preds_binary_baseline = (df["min_pars_supp_child"] >= cutoff).astype(int)
+    for cutoff_ch in range(1, 99):
+        for cutoff_pars in range(1, 99):
+            val_preds_binary_baseline = (df["min_pars_supp_child"] >= cutoff_ch and df["pars_cons_supp"] >= cutoff_pars).astype(int)
 
-        accuracy = precision_score(df["inML"], val_preds_binary_baseline)
-        if accuracy >= accuracy_best:
-            accuracy_best = accuracy
-            best_one = cutoff
-
-    print(best_one)
+            accuracy = accuracy_score(df["inML"], val_preds_binary_baseline)
+            if accuracy >= accuracy_best:
+                accuracy_best = accuracy
+                best_one_ch = cutoff_ch
+                best_one_pars = cutoff_pars
+    print("Ch")
+    print(best_one_ch)
+    print("Pars")
+    print(best_one_pars)
     print(accuracy_best)
     precision = precision_score(df["inML"], val_preds_binary_baseline)
     recall = recall_score(df["inML"], val_preds_binary_baseline)
