@@ -199,6 +199,20 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     rmse_mean = math.sqrt(mse_mean)
     print("Baseline predicting mean RMSE: " + str(rmse_mean))
 
+    mse_baseline = mean_squared_error(y_test, X_test["parsimony_bootstrap_support"])
+    rmse_baseline = mean_squared_error(y_test, X_test["parsimony_bootstrap_support"], squared=False)
+    mbe_baseline = MBE(y_test, X_test["parsimony_bootstrap_support"])
+    mae_baseline = mean_absolute_error(y_test, X_test["parsimony_bootstrap_support"])
+    mdae_baseline = median_absolute_error(y_test, X_test["parsimony_bootstrap_support"])
+
+    print("MSE (Mean Squared Error):", mse_baseline)
+    print("RMSE (Root Mean Squared Error):", rmse_baseline)
+    print("MBE :", mbe_baseline)
+    print("MAE (Mean Absolute Error):", mae_baseline)
+    print("MdAE (Median Absolute Error):", mdae_baseline)
+
+
+
     if rfe:
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
                                       min_samples_leaf=10)
