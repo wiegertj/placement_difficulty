@@ -55,11 +55,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     print("####"*10)
     print("Baseline")
-    print(df["pars_support_cons"] )
-    val_preds_binary_baseline = (df["pars_support_cons"] > 80).astype(int)
+    for cutoff in [50, 60, 65, 70, 75, 80, 85, 90, 95]
+        print(df["pars_support_cons"] )
+        val_preds_binary_baseline = (df["pars_support_cons"] > cutoff).astype(int)
 
-    accuracy = accuracy_score(df["inML"], val_preds_binary_baseline)
-    print(accuracy)
+        accuracy = accuracy_score(df["inML"], val_preds_binary_baseline)
+        print(cutoff)
+        print(accuracy)
     precision = precision_score(df["inML"], val_preds_binary_baseline)
     recall = recall_score(df["inML"], val_preds_binary_baseline)
     f1 = f1_score(df["inML"], val_preds_binary_baseline)
