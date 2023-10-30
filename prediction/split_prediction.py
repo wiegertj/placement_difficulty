@@ -55,7 +55,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     print("####"*10)
     print("Baseline")
-    for cutoff in [50, 60, 65, 70, 75, 80, 85, 90, 95]
+    for cutoff in [50, 60, 65, 70, 75, 80, 85, 90, 95]:
         print(df["pars_support_cons"] )
         val_preds_binary_baseline = (df["pars_support_cons"] > cutoff).astype(int)
 
