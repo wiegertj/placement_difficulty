@@ -53,6 +53,23 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(df.columns)
     print(df.shape)
 
+    print("####"*10)
+    print("Baseline")
+
+    val_preds_binary_baseline = (df["min_pars_supp_child"] > 0.5).astype(int)
+
+    accuracy = accuracy_score(df["inML"], val_preds_binary_baseline)
+    print(accuracy)
+    precision = precision_score(df["inML"], val_preds_binary_baseline)
+    recall = recall_score(df["inML"], val_preds_binary_baseline)
+    f1 = f1_score(df["inML"], val_preds_binary_baseline)
+    roc_auc = roc_auc_score(df["inML"], val_preds_binary_baseline)
+
+
+
+    print("####"*10)
+
+
     df.to_csv(os.path.join(os.pardir, "data/processed/features/split_features/all_data.csv"))
 
     target = "inML"
@@ -183,8 +200,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     final_model = lgb.train(best_params, train_data)
 
     model_path = os.path.join(os.pardir, "data/processed/final", "branch_predictor.pkl")
-    with open(model_path, 'wb') as file:
-        pickle.dump(final_model, file)
+    #with open(model_path, 'wb') as file:
+     #   pickle.dump(final_model, file)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
@@ -199,31 +216,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     f1 = f1_score(y_test, y_pred_binary)
     roc_auc = roc_auc_score(y_test, y_pred)
 
-    print(f'Accuracy: {accuracy:.2f}')
-    print(f'Precision: {precision:.2f}')
-    print(f'Recall: {recall:.2f}')
-    print(f'F1 Score: {f1:.2f}')
-    print(f'ROC AUC: {roc_auc:.2f}')
-
-    data = {"acc": accuracy,
-            "pre": precision,
-            "rec": recall,
-            "roc_auc": roc_auc,
-            "f1": f1
-            }
-    data_list = [data]
-
-    time_dat = pd.DataFrame(data_list)
-
-    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "performance_metrics_class.csv")):
-        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "performance_metrics_class.csv")), index=False)
-    else:
-        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "performance_metrics_class.csv"),
-                        index=False,
-                        mode='a', header=False)
 
     residuals = y_test - y_pred
 
@@ -324,5 +316,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
 
 
-for i in range(0, 9):
-    light_gbm_regressor(rfe=False, shapley_calc=False)
+
+light_gbm_regressor(rfe=False, shapley_calc=False)
