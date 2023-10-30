@@ -65,6 +65,14 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     f1 = f1_score(df["inML"], val_preds_binary_baseline)
     roc_auc = roc_auc_score(df["inML"], val_preds_binary_baseline)
 
+    plt.scatter(df["inML"], val_preds_binary_baseline)
+
+    # Add labels to the axes
+    plt.xlabel("df['inML']")
+    plt.ylabel("val_preds_binary_baseline")
+
+    # Save the scatterplot to a file
+    plt.savefig("scatterplot_baseline.png")
 
 
     print("####"*10)
