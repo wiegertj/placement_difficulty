@@ -372,7 +372,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     X_test_["prediction"] = y_pred
     X_test_["prediction_binary"] = y_pred_binary
     X_test_["support"] = y_test
-    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results_classifier75" + name + ".csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", f"prediction_results_classifier{cutoff}" + name + ".csv"))
 
     if shapley_calc:
         # X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
