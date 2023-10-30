@@ -142,27 +142,6 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     df = pd.concat([df, df_raxml_filtered])
 
 
-
-
-
-
-    df_reg_pred = df.drop(columns=["dataset"], axis=1)
-    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/median_model_final.pkl",
-              'rb') as model_file:
-        regression_median = pickle.load(model_file)
-
-    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/lower_model_final.pkl",
-              'rb') as model_file:
-        regression_lower = pickle.load(model_file)
-
-    df["median_pred"] = regression_median.predict(df_reg_pred)
-    df["lower_bound"] = regression_lower.predict(df_reg_pred)
-
-
-
-
-
-
     print(df.shape)
     print(df.columns)
     # df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
@@ -187,22 +166,22 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     # list_to_delete = ["17984_0", "10965_0", "17331_0", "18577_0", "21602_10"]
     # df = df[~df['dataset'].isin(list_to_delete)]
 
-    # loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    # loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    # loo_selection = loo_selection[:180]
-    # filenames = loo_selection["dataset"].values.tolist()
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
+    loo_selection = loo_selection[:180]
+    filenames = loo_selection["dataset"].values.tolist()
 
-    # test = df[df['dataset'].isin(filenames)]
-    # train = df[~df['dataset'].isin(filenames)]
+    test = df[df['dataset'].isin(filenames)]
+    train = df[~df['dataset'].isin(filenames)]
 
     # print(test.shape)
     # print(train.shape)
 
     #####
 
-    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    test = df[df['group'].isin(sample_dfs)]
-    train = df[~df['group'].isin(sample_dfs)]
+    #sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    #test = df[df['group'].isin(sample_dfs)]
+    #train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
     y_train = train[target]
@@ -338,15 +317,15 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     time_dat = pd.DataFrame(data_list)
 
-    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "performance_metrics.csv")):
-        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "performance_metrics.csv")), index=False)
-    else:
-        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "performance_metrics.csv"),
-                        index=False,
-                        mode='a', header=False)
+    #if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+     #                                  "performance_metrics_median.csv")):
+      #  time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                  "performance_metrics_median.csv")), index=False)
+    #else:
+     #   time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+      #                               "performance_metrics_median.csv"),
+       #                 index=False,
+        #                mode='a', header=False)
 
     residuals = y_test - y_pred_median
 
@@ -384,10 +363,8 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     plt.tight_layout()
 
     #####################################################################################################################
-    # X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
-    # X_train = X_train[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
 
-    def objective_lower_bound(trial):
+    def objective_lower_bound_5(trial):
         # callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
@@ -440,30 +417,30 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    final_model_lower_bound = lgb.train(best_params_lower_bound, train_data)
+    final_model_lower_bound_5 = lgb.train(best_params_lower_bound, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "low_model_final.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "low_model_5.pkl")
     with open(model_path, 'wb') as file:
-        pickle.dump(final_model_lower_bound, file)
+        pickle.dump(final_model_lower_bound_5, file)
 
-    y_pred_lower = final_model_lower_bound.predict(X_test.drop(axis=1, columns=["group"]))
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.05)))
+    y_pred_lower_5 = final_model_lower_bound_5.predict(X_test.drop(axis=1, columns=["group"]))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower_5, 0.05)))
 
     ######################################################################################################
 
-    def objective_higher_bound(trial):
+    def objective_lower_bound_10(trial):
         # callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
             'objective': 'quantile',
             'metric': 'quantile',
-            'alpha': 0.80,
-            'num_iterations': trial.suggest_int('num_iterations', 5, 300),
+            'alpha': 0.1,
+            'num_iterations': trial.suggest_int('num_iterations', 10, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.9),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
-            'feature_fraction': trial.suggest_uniform('feature_fraction', 0.1, 1.0),
+            # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
@@ -482,47 +459,46 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
             # KEIN VALIDSETS?
             model = lgb.train(params, train_data)  # , valid_sets=[val_data])
             val_preds = model.predict(X_val)
-            val_score = quantile_loss(y_val, val_preds, 0.80)
+            val_score = quantile_loss(y_val, val_preds, 0.1)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_higher_bound, n_trials=100)
+    study.optimize(objective_lower_bound_10, n_trials=100)
 
-    best_params_higher_bound = study.best_params
-    best_params_higher_bound["objective"] = "quantile"
-    best_params_higher_bound["metric"] = "quantile"
-    best_params_higher_bound["boosting_type"] = "gbdt"
-    best_params_higher_bound["bagging_freq"] = 0
-    best_params_higher_bound["alpha"] = 0.80
-    best_params_higher_bound["verbosity"] = -1
-    best_score_higher_bound = study.best_value
+    best_params_lower_bound = study.best_params
+    best_params_lower_bound["objective"] = "quantile"
+    best_params_lower_bound["metric"] = "quantile"
+    best_params_lower_bound["boosting_type"] = "gbdt"
+    best_params_lower_bound["bagging_freq"] = 0
+    best_params_lower_bound["alpha"] = 0.1
+    best_params_lower_bound["verbosity"] = -1
+    best_score_lower_bound = study.best_value
 
-    print(f"Best Params: {best_params_higher_bound}")
-    print(f"Best Quantile Loss: {best_score_higher_bound}")
+    print(f"Best Params: {best_params_lower_bound}")
+    print(f"Best Quantile Loss: {best_score_lower_bound}")
 
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
-    final_model_higher_bound = lgb.train(best_params_higher_bound, train_data)
+    final_model_lower_bound_10 = lgb.train(best_params_lower_bound, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "high_model_final.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "low_model_final.pkl")
     with open(model_path, 'wb') as file:
-        pickle.dump(final_model_higher_bound, file)
+        pickle.dump(final_model_lower_bound_10, file)
 
-    y_pred_higher = final_model_higher_bound.predict(X_test.drop(axis=1, columns=["group"]))
-    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_higher, 0.80)))
+    y_pred_lower_10 = final_model_lower_bound_10.predict(X_test.drop(axis=1, columns=["group"]))
+    print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower, 0.1)))
 
+    #####################################################################################
     X_test_["prediction_median"] = y_pred_median
-    X_test_["prediction_low"] = y_pred_lower
-    X_test_["prediction_hi"] = y_pred_higher
-    print(mean(y_pred_higher))
+    X_test_["prediction_low_5"] = y_pred_lower_5
+    X_test_["prediction_low_10"] = y_pred_lower_10
     X_test_["support"] = y_test
     X_test_["pred_error"] = y_test - y_pred_median
-    X_test_["pi_width"] = y_pred_higher - y_pred_lower
 
     X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", str(i) + "test_final.csv"))
 
 
-for i in range(0, 9):
-    light_gbm_regressor(i, rfe=False, shapley_calc=False)
+#for i in range(0, 9):
+ #   light_gbm_regressor(i, rfe=False, shapley_calc=False)
