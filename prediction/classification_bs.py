@@ -150,7 +150,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     for cutoff_median in range(1, 99):
         val_preds_binary_baseline = (df["median_pred"] > (cutoff_median/100)).astype(int)
 
-        accuracy = accuracy_score(df["is_valid"], val_preds_binary_baseline)
+        accuracy = f1_score(df["is_valid"], val_preds_binary_baseline)
         if accuracy >= accuracy_best:
             accuracy_best = accuracy
             best_one_cut = cutoff_median
