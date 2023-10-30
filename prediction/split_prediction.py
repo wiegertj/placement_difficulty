@@ -56,7 +56,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print("####"*10)
     print("Baseline")
 
-    val_preds_binary_baseline = (df["min_pars_supp_child"] > 0.5).astype(int)
+    val_preds_binary_baseline = (df["pars_support_cons"] > 0.5).astype(int)
 
     accuracy = accuracy_score(df["inML"], val_preds_binary_baseline)
     print(accuracy)
@@ -69,7 +69,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     # Add labels to the axes
     plt.xlabel("df['inML']")
-    plt.ylabel("val_preds_binary_baseline")
+    plt.ylabel("pars_support_cons")
 
     # Save the scatterplot to a file
     plt.savefig("scatterplot_baseline.png")
