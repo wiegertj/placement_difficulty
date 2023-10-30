@@ -22,7 +22,7 @@ from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
 
 
-def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
+def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"))
     df = df[["dataset", "branchId", "support", "parsimony_boot_support",
              "parsimony_support",
@@ -139,7 +139,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(df["support"].median())
     df.columns = df.columns.str.replace(':', '_')
     df["is_valid"] = 0
-    df.loc[df['support'] > 0.70, 'is_valid'] = 1
+    df.loc[df['support'] > cutoff, 'is_valid'] = 1
     print(df["is_valid"].value_counts())
     print(df.columns)
     print(df.shape)
@@ -147,15 +147,14 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print("####" * 10)
     print("Baseline")
     accuracy_best = -10
-    for cutoff_median in range(1, 99):
-        val_preds_binary_baseline = (df["median_pred"] > (cutoff_median/100)).astype(int)
 
-        accuracy = f1_score(df["is_valid"], val_preds_binary_baseline)
-        if accuracy >= accuracy_best:
-            accuracy_best = accuracy
-            best_one_cut = cutoff_median
-    print(accuracy_best)
-    print(best_one_cut)
+    val_preds_binary_baseline = (df["parsimony_bootstrap_support"] > (cutoff / 100)).astype(int)
+    accuracy_baseline = accuracy_score(df["is_valid"], val_preds_binary_baseline)
+    f1_baseline = f1_score(df["is_valid"], val_preds_binary_baseline)
+    roc_baseline = roc_auc_score(df["is_valid"], val_preds_binary_baseline)
+    precision_baseline = precision_score(df["is_valid"], val_preds_binary_baseline)
+    recall_baseline = recall_score(df["is_valid"], val_preds_binary_baseline)
+
     print("####" * 10)
 
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
@@ -307,19 +306,24 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
             "pre": precision,
             "rec": recall,
             "roc_auc": roc_auc,
-            "f1": f1
+            "f1": f1,
+            "acc_baseline": accuracy_baseline,
+            "pre_baseline": precision_baseline,
+            "rec_baseline": recall_baseline,
+            "roc_auc_baseline": roc_baseline,
+            "f1_baseline": f1_baseline
             }
     data_list = [data]
 
     time_dat = pd.DataFrame(data_list)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "performance_metrics_class_with_reg.csv")):
+                                       f"classifier_metrics{cutoff}.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "performance_metrics_class_with_reg.csv")), index=False)
+                                                  f"classifier_metrics{cutoff}.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "performance_metrics_class_with_reg.csv"),
+                                     f"classifier_metrics{cutoff}.csv"),
                         index=False,
                         mode='a', header=False)
 
@@ -420,5 +424,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm-300.png")
 
-for i in range(0,9):
-    light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=False)
+for cutoff in ["70", "75", "80", "90"]:
+    for i in range(0,9):
+        light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=False)
