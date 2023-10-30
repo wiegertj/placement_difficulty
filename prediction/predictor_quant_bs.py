@@ -401,7 +401,7 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective_lower_bound, n_trials=100)
+    study.optimize(objective_lower_bound_5, n_trials=100)
 
     best_params_lower_bound = study.best_params
     best_params_lower_bound["objective"] = "quantile"
