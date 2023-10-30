@@ -59,8 +59,8 @@ def MBE(y_true, y_pred):
 
 
 def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
-    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"),  usecols=lambda column: column != 'Unnamed: 0')
-
+    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support.csv"),
+                     usecols=lambda column: column != 'Unnamed: 0')
 
     df = df[["dataset", "branchId", "support", "parsimony_boot_support",
              "parsimony_support",
@@ -110,40 +110,59 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
         "min_pars_bootsupp_child_w": "min_pars_bootstrap_support_children_w"
     }
 
-
-
-
-
-
     # Rename the columns in the DataFrame
     df = df.rename(columns=column_name_mapping)
 
-    df_raxml = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "df_pred.csv"), usecols=lambda column: column != 'Unnamed: 0' and column != 'Unnamed: 0_x' and column != 'Unnamed: 0_y')
-    df_raxml_filtered = df_raxml[["dataset", "branchId", "support","parsimony_bootstrap_support",
-                        "parsimony_support",
-                        "mean_substitution_frequency",
-                        "norm_branch_length",
-                        "branch_length",
-                        "mean_norm_rf_distance",
-                        "max_substitution_frequency",
-                        "skewness_bootstrap_pars_support_tree",
-                        "cv_substitution_frequency",
-                        "branch_length_ratio_split",
-                        "max_pars_bootstrap_support_children_w",
-                        "skw_substitution_frequency",
-                        "mean_pars_bootstrap_support_parents",
-                        "max_pars_support_children_weighted",
-                        "std_pars_bootstrap_support_parents",
-                        "min_pars_support_children",
-                        "min_pars_support_children_weighted",
-                        "number_children_relative",
-                        "mean_pars_support_children_weighted",
-                        "std_pars_bootstrap_support_children",
-                        "mean_closeness_centrality_ratio",
-                        "min_pars_bootstrap_support_children_w"]]
+    df_raxml = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "df_pred.csv"), usecols=lambda
+        column: column != 'Unnamed: 0' and column != 'Unnamed: 0_x' and column != 'Unnamed: 0_y')
+    df_raxml_filtered = df_raxml[["dataset", "branchId", "support", "parsimony_bootstrap_support",
+                                  "parsimony_support",
+                                  "mean_substitution_frequency",
+                                  "norm_branch_length",
+                                  "branch_length",
+                                  "mean_norm_rf_distance",
+                                  "max_substitution_frequency",
+                                  "skewness_bootstrap_pars_support_tree",
+                                  "cv_substitution_frequency",
+                                  "branch_length_ratio_split",
+                                  "max_pars_bootstrap_support_children_w",
+                                  "skw_substitution_frequency",
+                                  "mean_pars_bootstrap_support_parents",
+                                  "max_pars_support_children_weighted",
+                                  "std_pars_bootstrap_support_parents",
+                                  "min_pars_support_children",
+                                  "min_pars_support_children_weighted",
+                                  "number_children_relative",
+                                  "mean_pars_support_children_weighted",
+                                  "std_pars_bootstrap_support_children",
+                                  "mean_closeness_centrality_ratio",
+                                  "min_pars_bootstrap_support_children_w"]]
     df_raxml_filtered["support"] = df_raxml_filtered["support"] / 100
     print(df.shape)
     df = pd.concat([df, df_raxml_filtered])
+
+
+
+
+
+
+    df_reg_pred = df.drop(columns=["dataset"], axis=1)
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/median_model_final.pkl",
+              'rb') as model_file:
+        regression_median = pickle.load(model_file)
+
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/lower_model_final.pkl",
+              'rb') as model_file:
+        regression_lower = pickle.load(model_file)
+
+    df["median_pred"] = regression_median.predict(df_reg_pred)
+    df["lower_bound"] = regression_lower.predict(df_reg_pred)
+
+
+
+
+
+
     print(df.shape)
     print(df.columns)
     # df_diff = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
@@ -168,13 +187,13 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     # list_to_delete = ["17984_0", "10965_0", "17331_0", "18577_0", "21602_10"]
     # df = df[~df['dataset'].isin(list_to_delete)]
 
-    #loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    #loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    #loo_selection = loo_selection[:180]
-    #filenames = loo_selection["dataset"].values.tolist()
+    # loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    # loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
+    # loo_selection = loo_selection[:180]
+    # filenames = loo_selection["dataset"].values.tolist()
 
-    #test = df[df['dataset'].isin(filenames)]
-    #train = df[~df['dataset'].isin(filenames)]
+    # test = df[df['dataset'].isin(filenames)]
+    # train = df[~df['dataset'].isin(filenames)]
 
     # print(test.shape)
     # print(train.shape)
@@ -222,6 +241,7 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     ######################################
     val_scores_median = []
+
     def objective_median(trial):
         # callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
@@ -287,7 +307,7 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", str(i)+"median_model_final.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "median_model_final.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
@@ -309,11 +329,11 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     print(f"MdAE on test set: {mdae}")
 
     data = {"rmse": rmse,
-          "mse": mse,
-          "mae": mae,
-          "mbe": mbe,
-          "mdae": mdae
-          }
+            "mse": mse,
+            "mae": mae,
+            "mbe": mbe,
+            "mdae": mdae
+            }
     data_list = [data]
 
     time_dat = pd.DataFrame(data_list)
@@ -362,7 +382,6 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     plt.ylabel('Importance')
     plt.title('Feature Importances')
     plt.tight_layout()
-
 
     #####################################################################################################################
     # X_test = X_test[["parsimony_support", "length", 'min_pars_supp_child_w', 'split_std_ratio_branch', 'group']]
@@ -487,7 +506,7 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_higher_bound = lgb.train(best_params_higher_bound, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", str(i)+"high_model_final.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "high_model_final.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model_higher_bound, file)
 
@@ -502,8 +521,8 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["pred_error"] = y_test - y_pred_median
     X_test_["pi_width"] = y_pred_higher - y_pred_lower
 
-    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", str(i)+ "test_final.csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", str(i) + "test_final.csv"))
 
-for i in range(0,9):
+
+for i in range(0, 9):
     light_gbm_regressor(i, rfe=False, shapley_calc=False)
-
