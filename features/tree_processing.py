@@ -201,6 +201,8 @@ if __name__ == '__main__':
             newick_tree = file.read()
 
         tree = ete3.Tree(newick_tree)
+        print(len(tree.get_children()))
+        continue
         tree = normalize_branch_lengths(tree)
 
         result = analyze_newick_tree(tree, tree_file)
