@@ -521,4 +521,4 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
 
 for i in range(0, 9):
  #   light_gbm_regressor(i, rfe=False, shapley_calc=False)
-    light_gbm_regressor(10, rfe=False, shapley_calc=False)
+    light_gbm_regressor(i, rfe=False, shapley_calc=False)
