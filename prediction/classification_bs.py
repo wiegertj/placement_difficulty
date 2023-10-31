@@ -454,6 +454,6 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm-300.png")
 
-for cutoff in [0.75, 0.7, 0.8, 0.85]:
+for cutoff in [0.8, 0.7, 0.75, 0.85]:
     for i in range(0,10):
         light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=False)
