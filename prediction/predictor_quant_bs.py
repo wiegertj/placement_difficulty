@@ -516,7 +516,7 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_["support"] = y_test
     X_test_["pred_error"] = y_test - y_pred_median
 
-    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", str(i) + "test_final.csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", str(i) + "test_final_lr.csv"))
 
 
 for i in range(0, 9):
