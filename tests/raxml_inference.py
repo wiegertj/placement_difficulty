@@ -17,7 +17,8 @@ loo_selection = pd.concat([loo_selection, loo_selection_aa])
 loo_selection = loo_selection[:240]
 print(loo_selection)
 print(loo_selection.shape)
-
+loo_selection = loo_selection_aa
+loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
 filenames = loo_selection["dataset"].values.tolist()
 # Loop over each subdirectory (folder) within the specified path
 counter = 0
