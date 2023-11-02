@@ -30,7 +30,7 @@ for file in filenames:
         "raxml-ng",
         "--search",
         f"--msa {msa_filepath}",
-        "--model GTR+G",
+        "--model PROTGTR+G",
         "--redo",
         "--threads auto{60}",
         "--data-type AA"
