@@ -8,16 +8,8 @@ import os
 import subprocess
 
 # Specify the path to the directory containing your folders
-loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-loo_selection_aa = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))
-
-loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-loo_selection = loo_selection[:180]
-loo_selection = pd.concat([loo_selection, loo_selection_aa])
-loo_selection = loo_selection[:240]
-print(loo_selection)
-print(loo_selection.shape)
-loo_selection = loo_selection_aa
+# Specify the path to the directory containing your folders
+loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))
 loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
 filenames = loo_selection["dataset"].values.tolist()
 # Loop over each subdirectory (folder) within the specified path
