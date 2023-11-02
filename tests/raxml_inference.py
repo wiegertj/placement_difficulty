@@ -32,7 +32,8 @@ for file in filenames:
         f"--msa {msa_filepath}",
         "--model GTR+G",
         "--redo",
-        "--threads auto{60}"
+        "--threads auto{60}",
+        "--data-type AA"
 
     ]
 
