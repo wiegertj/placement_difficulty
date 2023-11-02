@@ -27,6 +27,7 @@ for file in filenames:
     if file == "20675_0":
         continue
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", file + "_reference.fasta")
+    print(msa_filepath)
     model_path = os.path.join(os.pardir, "data/processed/loo", file + "_msa_model.txt")
 
     counter += 1
