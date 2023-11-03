@@ -23,7 +23,7 @@ from Bio import SeqIO, AlignIO
 print("Started5")
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))
-loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
+loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", ".newick")
 filenames = loo_selection["dataset"].values.tolist()
 filenames_filtered = filenames
 accepted = []
