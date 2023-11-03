@@ -157,50 +157,49 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     target = "is_valid"
     df.drop(columns=["support"], inplace=True, axis=1)
-    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    test = df[df['group'].isin(sample_dfs)]
-    train = df[~df['group'].isin(sample_dfs)]
-    print(test["parsimony_bootstrap_support"])
-    val_preds_binary_baseline = (test["parsimony_bootstrap_support"] > cutoff).astype(int)
-    accuracy_baseline = accuracy_score(test["is_valid"], val_preds_binary_baseline)
-    f1_baseline = f1_score(test["is_valid"], val_preds_binary_baseline)
-    roc_baseline = roc_auc_score(test["is_valid"], val_preds_binary_baseline)
-    precision_baseline = precision_score(test["is_valid"], val_preds_binary_baseline)
-    recall_baseline = recall_score(test["is_valid"], val_preds_binary_baseline)
+    #sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    #test = df[df['group'].isin(sample_dfs)]
+    #train = df[~df['group'].isin(sample_dfs)]
+    #print(test["parsimony_bootstrap_support"])
+    #val_preds_binary_baseline = (test["parsimony_bootstrap_support"] > cutoff).astype(int)
+    #accuracy_baseline = accuracy_score(test["is_valid"], val_preds_binary_baseline)
+    #f1_baseline = f1_score(test["is_valid"], val_preds_binary_baseline)
+    #roc_baseline = roc_auc_score(test["is_valid"], val_preds_binary_baseline)
+    #precision_baseline = precision_score(test["is_valid"], val_preds_binary_baseline)
+    #recall_baseline = recall_score(test["is_valid"], val_preds_binary_baseline)
 
-    data = {"acc": 0,
-            "pre": 0,
-            "rec": 0,
-            "roc_auc": 0,
-            "f1": 0,
-            "acc_baseline": accuracy_baseline,
-            "pre_baseline": precision_baseline,
-            "rec_baseline": recall_baseline,
-            "roc_auc_baseline": roc_baseline,
-            "f1_baseline": f1_baseline
-            }
-    data_list = [data]
+    #data = {"acc": 0,
+     #       "pre": 0,
+      #      "rec": 0,
+       #     "roc_auc": 0,
+        #    "f1": 0,
+         #   "acc_baseline": accuracy_baseline,
+          #  "pre_baseline": precision_baseline,
+            #"rec_baseline": recall_baseline,
+           # "roc_auc_baseline": roc_baseline,
+            #"f1_baseline": f1_baseline
+            #}
+    #data_list = [data]
 
-    time_dat = pd.DataFrame(data_list)
+    #time_dat = pd.DataFrame(data_list)
 
-    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       f"classifier_metrics{cutoff}.csv")):
-        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  f"classifier_metrics{cutoff}.csv")), index=False)
-    else:
-        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     f"classifier_metrics{cutoff}.csv"),
-                        index=False,
-                        mode='a', header=False)
-    sys.exit()
+    #if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+     #                                  f"classifier_metrics{cutoff}.csv")):
+      #  time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+       #                                           f"classifier_metrics{cutoff}.csv")), index=False)
+    #else:
+     #   time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+      #                               f"classifier_metrics{cutoff}.csv"),
+       #                 index=False,
+        #                mode='a', header=False)
 
-    #loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    #loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    #loo_selection = loo_selection[:180]
-    #filenames = loo_selection["dataset"].values.tolist()
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
+    loo_selection = loo_selection[:180]
+    filenames = loo_selection["dataset"].values.tolist()
 
-    #test = df[df['dataset'].isin(filenames)]
-    #train = df[~df['dataset'].isin(filenames)]
+    test = df[df['dataset'].isin(filenames)]
+    train = df[~df['dataset'].isin(filenames)]
 
 
     #sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
@@ -295,9 +294,9 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "final_class_75.pkl")
-    #with open(model_path, 'wb') as file:
-     #   pickle.dump(final_model, file)
+    model_path = os.path.join(os.pardir, "data/processed/final", f"final_class_{str(cutoff)}.pkl")
+    with open(model_path, 'wb') as file:
+        pickle.dump(final_model, file)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
@@ -455,5 +454,5 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.savefig("lgbm-300.png")
 
 for cutoff in [0.85, 0.7, 0.75, 0.8]:
-    for i in range(0,10):
-        light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=False)
+    #for i in range(0,10):
+    light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=False)
