@@ -22,14 +22,12 @@ from Bio import SeqIO, AlignIO
 
 print("Started5")
 
-filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].str.replace(".phy",
+filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa.csv"))["verbose_name"].str.replace(".phy",
                                                                                                        ".newick").values.tolist()
 
 filenames_filtered = filenames
-duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 accepted = []
 counter = 0
-filenames_filtered = filenames_filtered[:200]
 for tree_filename in filenames_filtered:
     counter += 1
     print(str(counter) + "/" + str(len(filenames_filtered)))
@@ -56,8 +54,8 @@ for tree_filename in filenames_filtered:
         f"-s {msa_filepath}",
         f"-B {1000}",
         "--redo"
-        #"-T AUTO",
-        #"--threads-max 60"
+        "-T AUTO",
+        "--threads-max 60"
     ]
 
     # print("Boot")
