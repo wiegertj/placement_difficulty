@@ -166,22 +166,22 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     # list_to_delete = ["17984_0", "10965_0", "17331_0", "18577_0", "21602_10"]
     # df = df[~df['dataset'].isin(list_to_delete)]
 
-    #loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    #loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-    #loo_selection = loo_selection[:180]
-    #filenames = loo_selection["dataset"].values.tolist()
+    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+    loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
+    loo_selection = loo_selection[:180]
+    filenames = loo_selection["dataset"].values.tolist()
 
-    #test = df[df['dataset'].isin(filenames)]
-    #train = df[~df['dataset'].isin(filenames)]
+    test = df[df['dataset'].isin(filenames)]
+    train = df[~df['dataset'].isin(filenames)]
 
     # print(test.shape)
     # print(train.shape)
 
     #####
 
-    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    test = df[df['group'].isin(sample_dfs)]
-    train = df[~df['group'].isin(sample_dfs)]
+    #sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    #test = df[df['group'].isin(sample_dfs)]
+    #train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
     y_train = train[target]
@@ -300,7 +300,7 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "median_model_final.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "median_model_final_ebg.pkl")
     #with open(model_path, 'wb') as file:
      #   pickle.dump(final_model, file)
 
@@ -336,16 +336,16 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     time_dat = pd.DataFrame(data_list)
 
-    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "performance_metrics_median_final.csv")):
-        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "performance_metrics_median_final.csv")), index=False)
-    else:
-        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "performance_metrics_median_final.csv"),
-                        index=False,
-                        mode='a', header=False)
-
+    #if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+     #                                  "performance_metrics_median_final.csv")):
+      #  time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+       #                                           "performance_metrics_median_final.csv")), index=False)
+    #else:
+     #   time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+      #                               "performance_metrics_median_final.csv"),
+       #                 index=False,
+ #                       mode='a', header=False)
+#
     residuals = y_test - y_pred_median
 
     plt.scatter(y_pred_median, residuals)
@@ -438,7 +438,7 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_lower_bound_5 = lgb.train(best_params_lower_bound, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "low_model_5.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "low_model_5_final_ebg.pkl")
     #with open(model_path, 'wb') as file:
      #   pickle.dump(final_model_lower_bound_5, file)
 
@@ -502,7 +502,7 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     final_model_lower_bound_10 = lgb.train(best_params_lower_bound, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "low_model_final.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "low_model_10_final_ebg.pkl")
     #with open(model_path, 'wb') as file:
      #   pickle.dump(final_model_lower_bound_10, file)
 
@@ -519,6 +519,6 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_.to_csv(os.path.join(os.pardir, "data/processed/final", str(i) + "test_final_lr.csv"))
 
 
-for i in range(0, 9):
+#for i in range(0, 9):
  #   light_gbm_regressor(i, rfe=False, shapley_calc=False)
-    light_gbm_regressor(i, rfe=False, shapley_calc=False)
+light_gbm_regressor(i, rfe=False, shapley_calc=False)
