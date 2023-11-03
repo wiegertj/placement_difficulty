@@ -99,11 +99,11 @@ for tree_filename in filenames_filtered:
     time_dat = pd.DataFrame(data)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "bootstrap_times_iqtree_nomt.csv")):
+                                       "bootstrap_times_iqtree_mt.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "bootstrap_times_iqtree_nomt.csv")), index=False)
+                                                  "bootstrap_times_iqtree_mt.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "bootstrap_times_iqtree_nomt.csv"),
+                                     "bootstrap_times_iqtree_mt.csv"),
                         index=False,
                         mode='a', header=False)
