@@ -301,8 +301,8 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     final_model = lgb.train(best_params, train_data)
 
     model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "median_model_final_ebg.pkl")
-    #with open(model_path, 'wb') as file:
-     #   pickle.dump(final_model, file)
+    with open(model_path, 'wb') as file:
+        pickle.dump(final_model, file)
 
     y_pred_median = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
@@ -439,8 +439,8 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     final_model_lower_bound_5 = lgb.train(best_params_lower_bound, train_data)
 
     model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "low_model_5_final_ebg.pkl")
-    #with open(model_path, 'wb') as file:
-     #   pickle.dump(final_model_lower_bound_5, file)
+    with open(model_path, 'wb') as file:
+        pickle.dump(final_model_lower_bound_5, file)
 
     y_pred_lower_5 = final_model_lower_bound_5.predict(X_test.drop(axis=1, columns=["group"]))
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower_5, 0.05)))
@@ -503,8 +503,8 @@ def light_gbm_regressor(i, rfe=False, rfe_feature_n=20, shapley_calc=True):
     final_model_lower_bound_10 = lgb.train(best_params_lower_bound, train_data)
 
     model_path = os.path.join(os.pardir, "data/processed/final", str(i) + "low_model_10_final_ebg.pkl")
-    #with open(model_path, 'wb') as file:
-     #   pickle.dump(final_model_lower_bound_10, file)
+    with open(model_path, 'wb') as file:
+        pickle.dump(final_model_lower_bound_10, file)
 
     y_pred_lower_10 = final_model_lower_bound_10.predict(X_test.drop(axis=1, columns=["group"]))
     print("Quantile Loss on Holdout: " + str(quantile_loss(y_test, y_pred_lower_10, 0.1)))
