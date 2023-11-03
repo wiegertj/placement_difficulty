@@ -110,15 +110,15 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
 
 
     df_reg_pred = df.drop(columns=["dataset", "support"], axis=1)
-    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/median_model_final.pkl",
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/100median_model_final_ebg.pkl",
               'rb') as model_file:
         regression_median = pickle.load(model_file)
 
-    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/10low_model_10_final.pkl",
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/100low_model_5_model_final_ebg.pkl",
               'rb') as model_file:
         regression_lower10 = pickle.load(model_file)
 
-    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/10low_model_5_final.pkl",
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/100low_model_10_model_final_ebg.pkl",
               'rb') as model_file:
         regression_lower5 = pickle.load(model_file)
 
