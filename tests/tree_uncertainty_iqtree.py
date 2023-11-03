@@ -51,8 +51,8 @@ for tree_filename in filenames_filtered:
     raxml_command = [
         "/home/wiegerjs/iqtree-2.2.2.6-Linux/bin/iqtree2",
         "-m LG+G",
-        f"-s {msa_filepath}",
-        f"-B {1000}",
+        "-s " + msa_filepath,
+        "-B 1000",
         "--redo",
         "-T AUTO",
         "--threads-max 60",
