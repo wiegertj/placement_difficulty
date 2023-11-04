@@ -42,7 +42,7 @@ for tree_filename in filenames_filtered:
     if tree_filename == "20675_0.newick":
         continue
     counter += 1
-    if tree_filename == "10749_0.newick":
+    if tree_filename == "10264_0.newick":
         moveon = True
         continue
     if not moveon:
