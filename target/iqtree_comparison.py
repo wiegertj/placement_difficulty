@@ -70,13 +70,17 @@ for file in filenames:
     # Load the Newick trees
     try:
         tree = ete3.Tree(support_path, format=0)
+    except ete3.parser.newick.NewickError as e:
+        print(f"NewickError: {e}")
+        print("Tree1 broken")
+        continue
+    #
+    try:
         tree_iqtree = ete3.Tree(support_path_iq, format=0)
     except ete3.parser.newick.NewickError as e:
         print(f"NewickError: {e}")
-
-        print("Tree broken")
+        print("Tree2 broken")
         continue
-
 
     branch_id_counter = 0
     for node in tree.traverse():
