@@ -71,10 +71,15 @@ for file in filenames:
     try:
         tree = ete3.Tree(support_path, format=0)
     except ete3.parser.newick.NewickError as e:
-        print(f"NewickError: {e}")
-        print("Tree1 broken")
-        continue
-    #
+        print("Tree1 broken, searching for other")
+        alt_path = "/hits/fast/cme/wiegerjs/placement_difficulty/data/raw/msa/" + file + "_1000.raxml.support"
+        try:
+            tree = ete3.Tree(alt_path, format=0)
+            print("Found other")
+        except ete3.parser.newick.NewickError as e:
+            print("Not found other")
+            continue
+    #"
     try:
         tree_iqtree = ete3.Tree(support_path_iq, format=0)
     except ete3.parser.newick.NewickError as e:
