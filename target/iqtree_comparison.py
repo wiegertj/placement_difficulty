@@ -74,6 +74,7 @@ for file in filenames:
         print("Tree1 broken, searching for other")
         alt_path = "/hits/fast/cme/wiegerjs/placement_difficulty/data/raw/msa/" + file + "_1000.raxml.support"
         try:
+            print(alt_path)
             tree = ete3.Tree(alt_path, format=0)
             print("Found other")
         except ete3.parser.newick.NewickError as e:
