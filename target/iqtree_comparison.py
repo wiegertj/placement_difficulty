@@ -71,7 +71,9 @@ for file in filenames:
     try:
         tree = ete3.Tree(support_path, format=0)
         tree_iqtree = ete3.Tree(support_path_iq, format=0)
-    except ete3.parser.newick.NewickError:
+    except ete3.parser.newick.NewickError as e:
+        print(f"NewickError: {e}")
+
         print("Tree broken")
         continue
 
