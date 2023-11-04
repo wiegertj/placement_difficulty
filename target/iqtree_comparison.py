@@ -66,7 +66,7 @@ for file in filenames:
     print(support_path_iq)
     counter +=1
     print(counter)
-
+    file = file.replace(".newick", "")
     # Load the Newick trees
     try:
         tree = ete3.Tree(support_path, format=0)
