@@ -31,7 +31,7 @@ filenames_filtered = filenames
 duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 accepted = []
 counter = 0
-filenames_filtered = filenames_filtered[:200]
+filenames_filtered = filenames_filtered[:180]
 for tree_filename in filenames_filtered:
     counter += 1
     print(str(counter) + "/" + str(len(filenames_filtered)))
@@ -95,6 +95,7 @@ for tree_filename in filenames_filtered:
     print("Length of Alignment:", alignment_length)
 
     data = {
+        'dataset': tree_filename.replace(".newick", ""),
         'elapsed_time': [int(elapsed_time)],
         'num_seq': [num_sequences],
         'len': [alignment_length]
