@@ -72,7 +72,7 @@ for file in filenames:
         tree = ete3.Tree(support_path, format=0)
     except ete3.parser.newick.NewickError as e:
         print("Tree1 broken, searching for other")
-        alt_path = "/hits/fast/cme/wiegerjs/placement_difficulty/data/raw/msa/" + file.replace(".newick", "") + ".raxml.support"
+        alt_path = "/hits/fast/cme/wiegerjs/placement_difficulty/data/raw/msa/" + file.replace(".newick", ".fasta") + ".raxml.support"
         try:
             print(alt_path)
             tree = ete3.Tree(alt_path, format=0)
