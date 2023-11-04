@@ -17,7 +17,7 @@ from ete3 import Tree
 
 print("Started4")
 
-from Bio import SeqIO
+from Bio import SeqIO, AlignIO
 
 print("Started5")
 
@@ -50,41 +50,16 @@ for tree_filename in filenames_filtered:
     t = Tree(tree_path)
     num_leaves = len(t.get_leaves())
 
-    if num_leaves >= 800:
-        print("Too large, skipped")
-        continue
-
-
-
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
 
     for record in SeqIO.parse(msa_filepath, "fasta"):
         sequence_length = len(record.seq)
         break
 
-    if sequence_length >= 8000:
-        print("Too large, skipped")
-        continue
+
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
 
-    with open(model_path, 'r') as file:
-        # Read the first line from the file
-        line = file.readline().strip()
 
-        # Find the position of the second closing bracket }
-        second_end_brace = line.find('}', line.find('}') + 1)
-
-        if second_end_brace != -1:
-            # Extract the substring up to the second closing bracket }
-            result_string = line[:second_end_brace + 1]
-
-            # Find the last float within the first set of brackets
-            #last_float_start = result_string.rfind('/')
-            #if last_float_start != -1:
-             #   last_float_end = result_string.rfind(' ', 0, last_float_start)
-              #  if last_float_end != -1:
-               #     # Delete the last float within the first set of brackets
-                #    result_string = result_string[:last_float_end] + result_string[last_float_start:]
 
 
     output_prefix = tree_filename.split(".")[0] + "_1000"  # Using the filename as the prefix
@@ -94,16 +69,13 @@ for tree_filename in filenames_filtered:
 
 
 
+    alignment = AlignIO.read(msa_filepath, "fasta")
 
 
-    found_model = result_string.replace("/1.000000}", "}").replace("U","").replace("/",",")
 
     # Specify the file name where you want to save the string
     file_name_iqtreemodel = model_path.replace("model","model_iqtree")
 
-    # Open the file in write mode and write the string to it
-    with open(file_name_iqtreemodel, "w") as file:
-        file.write(found_model)
 
 
     raxml_command = [
@@ -122,9 +94,24 @@ for tree_filename in filenames_filtered:
 
     print(f"Bootstrap analysis for {tree_filename} completed.")
 
-    break
+    folder_path = os.path.join(os.pardir, "data/raw/msa")
 
-    #raxml_command = ["raxml-ng",
+    # List all files in the folder
+    file_list = os.listdir(folder_path)
+
+    # Filter files that contain "_parsimony_100temp_" in their names
+    files_to_delete = [file for file in file_list if
+                       ((".nex" in file) or (".log" in file) or (".iqtree" in file) or (".treefile" in file))]
+
+    # Delete the filtered files
+    for file_to_delete in files_to_delete:
+        file_path = os.path.join(folder_path, file_to_delete)
+        os.remove(file_path)
+
+
+
+
+#raxml_command = ["raxml-ng",
      #                "--support",
       #               f"--tree {tree_path}",
        #              f"--bs-trees {bootstrap_filepath}",
