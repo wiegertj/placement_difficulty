@@ -114,11 +114,11 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
               'rb') as model_file:
         regression_median = pickle.load(model_file)
 
-    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/100low_model_5_final_ebg.pkl",
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/100low_model_10_final_ebg.pkl",
               'rb') as model_file:
         regression_lower10 = pickle.load(model_file)
 
-    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/100low_model_10_final_ebg.pkl",
+    with open("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/final/100low_model_5_final_ebg.pkl",
               'rb') as model_file:
         regression_lower5 = pickle.load(model_file)
 
@@ -453,6 +453,6 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm-300.png")
 
-for cutoff in [0.85, 0.7, 0.75, 0.8]:
+for cutoff in [ 0.7, 0.75, 0.8, 0.85]:
     #for i in range(0,10):
     light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=False)
