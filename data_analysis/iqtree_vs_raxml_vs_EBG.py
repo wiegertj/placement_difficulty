@@ -24,8 +24,7 @@ for root, dirs, files in os.walk(file_path):
             df = pd.read_csv(file_pathname)
             df["dataset"] = filename_data
             all_dataframes.append(df)
-#
-combined_dataframe = pd.concat(all_dataframes, ignore_index=True)
+##combined_dataframe = pd.concat(all_dataframes, ignore_index=True)
 
 combined_dataframe.to_csv("ebg_prediction_test.csv")
 print(combined_dataframe.shape)
