@@ -12,7 +12,7 @@ all_dataframes = []
 
 counter = 0
 for root, dirs, files in os.walk(file_path):
- #   # Skip the "ebg_tmp" directory and its contents
+    # Skip the "ebg_tmp" directory and its contents
     if "ebg_tmp" in dirs:
         dirs.remove("ebg_tmp")
     for filename in files:
@@ -33,15 +33,15 @@ sys.exit()
 
 #################################### TIME ####################################
 
-time_iq_tree = pd.read_csv(os.path.join(os.pardir, "tests/final_times/iqtree_final.csv"))
+time_iq_tree = pd.read_csv(os.path.join(os.pardir, "tests/final_times/bootstrap_times_iqtree_mt.csv"))
 time_ebg_tree = pd.read_csv(os.path.join(os.pardir, "tests/final_times/benchmark_ebg.csv"))
-time_raxml_tree = pd.read_csv(os.path.join(os.pardir, "tests/final_times/inference_times_standard.csv"))
+time_raxml_tree = pd.read_csv(os.path.join(os.pardir, "tests/final_times/inference_times_standard_20.csv"))
 boot = pd.read_csv(os.path.join(os.pardir, "tests/final_times/bootstrap_times_standard.csv"))
 
-time_merged = time_iq_tree.merge(time_ebg_tree, on=["len", "num_seq"], how="inner")
+time_merged = time_iq_tree.merge(time_ebg_tree, on=["dataset"], how="inner")
 time_merged = time_merged.merge(time_raxml_tree, on=["dataset"], how="inner")
 time_merged = time_merged.merge(boot, on=["dataset"], how="inner")
-time_merged["msa_size"] = time_merged["len"] * time_merged["num_seq"]
+time_merged["msa_size"] = time_merged["len_x"] * time_merged["num_seq_x"]
 time_merged["elapsed_time_ebg_inf"] = time_merged["elapsed_time_ebg"] + time_merged["elapsed_time_inference"]
 print(time_merged.shape)
 
@@ -50,19 +50,16 @@ sum_iq = time_merged['elapsed_time_iqtree'].sum()
 sum_boot = time_merged['elapsed_time_sbs'].sum()
 sum_ebg = time_merged['elapsed_time_ebg'].sum()
 sum_rebg_inf = time_merged['elapsed_time_ebg_inf'].sum()
-#print("1:" + str(sum_iq/sum_ebg) + ":" + str(sum_raxml/sum_ebg))
 
-columns = ['Prediction', 'IQTree UFB', 'Prediction + Inference', "SBS"]
-sums = [sum_ebg, sum_iq , sum_rebg_inf, sum_boot]
+columns = ['Prediction', 'Prediction + Inference','IQTree UFB' , "SBS"]
+sums = [sum_ebg,sum_rebg_inf, sum_iq , sum_boot]
 plt.bar(columns, sums)
 plt.xlabel('Methods')
 plt.ylabel('Total Elapsed Time (seconds)')
 plt.title('Total Elapsed Time for Different Methods')
+plt.tight_layout()
 plt.show()
 
-
-
-# Create a line chart to show the development of the three times over time (len)
 plt.plot(sorted(time_merged['msa_size']), sorted(time_merged['elapsed_time_iqtree']), label='IQTree')
 plt.plot(sorted(time_merged['msa_size']), sorted(time_merged['elapsed_time_ebg']), label='Prediction')
 plt.plot(sorted(time_merged['msa_size']), sorted(time_merged['elapsed_time_sbs']), label='SBS')
@@ -71,17 +68,8 @@ plt.xlabel('Number of sequences * sequence length')
 plt.yscale('log')
 plt.ylabel('Elapsed Time (seconds)')
 plt.legend()
+plt.tight_layout()
 plt.show()
-
-plt.plot(sorted(time_merged['num_seq']), sorted(time_merged['elapsed_time_iqtree']), label='IQTree')
-plt.plot(sorted(time_merged['num_seq']), sorted(time_merged['elapsed_time_ebg']), label='Prediction')
-#plt.plot(sorted(time_merged['num_seq']), sorted(time_merged['elapsed_time_raxml']), label='RAxML Rapid BS')
-
-plt.xlabel('Number of Sequences')
-plt.ylabel('Elapsed Time (seconds)')
-plt.legend()
-plt.show()
-
 ################## ################## ################## ################## ################## ##################
 
 from numpy import median
@@ -91,18 +79,18 @@ df_iqtree = pd.read_csv(os.path.join(os.pardir, "tests/final_preds/iq_boots.csv"
 df_ebg_prediction = pd.read_csv(os.path.join(os.pardir, "tests/final_preds/ebg_prediction_test.csv"))
 df_ebg_prediction["dataset"] = df_ebg_prediction["dataset"].str.replace(".csv", "")
 df_ebg_prediction["prediction_ebg_tool"] = df_ebg_prediction["prediction_median"]
-df_normal = pd.read_csv(os.path.join(os.pardir, "data/branch_supports.csv"))
+#df_normal = pd.read_csv(os.path.join(os.pardir, "data/branch_supports.csv"))
 #df_raxml = pd.read_csv(os.path.join(os.pardir, "data/raxml_classic_supports.csv"))
 
-df_merged = df_ebg_prediction.merge(df_normal, on=["branchId", "dataset"], how="inner")
+#df_merged = df_ebg_prediction.merge(df_normal, on=["branchId", "dataset"], how="inner")
 #df_merged = df_merged.merge(df_raxml, on=["dataset", "branchId"], how="inner")
-df_merged = df_merged.merge(df_iqtree, left_on=["dataset", "branchId"], right_on=["dataset", "branchId_true"], how="inner")
-df_merged["pred_error_ebg"] = df_merged["support"].values*100 - df_merged["prediction_ebg_tool"]
-df_merged["iq_tree_error"] = df_merged["support"].values*100 - (df_merged["iq_support"].values)
+df_merged = df_ebg_prediction.merge(df_iqtree, left_on=["dataset", "branchId"], right_on=["dataset", "branchId_true"], how="inner")
+df_merged["pred_error_ebg"] = df_merged["true_support"].values - df_merged["prediction_ebg_tool"]
+df_merged["iq_tree_error"] = df_merged["true_support"].values - (df_merged["iq_support"].values)
 #df_merged["raxml_error"] = df_merged["support"].values*100 - df_merged["support_raxml_classic"].values
 
-df_merged["pred_error_ebg_abs"] = abs(df_merged["support"].values*100 - df_merged["prediction_ebg_tool"])
-df_merged["iq_tree_error_abs"] = abs(df_merged["support"].values*100 - (df_merged["iq_support"].values - 15))
+df_merged["pred_error_ebg_abs"] = abs(df_merged["true_support"].values - df_merged["prediction_ebg_tool"])
+df_merged["iq_tree_error_abs"] = abs(df_merged["true_support"].values - (df_merged["iq_support"].values - 15))
 #df_merged["raxml_error_abs"] = abs(df_merged["support"].values*100 - df_merged["support_raxml_classic"].values)
 
 print(df_merged.shape)
@@ -121,36 +109,16 @@ print(mean(df_merged["pred_error_ebg_abs"]))
 print(median(df_merged["pred_error_ebg_abs"]))
 print("########################"*5)
 
-within_range = df_merged[(df_merged['support']*100 >= df_merged['prediction_lower']) & (df_merged['support']*100 <= df_merged['prediction_upper'])]
-percentage_within_range = (len(within_range) / len(df_merged)) * 100
-print(percentage_within_range)
-df_merged["pi_width"] = abs(df_merged['prediction_lower']-df_merged['prediction_upper'])
-data_to_plot = df_merged['pi_width']
-print("Prediction Interval")
-print(mean(df_merged["pi_width"]))
-# Create a histogram
-plt.hist(data_to_plot, bins=8, color='skyblue', edgecolor='black')
+within_range_5 = df_merged[(df_merged['true_support'] >= df_merged['prediction_lower5'])]
+percentage_within_range = (len(within_range_5) / len(df_merged)) * 100
+print("Within range 5: "+str(percentage_within_range))
 
-# Add labels and a title
-plt.xlabel('pi_width')
-plt.ylabel('Frequency')
-plt.title('pi_width')
+within_range_10 = df_merged[(df_merged['true_support'] >= df_merged['prediction_lower10'])]
+percentage_within_range = (len(within_range_10) / len(df_merged)) * 100
+print("Within range 10: "+str(percentage_within_range))
 
-# Show the plot
-plt.show()
 print("########################"*5)
 
-print("Prediction IQTree")
-print("MAE")
-print(mean_absolute_error(df_merged["support"].values*100, df_merged["iq_support"].values - 15))
-print("MAE")
-print(median_absolute_error(df_merged["support"].values*100, df_merged["iq_support"].values - 15))
-
-# Plot histograms for both columns on the same plot
-#plt.hist(df_merged["raxml_error"], alpha=0.5, label='RAxML Rapid Bootstrap', bins=30)
-plt.hist(df_merged["pred_error_ebg"], alpha=0.5, label='Prediction', bins=30)
-plt.hist(df_merged["iq_tree_error"], alpha=0.5, label='IQTree', bins=30)
-print("++++"*20)
 df_merged['ebg_over_80'] = (df_merged['prediction_bs_over_80'] >= 0.5).astype(int)
 df_merged['support_over_80'] = (df_merged['true_support'] >= 80).astype(int)
 df_merged['iq_support_over_95'] = (df_merged['iq_support'] >= 95).astype(int)
@@ -205,3 +173,4 @@ plt.legend(loc='upper right')
 # Show the plot
 plt.show()
 
+################## ################## ################## ################## ################## ##################
