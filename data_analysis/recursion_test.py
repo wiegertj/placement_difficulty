@@ -1,4 +1,7 @@
 from ete3 import Tree
+import sys
+sys.setrecursionlimit(2000)
+
 tree_filepath = "/hits/fast/cme/wiegerjs/corona_test_new_config.raxml.bestTree"
 with open(tree_filepath, "r") as tree_file:
     tree_str = tree_file.read()
