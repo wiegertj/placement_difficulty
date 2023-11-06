@@ -8,7 +8,8 @@ import os
 import subprocess
 
 # Specify the path to the directory containing your folders
-loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))
+loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+loo_selection = loo_selection[:180]
 loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
 filenames = loo_selection["dataset"].values.tolist()
 # Loop over each subdirectory (folder) within the specified path
@@ -24,11 +25,12 @@ for file in filenames:
     raxml_command = [
         "raxml-ng",
         "--bootstrap",
-        f"--model {model_path}",
+        f"--model GTR+G",
         f"--bs-trees {1000}",
         f"--msa {msa_filepath}",
         "--redo",
-        "--threads auto{60}"
+        "--threads auto{60}",
+        f"--prefix TESTNOMODEL"
     ]
     subprocess.run(" ".join(raxml_command), shell=True)
     elpased_time = time.time() - start
@@ -40,12 +42,12 @@ for file in filenames:
     time_dat = pd.DataFrame(data_lost)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "bootstrap_times_standard.csv")):
+                                       "bootstrap_times_standard_nomodel.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "bootstrap_times_standard.csv")), index=False)
+                                                  "bootstrap_times_standard_nomodel.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "bootstrap_times_standard.csv"),
+                                     "bootstrap_times_standard_nomodel.csv"),
                         index=False,
                         mode='a', header=False)
 
