@@ -22,15 +22,12 @@ from Bio import SeqIO, AlignIO
 
 print("Started5")
 
-filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].str.replace(".phy",
-                                                                                                       ".newick").values.tolist()
-
-filenames_filtered = filenames
-duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
-accepted = []
+filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].str.replace(".phy",".newick").values.tolist()
 results = []
+loo_selection_aa = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))["verbose_name"].str.replace(".phy", ".newick").values.tolist()
+filenames_filtered = filenames[:180]
+filenames_filtered = filenames_filtered + loo_selection_aa
 counter = 0
-filenames_filtered = filenames_filtered[:300]
 for tree_filename in filenames_filtered:
     counter += 1
     print(str(counter) + "/" + str(len(filenames_filtered)))
@@ -38,14 +35,10 @@ for tree_filename in filenames_filtered:
     #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
     #    print("Skipped, already found: " + tree_filename)
     #    continue 13808_7
-    classic_raxml_boots = os.path.join(os.pardir, "target/RAxML_bootstrap." + tree_filename.replace(".newick",
+    classic_raxml_boots = os.path.join(os.pardir, "data/processed/raxml_rapid_bs_deimos_test" + tree_filename.replace(".newick",
                                                                                                     "") + "_1000_bs_raxml_classic")
     if not os.path.exists(classic_raxml_boots):
         print("support not found")
-        continue
-
-    if tree_filename == "11762_1.newick" or tree_filename == "11762_0.newick" or tree_filename == "20632_1.newick":
-        print("skipped too large!")
         continue
 
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
