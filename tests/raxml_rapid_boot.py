@@ -38,10 +38,15 @@ loo_selection_aa = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_te
 print(loo_selection_aa)
 filenames_filtered = filenames_filtered + loo_selection_aa
 moveon = False
-filenames_filtered = ["10169_0", "16009_1", "9987_1", "22999_3", "13815_2", "16629_0", "25256_20", "16453_0", "18850_2", "2250_0"]
 for tree_filename in filenames_filtered:
-    tree_filename = tree_filename + ".newick"
-
+    if tree_filename == "20675_0.newick":
+        continue
+    counter += 1
+    if tree_filename == "10264_0.newick":
+        moveon = True
+        continue
+    if not moveon:
+        continue
     print(str(counter) + "/" + str(len(filenames_filtered)))
     #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
     #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
@@ -98,26 +103,15 @@ for tree_filename in filenames_filtered:
 
     start_time = time.time()
 
-    ##raxml_command = [
-    #    "raxmlHPC-PTHREADS",
-     #   f"-T {thread_num}",
-      #  f"-m PROTGAMMALG",
-       # f"-s {msa_filepath}",
-        #f"-# {1000}",
-     #   "-p 12345",
-      #  "-x 12345",
-       # "-w /hits/fast/cme/wiegerjs/placement_difficulty/data/processed/raxml_rapid_bs_deimos_test",
-        #f"-n {output_prefix}"    ]
-
     raxml_command = [
         "raxmlHPC",
         #f"-T {thread_num}",
-        f"-m GTRGAMMA",
+        f"-m PROTGAMMALG",
         f"-s {msa_filepath}",
-        f"-# {100}",
+        f"-# {1000}",
         "-p 12345",
         "-x 12345",
-        "-w /hits/fast/cme/wiegerjs/placement_difficulty/data/processed/raxml_rapid_bs_deimos_test_SMALL",
+        "-w /hits/fast/cme/wiegerjs/placement_difficulty/data/processed/raxml_rapid_bs_deimos_test",
         f"-n {output_prefix}"    ]
 
     #print("Boot")
@@ -152,12 +146,12 @@ for tree_filename in filenames_filtered:
     time_dat = pd.DataFrame(data_res)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "benchmark_rapid_bootstrap_deimos_SMALL.csv")):
+                                       "benchmark_rapid_bootstrap_deimos_aa.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "benchmark_rapid_bootstrap_deimos_SMALL.csv")), index=False)
+                                                  "benchmark_rapid_bootstrap_deimos_aa.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "benchmark_rapid_bootstrap_deimos_SMALL.csv"),
+                                     "benchmark_rapid_bootstrap_deimos_aa.csv"),
                         index=False,
                         mode='a', header=False)
 
