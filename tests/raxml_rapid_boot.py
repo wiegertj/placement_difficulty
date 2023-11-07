@@ -41,14 +41,7 @@ moveon = False
 filenames_filtered = ["10169_0", "16009_1", "9987_1", "22999_3", "13815_2", "16629_0", "25256_20", "16453_0", "18850_2", "2250_0"]
 for tree_filename in filenames_filtered:
     tree_filename = tree_filename + ".newick"
-    if tree_filename == "20675_0.newick":
-        continue
-    counter += 1
-    if tree_filename == "10264_0.newick":
-        moveon = True
-        continue
-    if not moveon:
-        continue
+
     print(str(counter) + "/" + str(len(filenames_filtered)))
     #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
     #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
