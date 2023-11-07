@@ -35,7 +35,7 @@ for tree_filename in filenames_filtered:
     #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
     #    print("Skipped, already found: " + tree_filename)
     #    continue 13808_7
-    classic_raxml_boots = os.path.join(os.pardir, "data/processed/raxml_rapid_bs_deimos_test" + tree_filename.replace(".newick",
+    classic_raxml_boots = os.path.join(os.pardir, "data/processed/raxml_rapid_bs_deimos_test/" + tree_filename.replace(".newick",
                                                                                                     "") + "_1000_bs_raxml_classic")
     if not os.path.exists(classic_raxml_boots):
         print("support not found")
