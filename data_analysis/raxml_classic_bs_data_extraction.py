@@ -37,6 +37,7 @@ for tree_filename in filenames_filtered:
     #    continue 13808_7
     classic_raxml_boots = os.path.join(os.pardir, "data/processed/raxml_rapid_bs_deimos_test/" + tree_filename.replace(".newick",
                                                                                                     "") + "_1000_bs_raxml_classic")
+    print(classic_raxml_boots)
     if not os.path.exists(classic_raxml_boots):
         print("support not found")
         continue
