@@ -133,7 +133,7 @@ for root, dirs, files in os.walk(search_directory):
 
         subprocess.run(" ".join(raxml_command), shell=True)
 
-        consensus_path = root + "/" + folder_name + 'pars_cons' +"/.raxml.consensusTreeMRE"
+        consensus_path = root + "/" + folder_name + 'pars_cons' +".raxml.consensusTreeMRE"
 
         raxml_command = ["raxml-ng",
                          "--support",
