@@ -62,17 +62,16 @@ file_name = "t1.raxml.mlTrees"
 
 for root, dirs, files in os.walk(search_directory):
     if file_name in files:
-        print(root)
+        #print(root)
         os.chdir(root)  # Change the working directory to the directory where the file is found
         folder_name = os.path.basename(root)
         file_path = os.path.abspath(file_name)
         print(f"Folder: {folder_name}, File: {file_path}")
         msa_path = "/hits/basement/cme/hoehledi/example_workflow/TreeBase/" + folder_name
-        os.chdir(root)  # Change the working directory to the directory where the file is found
-        if not os.path.exists(msa_path):
-            print("MSA not found")
-            print(msa_path)
-            continue
+        #if not os.path.exists(msa_path):
+         #   print("MSA not found")
+          #  print(msa_path)
+           # continue
         shutil.copy(msa_path, root)
         msa_path = root + "/" + folder_name + ".phy"
 
