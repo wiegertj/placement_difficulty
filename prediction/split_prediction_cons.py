@@ -33,6 +33,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         if filename.endswith(".csv"):
             file_path = os.path.join(directory, filename)
             df = pd.read_csv(file_path)
+            df["dataset"] = filename.replace("phy", "")
             dfs.append(df)
 
     # Concatenate the DataFrames into one
@@ -40,6 +41,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     # Print the shape of the concatenated DataFrame
     print("Shape of the concatenated DataFrame:", df.shape)
+    df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     df.to_csv("test_cons.csv")
 
 
