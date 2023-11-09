@@ -73,7 +73,7 @@ for root, dirs, files in os.walk(search_directory):
             print(msa_path)
             continue
         shutil.copy(msa_path, root)
-        msa_path = root + "/" + folder_name + ".phy"
+        msa_path = root + "/" + folder_name
 
         raxml_command = [
             "raxml-ng",
