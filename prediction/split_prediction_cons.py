@@ -2,7 +2,6 @@ import math
 import pickle
 import sys
 import random
-import shap
 import lightgbm as lgb
 import os
 import sklearn.metrics as metrics
