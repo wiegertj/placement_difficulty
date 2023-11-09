@@ -59,9 +59,11 @@ def get_bipartition(node):
 
 search_directory = "/hits/fast/cme/wiegerjs/cons_pred/Tree/out"
 file_name = "t1.raxml.mlTrees"
-
+counter = 0
 for root, dirs, files in os.walk(search_directory):
     if file_name in files:
+        counter += 1
+        print(counter)
         #print(root)
         os.chdir(root)  # Change the working directory to the directory where the file is found
         folder_name = os.path.basename(root)
@@ -80,7 +82,8 @@ for root, dirs, files in os.walk(search_directory):
             "--consense MRE",
             f"--tree {file_path}",
             "--redo",
-            f"--prefix {folder_name + 'ground_truth_cons'}"
+            f"--prefix {folder_name + 'ground_truth_cons'}",
+            "--log ERROR"
         ]
 
         subprocess.run(" ".join(raxml_command), shell=True)
@@ -92,7 +95,9 @@ for root, dirs, files in os.walk(search_directory):
             f"--model GTR+G",
             "--tree pars{1000}",
             f"--msa {msa_path}",
-            "--redo"
+            "--redo",
+            "--log ERROR"
+
         ]
 
         subprocess.run(" ".join(raxml_command), shell=True)
@@ -105,7 +110,9 @@ for root, dirs, files in os.walk(search_directory):
         raxml_command = ["raxml-ng",
                          "--rfdist",
                          f"--tree {parsimony_trees_path}",
-                         "--redo"]
+                         "--redo",
+                         "--log ERROR"
+                         ]
         result = subprocess.run(" ".join(raxml_command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                                 shell=True)
 
@@ -128,7 +135,9 @@ for root, dirs, files in os.walk(search_directory):
             "--consense MRE",
             f"--tree {parsimony_trees_path}",
             "--redo",
-            f"--prefix {folder_name + 'pars_cons'}"
+            f"--prefix {folder_name + 'pars_cons'}",
+            "--log ERROR"
+
         ]
 
         subprocess.run(" ".join(raxml_command), shell=True)
@@ -139,7 +148,9 @@ for root, dirs, files in os.walk(search_directory):
                          "--support",
                          f"--tree {consensus_path}",
                          f"--bs-trees {parsimony_trees_path}",
-                         "--redo"]
+                         "--redo",
+                         "--log ERROR"
+                         ]
         subprocess.run(" ".join(raxml_command), shell=True)
 
         support_path = consensus_path + ".raxml.support"
@@ -278,4 +289,5 @@ for root, dirs, files in os.walk(search_directory):
                                              'std_pars_supp_child', 'irs_std_right', 'irs_skw_right',
                                              'avg_rf_no_boot', "inCons"])
             data.to_csv(folder_name + ".csv")
+            print("Saved file")
             sys.exit()
