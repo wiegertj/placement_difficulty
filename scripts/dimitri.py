@@ -1,6 +1,7 @@
 import os
 import glob
 import re
+import shutil
 import statistics
 import subprocess
 import sys
@@ -68,13 +69,17 @@ for root, dirs, files in os.walk(search_directory):
         print(f"Folder: {folder_name}, File: {file_path}")
         msa_path = "/hits/basement/cme/hoehledi/example_workflow/TreeBase/" + folder_name + ".phy"
         os.chdir(root)  # Change the working directory to the directory where the file is found
+        if not os.path.exists(msa_path):
+            print("MSA not found")
+            continue
+        shutil.copy(msa_path, root)
+        msa_path = root + "/" + folder_name + ".phy"
 
         raxml_command = [
             "raxml-ng",
             "--consense MRE",
             f"--tree {file_path}",
             "--redo",
-            "--log ERROR",
             f"--prefix {folder_name + 'ground_truth_cons'}"
         ]
 
@@ -87,8 +92,7 @@ for root, dirs, files in os.walk(search_directory):
             f"--model GTR+G",
             "--tree pars{1000}",
             f"--msa {msa_path}",
-            "--redo",
-            "--log ERROR"
+            "--redo"
         ]
 
         subprocess.run(" ".join(raxml_command), shell=True)
@@ -123,8 +127,7 @@ for root, dirs, files in os.walk(search_directory):
             "raxml-ng",
             "--consense MRE",
             f"--tree {parsimony_trees_path}",
-            "--redo",
-            "--log ERROR"
+            "--redo"
         ]
 
         subprocess.run(" ".join(raxml_command), shell=True)
@@ -135,8 +138,7 @@ for root, dirs, files in os.walk(search_directory):
                          "--support",
                          f"--tree {consensus_path}",
                          f"--bs-trees {parsimony_trees_path}",
-                         "--redo",
-                         "--log ERROR"]
+                         "--redo"]
         subprocess.run(" ".join(raxml_command), shell=True)
 
         support_path = consensus_path + ".raxml.support"
