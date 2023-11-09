@@ -63,14 +63,14 @@ counter = 0
 for root, dirs, files in os.walk(search_directory):
     if file_name in files:
         counter += 1
-        if counter <= 601:
+        if counter <= 733:
             continue
         print(counter)
         #print(root)
         os.chdir(root)  # Change the working directory to the directory where the file is found
         folder_name = os.path.basename(root)
 
-        if folder_name == "13572_1.phy" or folder_name == "15260_0.phy" or folder_name == "13572_6.phy":
+        if folder_name == "13572_1.phy" or folder_name == "15260_0.phy" or folder_name == "13572_6.phy" or folder_name == "26784_1.phy":
             continue
         file_path = os.path.abspath(file_name)
         print(f"Folder: {folder_name}, File: {file_path}")
