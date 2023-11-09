@@ -66,6 +66,7 @@ for root, dirs, files in os.walk(search_directory):
         file_path = os.path.abspath(file_name)
         print(f"Folder: {folder_name}, File: {file_path}")
         msa_path = "/hits/basement/cme/hoehledi/example_workflow/TreeBase/" + folder_name + ".phy"
+        os.chdir(root)  # Change the working directory to the directory where the file is found
 
         raxml_command = [
             "raxml-ng",
@@ -77,6 +78,7 @@ for root, dirs, files in os.walk(search_directory):
         ]
 
         subprocess.run(" ".join(raxml_command), shell=True)
+        os.chdir(root)  # Change the working directory to the directory where the file is found
 
         raxml_command = [
             "raxml-ng",
@@ -93,6 +95,7 @@ for root, dirs, files in os.walk(search_directory):
         parsimony_trees_path = msa_path + ".raxml.startTree"
 
         ###### GET RF FEATURES
+        os.chdir(root)  # Change the working directory to the directory where the file is found
 
         raxml_command = ["raxml-ng",
                          "--rfdist",
