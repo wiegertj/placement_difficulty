@@ -246,6 +246,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     f1 = f1_score(y_test, y_pred_binary)
     roc_auc = roc_auc_score(y_test, y_pred)
 
+    print(accuracy)
+    print(f1)
+
 
     residuals = y_test - y_pred
 
