@@ -127,12 +127,13 @@ for root, dirs, files in os.walk(search_directory):
             "raxml-ng",
             "--consense MRE",
             f"--tree {parsimony_trees_path}",
-            "--redo"
+            "--redo",
+            f"--prefix {folder_name + 'pars_cons'}"
         ]
 
         subprocess.run(" ".join(raxml_command), shell=True)
 
-        consensus_path = root + "/.raxml.consensusTreeMRE"
+        consensus_path = root + "/" + folder_name + 'pars_cons' +"/.raxml.consensusTreeMRE"
 
         raxml_command = ["raxml-ng",
                          "--support",
