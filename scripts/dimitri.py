@@ -158,7 +158,8 @@ for root, dirs, files in os.walk(search_directory):
                 if not node.is_leaf():
                     node.__setattr__("name", branch_id_counter_ref)
 
-            ml_trees_consensus_path = ""
+            ml_trees_consensus_path =  root + "/" + folder_name + "/" + folder_name + "ground_truth_cons.raxml.consensusTreeMRE"
+            print("ml cons path " + ml_trees_consensus_path)
             with open(ml_trees_consensus_path, "r") as phylo_tree_original_file:
                 tree_str_ori = phylo_tree_original_file.read()
                 phylo_tree_original = Tree(tree_str_ori)
