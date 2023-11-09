@@ -144,6 +144,8 @@ for root, dirs, files in os.walk(search_directory):
 
         support_path = consensus_path + ".raxml.support"
 
+        sys.exit()
+
         if os.path.exists(support_path):
             results = []
 
