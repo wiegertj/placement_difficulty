@@ -132,7 +132,7 @@ for root, dirs, files in os.walk(search_directory):
 
         subprocess.run(" ".join(raxml_command), shell=True)
 
-        consensus_path = parsimony_trees_path + ".raxml.consensusTreeMRE"
+        consensus_path = root + "/.raxml.consensusTreeMRE"
 
         raxml_command = ["raxml-ng",
                          "--support",
@@ -270,10 +270,10 @@ for root, dirs, files in os.walk(search_directory):
                                     std_pars_supp_parents, min_pars_supp_child_w, std_pars_supp_child_w,
                                     min_pars_supp_child, mean_pars_supp_child, std_pars_supp_child, irs_std_right,
                                     irs_skw_right, avg_rf_no_boot, node_in_ml_tree))
-        data = pd.DataFrame(results,
-                                columns=['branchId', 'pars_support_cons', 'std_pars_supp_parents', 'min_pars_supp_child_w',
-                                         'std_pars_supp_child_w', 'min_pars_supp_child', 'mean_pars_supp_child',
-                                         'std_pars_supp_child', 'irs_std_right', 'irs_skw_right',
-                                         'avg_rf_no_boot', "inCons"])
-        data.to_csv(folder_name + ".csv")
-        sys.exit()
+            data = pd.DataFrame(results,
+                                    columns=['branchId', 'pars_support_cons', 'std_pars_supp_parents', 'min_pars_supp_child_w',
+                                             'std_pars_supp_child_w', 'min_pars_supp_child', 'mean_pars_supp_child',
+                                             'std_pars_supp_child', 'irs_std_right', 'irs_skw_right',
+                                             'avg_rf_no_boot', "inCons"])
+            data.to_csv(folder_name + ".csv")
+            sys.exit()
