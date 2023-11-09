@@ -143,9 +143,7 @@ for root, dirs, files in os.walk(search_directory):
         subprocess.run(" ".join(raxml_command), shell=True)
 
         support_path = consensus_path + ".raxml.support"
-
-        sys.exit()
-
+        ###### EXTRACT FEATURES
         if os.path.exists(support_path):
             results = []
 
