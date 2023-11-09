@@ -63,7 +63,7 @@ counter = 0
 for root, dirs, files in os.walk(search_directory):
     if file_name in files:
         counter += 1
-        if counter <= 889:
+        if counter <= 914:
             continue
         print(counter)
         #print(root)
