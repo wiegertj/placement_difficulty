@@ -110,8 +110,7 @@ for root, dirs, files in os.walk(search_directory):
         raxml_command = ["raxml-ng",
                          "--rfdist",
                          f"--tree {parsimony_trees_path}",
-                         "--redo",
-                         "--log ERROR"
+                         "--redo"
                          ]
         result = subprocess.run(" ".join(raxml_command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                                 shell=True)
