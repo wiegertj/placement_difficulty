@@ -289,4 +289,3 @@ for root, dirs, files in os.walk(search_directory):
                                              'avg_rf_no_boot', "inCons"])
             data.to_csv(folder_name + ".csv")
             print("Saved file")
-            sys.exit()
