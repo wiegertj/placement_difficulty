@@ -71,6 +71,7 @@ for root, dirs, files in os.walk(search_directory):
         os.chdir(root)  # Change the working directory to the directory where the file is found
         if not os.path.exists(msa_path):
             print("MSA not found")
+            print(msa_path)
             continue
         shutil.copy(msa_path, root)
         msa_path = root + "/" + folder_name + ".phy"
