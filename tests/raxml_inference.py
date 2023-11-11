@@ -7,11 +7,15 @@ import pandas as pd
 import os
 import subprocess
 
-# Specify the path to the directory containing your folders
-# Specify the path to the directory containing your folders
+filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].str.replace(".phy", ".newick").values.tolist()
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))
-loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", "")
-filenames = loo_selection["dataset"].values.tolist()
+loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", ".newick")
+filenames_aa = loo_selection["dataset"].values.tolist()
+
+duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
+accepted = []
+counter = 0
+filenames = filenames[:180]
 # Loop over each subdirectory (folder) within the specified path
 counter = 0
 
@@ -30,9 +34,10 @@ for file in filenames:
         "raxml-ng",
         "--search",
         f"--msa {msa_filepath}",
-        "--model LG4M",
+        "--model GTR+G",
+        #"--model LG4M",
         "--redo",
-        "--threads auto{60}",
+        "--threads 1",
         "--data-type AA"
 
     ]
@@ -50,12 +55,12 @@ for file in filenames:
     time_dat = pd.DataFrame(data_lost)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "inference_times_standard_20.csv")):
+                                       "inference_times_standard_nomt.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "inference_times_standard_20.csv")), index=False)
+                                                  "inference_times_standard_nomt.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "inference_times_standard_20.csv"),
+                                     "inference_times_standard_nomt.csv"),
                         index=False,
                         mode='a', header=False)
 
