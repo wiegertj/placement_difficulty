@@ -38,8 +38,8 @@ for file in filenames:
         "--model GTR+G",
         #"--model LG4M",
         "--redo",
-        "--threads 1",
-        "--data-type AA"
+        "--threads 1"
+        #"--data-type AA"
 
     ]
 
