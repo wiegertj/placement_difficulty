@@ -20,6 +20,7 @@ filenames = filenames[:180]
 counter = 0
 
 for file in filenames:
+    file = file.replace(".newick", "")
     if file == "20675_0":
         continue
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", file + "_reference.fasta")
