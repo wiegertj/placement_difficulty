@@ -22,11 +22,11 @@ from Bio import SeqIO, AlignIO
 
 print("Started5")
 
+filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].str.replace(".phy", ".newick").values.tolist()
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))
 loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", ".newick")
-filenames = loo_selection["dataset"].values.tolist()
-filenames_filtered = filenames
-accepted = []
+filenames_aa = loo_selection["dataset"].values.tolist()
+filenames_filtered = filenames[:180]
 counter = 0
 for tree_filename in filenames_filtered:
     counter += 1
@@ -50,18 +50,20 @@ for tree_filename in filenames_filtered:
 
     raxml_command = [
         "/home/wiegerjs/iqtree-2.2.2.6-Linux/bin/iqtree2",
-        "-m LG+G",
+        "-m GTR+G",
+        #"-m LG+G",
         "-s " + msa_filepath,
         "-B 1000",
         "--redo",
-        "-T AUTO",
-        "--threads-max 60",
+        "-T 1",
+        #"--threads-max 60",
     ]
 
     # print("Boot")
     print("Started")
     s = " ".join(raxml_command)
     print(s)
+
     subprocess.run(" ".join(raxml_command), shell=True)
 
     end_time = time.time()
@@ -99,11 +101,11 @@ for tree_filename in filenames_filtered:
     time_dat = pd.DataFrame(data)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "bootstrap_times_iqtree_mt.csv")):
+                                       "bootstrap_times_iqtree_nomt2.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "bootstrap_times_iqtree_mt.csv")), index=False)
+                                                  "bootstrap_times_iqtree_nomt2.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "bootstrap_times_iqtree_mt.csv"),
+                                     "bootstrap_times_iqtree_nomt2.csv"),
                         index=False,
                         mode='a', header=False)
