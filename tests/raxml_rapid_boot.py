@@ -100,7 +100,7 @@ for tree_filename in filenames_filtered:
     raxml_command = [
         "raxmlHPC-PTHREADS",
         f"-T 60",
-        f"-m GTRGAMMA",
+        f"-m PROTGAMMALG",
         f"-s {msa_filepath}",
         f"-# 1000",
         "-p 12345",
