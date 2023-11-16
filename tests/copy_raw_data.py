@@ -27,7 +27,7 @@ for folder_name in all_datasets:
     shutil.copy(support_path_base, folder_path)
 
     if os.path.exists(support_path_iq_base):
-        shutil.copy(support_path_iq_base, folder_path)
+        shutil.copy(support_path_iq_base, os.path.join(folder_path, f"{folder_name}_iqtree.treefile"))
 
     if os.path.exists(classic_raxml_boots_base):
         shutil.copy(classic_raxml_boots_base, folder_path)
