@@ -5,7 +5,7 @@ import pandas as pd
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/processed/final/bs_support.csv"))
 loo_selection = loo_selection["dataset"].values.tolist()
 loo_selection_aa = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/loo_selection_aa_test.csv")
-loo_selection_aa = loo_selection_aa["name"].str.replace(".phy").values.tolist()
+loo_selection_aa = loo_selection_aa["name"].str.replace(".phy", "").values.tolist()
 all_datasets = loo_selection + loo_selection_aa
 
 raw_path = "/hits/fast/cme/wiegerjs/EBG-train/EBG-train/data/raw"
