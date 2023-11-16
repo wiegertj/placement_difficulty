@@ -11,7 +11,7 @@ all_datasets = loo_selection + loo_selection_aa
 raw_path = "/hits/fast/cme/wiegerjs/EBG-train/EBG-train/data/raw"
 
 for folder_name in all_datasets:
-    msa_file_base = os.path.join(os.pardir, "data/raw/msa", folder_name + ".fasta")
+    msa_file_base = os.path.join(os.pardir, "data/raw/msa", folder_name + "_reference.fasta")
     model_file_base = os.path.join(os.pardir, "data/processed/loo", folder_name + "_msa_model.txt")
     tree_path_base = os.path.join(os.pardir, "data/raw/reference_tree", folder_name + ".newick")
 
