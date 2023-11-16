@@ -14,6 +14,7 @@ for folder_name in all_datasets:
     msa_file_base = os.path.join(os.pardir, "data/raw/msa", folder_name + "_reference.fasta")
     model_file_base = os.path.join(os.pardir, "data/processed/loo", folder_name + "_msa_model.txt")
     tree_path_base = os.path.join(os.pardir, "data/raw/reference_tree", folder_name + ".newick")
+    support_path_base = os.path.join(os.pardir, "scripts/") + folder_name + "_1000.raxml.support"
 
     folder_path = os.path.join(raw_path, folder_name)
     os.makedirs(folder_path, exist_ok=True)
@@ -21,5 +22,6 @@ for folder_name in all_datasets:
     shutil.copy(msa_file_base, folder_path)
     shutil.copy(model_file_base, folder_path)
     shutil.copy(tree_path_base, folder_path)
+    shutil.copy(support_path_base, folder_path)
 
     break
