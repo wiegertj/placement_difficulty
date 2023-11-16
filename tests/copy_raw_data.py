@@ -16,7 +16,7 @@ for folder_name in all_datasets:
     tree_path_base = os.path.join(os.pardir, "data/raw/reference_tree", folder_name + ".newick")
     support_path_base = os.path.join(os.pardir, "scripts/") + folder_name + "_1000.raxml.support"
     support_path_iq_base = os.path.join(os.pardir, "data/raw/msa/") + folder_name + "_reference.fasta.treefile"
-    classic_raxml_boots_base = os.path.join(os.pardir, "data/processed/raxml_rapid_bs_deimos_test/RAxML_bootstrap." + folder_name + "_1000_bs_raxml_classic.raxml.support")
+    classic_raxml_boots_base = "/hits/fast/cme/wiegerjs/placement_difficulty/data_analysis/" + folder_name+ "_1000_bs_raxml_classic.raxml.support"
 
     folder_path = os.path.join(raw_path, folder_name)
     os.makedirs(folder_path, exist_ok=True)
