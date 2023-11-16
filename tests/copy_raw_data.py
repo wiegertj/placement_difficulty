@@ -21,8 +21,8 @@ for folder_name in all_datasets:
     folder_path = os.path.join(raw_path, folder_name)
     os.makedirs(folder_path, exist_ok=True)
 
-    shutil.copy(msa_file_base, folder_path)
-    shutil.copy(model_file_base, folder_path)
+    shutil.copy(msa_file_base, os.path.join(folder_path, f"{folder_name}_msa.fasta"))
+    shutil.copy(model_file_base, os.path.join(folder_path, f"{folder_name}_model.txt"))
     shutil.copy(tree_path_base, folder_path)
     shutil.copy(support_path_base, folder_path)
 
