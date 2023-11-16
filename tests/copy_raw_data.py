@@ -22,14 +22,17 @@ for folder_name in all_datasets:
 
     if os.path.exists(folder_path):
         continue
-    if folder_name == "14688_23":
-        continue
     os.makedirs(folder_path, exist_ok=True)
 
     shutil.copy(msa_file_base, os.path.join(folder_path, f"{folder_name}_msa.fasta"))
     shutil.copy(model_file_base, os.path.join(folder_path, f"{folder_name}_model.txt"))
     shutil.copy(tree_path_base, folder_path)
-    shutil.copy(support_path_base, folder_path)
+    try:
+        shutil.copy(support_path_base, folder_path)
+    except FileNotFoundError:
+        support_path_base = os.path.join(os.pardir, "scripts/") + folder_name + ".raxml.support"#
+        shutil.copy(support_path_base, folder_path)
+
 
     if os.path.exists(support_path_iq_base):
         shutil.copy(support_path_iq_base, os.path.join(folder_path, f"{folder_name}_iqtree.treefile"))
