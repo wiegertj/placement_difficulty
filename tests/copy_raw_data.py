@@ -3,7 +3,7 @@ import shutil
 
 import pandas as pd
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/processed/final/bs_support.csv"))
-loo_selection = loo_selection["dataset"].values.tolist()
+loo_selection = loo_selection["dataset"].unique().tolist()
 loo_selection_aa = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/loo_selection_aa_test.csv")
 loo_selection_aa = loo_selection_aa["name"].str.replace(".phy", "").values.tolist()
 all_datasets = loo_selection + loo_selection_aa
@@ -19,6 +19,11 @@ for folder_name in all_datasets:
     classic_raxml_boots_base = "/hits/fast/cme/wiegerjs/placement_difficulty/data_analysis/" + folder_name+ "_1000_bs_raxml_classic.raxml.support"
 
     folder_path = os.path.join(raw_path, folder_name)
+
+    if os.path.exists(folder_path):
+        continue
+    if folder_name == "14688_23":
+        continue
     os.makedirs(folder_path, exist_ok=True)
 
     shutil.copy(msa_file_base, os.path.join(folder_path, f"{folder_name}_msa.fasta"))
