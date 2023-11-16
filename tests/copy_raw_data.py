@@ -15,6 +15,8 @@ for folder_name in all_datasets:
     model_file_base = os.path.join(os.pardir, "data/processed/loo", folder_name + "_msa_model.txt")
     tree_path_base = os.path.join(os.pardir, "data/raw/reference_tree", folder_name + ".newick")
     support_path_base = os.path.join(os.pardir, "scripts/") + folder_name + "_1000.raxml.support"
+    support_path_iq_base = os.path.join(os.pardir, "data/raw/msa/") + folder_name + "_reference.fasta.treefile"
+    classic_raxml_boots_base = os.path.join(os.pardir, "data/processed/raxml_rapid_bs_deimos_test/RAxML_bootstrap." + folder_name + "_1000_bs_raxml_classic")
 
     folder_path = os.path.join(raw_path, folder_name)
     os.makedirs(folder_path, exist_ok=True)
@@ -23,5 +25,11 @@ for folder_name in all_datasets:
     shutil.copy(model_file_base, folder_path)
     shutil.copy(tree_path_base, folder_path)
     shutil.copy(support_path_base, folder_path)
+
+    if os.path.exists(support_path_iq_base):
+        shutil.copy(support_path_iq_base, folder_path)
+
+    if os.path.exists(classic_raxml_boots_base):
+        shutil.copy(classic_raxml_boots_base, folder_path)
 
     break
