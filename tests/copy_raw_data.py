@@ -32,4 +32,3 @@ for folder_name in all_datasets:
     if os.path.exists(classic_raxml_boots_base):
         shutil.copy(classic_raxml_boots_base, os.path.join(folder_path, f"{folder_name}_rapid_bs.support"))
 
-    break
