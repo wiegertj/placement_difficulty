@@ -38,7 +38,7 @@ def MBE(y_true, y_pred):
     return mbe
 
 
-def light_gbm_regressor(rfe=False, rfe_feature_n=40, shapley_calc=True, targets=[]):
+def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True, targets=[]):
     df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pars_top_features.csv"))
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df = df.merge(df_pars_top, on=["dataset"], how="inner")
@@ -92,8 +92,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=40, shapley_calc=True, targets=
 
 
     if rfe:
-        model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
-                                      min_samples_leaf=10, )
+        model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=20, min_samples_split=10,
+                                      min_samples_leaf=5, )
         rfe = RFE(estimator=model, n_features_to_select=rfe_feature_n, step=0.1)  # Adjust the number of features as needed
         rfe.fit(X_train.drop(axis=1, columns=['dataset', 'sampleId', 'group']), y_train)
         print(rfe.support_)
@@ -212,7 +212,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=40, shapley_calc=True, targets=
 
     scaler = MinMaxScaler()
     importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
-    importance_df = importance_df.nlargest(40, 'Importance')
+    importance_df = importance_df.nlargest(20, 'Importance')
 
     importance_df.to_csv("diff_guesser_importances.csv")
 
