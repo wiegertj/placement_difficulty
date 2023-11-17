@@ -48,7 +48,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print(df["entropy"].median())
     df.columns = df.columns.str.replace(':', '_')
 
-    df = df[["dataset", "entropy","max_rf_tree",
+    df = df[["dataset", "entropy","max_rf_tree", "sampleId",
             "mean_sup_tree",
             "avg_rel_rf_no_boot",
             "transversion_count_rel5",
@@ -323,5 +323,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         plt.savefig("lgbm-300.png")
 
 for i in range(0,10):
-    light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
-    break
+    light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
