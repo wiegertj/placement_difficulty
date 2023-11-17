@@ -133,8 +133,8 @@ loo_hash_perc = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_hash_perc = loo_hash_perc.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 
 loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fasta", "")
-loo_resuls_combined = loo_resuls_combined4.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
-
+#loo_resuls_combined = loo_resuls_combined4.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
+loo_resuls_combined = loo_resuls_combined4
 # add mutation rates
 
 loo_resuls_dfs = []
@@ -178,7 +178,7 @@ for loo_dataset in loo_datasets:
 
 loo_im_comp = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_im_comp = loo_im_comp.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
-loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'dataset'], how='inner')
+#loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'dataset'], how='inner')
 
 # add nearest sequence support
 
@@ -199,7 +199,7 @@ for loo_dataset in loo_datasets:
 
 loo_nearest = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_nearest = loo_nearest.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
-loo_resuls_combined = loo_resuls_combined.merge(loo_nearest, on=["sampleId", 'dataset'], how='inner')
+#loo_resuls_combined = loo_resuls_combined.merge(loo_nearest, on=["sampleId", 'dataset'], how='inner')
 
 
 
@@ -244,29 +244,17 @@ for col in columns_with_nan:
     num_nan = combined_df[col].isna().sum()
     print(f"Column '{col}' contains {num_nan} NaN values.")
 
-combined_df['kur_gaps_msa'].fillna(-1, inplace=True)
-combined_df['kur_gap_query'].fillna(-1, inplace=True)
-combined_df['sk_kmer_sim25'].fillna(-1, inplace=True)
-combined_df['kur_kmer_sim25'].fillna(-1, inplace=True)
-combined_df['sk_kmer_sim50'].fillna(-1, inplace=True)
-combined_df['kur_kmer_sim50'].fillna(-1, inplace=True)
-combined_df['sk_dist_hu'].fillna(-1, inplace=True)
-combined_df['sk_dist_lbp'].fillna(-1, inplace=True)
-combined_df['kur_dist_lbp'].fillna(-1, inplace=True)
-combined_df['sk_dist_pca'].fillna(-1, inplace=True)
-combined_df['kur_dist_pca'].fillna(-1, inplace=True)
-combined_df['skew_branch_length_tips'].fillna(-1, inplace=True)
-combined_df['kurtosis_branch_length_tips'].fillna(-1, inplace=True)
-combined_df['skewness_nearest'].fillna(-1, inplace=True)
-combined_df['kurtosis_nearest'].fillna(-1, inplace=True)
-combined_df['sk_branch_len_nearest'].fillna(-1, inplace=True)
-combined_df['kurt_branch_len_nearest'].fillna(-1, inplace=True)
-combined_df['skw_fraction_char_rests8'].fillna(-1, inplace=True)
-combined_df['kur_fraction_char_rests8'].fillna(-1, inplace=True)
-combined_df['skw_fraction_char_rests7'].fillna(-1, inplace=True)
-combined_df['kur_fraction_char_rests7'].fillna(-1, inplace=True)
-combined_df['skw_fraction_char_rests5'].fillna(-1, inplace=True)
-combined_df['kur_fraction_char_rests5'].fillna(-1, inplace=True)
+columns_to_fill = ['kur_gaps_msa', 'kur_gap_query', 'sk_kmer_sim25', 'kur_kmer_sim25',
+                    'sk_kmer_sim50', 'kur_kmer_sim50', 'sk_dist_hu', 'sk_dist_lbp',
+                    'kur_dist_lbp', 'sk_dist_pca', 'kur_dist_pca', 'skew_branch_length_tips',
+                    'kurtosis_branch_length_tips', 'skewness_nearest', 'kurtosis_nearest',
+                    'sk_branch_len_nearest', 'kurt_branch_len_nearest', 'skw_fraction_char_rests8',
+                    'kur_fraction_char_rests8', 'skw_fraction_char_rests7', 'kur_fraction_char_rests7',
+                    'skw_fraction_char_rests5', 'kur_fraction_char_rests5']
+
+for column in columns_to_fill:
+    if column in combined_df.columns:
+        combined_df[column].fillna(-1, inplace=True)
 print("Dropping NaN")
 print(combined_df.shape)
 print("After NaN")
