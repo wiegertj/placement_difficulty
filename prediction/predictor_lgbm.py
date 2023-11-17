@@ -182,17 +182,16 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=40, shapley_calc=True, targets=
     metrics_dict = {'RMSE': [rmse], 'MAE': [mae], 'MDAE': [mdae], 'MBE': [mbe], 'RMSE_MEAN':[rmse_mean], 'MAE_MEAN':[mae_mean], 'MDAE_MEAN':[mdae_mean], 'MBE_MEAN':[mbe_mean]}
     metrics_df = pd.DataFrame(metrics_dict)
 
-    # Try to read the existing CSV file, or create a new one
-    try:
-        existing_df = pd.read_csv('diff_guesser.csv')
-        # Append the new metrics to the existing DataFrame
-        result_df = existing_df.append(metrics_df, ignore_index=True)
-    except FileNotFoundError:
-        # If the file doesn't exist, create a new DataFrame
-        result_df = metrics_df
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "diff_guesser.csv")):
+        metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                  "diff_guesser.csv")), index=False)
+    else:
+        metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                     "diff_guesser.csv"),
+                        index=False,
+                        mode='a', header=False)
 
-    # Write the DataFrame to the CSV file
-    result_df.to_csv('diff_guesser.csv', index=False)
 
     residuals = y_test - y_pred
 
