@@ -322,12 +322,13 @@ combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 def sample_rows(group):
     percentile = group["percentile"].iloc[0]
     print(percentile)
-    if percentile <= 4.0:
-        max_sample_size = 1000
-    else:
-        print(group.shape)
+    max_sample_size = 1500
+    #if percentile <= 4.0:
+     #   max_sample_size = 1000
+    #else:
+     #   print(group.shape)
 
-        return group
+      #  return group
     print(group.shape)
     return group.sample(max_sample_size)
 
