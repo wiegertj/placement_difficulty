@@ -89,7 +89,8 @@ for tree_filename in filenames_filtered:
 
     model_path = os.path.abspath(os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt"))
 
-
+    if tree_filename.split(".")[0] == "15669_9":
+        continue
 
     output_prefix = tree_filename.split(".")[0] + "_1000_bs_raxml_classic"  # Using the filename as the prefix
 
