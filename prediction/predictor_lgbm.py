@@ -78,22 +78,18 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
     mse_mean = mean_squared_error(y_test, np.zeros(len(y_test)) + mean(y_train))
     rmse_mean = math.sqrt(mse_mean)
-    print("Baseline predicting mean RMSE: " + str(rmse_mean))
 
-    r_squared = r2_score(y_test, np.zeros(len(y_test)) + mean(y_train))
-    print(f"R-squared on baseline test set: {r_squared:.2f}")
 
-    mae = mean_absolute_error(y_test, np.zeros(len(y_test)) + mean(y_train))
-    print(f"MAE on baseline test set: {mae:.2f}")
 
-    mape = mean_absolute_percentage_error(y_test, np.zeros(len(y_test)) + mean(y_train))
-    print(f"MAPE on baseline test set: {mape}")
+    mae_mean = mean_absolute_error(y_test, np.zeros(len(y_test)) + mean(y_train))
 
-    mdae = median_absolute_error(y_test, np.zeros(len(y_test)) + mean(y_train))
-    print(f"MDAE on baseline test set: {mdae}")
 
-    mbe = MBE(y_test, np.zeros(len(y_test)) + mean(y_train))
-    print(f"MBE on baseline test set: {mbe}")
+
+    mdae_mean = median_absolute_error(y_test, np.zeros(len(y_test)) + mean(y_train))
+
+
+    mbe_mean = MBE(y_test, np.zeros(len(y_test)) + mean(y_train))
+
 
     if rfe:
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
@@ -182,7 +178,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print(f"MBE on test set: {mbe}")
 
     # Create a DataFrame with the current metrics
-    metrics_dict = {'RMSE': [rmse], 'MAE': [mae], 'MDAE': [mdae], 'MBE': [mbe]}
+    metrics_dict = {'RMSE': [rmse], 'MAE': [mae], 'MDAE': [mdae], 'MBE': [mbe], 'RMSE_MEAN':[rmse_mean], 'MAE_MEAN':[mae_mean], 'MDAE_MEAN:'[mdae_mean], 'MBE_MEAN':[mbe_mean]}
     metrics_df = pd.DataFrame(metrics_dict)
 
     # Try to read the existing CSV file, or create a new one
