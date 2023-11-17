@@ -19,6 +19,7 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, m
 from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
 
+
 def MBE(y_true, y_pred):
     '''
     Parameters:
@@ -30,11 +31,13 @@ def MBE(y_true, y_pred):
     '''
     y_true = np.array(y_true)
     y_pred = np.array(y_pred)
-    y_true = y_true.reshape(len(y_true),1)
-    y_pred = y_pred.reshape(len(y_pred),1)
-    diff = (y_true-y_pred)
+    y_true = y_true.reshape(len(y_true), 1)
+    y_pred = y_pred.reshape(len(y_pred), 1)
+    diff = (y_true - y_pred)
     mbe = diff.mean()
     return mbe
+
+
 def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=[]):
     df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pars_top_features.csv"))
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
@@ -64,20 +67,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     X_test = test.drop(axis=1, columns=target)
     y_test = test[target]
 
+    # X = df.drop(axis=1, columns=target)
+    # y = df[target]
 
-
-
-
-
-
-
-
-
-    #X = df.drop(axis=1, columns=target)
-    #y = df[target]
-
-    #X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, df["group"], test_size=0.2,
-     #                                                                              random_state=12)
+    # X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, df["group"], test_size=0.2,
+    #                                                                              random_state=12)
     mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
@@ -85,7 +79,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     mse_mean = mean_squared_error(y_test, np.zeros(len(y_test)) + mean(y_train))
     rmse_mean = math.sqrt(mse_mean)
     print("Baseline predicting mean RMSE: " + str(rmse_mean))
-
 
     r_squared = r2_score(y_test, np.zeros(len(y_test)) + mean(y_train))
     print(f"R-squared on baseline test set: {r_squared:.2f}")
@@ -101,9 +94,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
     mbe = MBE(y_test, np.zeros(len(y_test)) + mean(y_train))
     print(f"MBE on baseline test set: {mbe}")
-
-
-
 
     if rfe:
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=10, min_samples_split=20,
@@ -125,7 +115,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         X_test = X_test.drop(axis=1, columns=['dataset', 'sampleId'])
 
     def objective(trial):
-        #callbacks = [LightGBMPruningCallback(trial, 'l1')]
 
         params = {
             'objective': 'regression',
@@ -146,28 +135,28 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
         val_scores = []
 
-        gkf = GroupKFold(n_splits=10)
+        gkf = GroupKFold(n_splits=6)
         for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
-
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
-            val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
-            #
             model = lgb.train(params, train_data)
-
             val_preds = model.predict(X_val)
-            #val_score = mean_squared_error(y_val, val_preds)
-            #val_score = math.sqrt(val_score)
             val_score = mean_absolute_error(y_val, val_preds)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=50)
+    study.optimize(objective, n_trials=100)
 
     best_params = study.best_params
+    best_params["objective"] = "regression"
+    best_params["metric"] = "l1"
+    best_params["boosting_type"] = "gbdt"
+    best_params["bagging_freq"] = 0
+    best_params["max_depth"] = -1
+
     best_score = study.best_value
 
     print(f"Best Params: {best_params}")
@@ -183,14 +172,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
-    r_squared = r2_score(y_test, y_pred)
-    print(f"R-squared on test set: {r_squared:.2f}")
-
     mae = mean_absolute_error(y_test, y_pred)
     print(f"MAE on test set: {mae:.2f}")
-
-    mape = mean_absolute_percentage_error(y_test, y_pred)
-    print(f"MAPE on test set: {mape}")
 
     mdae = median_absolute_error(y_test, y_pred)
     print(f"MDAE on test set: {mdae}")
@@ -198,7 +181,21 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     mbe = MBE(y_test, y_pred)
     print(f"MBE on test set: {mbe}")
 
+    # Create a DataFrame with the current metrics
+    metrics_dict = {'RMSE': [rmse], 'MAE': [mae], 'MDAE': [mdae], 'MBE': [mbe]}
+    metrics_df = pd.DataFrame(metrics_dict)
 
+    # Try to read the existing CSV file, or create a new one
+    try:
+        existing_df = pd.read_csv('diff_guesser.csv')
+        # Append the new metrics to the existing DataFrame
+        result_df = existing_df.append(metrics_df, ignore_index=True)
+    except FileNotFoundError:
+        # If the file doesn't exist, create a new DataFrame
+        result_df = metrics_df
+
+    # Write the DataFrame to the CSV file
+    result_df.to_csv('diff_guesser.csv', index=False)
 
     residuals = y_test - y_pred
 
@@ -220,6 +217,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     scaler = MinMaxScaler()
     importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     importance_df = importance_df.nlargest(30, 'Importance')
+
+    importance_df.to_csv("diff_guesser_importances.csv")
 
     plt.figure(figsize=(10, 6))
     plt.bar(importance_df['Feature'], importance_df['Importance'])
@@ -296,5 +295,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm-300.png")
 
-
-light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
+for i in range(0,10):
+    light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
