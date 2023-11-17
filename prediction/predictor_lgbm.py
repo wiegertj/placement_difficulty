@@ -38,7 +38,7 @@ def MBE(y_true, y_pred):
     return mbe
 
 
-def light_gbm_regressor(rfe=False, rfe_feature_n=35, shapley_calc=True, targets=[]):
+def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=[]):
     df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pars_top_features.csv"))
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"))
     df = df.merge(df_pars_top, on=["dataset"], how="inner")
@@ -292,5 +292,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=35, shapley_calc=True, targets=
         plt.savefig("lgbm-300.png")
 
 for i in range(0,10):
-    light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
+    light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
     break
