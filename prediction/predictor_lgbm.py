@@ -48,6 +48,37 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print(df["entropy"].median())
     df.columns = df.columns.str.replace(':', '_')
 
+    df = df[["dataset", "entropy","max_rf_tree",
+            "mean_sup_tree",
+            "avg_rel_rf_no_boot",
+            "transversion_count_rel5",
+            "sk_sup_tree",
+            "kur_kmer_sim",
+            "no_top_boot",
+            "std_fraction_char_rests7",
+            "max_subst_freq",
+            "sk_clo_sim",
+            "min_a_min_b",
+            "transversion_count_rel7",
+            "std_fraction_char_rests8",
+            "min_fraction_char_rests5",
+            "avg_fraction_char_rests5",
+            "sk_kmer_sim",
+            "std_kmer_sim",
+            "mean_kmer_sim",
+            "diff_match_counter_parta_w",
+            "avg_subst_freq",
+            "abs_weighted_distance_major_modes_supp",
+            "diff_match_counter_parta",
+            "transversion_count_rel8",
+            "match_rel_8",
+            "diff_match_counter_partb",
+            "diff_match_counter_partb_w",
+            "kur_clo_sim",
+            "avg_entropy_msa",
+            "mean_a_mean_b",
+            "cv_ham_dist"]]
+
     print(df.columns)
     print(df.shape)
 
