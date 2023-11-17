@@ -119,7 +119,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         params = {
             'objective': 'regression',
             'metric': 'l1',
-            'num_iterations': trial.suggest_int('num_iterations', 100, 300),
+            'num_iterations': trial.suggest_int('num_iterations', 10, 200),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.1),
