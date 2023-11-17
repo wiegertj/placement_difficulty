@@ -178,7 +178,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print(f"MBE on test set: {mbe}")
 
     # Create a DataFrame with the current metrics
-    metrics_dict = {'RMSE': [rmse], 'MAE': [mae], 'MDAE': [mdae], 'MBE': [mbe], 'RMSE_MEAN':[rmse_mean], 'MAE_MEAN':[mae_mean], 'MDAE_MEAN:'[mdae_mean], 'MBE_MEAN':[mbe_mean]}
+    metrics_dict = {'RMSE': [rmse], 'MAE': [mae], 'MDAE': [mdae], 'MBE': [mbe], 'RMSE_MEAN':[rmse_mean], 'MAE_MEAN':[mae_mean], 'MDAE_MEAN':[mdae_mean], 'MBE_MEAN':[mbe_mean]}
     metrics_df = pd.DataFrame(metrics_dict)
 
     # Try to read the existing CSV file, or create a new one
