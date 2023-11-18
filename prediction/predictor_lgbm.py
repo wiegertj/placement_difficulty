@@ -242,7 +242,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
     scaler = MinMaxScaler()
-    importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
+    #importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     #importance_df = importance_df.nlargest(35, 'Importance')
 
     importance_df.to_csv("diff_guesser_importances.csv")
