@@ -324,9 +324,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + "shapely_summary" + "shap.png"), bbox_inches='tight')
 
         plt.figure(figsize=(10, 6))
-
-        for i in range(0,2810):
-            if i < 10 or i > 2800:
+        size_ = X_test.shape[0]
+        for i in range(0,size_):
+            if i < 10 or i > size_ -10:
                 plt.figure(figsize=(10, 6))  # Adjust width and height as needed
                 # Create the waterfall plot
                 shap.initjs()  # Initialize JavaScript visualization
