@@ -273,7 +273,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         explainer = shap.Explainer(final_model,
                                    X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]).astype(float),
                                    check_additivity=False)
-        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]).astype(float),
+        shap_values = explainer.shap_values(X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]).astype(float),
                                 check_additivity=False)
 
         shap_df = pd.DataFrame(shap_values, columns=X_test.columns)
@@ -292,8 +292,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         shap.plots.waterfall(shap_values[0], max_display=10)  # Limit the display to 10 features
         plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
         plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
-        plt.xticks(fontsize=12)  # Adjust x-axis tick font size
-        plt.yticks(fontsize=12)  # Adjust y-axis tick font size
+        plt.xticks(fontsize=14)  # Adjust x-axis tick font size
+        plt.yticks(fontsize=14)  # Adjust y-axis tick font size
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm_0.png")
 
