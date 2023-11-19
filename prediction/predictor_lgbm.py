@@ -273,10 +273,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         explainer = shap.Explainer(final_model,
                                    X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]).astype(float),
                                    check_additivity=False)
-        shap_values = explainer.shap_values(X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]).astype(float),
+        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]).astype(float),
                                 check_additivity=False)
 
-        shap_df = pd.DataFrame(shap_values, columns=X_test.columns)
+        shap_df = pd.DataFrame(shap_values, columns=X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]).columns)
 
         # Save the DataFrame to a CSV file
         shap_df.to_csv('shap_values.csv', index=False)
