@@ -256,6 +256,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
     plot_filename = os.path.join(os.pardir, "data/prediction", "feature_importances_" + name + ".png")
     plt.savefig(plot_filename)
+    plt.show()
 
     print("Feature Importances (Normalized):")
     for index, row in importance_df.iterrows():
@@ -288,10 +289,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
             a + ": " + str(b) for a, b in zip(X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns, np.abs(shap_values.values).mean(0).round(2))
         ]
 
-        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]), max_display=X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).shape[1],
+        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]), max_display=10,
                           feature_names=feature_names)
 
-        plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
+        plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + "shapely_summary" + "shap.png"))
 
         plt.figure(figsize=(10, 6))
 
