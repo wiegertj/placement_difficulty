@@ -281,6 +281,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "group"]),
                                 check_additivity=False)
 
+        shap_df = pd.DataFrame(shap_values, columns=X_test.columns)
+
+        # Save the DataFrame to a CSV file
+        shap_df.to_csv('shap_values.csv', index=False)
+
         shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group"]),
                           plot_type="bar")
         plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
@@ -313,7 +318,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
         # Create the waterfall plot
         shap.initjs()  # Initialize JavaScript visualization
-        shap.plots.waterfall(shap_values[-300], max_display=10)  # Limit the display to 10 features
+        shap.plots.waterfall(shap_values[-50], max_display=10)  # Limit the display to 10 features
 
         plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
         plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
@@ -323,4 +328,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         plt.savefig("lgbm-300.png")
 
 for i in range(0,10):
-    light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
+    light_gbm_regressor(rfe=False, shapley_calc=True, targets=[])
