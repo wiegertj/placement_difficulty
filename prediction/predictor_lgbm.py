@@ -336,7 +336,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
                 plt.xticks(fontsize=14)  # Adjust x-axis tick font size
                 plt.yticks(fontsize=14)  # Adjust y-axis tick font size
                 plt.tight_layout()  # Adjust layout to prevent overlapping elements
-                plt.savefig(f"lgbm_{i}.png", bbox_inches='tight'bbox_inches='tight')
+                plt.savefig(f"lgbm_{i}.png", bbox_inches='tight')
             if i % 50 == 0:
 
                 plt.figure(figsize=(10, 6))  # Adjust width and height as needed
