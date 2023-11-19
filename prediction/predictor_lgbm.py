@@ -325,7 +325,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
         plt.figure(figsize=(10, 6))
 
-        for i in range(0,1500):
+        for i in range(0,2810):
             if i < 10 or i > 2800:
                 plt.figure(figsize=(10, 6))  # Adjust width and height as needed
                 # Create the waterfall plot
