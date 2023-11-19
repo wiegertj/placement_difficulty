@@ -48,36 +48,36 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print(df["entropy"].median())
     df.columns = df.columns.str.replace(':', '_')
 
-    df = df[["dataset", "entropy","max_rf_tree", "sampleId",
-            "mean_sup_tree",
-            "avg_rel_rf_no_boot",
-            "transversion_count_rel5",
-            "sk_sup_tree",
-            "kur_kmer_sim",
-            "no_top_boot",
-            "std_fraction_char_rests7",
-            "max_subst_freq",
-            "sk_clo_sim",
-            "min_a_min_b",
-            "transversion_count_rel7",
-            "std_fraction_char_rests8",
-            "min_fraction_char_rests5",
-            "avg_fraction_char_rests5",
-            "sk_kmer_sim",
-            "std_kmer_sim",
-            "mean_kmer_sim",
-            "diff_match_counter_parta_w",
-            "avg_subst_freq",
-            "abs_weighted_distance_major_modes_supp",
-            "diff_match_counter_parta",
-            "transversion_count_rel8",
-            "match_rel_8",
-            "diff_match_counter_partb",
-            "diff_match_counter_partb_w",
-            "kur_clo_sim",
-            "avg_entropy_msa",
-            "mean_a_mean_b",
-            "cv_ham_dist"]]
+    df = df[["dataset", "entropy", "max_rf_tree", "sampleId",
+             "mean_sup_tree",
+             "avg_rel_rf_no_boot",
+             "transversion_count_rel5",
+             "sk_sup_tree",
+             "kur_kmer_sim",
+             "no_top_boot",
+             "std_fraction_char_rests7",
+             "max_subst_freq",
+             "sk_clo_sim",
+             "min_a_min_b",
+             "transversion_count_rel7",
+             "std_fraction_char_rests8",
+             "min_fraction_char_rests5",
+             "avg_fraction_char_rests5",
+             "sk_kmer_sim",
+             "std_kmer_sim",
+             "mean_kmer_sim",
+             "diff_match_counter_parta_w",
+             "avg_subst_freq",
+             "abs_weighted_distance_major_modes_supp",
+             "diff_match_counter_parta",
+             "transversion_count_rel8",
+             "match_rel_8",
+             "diff_match_counter_partb",
+             "diff_match_counter_partb_w",
+             "kur_clo_sim",
+             "avg_entropy_msa",
+             "mean_a_mean_b",
+             "cv_ham_dist"]]
 
     print(df.columns)
     print(df.shape)
@@ -110,22 +110,17 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     mse_mean = mean_squared_error(y_test, np.zeros(len(y_test)) + mean(y_train))
     rmse_mean = math.sqrt(mse_mean)
 
-
-
     mae_mean = mean_absolute_error(y_test, np.zeros(len(y_test)) + mean(y_train))
-
-
 
     mdae_mean = median_absolute_error(y_test, np.zeros(len(y_test)) + mean(y_train))
 
-
     mbe_mean = MBE(y_test, np.zeros(len(y_test)) + mean(y_train))
-
 
     if rfe:
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=20, min_samples_split=10,
                                       min_samples_leaf=5, )
-        rfe = RFE(estimator=model, n_features_to_select=rfe_feature_n, step=0.1)  # Adjust the number of features as needed
+        rfe = RFE(estimator=model, n_features_to_select=rfe_feature_n,
+                  step=0.1)  # Adjust the number of features as needed
         rfe.fit(X_train.drop(axis=1, columns=['dataset', 'sampleId', 'group']), y_train)
         print(rfe.support_)
         selected_features = X_train.drop(axis=1, columns=['dataset', 'sampleId', 'group']).columns[rfe.support_]
@@ -210,19 +205,19 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print(f"MBE on test set: {mbe}")
 
     # Create a DataFrame with the current metrics
-    metrics_dict = {'RMSE': [rmse], 'MAE': [mae], 'MDAE': [mdae], 'MBE': [mbe], 'RMSE_MEAN':[rmse_mean], 'MAE_MEAN':[mae_mean], 'MDAE_MEAN':[mdae_mean], 'MBE_MEAN':[mbe_mean]}
+    metrics_dict = {'RMSE': [rmse], 'MAE': [mae], 'MDAE': [mdae], 'MBE': [mbe], 'RMSE_MEAN': [rmse_mean],
+                    'MAE_MEAN': [mae_mean], 'MDAE_MEAN': [mdae_mean], 'MBE_MEAN': [mbe_mean]}
     metrics_df = pd.DataFrame(metrics_dict)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                                        "diff_guesser.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "diff_guesser.csv")), index=False)
+                                                    "diff_guesser.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "diff_guesser.csv"),
-                        index=False,
-                        mode='a', header=False)
-
+                                       "diff_guesser.csv"),
+                          index=False,
+                          mode='a', header=False)
 
     residuals = y_test - y_pred
 
@@ -242,8 +237,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
     scaler = MinMaxScaler()
-    #importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
-    #importance_df = importance_df.nlargest(35, 'Importance')
+    # importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
+    # importance_df = importance_df.nlargest(35, 'Importance')
 
     importance_df.to_csv("diff_guesser_importances.csv")
 
@@ -327,5 +322,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
         plt.savefig("lgbm-300.png")
 
-for i in range(0,10):
+
+for i in range(0, 10):
     light_gbm_regressor(rfe=False, shapley_calc=True, targets=[])
