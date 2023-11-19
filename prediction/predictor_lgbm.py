@@ -271,9 +271,9 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         X_test = X_test_
         X_test = X_test.sort_values(by="entropy")
         explainer = shap.Explainer(final_model,
-                                   X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]),
+                                   X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]).astype(float),
                                    check_additivity=False)
-        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]),
+        shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "group", "sampleId"]).astype(float),
                                 check_additivity=False)
 
         shap_df = pd.DataFrame(shap_values, columns=X_test.columns)
