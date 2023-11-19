@@ -48,6 +48,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print(df["entropy"].median())
     df.columns = df.columns.str.replace(':', '_')
 
+
     df = df[["dataset", "entropy", "max_rf_tree", "sampleId",
              "mean_sup_tree",
              "avg_rel_rf_no_boot",
@@ -78,6 +79,33 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
              "avg_entropy_msa",
              "mean_a_mean_b",
              "cv_ham_dist"]]
+
+    column_name_mapping = {
+        "mean_sup_tree": "mean_bootstrap_support_tree",
+        "avg_rel_rf_no_boot": "mean_rf_distance_parsimony",
+        "transversion_count_rel5": "transversions_inv_sites_t5",
+        "sk_sup_tree": "skewness_bootstrap_support_tree",
+        "kur_kmer_sim": "kurtosis_kmer_similarity",
+        "no_top_boot":"no_unique_topos_bootstraps",
+        "std_fraction_char_rests7": "std_fraction_non_major_residues_t7",
+        "max_subst_freq": "max_parsimony_subs",
+        "sk_clo_sim": "skewness_closeness_centrality",
+        "min_a_min_b":"min_ham_dist_central_split",
+        "transversion_count_rel7": "transversion_count_t7",
+        "std_fraction_char_rests8": "std_fraction_non_major_residues_t8",
+        "min_fraction_char_rests5": "min_fraction_non_major_residues_t5",
+        "avg_fraction_char_rests5": "mean_fraction_non_major_residues_t5",
+        "sk_kmer_sim": "skewness_kmer_similarity",
+        "std_kmer_sim": "std_kmer_similarity",
+        "mean_kmer_sim": "mean_kmer_similarity",
+        "diff_match_counter_parta_w": "impure_sites_match_counter_w",
+        "avg_subst_freq": "mean_parsimony_subs",
+        "kur_clo_sim": "kurtosis_closeness_similarity",
+        "cv_ham_dist": "coefficient_variation_hamming_dist"
+    }
+
+    # Rename the columns in the DataFrame
+    df = df.rename(columns=column_name_mapping)
 
     print(df.columns)
     print(df.shape)
