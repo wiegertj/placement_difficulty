@@ -331,7 +331,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
                 plt.figure(figsize=(10, 6))  # Adjust width and height as needed
                 # Create the waterfall plot
                 shap.initjs()  # Initialize JavaScript visualization
-                shap.plots.waterfall(shap_values[0], max_display=8)  # Limit the display to 10 features
+                shap.plots.waterfall(shap_values[i], max_display=8)  # Limit the display to 10 features
                 plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
                 plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
                 plt.xticks(fontsize=14)  # Adjust x-axis tick font size
