@@ -321,7 +321,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]), max_display=10,
                           feature_names=feature_names)
 
-        plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + "shapely_summary" + "shap.png"))
+        plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + "shapely_summary" + "shap.png"), bbox_inches='tight')
 
         plt.figure(figsize=(10, 6))
 
@@ -336,7 +336,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
                 plt.xticks(fontsize=14)  # Adjust x-axis tick font size
                 plt.yticks(fontsize=14)  # Adjust y-axis tick font size
                 plt.tight_layout()  # Adjust layout to prevent overlapping elements
-                plt.savefig(f"lgbm_{i}.png")
+                plt.savefig(f"lgbm_{i}.png", bbox_inches='tight'bbox_inches='tight')
             if i % 50 == 0:
 
                 plt.figure(figsize=(10, 6))  # Adjust width and height as needed
@@ -348,7 +348,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
                 plt.xticks(fontsize=14)  # Adjust x-axis tick font size
                 plt.yticks(fontsize=14)  # Adjust y-axis tick font size
                 plt.tight_layout()  # Adjust layout to prevent overlapping elements
-                plt.savefig(f"lgbm_{i}.png")
+                plt.savefig(f"lgbm_{i}.png", bbox_inches='tight')
 
 
 
