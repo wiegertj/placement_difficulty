@@ -81,7 +81,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
              "cv_ham_dist"]]
 
     column_name_mapping = {
-        "max_rf_tree": "maximum_rf_distance_bootstrap_trees",
+        "max_rf_tree": "max_distance_bootstrap_trees",
         "mean_sup_tree": "mean_bootstrap_support_tree",
         "avg_rel_rf_no_boot": "mean_rf_distance_parsimony",
         "transversion_count_rel5": "transversions_inv_sites_t5",
