@@ -325,40 +325,23 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
         plt.figure(figsize=(10, 6))
 
-        # Create the waterfall plot
-        shap.initjs()  # Initialize JavaScript visualization
-        shap.plots.waterfall(shap_values[0], max_display=10)  # Limit the display to 10 features
-        plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
-        plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
-        plt.xticks(fontsize=14)  # Adjust x-axis tick font size
-        plt.yticks(fontsize=14)  # Adjust y-axis tick font size
-        plt.tight_layout()  # Adjust layout to prevent overlapping elements
-        plt.savefig("lgbm_0.png")
+        for i in range(0,1500):
+            if i % 50 == 0:
 
-        plt.figure(figsize=(10, 6))  # Adjust width and height as needed
+                plt.figure(figsize=(10, 6))  # Adjust width and height as needed
+                # Create the waterfall plot
+                shap.initjs()  # Initialize JavaScript visualization
+                shap.plots.waterfall(shap_values[0], max_display=8)  # Limit the display to 10 features
+                plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
+                plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
+                plt.xticks(fontsize=14)  # Adjust x-axis tick font size
+                plt.yticks(fontsize=14)  # Adjust y-axis tick font size
+                plt.tight_layout()  # Adjust layout to prevent overlapping elements
+                plt.savefig(f"lgbm_{i}.png")
 
-        # Create the waterfall plot
-        shap.initjs()  # Initialize JavaScript visualization
-        shap.plots.waterfall(shap_values[1500], max_display=10)  # Limit the display to 10 features
-        plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
-        plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
-        plt.xticks(fontsize=12)  # Adjust x-axis tick font size
-        plt.yticks(fontsize=12)  # Adjust y-axis tick font size
-        plt.tight_layout()  # Adjust layout to prevent overlapping elements
-        plt.savefig("lgbm_1500.png")
 
-        plt.figure(figsize=(10, 6))  # Adjust width and height as needed
 
-        # Create the waterfall plot
-        shap.initjs()  # Initialize JavaScript visualization
-        shap.plots.waterfall(shap_values[-50], max_display=10)  # Limit the display to 10 features
 
-        plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
-        plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
-        plt.xticks(fontsize=12)  # Adjust x-axis tick font size
-        plt.yticks(fontsize=12)  # Adjust y-axis tick font size
-        plt.tight_layout()  # Adjust layout to prevent overlapping elements
-        plt.savefig("lgbm-300.png")
 
 
 for i in range(0, 10):
