@@ -288,7 +288,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         feature_names = [
             a + ": " + str(b) for a, b in zip(X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns, np.abs(shap_values.values).mean(0).round(2))
         ]
-
+        plt.figure(figsize=(10, 6))
         shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]), max_display=10,
                           feature_names=feature_names)
 
