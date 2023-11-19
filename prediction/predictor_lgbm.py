@@ -284,8 +284,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         # Save the DataFrame to a CSV file
         shap_df.to_csv('shap_values.csv', index=False)
 
-        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]),
-                          plot_type="bar")
+        feature_names = [
+            a + ": " + str(b) for a, b in zip(X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns, np.abs(shap_values.values).mean(0).round(2))
+        ]
+
+        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]), max_display=X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).shape[1],
+                          feature_names=feature_names)
+
         plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap.png"))
 
         plt.figure(figsize=(10, 6))
