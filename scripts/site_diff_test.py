@@ -1,10 +1,6 @@
 import os
-import re
-import shutil
-import dendropy
-import ete3
+
 import subprocess
-import glob
 import pandas as pd
 import numpy as np
 import types
