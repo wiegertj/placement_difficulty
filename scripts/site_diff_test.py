@@ -8,14 +8,7 @@ import random
 from Bio import AlignIO, SeqIO, SeqRecord, Seq
 
 
-module_path = os.path.join(os.pardir, "configs/feature_config.py")
-random.seed(42)
-feature_config = types.ModuleType('feature_config')
-feature_config.__file__ = module_path
 
-with open(module_path, 'rb') as module_file:
-    code = compile(module_file.read(), module_path, 'exec')
-    exec(code, feature_config.__dict__)
 
 
 def remove_gaps(sequence):
