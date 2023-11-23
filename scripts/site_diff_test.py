@@ -37,29 +37,10 @@ def calculate_bsd_aligned(tree1, tree2):
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 
-# print("Searching for already processed datasets ...")
-# current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
-# dataset_set = set(current_loo_targets['dataset'])
-# print("Before filterling" + str(len(filenames)))
-# filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
-# print("After filterling" + str(len(filtered_filenames)))
-loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/diff_test/difficulty.csv"))
-filenames = loo_reest_samples["dataset"]
-filenames = set(filenames)
+
 filtered_filenames = filenames
 msa_counter = 0
 print(len(filenames))
-
-# existing = set(existing["dataset"])
-
-# for dataset in existing["dataset"]:
-#   samples = existing[existing["dataset"] == dataset]["sampleId"]
-#  for sampleId in samples:
-
-
-# filenames = filenames - existing
-print(len(filenames))
-filtered_filenames = filenames
 
 for msa_name in filtered_filenames:
     results = []
