@@ -23,7 +23,7 @@ def calculate_bsd_aligned(tree1, tree2):
     return score
 
 
-loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+loo_selection = pd.read_csv("hits/fast/wiegerjs/placement_difficulty/data/loo_selection.csv")
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 
 
@@ -36,7 +36,7 @@ for msa_name in filtered_filenames:
     msa_counter += 1
     print(str(msa_counter) + "/" + str(len(filtered_filenames)))
     print(msa_name)
-    msa_filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
+    msa_filepath = os.path.join("hits/fast/wiegerjs/placement_difficulty/data/raw/msa", msa_name + "_reference.fasta")
     alignment = AlignIO.read(msa_filepath, "fasta")
     original_ids = [record.id for record in alignment]
     sequence_data = [list(record.seq) for record in alignment]
@@ -69,7 +69,7 @@ for msa_name in filtered_filenames:
                        enumerate(alignment_array_tmp)]
         msa_new = AlignIO.MultipleSeqAlignment(seq_records)
 
-        new_msa_path = os.path.join(os.pardir, "data/raw/msa/tmp_nomodel/",
+        new_msa_path = os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/raw/msa/tmp_nomodel/",
                                     msa_name + "_pars_tmp_" + str(random_number) + ".fasta")
         SeqIO.write(msa_new, os.path.abspath(new_msa_path),
                     "fasta")
@@ -91,15 +91,15 @@ for msa_name in filtered_filenames:
 
         last_float_after = extracted_value_new
 
-        results.append((random_number, last_float_before, last_float_after, last_float_before - last_float_after))
+        results.append((msa_name, random_number, last_float_before, last_float_after, last_float_before - last_float_after))
 
     df = pd.DataFrame(results, columns=["colId", "diff_before", "diff_after", "diff_diff"])
-    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+    if not os.path.isfile(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
                              "site_diffs.csv")):
-        df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                             "site_diffs.csv")), index=False)
+        df.to_csv(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
+                             "site_diffs.csv"), index=False)
     else:
-        df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+        df.to_csv(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
                              "site_diffs.csv"),
                      index=False,
                      mode='a', header=False)
