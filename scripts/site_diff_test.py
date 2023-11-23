@@ -93,6 +93,13 @@ for msa_name in filtered_filenames:
 
         results.append((msa_name, random_number, last_float_before, last_float_after, last_float_before - last_float_after))
 
+        if os.path.exists(new_msa_path):
+            # Delete the file
+            os.remove(new_msa_path)
+            print(f"File {new_msa_path} deleted.")
+        else:
+            print(f"File {new_msa_path} does not exist.")
+
     df = pd.DataFrame(results, columns=["colId", "diff_before", "diff_after", "diff_diff"])
     if not os.path.isfile(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
                              "site_diffs.csv")):
