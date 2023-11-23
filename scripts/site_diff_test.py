@@ -53,7 +53,7 @@ for msa_name in filtered_filenames:
     sequence_data = [list(record.seq) for record in alignment]
     alignment_array = np.array(sequence_data)
 
-    raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
+    raxml_path = "/home/wiegerjs/bin/raxml-ng-mpi"
     command = ["pythia", "--msa", os.path.abspath(msa_filepath),
                "--raxmlng", raxml_path]
 
