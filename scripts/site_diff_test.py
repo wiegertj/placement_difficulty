@@ -6,7 +6,7 @@ import numpy as np
 import types
 import random
 from Bio import AlignIO, SeqIO, SeqRecord, Seq
-from dendropy.calculate import treecompare
+
 
 module_path = os.path.join(os.pardir, "configs/feature_config.py")
 random.seed(42)
