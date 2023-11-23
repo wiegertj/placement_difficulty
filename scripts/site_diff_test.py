@@ -67,7 +67,7 @@ for msa_name in filtered_filenames:
 
     last_float_before = extracted_value
 
-    for x in range(30):
+    for x in range(50):
         random_number = random.randint(0, alignment_array.shape[1])
         print(alignment_array.shape)
         alignment_array_tmp = np.delete(alignment_array, random_number, axis=1)
