@@ -23,7 +23,7 @@ def calculate_bsd_aligned(tree1, tree2):
     return score
 
 
-loo_selection = pd.read_csv("/hits/fast/wiegerjs/placement_difficulty/data/loo_selection.csv")
+loo_selection = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/loo_selection.csv")
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 
 
@@ -36,7 +36,7 @@ for msa_name in filtered_filenames:
     msa_counter += 1
     print(str(msa_counter) + "/" + str(len(filtered_filenames)))
     print(msa_name)
-    msa_filepath = os.path.join("/hits/fast/wiegerjs/placement_difficulty/data/raw/msa", msa_name + "_reference.fasta")
+    msa_filepath = os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/raw/msa", msa_name + "_reference.fasta")
     alignment = AlignIO.read(msa_filepath, "fasta")
     original_ids = [record.id for record in alignment]
     sequence_data = [list(record.seq) for record in alignment]
