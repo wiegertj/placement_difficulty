@@ -70,7 +70,7 @@ for msa_name in filtered_filenames:
     for x in range(30):
         random_number = random.randint(0, alignment_array.shape[1])
         print(alignment_array.shape)
-        alignment_array = alignment_array.delete(alignment_array, random_number, axis=1)
+        alignment_array = np.delete(alignment_array, random_number, axis=1)
         print(alignment_array.shape)
         seq_records = [SeqRecord.SeqRecord(Seq.Seq(''.join(seq)), id=original_ids[i], description="") for i, seq in
                        enumerate(alignment_array)]
