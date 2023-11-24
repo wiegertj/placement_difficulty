@@ -57,6 +57,7 @@ for msa_name in filtered_filenames:
         extracted_value = float(value_string)
     else:
         print("No match found")
+        continue
 
     last_float_before = extracted_value
 
@@ -88,6 +89,7 @@ for msa_name in filtered_filenames:
             extracted_value_new = float(value_string)
         else:
             print("No match found")
+            continue
 
         last_float_after = extracted_value_new
 
@@ -100,13 +102,14 @@ for msa_name in filtered_filenames:
         else:
             print(f"File {new_msa_path} does not exist.")
 
-    df = pd.DataFrame(results, columns=["msa_name", "colId", "diff_before", "diff_after", "diff_diff"])
-    if not os.path.isfile(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
-                             "site_diffs.csv")):
-        df.to_csv(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
-                             "site_diffs.csv"), index=False)
-    else:
-        df.to_csv(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
-                             "site_diffs.csv"),
-                     index=False,
-                     mode='a', header=False)
+        df = pd.DataFrame(results, columns=["msa_name", "colId", "diff_before", "diff_after", "diff_diff"])
+        if not os.path.isfile(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
+                                 "site_diffs.csv")):
+            df.to_csv(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
+                                 "site_diffs.csv"), index=False)
+        else:
+            df.to_csv(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
+                                 "site_diffs.csv"),
+                         index=False,
+                         mode='a', header=False)
+        results = []
