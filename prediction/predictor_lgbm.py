@@ -47,7 +47,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print("Median Entropy: ")
     print(df["entropy"].median())
     df.columns = df.columns.str.replace(':', '_')
-
+    #### no boot
     #df = df[["dataset", "entropy", "max_rf_tree", "sampleId",
      #        "mean_sup_tree",
     #         "avg_rel_rf_no_boot",
