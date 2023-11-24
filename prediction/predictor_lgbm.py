@@ -1,7 +1,7 @@
 import math
 import sys
 
-#import shap
+import shap
 import lightgbm as lgb
 import os
 import optuna
@@ -356,7 +356,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
     X_test_["prediction"] = y_pred
     X_test_["entropy"] = y_test
-    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results_noboot" + name + ".csv"))
 
     if shapley_calc:
         # X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
@@ -376,7 +376,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
         )
 
         # Save the DataFrame to a CSV file
-        shap_df.to_csv('shap_values.csv', index=False)
+        shap_df.to_csv('shap_values_noboot.csv', index=False)
 
         feature_names = [
             a + ": " + str(b) for a, b in
@@ -388,7 +388,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
                           max_display=10,
                           feature_names=feature_names)
 
-        plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + "shapely_summary" + "shap.png"),
+        plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + "shapely_summary_noboot" + "shap.png"),
                     bbox_inches='tight')
 
         plt.figure(figsize=(10, 6))
@@ -404,7 +404,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
                 plt.xticks(fontsize=14)  # Adjust x-axis tick font size
                 plt.yticks(fontsize=14)  # Adjust y-axis tick font size
                 plt.tight_layout()  # Adjust layout to prevent overlapping elements
-                plt.savefig(f"lgbm_{i}.png", bbox_inches='tight')
+                plt.savefig(f"lgbm_{i}_noboot.png", bbox_inches='tight')
             if i % 50 == 0:
                 plt.figure(figsize=(10, 6))  # Adjust width and height as needed
                 # Create the waterfall plot
@@ -415,8 +415,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
                 plt.xticks(fontsize=14)  # Adjust x-axis tick font size
                 plt.yticks(fontsize=14)  # Adjust y-axis tick font size
                 plt.tight_layout()  # Adjust layout to prevent overlapping elements
-                plt.savefig(f"lgbm_{i}.png", bbox_inches='tight')
+                plt.savefig(f"lgbm_{i}_noboot.png", bbox_inches='tight')
 
 
-for i in range(0, 10):
-    light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
+for i in range(0, 0):
+    light_gbm_regressor(rfe=False, shapley_calc=True, targets=[])
