@@ -32,8 +32,11 @@ msa_counter = 0
 print(len(filenames))
 
 for msa_name in filtered_filenames:
-    results = []
     msa_counter += 1
+
+    if msa_name in ["19509_1", "28077_0", "10169_0", "362_1", "13808_7", "18218_1"]:
+        continue
+    results = []
     print(str(msa_counter) + "/" + str(len(filtered_filenames)))
     print(msa_name)
     msa_filepath = os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/raw/msa", msa_name + "_reference.fasta")
