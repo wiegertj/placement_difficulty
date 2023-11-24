@@ -1,7 +1,7 @@
 import math
 import sys
 
-import shap
+#import shap
 import lightgbm as lgb
 import os
 import optuna
