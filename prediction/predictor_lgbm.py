@@ -418,5 +418,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
                 plt.savefig(f"lgbm_{i}_noboot.png", bbox_inches='tight')
 
 
-for i in range(0, 0):
+for i in range(0, 1):
     light_gbm_regressor(rfe=False, shapley_calc=True, targets=[])
