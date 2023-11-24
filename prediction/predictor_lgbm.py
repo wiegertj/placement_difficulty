@@ -48,65 +48,64 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     print(df["entropy"].median())
     df.columns = df.columns.str.replace(':', '_')
 
+    #df = df[["dataset", "entropy", "max_rf_tree", "sampleId",
+     #        "mean_sup_tree",
+    #         "avg_rel_rf_no_boot",
+     #        "transversion_count_rel5",
+      #       "sk_sup_tree",
+       #      "kur_kmer_sim",
+        ##     "no_top_boot",
+           #  "std_fraction_char_rests7",
+          #   "max_subst_freq",
+            # "sk_clo_sim",
+        #     "min_a_min_b",
+         #    "transversion_count_rel7",
+          #   "std_fraction_char_rests8",
+           #  "min_fraction_char_rests5",
+         #    "avg_fraction_char_rests5",
+          #   "sk_kmer_sim",
+           #  "std_kmer_sim",
+     #        "mean_kmer_sim",
+      #       "diff_match_counter_parta_w",
+       #      "avg_subst_freq",
+        #     "abs_weighted_distance_major_modes_supp",
+         #    "diff_match_counter_parta",
+          #   "transversion_count_rel8",
+           #  "match_rel_8",
+          #   "diff_match_counter_partb",
+           #  "diff_match_counter_partb_w",
+            # "kur_clo_sim",
+         #    "avg_entropy_msa",
+          #   "mean_a_mean_b",
+           #  "cv_ham_dist"]]
 
-    df = df[["dataset", "entropy", "max_rf_tree", "sampleId",
-             "mean_sup_tree",
-             "avg_rel_rf_no_boot",
-             "transversion_count_rel5",
-             "sk_sup_tree",
-             "kur_kmer_sim",
-             "no_top_boot",
-             "std_fraction_char_rests7",
-             "max_subst_freq",
-             "sk_clo_sim",
-             "min_a_min_b",
-             "transversion_count_rel7",
-             "std_fraction_char_rests8",
-             "min_fraction_char_rests5",
-             "avg_fraction_char_rests5",
-             "sk_kmer_sim",
-             "std_kmer_sim",
-             "mean_kmer_sim",
-             "diff_match_counter_parta_w",
-             "avg_subst_freq",
-             "abs_weighted_distance_major_modes_supp",
-             "diff_match_counter_parta",
-             "transversion_count_rel8",
-             "match_rel_8",
-             "diff_match_counter_partb",
-             "diff_match_counter_partb_w",
-             "kur_clo_sim",
-             "avg_entropy_msa",
-             "mean_a_mean_b",
-             "cv_ham_dist"]]
-
-    column_name_mapping = {
-        "max_rf_tree": "max_distance_bootstrap_trees",
-        "mean_sup_tree": "mean_bootstrap_support_tree",
-        "avg_rel_rf_no_boot": "mean_rf_distance_parsimony",
-        "transversion_count_rel5": "transversions_inv_sites_t5",
-        "sk_sup_tree": "skewness_bootstrap_support_tree",
-        "kur_kmer_sim": "kurtosis_kmer_similarity",
-        "no_top_boot":"no_unique_topos_bootstraps",
-        "std_fraction_char_rests7": "std_fraction_non_major_residues_t7",
-        "max_subst_freq": "max_parsimony_subs",
-        "sk_clo_sim": "skewness_closeness_centrality",
-        "min_a_min_b":"min_ham_dist_central_split",
-        "transversion_count_rel7": "transversion_count_t7",
-        "std_fraction_char_rests8": "std_fraction_non_major_residues_t8",
-        "min_fraction_char_rests5": "min_fraction_non_major_residues_t5",
-        "avg_fraction_char_rests5": "mean_fraction_non_major_residues_t5",
-        "sk_kmer_sim": "skewness_kmer_similarity",
-        "std_kmer_sim": "std_kmer_similarity",
-        "mean_kmer_sim": "mean_kmer_similarity",
-        "diff_match_counter_parta_w": "impure_sites_match_counter_w",
-        "avg_subst_freq": "mean_parsimony_subs",
-        "kur_clo_sim": "kurtosis_closeness_similarity",
-        "cv_ham_dist": "coefficient_variation_hamming_dist"
-    }
+    #column_name_mapping = {
+     #   "max_rf_tree": "max_distance_bootstrap_trees",
+      #  "mean_sup_tree": "mean_bootstrap_support_tree",
+       # "avg_rel_rf_no_boot": "mean_rf_distance_parsimony",
+   #     "transversion_count_rel5": "transversions_inv_sites_t5",
+    #    "sk_sup_tree": "skewness_bootstrap_support_tree",
+     #   "kur_kmer_sim": "kurtosis_kmer_similarity",
+      #  "no_top_boot": "no_unique_topos_bootstraps",
+  #      "std_fraction_char_rests7": "std_fraction_non_major_residues_t7",
+   #     "max_subst_freq": "max_parsimony_subs",
+    #    "sk_clo_sim": "skewness_closeness_centrality",
+     #   "min_a_min_b": "min_ham_dist_central_split",
+      #  "transversion_count_rel7": "transversion_count_t7",
+   #     "std_fraction_char_rests8": "std_fraction_non_major_residues_t8",
+    #    "min_fraction_char_rests5": "min_fraction_non_major_residues_t5",
+     #   "avg_fraction_char_rests5": "mean_fraction_non_major_residues_t5",
+      #  "sk_kmer_sim": "skewness_kmer_similarity",
+       # "std_kmer_sim": "std_kmer_similarity",
+  #      "mean_kmer_sim": "mean_kmer_similarity",
+   #     "diff_match_counter_parta_w": "impure_sites_match_counter_w",
+    #    "avg_subst_freq": "mean_parsimony_subs",
+     #   "kur_clo_sim": "kurtosis_closeness_similarity",
+      #  "cv_ham_dist": "coefficient_variation_hamming_dist"
+    #}
 
     # Rename the columns in the DataFrame
-    df = df.rename(columns=column_name_mapping)
+    #df = df.rename(columns=column_name_mapping)
 
     print(df.columns)
     print(df.shape)
@@ -308,25 +307,30 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
         shap_df = pd.DataFrame(
             np.c_[shap_values.base_values, shap_values.values],
-            columns=["bv"] + list(X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns)
+            columns=["bv"] + list(
+                X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns)
         )
 
         # Save the DataFrame to a CSV file
         shap_df.to_csv('shap_values.csv', index=False)
 
         feature_names = [
-            a + ": " + str(b) for a, b in zip(X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns, np.abs(shap_values.values).mean(0).round(2))
+            a + ": " + str(b) for a, b in
+            zip(X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns,
+                np.abs(shap_values.values).mean(0).round(2))
         ]
         plt.figure(figsize=(10, 6))
-        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]), max_display=10,
+        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]),
+                          max_display=10,
                           feature_names=feature_names)
 
-        plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + "shapely_summary" + "shap.png"), bbox_inches='tight')
+        plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + "shapely_summary" + "shap.png"),
+                    bbox_inches='tight')
 
         plt.figure(figsize=(10, 6))
         size_ = X_test.shape[0]
-        for i in range(0,size_):
-            if i < 10 or i > size_ -10:
+        for i in range(0, size_):
+            if i < 10 or i > size_ - 10:
                 plt.figure(figsize=(10, 6))  # Adjust width and height as needed
                 # Create the waterfall plot
                 shap.initjs()  # Initialize JavaScript visualization
@@ -338,7 +342,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
                 plt.tight_layout()  # Adjust layout to prevent overlapping elements
                 plt.savefig(f"lgbm_{i}.png", bbox_inches='tight')
             if i % 50 == 0:
-
                 plt.figure(figsize=(10, 6))  # Adjust width and height as needed
                 # Create the waterfall plot
                 shap.initjs()  # Initialize JavaScript visualization
@@ -351,9 +354,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
                 plt.savefig(f"lgbm_{i}.png", bbox_inches='tight')
 
 
-
-
-
-
 for i in range(0, 10):
-    light_gbm_regressor(rfe=False, shapley_calc=True, targets=[])
+    light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
