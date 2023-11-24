@@ -105,7 +105,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     #}
 
     ### no boot
-    df = df[["avg_rel_rf_no_boot",
+    df = df[["avg_rel_rf_no_boot","dataset", "entropy", "sampleId"
         "min_fraction_char_rests5",
         "no_top_boot",
         "transversion_count_rel5",
