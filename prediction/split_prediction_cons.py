@@ -44,15 +44,35 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     df.to_csv("test_cons.csv")
 
+
+    df.to_csv(os.path.join(os.pardir, "data/processed/features/split_features/all_data.csv"))
+
+    target = "inCons"
+
+    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    test = df[df['group'].isin(sample_dfs)]
+    train = df[~df['group'].isin(sample_dfs)]
+
+
+
+
+
+
+
+
+
+
+
+
     print("####" * 10)
     print("Baseline")
     accuracy_best = -10
     for cutoff_ch in range(1, 99):
         for cutoff_pars in range(1, 99):
             val_preds_binary_baseline = (
-                        (df["min_pars_supp_child"] > cutoff_ch) & (df["pars_support_cons"] > cutoff_pars)).astype(int)
+                        (train["min_pars_supp_child"] > cutoff_ch) & (train["pars_support_cons"] > cutoff_pars)).astype(int)
 
-            accuracy = accuracy_score(df["inCons"], val_preds_binary_baseline)
+            accuracy = accuracy_score(train["inCons"], val_preds_binary_baseline)
             if accuracy >= accuracy_best:
                 accuracy_best = accuracy
                 best_one_ch = cutoff_ch
@@ -64,48 +84,34 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(best_one_pars)
     print(accuracy_best)
 
-    accuracy_best = -10
-    for cutoff_ch in range(1, 99):
-        for cutoff_pars in range(1, 99):
-            val_preds_binary_baseline = (
-                        (df["min_pars_supp_child"] > cutoff_ch)).astype(int)
 
-            accuracy = f1_score(df["inCons"], val_preds_binary_baseline)
-            if accuracy >= accuracy_best:
-                accuracy_best = accuracy
-                best_one_ch = cutoff_ch
-                best_one_pars = cutoff_pars
-    print("###f1" * 10)
-    print("Ch")
-    print(best_one_ch)
-    print("Pars")
-    print(best_one_pars)
-    print(accuracy_best)
+    precision_baseline = precision_score(test["inCons"], (
+                        (test["min_pars_supp_child"] > cutoff_ch) & (test["pars_support_cons"] > cutoff_pars)).astype(int))
+    recall_baseline = recall_score(test["inCons"], (
+                        (test["min_pars_supp_child"] > cutoff_ch) & (test["pars_support_cons"] > cutoff_pars)).astype(int))
+    f1_baseline = f1_score(test["inCons"], (
+                        (test["min_pars_supp_child"] > cutoff_ch) & (test["pars_support_cons"] > cutoff_pars)).astype(int))
+    roc_auc_baseline = roc_auc_score(test["inCons"], (
+                        (test["min_pars_supp_child"] > cutoff_ch) & (test["pars_support_cons"] > cutoff_pars)).astype(int))
+    acc_baseline = accuracy_score(test["inCons"], (
+                        (test["min_pars_supp_child"] > cutoff_ch) & (test["pars_support_cons"] > cutoff_pars)).astype(int))
 
-    precision_baseline = precision_score(df["inCons"], val_preds_binary_baseline)
-    recall_baseline = recall_score(df["inCons"], val_preds_binary_baseline)
-    f1_baseline = f1_score(df["inCons"], val_preds_binary_baseline)
-    roc_auc_baseline = roc_auc_score(df["inCons"], val_preds_binary_baseline)
-    acc_baseline = accuracy_score(df["inCons"], val_preds_binary_baseline)
 
-    plt.scatter(df["inCons"], val_preds_binary_baseline)
-
-    # Add labels to the axes
-    plt.xlabel("df['inCons']")
-    plt.ylabel("pars_support_cons")
-
-    # Save the scatterplot to a file
-    plt.savefig("scatterplot_baseline.png")
 
     print("####" * 10)
 
-    df.to_csv(os.path.join(os.pardir, "data/processed/features/split_features/all_data.csv"))
 
-    target = "inCons"
 
-    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    test = df[df['group'].isin(sample_dfs)]
-    train = df[~df['group'].isin(sample_dfs)]
+
+
+
+
+
+
+
+
+
+
 
     X_train = train.drop(axis=1, columns=target)
     X_train = X_train[["dataset", 'pars_support_cons', 'std_pars_supp_parents', 'min_pars_supp_child_w',
