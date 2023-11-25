@@ -44,38 +44,38 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     df.to_csv("test_cons.csv")
 
-
-    print("####"*10)
+    print("####" * 10)
     print("Baseline")
     accuracy_best = -10
     for cutoff_ch in range(1, 99):
         for cutoff_pars in range(1, 99):
-            val_preds_binary_baseline = ((df["min_pars_supp_child"] > cutoff_ch) & (df["pars_support_cons"] > cutoff_pars)).astype(int)
+            val_preds_binary_baseline = (
+                        (df["min_pars_supp_child"] > cutoff_ch) & (df["pars_support_cons"] > cutoff_pars)).astype(int)
 
             accuracy = accuracy_score(df["inCons"], val_preds_binary_baseline)
             if accuracy >= accuracy_best:
                 accuracy_best = accuracy
                 best_one_ch = cutoff_ch
                 best_one_pars = cutoff_pars
-    print("###Acc"*10)
+    print("###Acc" * 10)
     print("Ch")
     print(best_one_ch)
     print("Pars")
     print(best_one_pars)
     print(accuracy_best)
 
-
     accuracy_best = -10
     for cutoff_ch in range(1, 99):
         for cutoff_pars in range(1, 99):
-            val_preds_binary_baseline = ((df["min_pars_supp_child"] > cutoff_ch) & (df["pars_support_cons"] > cutoff_pars)).astype(int)
+            val_preds_binary_baseline = (
+                        (df["min_pars_supp_child"] > cutoff_ch) & (df["pars_support_cons"] > cutoff_pars)).astype(int)
 
             accuracy = f1_score(df["inCons"], val_preds_binary_baseline)
             if accuracy >= accuracy_best:
                 accuracy_best = accuracy
                 best_one_ch = cutoff_ch
                 best_one_pars = cutoff_pars
-    print("###f1"*10)
+    print("###f1" * 10)
     print("Ch")
     print(best_one_ch)
     print("Pars")
@@ -96,9 +96,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     # Save the scatterplot to a file
     plt.savefig("scatterplot_baseline.png")
 
-
-    print("####"*10)
-
+    print("####" * 10)
 
     df.to_csv(os.path.join(os.pardir, "data/processed/features/split_features/all_data.csv"))
 
@@ -109,17 +107,17 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
-    X_train = X_train[["dataset",'pars_support_cons', 'std_pars_supp_parents', 'min_pars_supp_child_w',
-       'std_pars_supp_child_w', 'min_pars_supp_child', 'mean_pars_supp_child',
-       'std_pars_supp_child', 'irs_std_right', 'irs_skw_right',
-       'avg_rf_no_boot', 'group']]
+    X_train = X_train[["dataset", 'pars_support_cons', 'std_pars_supp_parents', 'min_pars_supp_child_w',
+                       'std_pars_supp_child_w', 'min_pars_supp_child', 'mean_pars_supp_child',
+                       'std_pars_supp_child', 'irs_std_right', 'irs_skw_right',
+                       'avg_rf_no_boot', 'group']]
     y_train = train[target]
 
     X_test = test.drop(axis=1, columns=target)
     X_test = X_test[["dataset", 'pars_support_cons', 'std_pars_supp_parents', 'min_pars_supp_child_w',
-       'std_pars_supp_child_w', 'min_pars_supp_child', 'mean_pars_supp_child',
-       'std_pars_supp_child', 'irs_std_right', 'irs_skw_right',
-       'avg_rf_no_boot', 'group']]
+                     'std_pars_supp_child_w', 'min_pars_supp_child', 'mean_pars_supp_child',
+                     'std_pars_supp_child', 'irs_std_right', 'irs_skw_right',
+                     'avg_rf_no_boot', 'group']]
     y_test = test[target]
 
     X_train.fillna(-1, inplace=True)
@@ -169,10 +167,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     def objective(trial):
         # callbacks = [LightGBMPruningCallback(trial, 'l1')]
-
-
-
-
 
         params = {
             'objective': 'binary',
@@ -249,6 +243,19 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(accuracy)
     print(f1)
 
+    metrics_dict = {'accuracy': [accuracy], 'precision': [precision], 'recall': [recall], 'f1': [f1],
+                    'roc_auc': [roc_auc]}
+    metrics_df = pd.DataFrame(metrics_dict)
+
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "split_pred.csv")):
+        metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                    "split_pred.csv")), index=False)
+    else:
+        metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "split_pred.csv"),
+                          index=False,
+                          mode='a', header=False)
 
     residuals = y_test - y_pred
 
@@ -270,6 +277,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     scaler = MinMaxScaler()
     importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     importance_df = importance_df.nlargest(30, 'Importance')
+    importance_df.to_csv("split_pred_imp.csv")
 
     plt.figure(figsize=(10, 6))
     plt.bar(importance_df['Feature'], importance_df['Importance'])
@@ -348,6 +356,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.savefig("lgbm-300.png")
 
 
-
-
-light_gbm_regressor(rfe=False, shapley_calc=False)
+for i in range(0, 10):
+    light_gbm_regressor(rfe=False, shapley_calc=False)
