@@ -10,6 +10,7 @@ from Bio import AlignIO, SeqIO
 difficulties_path = os.path.join(os.pardir, "data/treebase_difficulty.csv")
 difficulties_df = pd.read_csv(difficulties_path, index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 difficulties_df.drop_duplicates(subset=["verbose_name"], keep="first", inplace=True)
+print(difficulties_df.shape)
 results = []
 counter = 0
 try:
@@ -27,6 +28,7 @@ for index, row in difficulties_df.iterrows():
         print("already processed")
         continue
     dtype = str(row["data_type"])
+    print(dtype)
     if (dtype == "DNA") or (dtype == "DataType.DNA"):
         datatype = "DNA"
     else:

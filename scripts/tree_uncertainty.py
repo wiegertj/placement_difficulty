@@ -88,11 +88,11 @@ for tree_filename in filenames_filtered:
     raxml_command = [
         "raxml-ng",
         "--bootstrap",
-        f"--model {model_path}",
-        f"--bs-trees {1000}",
-        f"--msa {msa_filepath}",
+        "--model", model_path,
+        "--bs-trees", 1000,
+        "--msa", msa_filepath,
         "--redo",
-        f"--prefix {output_prefix}"
+        "--prefix", "output_prefix"
     ]
 
     subprocess.run(" ".join(raxml_command), shell=True)
@@ -104,6 +104,7 @@ for tree_filename in filenames_filtered:
                      f"--tree {tree_path}",
                      f"--bs-trees {bootstrap_filepath}",
                      "--redo",
-                     f"--prefix {output_prefix}"]
+                     f"--prefix {output_prefix}",
+                     ]
 
     subprocess.run(" ".join(raxml_command), shell=True)

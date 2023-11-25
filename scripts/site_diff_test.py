@@ -25,7 +25,9 @@ def calculate_bsd_aligned(tree1, tree2):
 
 loo_selection = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/loo_selection.csv")
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
-
+already = pd.read_csv(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
+                                 "site_diffs.csv"))
+already = already["dataset"].unique().tolist()
 
 filtered_filenames = filenames
 msa_counter = 0
@@ -34,7 +36,7 @@ print(len(filenames))
 for msa_name in filtered_filenames:
     msa_counter += 1
 
-    if msa_name in ["19509_1", "28077_0", "10169_0", "362_1", "13808_7", "18218_1"]:
+    if msa_name in already:
         continue
     results = []
     print(str(msa_counter) + "/" + str(len(filtered_filenames)))
