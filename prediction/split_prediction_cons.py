@@ -68,7 +68,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     for cutoff_ch in range(1, 99):
         for cutoff_pars in range(1, 99):
             val_preds_binary_baseline = (
-                        (df["min_pars_supp_child"] > cutoff_ch) & (df["pars_support_cons"] > cutoff_pars)).astype(int)
+                        (df["min_pars_supp_child"] > cutoff_ch)).astype(int)
 
             accuracy = f1_score(df["inCons"], val_preds_binary_baseline)
             if accuracy >= accuracy_best:
@@ -82,10 +82,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(best_one_pars)
     print(accuracy_best)
 
-    precision = precision_score(df["inCons"], val_preds_binary_baseline)
-    recall = recall_score(df["inCons"], val_preds_binary_baseline)
-    f1 = f1_score(df["inCons"], val_preds_binary_baseline)
-    roc_auc = roc_auc_score(df["inCons"], val_preds_binary_baseline)
+    precision_baseline = precision_score(df["inCons"], val_preds_binary_baseline)
+    recall_baseline = recall_score(df["inCons"], val_preds_binary_baseline)
+    f1_baseline = f1_score(df["inCons"], val_preds_binary_baseline)
+    roc_auc_baseline = roc_auc_score(df["inCons"], val_preds_binary_baseline)
+    acc_baseline = accuracy_score(df["inCons"], val_preds_binary_baseline)
 
     plt.scatter(df["inCons"], val_preds_binary_baseline)
 
@@ -244,7 +245,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(f1)
 
     metrics_dict = {'accuracy': [accuracy], 'precision': [precision], 'recall': [recall], 'f1': [f1],
-                    'roc_auc': [roc_auc]}
+                    'roc_auc': [roc_auc],
+                    'accuracy_baseline': [acc_baseline], 'precision_baseline': [precision_baseline], 'recall_baseline': [recall_baseline], 'f1_baseline': [f1_baseline],
+                    'roc_auc_baseline': [roc_auc_baseline]
+                    }
     metrics_df = pd.DataFrame(metrics_dict)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
