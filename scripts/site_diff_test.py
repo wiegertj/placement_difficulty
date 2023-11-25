@@ -27,7 +27,7 @@ loo_selection = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/l
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 already = pd.read_csv(os.path.join("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features",
                                  "site_diffs.csv"))
-already = already["dataset"].unique().tolist()
+already = already["msa_name"].unique().tolist()
 
 filtered_filenames = filenames
 msa_counter = 0
