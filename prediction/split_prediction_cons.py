@@ -43,7 +43,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=10, shapley_calc=True):
     print("Shape of the concatenated DataFrame:", df.shape)
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     df.to_csv("test_cons.csv")
+    incons_counts = df['inCons'].value_counts()
 
+    print(f"Count of 0 in 'inCons': {incons_counts.get(0, 0)}")
+    print(f"Count of 1 in 'inCons': {incons_counts.get(1, 0)}")
+    unique_values_count = df['dataset'].nunique()
+
+    print(f"Number of unique values in the column: {unique_values_count}")
 
     df.to_csv(os.path.join(os.pardir, "data/processed/features/split_features/all_data.csv"))
 
