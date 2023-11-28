@@ -1,26 +1,9 @@
 import time
-
-print("Started")
-
 import pandas as pd
-
-print("Started1")
-
 import subprocess
-
-print("Started2")
-
 import os
-
-print("Started3")
-
 from ete3 import Tree
-
-print("Started4")
-
 from Bio import SeqIO, AlignIO
-
-print("Started5")
 
 filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verbose_name"].str.replace(".phy", ".newick").values.tolist()
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))
@@ -38,25 +21,24 @@ for tree_filename in filenames_filtered:
     t = Tree(tree_path)
     num_leaves = len(t.get_leaves())
 
-    msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
+    msa_filepath = os.path.abspath(os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta")))
 
     for record in SeqIO.parse(msa_filepath, "fasta"):
         sequence_length = len(record.seq)
         break
 
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
-
+    os.chdir("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ufboot2_alrt")
     start_time = time.time()
-
     raxml_command = [
         "/home/wiegerjs/iqtree-2.2.2.6-Linux/bin/iqtree2",
         "-m GTR+G",
         #"-m LG+G",
         "-s " + msa_filepath,
         "-B 1000",
-        "--redo",
-        "-T 1",
-        #"--threads-max 60",
+        "-T AUTO",
+        "--threads-max 60",
+        "-alrt 1000"
     ]
 
     # print("Boot")
@@ -101,11 +83,11 @@ for tree_filename in filenames_filtered:
     time_dat = pd.DataFrame(data)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "bootstrap_times_iqtree_nomt2.csv")):
+                                       "bootstrap_times_iqtree_alrt.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "bootstrap_times_iqtree_nomt2.csv")), index=False)
+                                                  "bootstrap_times_iqtree_alrt.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "bootstrap_times_iqtree_nomt2.csv"),
+                                     "bootstrap_times_iqtree_alrt.csv"),
                         index=False,
                         mode='a', header=False)
