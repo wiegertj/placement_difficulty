@@ -39,7 +39,7 @@ for tree_filename in filenames_filtered:
         "-T AUTO",
         "--threads-max 60",
         "-alrt 1000",
-        f"-pre {}"
+        f"-pre {pre}"
     ]
 
     # print("Boot")
