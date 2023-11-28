@@ -28,7 +28,7 @@ for tree_filename in filenames_filtered:
         break
 
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
-    os.chdir("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ufboot2_alrt")
+    pre = "alrt_" + tree_filename.replace(".newick", "")
     start_time = time.time()
     raxml_command = [
         "/home/wiegerjs/iqtree-2.2.2.6-Linux/bin/iqtree2",
@@ -38,7 +38,8 @@ for tree_filename in filenames_filtered:
         #"-B 1000",
         "-T AUTO",
         "--threads-max 60",
-        "-alrt 1000"
+        "-alrt 1000",
+        f"-pre {}"
     ]
 
     # print("Boot")
