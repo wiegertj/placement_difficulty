@@ -35,7 +35,7 @@ for tree_filename in filenames_filtered:
         "-m GTR+G",
         #"-m LG+G",
         "-s " + msa_filepath,
-        "-B 1000",
+        #"-B 1000",
         "-T AUTO",
         "--threads-max 60",
         "-alrt 1000"
