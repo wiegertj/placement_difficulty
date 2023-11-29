@@ -157,16 +157,16 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     target = "is_valid"
     df.drop(columns=["support"], inplace=True, axis=1)
-    #sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    #test = df[df['group'].isin(sample_dfs)]
-    #train = df[~df['group'].isin(sample_dfs)]
-    #print(test["parsimony_bootstrap_support"])
-    #val_preds_binary_baseline = (test["parsimony_bootstrap_support"] > cutoff).astype(int)
-    #accuracy_baseline = accuracy_score(test["is_valid"], val_preds_binary_baseline)
-    #f1_baseline = f1_score(test["is_valid"], val_preds_binary_baseline)
-    #roc_baseline = roc_auc_score(test["is_valid"], val_preds_binary_baseline)
-    #precision_baseline = precision_score(test["is_valid"], val_preds_binary_baseline)
-    #recall_baseline = recall_score(test["is_valid"], val_preds_binary_baseline)
+    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    test = df[df['group'].isin(sample_dfs)]
+    train = df[~df['group'].isin(sample_dfs)]
+    print(test["parsimony_bootstrap_support"])
+    val_preds_binary_baseline = (test["parsimony_bootstrap_support"] > cutoff).astype(int)
+    accuracy_baseline = balanced_accuracy_score(test["is_valid"], val_preds_binary_baseline)
+    f1_baseline = f1_score(test["is_valid"], val_preds_binary_baseline)
+    roc_baseline = roc_auc_score(test["is_valid"], val_preds_binary_baseline)
+    precision_baseline = precision_score(test["is_valid"], val_preds_binary_baseline)
+    recall_baseline = recall_score(test["is_valid"], val_preds_binary_baseline)
 
     #data = {"acc": 0,
      #       "pre": 0,
