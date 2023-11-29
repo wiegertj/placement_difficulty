@@ -17,7 +17,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, mean_absolute_percentage_error, \
-    median_absolute_error, log_loss, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+    median_absolute_error, log_loss, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, balanced_accuracy_score
 from sklearn.model_selection import GroupKFold
 from optuna.integration import LightGBMPruningCallback
 
@@ -313,7 +313,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
         X_test_.loc[index, 'entropy'] = entropy_row
 
     # Calculate classification metrics
-    accuracy = accuracy_score(y_test, y_pred_binary)
+    accuracy = balanced_accuracy_score(y_test, y_pred_binary)
     precision = precision_score(y_test, y_pred_binary)
     recall = recall_score(y_test, y_pred_binary)
     f1 = f1_score(y_test, y_pred_binary)
@@ -331,30 +331,30 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     print(f'F1 Score: {f1:.2f}')
     print(f'ROC AUC: {roc_auc:.2f}')
 
-    #data = {"acc": accuracy,
-    #        "pre": precision,
-     #       "rec": recall,
-      #      "roc_auc": roc_auc,
-       #     "f1": f1,
-        #    "acc_baseline": accuracy_baseline,
-         #   "pre_baseline": precision_baseline,
-          #  "rec_baseline": recall_baseline,
-           # "roc_auc_baseline": roc_baseline,
-            #"f1_baseline": f1_baseline
-            #}
-    #data_list = [data]
+    data = {"acc": accuracy,
+            "pre": precision,
+           "rec": recall,
+        "roc_auc": roc_auc,
+            "f1": f1,
+            "acc_baseline": accuracy_baseline,
+            "pre_baseline": precision_baseline,
+            "rec_baseline": recall_baseline,
+            "roc_auc_baseline": roc_baseline,
+            "f1_baseline": f1_baseline
+            }
+    data_list = [data]
 
-    #time_dat = pd.DataFrame(data_list)
+    time_dat = pd.DataFrame(data_list)
 
-    #if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-     #                                  f"classifier_metrics{cutoff}.csv")):
-      #  time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-       #                                           f"classifier_metrics{cutoff}.csv")), index=False)
-    #else:
-     #   time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-      #                               f"classifier_metrics{cutoff}.csv"),
-       #                 index=False,
-        #                mode='a', header=False)
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       f"classifier_metrics{cutoff}_bacc.csv")):
+        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                  f"classifier_metrics{cutoff}_bacc.csv")), index=False)
+    else:
+        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                     f"classifier_metrics{cutoff}_bacc.csv"),
+                        index=False,
+                        mode='a', header=False)
 
     residuals = y_test - y_pred
 
