@@ -11,9 +11,9 @@ loo_selection["dataset"] = loo_selection["verbose_name"].str.replace(".phy", ".n
 filenames_aa = loo_selection["dataset"].values.tolist()
 filenames_filtered = filenames[:180]
 counter = 0
-for tree_filename in filenames_filtered:
+for tree_filename in filenames_aa:
     counter += 1
-    print(str(counter) + "/" + str(len(filenames_filtered)))
+    print(str(counter) + "/" + str(len(filenames_aa)))
 
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
     print(tree_path)
@@ -32,8 +32,8 @@ for tree_filename in filenames_filtered:
     start_time = time.time()
     raxml_command = [
         "/home/wiegerjs/iqtree-2.2.2.6-Linux/bin/iqtree2",
-        "-m GTR+G",
-        #"-m LG+G",
+        #"-m GTR+G",
+        "-m LG+G",
         "-s " + msa_filepath,
         #"-B 1000",
         "-T AUTO",
