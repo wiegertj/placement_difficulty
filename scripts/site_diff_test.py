@@ -66,6 +66,9 @@ for msa_name in filtered_filenames:
 
     last_float_before = extracted_value
 
+    if last_float_before <= 50:
+        continue
+
     for x in range(int(0.1 * alignment_array.shape[1]) - 1):
         print(int(0.1 * alignment_array.shape[1]) - 1)
         random_number = random.randint(0, alignment_array.shape[1])
