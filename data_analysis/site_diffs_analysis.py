@@ -26,6 +26,7 @@ for msa_file in msa_files:
         all_keys = set(column)
 
         counts = Counter({key: 0 for key in all_keys})
+        print(counts)
         total_count = sum(counts.values())
 
         # Calculate probabilities and store in a list
