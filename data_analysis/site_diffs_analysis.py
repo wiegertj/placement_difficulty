@@ -33,13 +33,12 @@ for msa_file in msa_files:
         probabilities_array = np.array(probabilities) + 1e-10
 
         print(probabilities)
-        entropy = -np.sum(probabilities * np.log2(probabilities ))  # Add a small constant to avoid log(0)
+        entropy = -np.sum(probabilities * np.log2(probabilities_array ))  # Add a small constant to avoid log(0)
         column_entropies.append(entropy)
 
         char_counts = Counter(column)
         total_chars = len(column)
-        fractions = {char: count / total_chars for char, count in char_counts.items()}
-
+        fractions = probabilities_array
         fractions_std = np.std(fractions)
         fractions_min = np.min(fractions)
         fractions_max = np.max(fractions)
