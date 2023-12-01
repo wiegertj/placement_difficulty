@@ -7,7 +7,10 @@ import numpy as np
 msa_sel = pd.read_csv(os.path.join(os.path.pardir, "data/site_diff_selection.csv"))
 msa_files = msa_sel["msa_name"].values.tolist()
 results = []
+counter = 0
 for msa_file in msa_files:
+    counter += 1
+    print(counter)
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", msa_file + "_reference.fasta")
 
     alignment = AlignIO.read(msa_filepath, 'fasta')
