@@ -27,6 +27,7 @@ for msa_file in msa_files:
     fractions_min_list = []
     fractions_max_list = []
     fractions_mean_list = []
+    fraction_gap_list = []
     num_sequences, alignment_length = alignment_array.shape
 
     for column in alignment_array.T:
@@ -57,6 +58,7 @@ for msa_file in msa_files:
         fractions_max_list.append(fractions_max)
         fractions_mean_list.append(fractions_mean)
         fractions_min_list.append(fractions_min)
+        fraction_gap_list.append(line.length() - line.replace("-", "").length())
 
     # Normalize the column entropies
 
