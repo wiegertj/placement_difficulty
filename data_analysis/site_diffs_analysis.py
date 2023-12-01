@@ -23,7 +23,10 @@ for msa_file in msa_files:
     num_sequences, alignment_length = alignment_array.shape
 
     for column in alignment_array.T:
-        counts = np.bincount(column, minlength=4)  # Assuming DNA sequences, 4 possible nucleotides
+        all_keys = set(column)
+
+        counts = Counter({key: 0 for key in all_keys})
+
         probabilities = counts / num_sequences
         entropy = -np.sum(probabilities * np.log2(probabilities + 1e-10))  # Add a small constant to avoid log(0)
         column_entropies.append(entropy)
