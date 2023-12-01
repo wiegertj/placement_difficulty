@@ -8,7 +8,7 @@ msa_sel = pd.read_csv(os.path.join(os.path.pardir, "data/site_diff_selection.csv
 msa_files = msa_sel["msa_name"].values.tolist()
 results = []
 for msa_file in msa_files:
-    msa_filepath = os.path.join(os.pardir, "data/raw/msa", msa_file)
+    msa_filepath = os.path.join(os.pardir, "data/raw/msa", msa_file + "_reference.fasta")
 
     alignment = AlignIO.read(msa_filepath, 'fasta')
     alignment_array = np.array([list(rec.seq) for rec in alignment])
@@ -87,3 +87,5 @@ for msa_file in msa_files:
             "fractions_min_list_std": np.std(fractions_min_list),
         }
         results.append(data)
+df_res = pd.DataFrame(results)
+df_res.to_csv("site_diff_features.csv")
