@@ -71,7 +71,7 @@ for msa_file in msa_files:
         data = {
             "msa_name": msa_file,
             "id": id,
-            "diff_before"
+            "diff_before": diff_before,
             "diff_diff": diff_diff,
             "col_entropy": col_entropy,
             "min_entropy": min_entropy,
