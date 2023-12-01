@@ -56,12 +56,12 @@ for msa_file in msa_files:
     from scipy.stats import skew, kurtosis
 
     # Calculate statistics of normalized entropies
-    min_entropy = np.min(normalized_entropies)
-    max_entropy = np.max(normalized_entropies)
-    skewness_entropy = skew(normalized_entropies)
-    kurt_entropy = kurtosis(normalized_entropies)
-    std_dev_entropy = np.std(normalized_entropies)
-    mean_entropy = np.mean(normalized_entropies)
+    min_entropy = np.min(column_entropies)
+    max_entropy = np.max(column_entropies)
+    skewness_entropy = skew(column_entropies)
+    kurt_entropy = kurtosis(column_entropies)
+    std_dev_entropy = np.std(column_entropies)
+    mean_entropy = np.mean(column_entropies)
 
     for id in col_id:
         col_entropy = column_entropies[id]
