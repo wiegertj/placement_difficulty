@@ -25,7 +25,6 @@ for msa_file in msa_files:
     for column in alignment_array.T:
         counts = Counter(column)
         keys = len(set(column))
-        print(counts)
         total_count = sum(counts.values())
 
         # Calculate probabilities and store in a list
