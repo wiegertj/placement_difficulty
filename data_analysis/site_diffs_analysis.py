@@ -87,6 +87,7 @@ for msa_file in msa_files:
             "col_max_prob": fractions_max_list[id],
             "col_mean_prob": fractions_mean_list[id],
             "col_std_prob": fractions_std_list[id],
+            "gap_frac": fraction_gap_list[id],
             "min_entropy": min_entropy,
             "max_entropy": max_entropy,
             "skewness_entropy": skewness_entropy,
