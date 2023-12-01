@@ -53,10 +53,10 @@ for msa_file in msa_files:
         fractions_min = np.min(fractions)
         fractions_max = np.max(fractions)
         fractions_mean = np.mean(fractions)
-        fractions_std_list.append(fractions_std)
-        fractions_max_list.append(fractions_max)
-        fractions_mean_list.append(fractions_mean)
-        fractions_min_list.append(fractions_min)
+        fractions_std_list.append(fractions_std_list)
+        fractions_max_list.append(fractions_max_list)
+        fractions_mean_list.append(fractions_mean_list)
+        fractions_min_list.append(fractions_min_list)
 
     # Normalize the column entropies
 
