@@ -26,8 +26,10 @@ for msa_file in msa_files:
         all_keys = set(column)
 
         counts = Counter({key: 0 for key in all_keys})
+        total_count = sum(counts.values())
 
-        probabilities = counts / num_sequences
+        # Calculate probabilities and store in a list
+        probabilities = [count / total_count for count in counts.values()]
         entropy = -np.sum(probabilities * np.log2(probabilities + 1e-10))  # Add a small constant to avoid log(0)
         column_entropies.append(entropy)
 
