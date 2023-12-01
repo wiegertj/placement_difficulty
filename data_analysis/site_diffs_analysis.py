@@ -65,7 +65,7 @@ for msa_file in msa_files:
 
     for id in col_id:
         col_entropy = column_entropies[id]
-        diff_diff = msa_sel[msa_sel["msa_name"] == msa_file & msa_sel["colId"] == msa_file]["diff_diff"].values[0]
+        diff_diff = msa_sel[msa_sel["msa_name"] == msa_file & msa_sel["colId"] == id]["diff_diff"].values[0]
         data = {
             "msa_name": msa_file,
             "id": id,
