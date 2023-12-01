@@ -30,6 +30,8 @@ for msa_file in msa_files:
 
         # Calculate probabilities and store in a list
         probabilities = [count / total_count for count in counts.values()]
+        probabilities_array = np.array(probabilities)
+
         print(probabilities)
         entropy = -np.sum(probabilities * np.log2(probabilities + 1e-10))  # Add a small constant to avoid log(0)
         column_entropies.append(entropy)
