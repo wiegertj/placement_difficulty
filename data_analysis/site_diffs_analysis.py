@@ -58,7 +58,7 @@ for msa_file in msa_files:
         fractions_max_list.append(fractions_max)
         fractions_mean_list.append(fractions_mean)
         fractions_min_list.append(fractions_min)
-        fraction_gap_list.append(line.length() - line.replace("-", "").length())
+        fraction_gap_list.append(column.length() - column.replace("-", "").length())
 
     # Normalize the column entropies
 
