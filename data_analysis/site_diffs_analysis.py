@@ -23,9 +23,7 @@ for msa_file in msa_files:
     num_sequences, alignment_length = alignment_array.shape
 
     for column in alignment_array.T:
-        all_keys = set(column)
-
-        counts = Counter({key: 0 for key in all_keys})
+        counts = Counter(column)
         print(counts)
         total_count = sum(counts.values())
 
