@@ -102,6 +102,6 @@ msa_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features",
                            usecols=lambda column: column != 'Unnamed: 0')
 msa_features = msa_features.drop_duplicates(subset=['dataset'], keep='first')
 
-df_res = df_res.merge(msa_features, left_on=["dataset"], right_on=["msa_name"], how="inner")
+df_res = df_res.merge(msa_features, left_on=["msa_name"], right_on=["dataset"], how="inner")
 print(df_res.shape)
 df_res.to_csv("site_diff_features.csv")
