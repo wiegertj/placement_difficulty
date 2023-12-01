@@ -24,6 +24,7 @@ for msa_file in msa_files:
 
     for column in alignment_array.T:
         counts = Counter(column)
+        keys = len(set(column))
         print(counts)
         total_count = sum(counts.values())
 
@@ -46,7 +47,7 @@ for msa_file in msa_files:
         fractions_min_list.append(fractions_min)
 
     # Normalize the column entropies
-    max_entropy = np.log2(4)  # Maximum entropy for a column with 4 nucleotides
+    max_entropy = np.log2(keys)  # Maximum entropy for a column with 4 nucleotides
     normalized_entropies = np.array(column_entropies) / max_entropy
 
     from scipy.stats import skew, kurtosis
