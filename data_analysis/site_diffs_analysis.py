@@ -35,7 +35,9 @@ for msa_file in msa_files:
         probabilities_array = np.array(probabilities) + 1e-10
 
         entropy = -np.sum(probabilities * np.log2(probabilities_array ))  # Add a small constant to avoid log(0)
-        column_entropies.append(entropy)
+        max_entropy = np.log2(keys)  # Maximum entropy for a column with 4 nucleotides
+
+        column_entropies.append(entropy / max_entropy)
 
         char_counts = Counter(column)
         total_chars = len(column)
@@ -50,8 +52,6 @@ for msa_file in msa_files:
         fractions_min_list.append(fractions_min)
 
     # Normalize the column entropies
-    max_entropy = np.log2(keys)  # Maximum entropy for a column with 4 nucleotides
-    normalized_entropies = np.array(column_entropies) / max_entropy
 
     from scipy.stats import skew, kurtosis
 
