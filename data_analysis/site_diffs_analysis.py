@@ -8,6 +8,10 @@ msa_sel = pd.read_csv(os.path.join(os.path.pardir, "data/site_diff_selection.csv
 msa_files = msa_sel["msa_name"].unique().tolist()
 results = []
 counter = 0
+max_frac = []
+min_frac = []
+mean_frac = []
+std_frac = []
 for msa_file in msa_files:
     counter += 1
     print(counter)
@@ -33,7 +37,10 @@ for msa_file in msa_files:
         # Calculate probabilities and store in a list
         probabilities = [count / total_count for count in counts.values()]
         probabilities_array = np.array(probabilities) + 1e-10
-
+        max_frac.append(max(probabilities))
+        min_frac.append(min(probabilities))
+        mean_frac.append(np.mean(probabilities))
+        std_frac.append(np.std(probabilities))
         entropy = -np.sum(probabilities * np.log2(probabilities_array ))  # Add a small constant to avoid log(0)
         #max_entropy = np.log2(keys)  # Maximum entropy for a column with 4 nucleotides
 
@@ -74,6 +81,10 @@ for msa_file in msa_files:
             "diff_before": diff_before,
             "diff_diff": diff_diff,
             "col_entropy": col_entropy,
+            "col_min_prob": fractions_min[id],
+            "col_max_prob": fractions_max[id],
+            "col_mean_prob": fractions_mean[id],
+            "col_std_prob": fractions_std[id],
             "min_entropy": min_entropy,
             "max_entropy": max_entropy,
             "skewness_entropy": skewness_entropy,
