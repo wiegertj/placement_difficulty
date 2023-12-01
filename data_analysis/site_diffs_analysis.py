@@ -5,7 +5,7 @@ import pandas as pd
 from Bio import AlignIO
 import numpy as np
 msa_sel = pd.read_csv(os.path.join(os.path.pardir, "data/site_diff_selection.csv"))
-msa_files = msa_sel["msa_name"].values.tolist()
+msa_files = msa_sel["msa_name"].unique().tolist()
 results = []
 counter = 0
 for msa_file in msa_files:
