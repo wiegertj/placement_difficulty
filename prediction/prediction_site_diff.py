@@ -33,6 +33,8 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
     target = "class"
     df.drop(columns=["diff_diff", "msa_name"], inplace=True, axis=1)
+    df.columns = df.columns.str.replace(':', '_')
+
     sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
     test = df[df['group'].isin(sample_dfs)]
     train = df[~df['group'].isin(sample_dfs)]
