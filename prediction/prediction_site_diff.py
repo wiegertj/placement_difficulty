@@ -110,13 +110,13 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
 
             # val_score = mean_squared_error(y_val, val_preds)
             # val_score = math.sqrt(val_score)
-            val_score = f1_score(y_val, val_preds_binary)
+            val_score = balanced_accuracy_score(y_val, val_preds_binary)
             val_scores.append(val_score)
 
         return np.mean(val_scores)  # sum(val_scores) / len(val_scores) #median?
 
     study = optuna.create_study(direction='maximize')
-    study.optimize(objective, n_trials=100)
+    study.optimize(objective, n_trials=200)
 
     best_params = study.best_params
     best_params["objective"] = "binary"
