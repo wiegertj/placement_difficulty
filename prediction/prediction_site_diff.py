@@ -28,7 +28,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     df["class"] = 0
     df.loc[df['diff_diff'] > 0, 'class'] = 1
-    df.loc[df['diff_diff'] < 0, 'class'] = 0
+    #df.loc[df['diff_diff'] < 0, 'class'] = 0
     print(df["class"].value_counts())
 
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
@@ -84,7 +84,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
             'num_iterations': trial.suggest_int('num_iterations', 10, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 300),
-            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.3),
+            'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.5),
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             'feature_fraction': trial.suggest_uniform('feature_fraction', 0.0, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
@@ -111,7 +111,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
 
             # val_score = mean_squared_error(y_val, val_preds)
             # val_score = math.sqrt(val_score)
-            val_score = balanced_accuracy_score(y_val, val_preds_binary)
+            val_score = f1_score(y_val, val_preds_binary)
             val_scores.append(val_score)
 
         return np.mean(val_scores)  # sum(val_scores) / len(val_scores) #median?
