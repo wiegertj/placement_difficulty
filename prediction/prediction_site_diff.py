@@ -91,7 +91,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
             'bagging_freq': 0,
-            'verbosity': -1
+            'verbosity': -1,
             'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.0, 1.0)
         }
 
