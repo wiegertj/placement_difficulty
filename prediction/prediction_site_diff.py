@@ -27,8 +27,8 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "diff_selection_features.csv"))
 
     df["class"] = 0
-    df.loc[df['diff_diff'] > 0, 'class'] = 1
-    df.loc[df['diff_diff'] < 0, 'class'] = 1
+    df.loc[df['diff_diff'] > 0.01, 'class'] = 1
+    #df.loc[df['diff_diff'] < 0, 'class'] = 1
     print(df["class"].value_counts())
 
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
