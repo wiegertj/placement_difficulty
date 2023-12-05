@@ -28,12 +28,35 @@ for msa_file in msa_files:
     fractions_max_list = []
     fractions_mean_list = []
     fraction_gap_list = []
+    count_a_list = []
+    count_c_list = []
+    count_t_list = []
+    count_g_list = []
+
     num_sequences, alignment_length = alignment_array.shape
 
     for column in alignment_array.T:
         counts = Counter(column)
         keys = len(set(column))
         total_count = sum(counts.values())
+
+        column_upper = column.upper()
+
+        # Create a Counter object
+        counts = Counter(column_upper)
+
+        # Extract counts for A, C, T, and G
+        count_A = counts['A']
+        count_C = counts['C']
+        count_T = counts['T']
+        count_G = counts['G']
+
+        count_a_list.append(count_A)
+        count_c_list.append(count_C)
+        count_t_list.append(count_T)
+        count_g_list.append(count_G)
+
+
 
         # Calculate probabilities and store in a list
         probabilities = [count / total_count for count in counts.values()]
