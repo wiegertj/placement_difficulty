@@ -27,7 +27,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "diff_selection_features.csv"))
 
     df["class"] = 0
-    df.loc[df['diff_diff'] > 0, 'class'] = 0
+    df.loc[df['diff_diff'] > 0, 'class'] = 1
     df.loc[df['diff_diff'] < 0, 'class'] = 1
     print(df["class"].value_counts())
 
@@ -111,7 +111,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
 
             # val_score = mean_squared_error(y_val, val_preds)
             # val_score = math.sqrt(val_score)
-            val_score = f1_score(y_val, val_preds_binary)
+            val_score = balanced_accuracy_score(y_val, val_preds_binary)
             val_scores.append(val_score)
 
         return np.mean(val_scores)  # sum(val_scores) / len(val_scores) #median?
