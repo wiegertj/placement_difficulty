@@ -60,15 +60,15 @@ for msa_file in msa_files:
 
         # Calculate probabilities and store in a list
         probabilities = [count / total_count for count in counts.values()]
-        probabilities_array = np.array(probabilities) + 1e-10
+        probabilities_array = np.array(probabilities) #+ 1e-10
         max_frac.append(max(probabilities))
         min_frac.append(min(probabilities))
         mean_frac.append(np.mean(probabilities))
         std_frac.append(np.std(probabilities))
         entropy = -np.sum(probabilities * np.log2(probabilities_array ))  # Add a small constant to avoid log(0)
-        #max_entropy = np.log2(keys)  # Maximum entropy for a column with 4 nucleotides
+        max_entropy = np.log2(keys)  # Maximum entropy for a column with 4 nucleotides
 
-        column_entropies.append(entropy)# / max_entropy)
+        column_entropies.append(entropy / max_entropy)
 
         char_counts = Counter(column)
         total_chars = len(column)
