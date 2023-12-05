@@ -40,7 +40,7 @@ for msa_file in msa_files:
         keys = len(set(column))
         total_count = sum(counts.values())
 
-        column_upper = column.upper()
+        column_upper = np.char.upper(column.astype(str))
 
         # Create a Counter object
         counts = Counter(column_upper)
