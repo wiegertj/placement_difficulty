@@ -28,7 +28,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     df["class"] = 0
     df.loc[df['diff_diff'] > 0, 'class'] = 1
-    df.loc[df['diff_diff'] < 0, 'class'] = 1
+    #df.loc[df['diff_diff'] < 0, 'class'] = 1
     print(df["class"].value_counts())
 
     df["group"] = df['dataset'].astype('category').cat.codes.tolist()
@@ -92,7 +92,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
             'bagging_freq': 0,
             'verbosity': -1,
-            'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.0, 1.0)
+            #'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.0, 1.0)
         }
 
         val_scores = []
