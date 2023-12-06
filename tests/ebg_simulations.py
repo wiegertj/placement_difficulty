@@ -18,9 +18,11 @@ base_directory_path = "/hits/fast/cme/wiegerjs/EBG_simulations/data"
 
 # Call the function to get the list of folder names
 folders = list_foldernames(base_directory_path)
-
+counter = 0
 # Iterate over the folders
 for folder in folders:
+    counter += 1
+    print(counter)
     # Get file paths
     msa_path, best_tree_path, best_model_path = gather_file_paths(base_directory_path, folder)
 
