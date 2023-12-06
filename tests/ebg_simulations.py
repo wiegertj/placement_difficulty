@@ -7,7 +7,7 @@ def list_foldernames(path):
 
 
 def gather_file_paths(base_path, folder_name):
-    msa_path = os.path.join(base_path, folder_name, 'msa.fasta')
+    msa_path = os.path.join(base_path, folder_name, 'gtr_g_sim_msa.fasta')
     best_tree_path = os.path.join(base_path, folder_name, 'gtr_g.raxml.bestTree')
     best_model_path = os.path.join(base_path, folder_name, 'gtr_g.raxml.bestModel')
     return msa_path, best_tree_path, best_model_path
