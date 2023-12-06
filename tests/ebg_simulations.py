@@ -35,17 +35,29 @@ for folder in folders:
     print(f"Best Tree Path: {best_tree_path}")
     print(f"Best Model Path: {best_model_path}")
 
+    #raxml_command = [
+     #   "ebg",
+      #  f"-model {best_model_path}",
+       # f"-msa {msa_path}",
+        #f"-tree {best_tree_path}",
+        #"-t b",
+        #f"-o {folder}"
+    #]
+    prefix = folder + "_boot_test_"
     raxml_command = [
-        "ebg",
-        f"-model {best_model_path}",
-        f"-msa {msa_path}",
-        f"-tree {best_tree_path}",
-        "-t b",
-        f"-o {folder}"
+        "raxml-ng",
+        "--search",
+        f"--msa {msa_path}",
+        "--model GTR+G",
+        # "--model LG4M",
+        "--threads auto",
+        f"--prefix {prefix}"
+        # "--data-type AA"
+
     ]
 
     # print("Boot")
     print("Started")
     s = " ".join(raxml_command)
     print(s)
-    #subprocess.run(" ".join(raxml_command), shell=True)
+    subprocess.run(" ".join(raxml_command), shell=True)
