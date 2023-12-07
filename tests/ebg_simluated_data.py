@@ -22,8 +22,8 @@ for folder in folders:
     # Get file paths
     msa_path = gather_file_paths(base_directory_path, folder)
 
-    best_tree_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + folder + ".phy_boot_test_.raxml.bestTree"
-    best_model_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + folder + ".phy_boot_test_.raxml.bestModel"
+    best_tree_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + folder + "_boot_test_.raxml.bestTree"
+    best_model_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + folder + "_boot_test_.raxml.bestModel"
 
     print(f"MSA Path: {msa_path}")
     print(f"Best Tree Path: {best_tree_path}")
