@@ -30,7 +30,7 @@ for folder_name in tree_files:
     dataset = folder_name.replace(".phy.treefile", "")
     print(abs_path)
     tree_ebg_path = abs_path
-    tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{folder_name}/gtr_g.raxml.bestTree"
+    tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{dataset}/gtr_g.raxml.bestTree"
 
     try:
         tree_ebg = ete3.Tree(tree_ebg_path, format=0)
