@@ -26,7 +26,7 @@ for folder_name in folder_names:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
     dataset = folder_name.replace(".phy", "")
     print(abs_path)
-    tree_ebg_path = abs_path + f"/{dataset}.phy_bs_over_70_support_prediction.newick"
+    tree_ebg_path = abs_path + f"/{dataset}.phy_bs_over_75_support_prediction.newick"
     tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{folder_name}/gtr_g.raxml.bestTree"
 
     try:
