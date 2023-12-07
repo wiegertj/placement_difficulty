@@ -19,12 +19,15 @@ def get_bipartition(node):
 folder_path = '/hits/fast/cme/wiegerjs/EBG_simulations/iqtree_simulation_alrt'
 
 # Get a list of folder names in the specified path
-folder_names = [folder for folder in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, folder))]
+# List all files in the folder
+all_files = os.listdir(folder_path)
 
+# Filter files ending with ".treefile"
+tree_files = [file for file in all_files if file.endswith('.treefile')]
 results = []
-for folder_name in folder_names:
+for folder_name in tree_files:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
-    dataset = folder_name.replace(".phy", "")
+    dataset = folder_name.replace(".phy.treefile", "")
     print(abs_path)
     tree_ebg_path = abs_path + f"/{dataset}.phy.treefile"
     tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{folder_name}/gtr_g.raxml.bestTree"
