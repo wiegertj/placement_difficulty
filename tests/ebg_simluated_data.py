@@ -22,8 +22,8 @@ for folder in folders:
     # Get file paths
     msa_path = gather_file_paths(base_directory_path, folder)
 
-    best_tree_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + folder + "26050_1.phy_boot_test_.raxml.bestTree"
-    best_model_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + folder + "26050_1.phy_boot_test_.raxml.bestModel"
+    best_tree_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + folder + ".phy_boot_test_.raxml.bestTree"
+    best_model_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + folder + ".phy_boot_test_.raxml.bestModel"
 
     # Check if files exist
     if not (os.path.exists(msa_path) and os.path.exists(best_tree_path) and os.path.exists(best_model_path)):
