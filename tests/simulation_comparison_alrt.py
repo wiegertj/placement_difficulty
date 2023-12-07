@@ -16,7 +16,7 @@ def get_bipartition(node):
     return None
 
 
-folder_path = '/hits/fast/cme/wiegerjs/EBG_simulations/iqtree_simulations_alrt'
+folder_path = '/hits/fast/cme/wiegerjs/EBG_simulations/iqtree_simulation_alrt'
 
 # Get a list of folder names in the specified path
 folder_names = [folder for folder in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, folder))]
