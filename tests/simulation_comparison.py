@@ -20,7 +20,7 @@ folder_names = [folder for folder in os.listdir(folder_path) if os.path.isdir(os
 results = []
 for folder_name in folder_names:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
-    dataset = folder_name.replcae(".phy","")
+    dataset = folder_name.replace(".phy","")
     print(abs_path)
     tree_ebg_path = abs_path + f"/{dataset}.phy_bs_over_80_support_prediction.newick"
     tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{folder_name}/gtr_g.raxml.bestTree"
