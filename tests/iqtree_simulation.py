@@ -45,10 +45,10 @@ for folder in folders:
         "-m GTR+G",
         #"-m LG+G",
         "-s " + msa_path,
-        #"-B 1000",
+        "-B 1000",
         "-T 1",
         #"--threads-max 60",
-        "-alrt 1000",
+        #"-alrt 1000",
         f"-pre {folder}"
     ]
     #]
