@@ -46,8 +46,8 @@ for folder in folders:
         #"-m LG+G",
         "-s " + msa_path,
         #"-B 1000",
-        "-T AUTO",
-        "--threads-max 60",
+        "-T 1",
+        #"--threads-max 60",
         "-alrt 1000",
         f"-pre {folder}"
     ]
