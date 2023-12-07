@@ -76,7 +76,7 @@ for folder_name in folder_names:
                             second_match = True
                         if second_match and first_match:  # bipartition is in true tree
                             bipartition_found = True
-                            if node.support >= 80:  # bipartition is deemed significant
+                            if node.support >= 70:  # bipartition is deemed significant
                                 # store true positive
                                 print((node.name, node_true.name, node.support))
                                 results.append((dataset, node.name, node_true.name, node.support, "TP"))
@@ -85,7 +85,7 @@ for folder_name in folder_names:
                                 print((node.name, node_true.name, node.support))
                                 results.append((dataset, node.name, node_true.name, node.support, "FN"))
                 if not bipartition_found:
-                    if node.support >= 80:  # store false positive
+                    if node.support >= 70:  # store false positive
                         print((node.name, node_true.name, node.support))
                         results.append((dataset, node.name, node_true.name, node.support, "FP"))
                     else:
