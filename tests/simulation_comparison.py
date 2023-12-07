@@ -26,7 +26,7 @@ for folder_name in folder_names:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
     dataset = folder_name.replace(".phy", "")
     print(abs_path)
-    tree_ebg_path = abs_path + f"/{dataset}.phy_bs_over_75_support_prediction.newick"
+    tree_ebg_path = abs_path + f"/{dataset}.phy_median_support_prediction.newick"
     tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{folder_name}/gtr_g.raxml.bestTree"
 
     try:
@@ -76,7 +76,7 @@ for folder_name in folder_names:
                             second_match = True
                         if second_match and first_match:  # bipartition is in true tree
                             bipartition_found = True
-                            if node.support >= 0.5:  # bipartition is deemed significant
+                            if node.support >= 80:  # bipartition is deemed significant
                                 # store true positive
                                 print((node.name, node_true.name, node.support))
                                 results.append((dataset, node.name, node_true.name, node.support, "TP"))
@@ -85,7 +85,7 @@ for folder_name in folder_names:
                                 print((node.name, node_true.name, node.support))
                                 results.append((dataset, node.name, node_true.name, node.support, "FN"))
                 if not bipartition_found:
-                    if node.support >= 0.5:  # store false positive
+                    if node.support >= 80:  # store false positive
                         print((node.name, node_true.name, node.support))
                         results.append((dataset, node.name, node_true.name, node.support, "FP"))
                     else:
