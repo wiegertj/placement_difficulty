@@ -25,6 +25,10 @@ for folder in folders:
     best_tree_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + folder + ".phy_boot_test_.raxml.bestTree"
     best_model_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + folder + ".phy_boot_test_.raxml.bestModel"
 
+    print(f"MSA Path: {msa_path}")
+    print(f"Best Tree Path: {best_tree_path}")
+    print(f"Best Model Path: {best_model_path}")
+
     # Check if files exist
     if not (os.path.exists(msa_path) and os.path.exists(best_tree_path) and os.path.exists(best_model_path)):
         print(f"Skipping {folder} - one or more files not found.")
