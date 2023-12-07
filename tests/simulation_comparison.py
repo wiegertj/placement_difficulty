@@ -64,6 +64,8 @@ for folder_name in folder_names:
             if bipartition_ebg is not None:
                 bipartition_found = False
                 for node_true in tree_true.traverse():
+                    if node_true.is_leaf():
+                        continue
                     bipartition_true = get_bipartition(node_true)
                     if bipartition_true is not None:
                         first_match = False
