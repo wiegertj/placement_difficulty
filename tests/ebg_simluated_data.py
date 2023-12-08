@@ -46,8 +46,7 @@ for folder in folders:
         f"-msa {msa_path}",
         f"-tree {best_tree_path}",
         "-t b",
-        f"-o {folder}",
-        "-redo"
+        f"-o {folder}"
     ]
     #prefix = folder + "_boot_test_"
     #raxml_command = [
