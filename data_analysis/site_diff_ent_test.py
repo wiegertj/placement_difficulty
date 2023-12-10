@@ -51,9 +51,9 @@ for msa_name in filtered_filenames:
 
     raxml_path = "/home/wiegerjs/bin/raxml-ng-mpi"
     command = ["pythia", "--msa", os.path.abspath(msa_filepath),
-               "--raxmlng", raxml_path]
+               "--raxmlng", raxml_path, "--removeDuplicates"]
 
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     pythia_output = result.stdout
     pythia_output = result.stdout
     pythia_error = result.stderr  # Capture stderr
