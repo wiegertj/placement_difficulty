@@ -90,7 +90,7 @@ for folder_name in folder_names:
                     else:
                         # store true negative
                         print((node.name, node_true.name, node.support))
-                        results.append((dataset, node.name, node_true.name, node.support, "TN", 0))
+                        results.append((dataset, node.name, node.support))
 
 df_res = pd.DataFrame(results, columns=["dataset", "branchId_EBG", "EBG_lower5"])
 df_res.to_csv(os.path.join(os.pardir, "data/ebg_simulation_lower5.csv"))
