@@ -1,6 +1,8 @@
 import os
 
 import subprocess
+from collections import Counter
+
 import pandas as pd
 import numpy as np
 import types
@@ -79,8 +81,8 @@ for msa_name in filtered_filenames:
         from scipy.stats import entropy
 
         # Calculate normalized entropy for each column
-        column_entropies = np.apply_along_axis(lambda col: entropy(col) / np.log(col.shape[0]), axis=0,
-                                               arr=alignment_array)
+        column_entropies = np.apply_along_axis(lambda col: entropy(list(Counter(col).values())) / np.log(len(col)),
+                                               axis=0, arr=alignment_array)
 
         # Find columns with normalized entropy between 0.95 and 1
         selected_columns = np.where((column_entropies >= lower_bound) & (column_entropies <= upper_bound))[0]
