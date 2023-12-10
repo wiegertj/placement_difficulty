@@ -15,7 +15,6 @@ def get_bipartition(node):
         return bipartition
     return None
 
-
 folder_path = '/hits/fast/cme/wiegerjs/EBG_simulations/ebg_results/'
 
 # Get a list of folder names in the specified path
@@ -26,7 +25,7 @@ for folder_name in folder_names:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
     dataset = folder_name.replace(".phy", "")
     print(abs_path)
-    tree_ebg_path = abs_path + f"/{dataset}.phy_median_support_prediction.newick"
+    tree_ebg_path = abs_path + f"/{dataset}.phy_bs_over_80_support_prediction.newick"
     tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{folder_name}/gtr_g.raxml.bestTree"
 
     try:
@@ -93,5 +92,5 @@ for folder_name in folder_names:
                         print((node.name, node_true.name, node.support))
                         results.append((dataset, node.name, node_true.name, node.support, "TN", 0))
 
-df_res = pd.DataFrame(results, columns=["dataset", "branchId_EBG", "branchId_True", "EBG_Support", "Eval", "in_true"])
-df_res.to_csv(os.path.join(os.pardir, "data/ebg_simulation.csv"))
+df_res = pd.DataFrame(results, columns=["dataset", "branchId_EBG", "branchId_True", "EBG_Support_80", "Eval", "in_true"])
+df_res.to_csv(os.path.join(os.pardir, "data/ebg_simulation_80.csv"))
