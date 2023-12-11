@@ -1,4 +1,5 @@
 import math
+import pickle
 import sys
 
 import shap
@@ -280,6 +281,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     train_data = lgb.Dataset(X_train.drop(axis=1, columns=["group"]), label=y_train)
 
     final_model = lgb.train(best_params, train_data)
+
+    model_path = os.path.join(os.pardir, "data/processed/final", "edg.pkl")
+    with open(model_path, 'wb') as file:
+        pickle.dump(final_model, file)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
