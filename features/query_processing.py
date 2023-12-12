@@ -183,7 +183,7 @@ def query_statistics(query_filepath) -> list:
         for i, (flag, char) in enumerate(analyzed_sites_8):
             # Check if the corresponding site in the query has a 1 and if the characters are equal
             if flag == 1:
-                total_inv_sites_9 += 1
+                total_inv_sites_8 += 1
             if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
                 match_counter_8 += 1
 
