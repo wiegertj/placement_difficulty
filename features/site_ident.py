@@ -37,6 +37,7 @@ def column_entropy(column):
     # Calculate the entropy using SciPy's entropy function
     return entropy(probabilities, base=2)
 
+
 def remove_gaps(sequence):
     return sequence.replace("-", "").replace("N", "")
 
@@ -167,257 +168,6 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             elif record.id in list_b:
                 alignment_b.append(record)
 
-        freqs_b = []
-        freqs_a = []
-
-        for i in range(len(alignment_a[0])):
-            column_a = alignment_a[:, i]
-
-            column_b = alignment_b[:, i]
-
-            combined_values = column_a + column_b
-            all_keys = set(combined_values)
-
-            counter_a = Counter({key: 0 for key in all_keys})
-            counter_b = Counter({key: 0 for key in all_keys})
-
-            counter_a.update(column_a)
-            counter_b.update(column_b)
-
-            sorted_keys = sorted(all_keys)
-
-            counter_a = Counter({key: counter_a[key] for key in sorted_keys})
-            counter_b = Counter({key: counter_b[key] for key in sorted_keys})
-
-            freqs_a.append(counter_a)
-            freqs_b.append(counter_b)
-
-        kl_divergence_results = []
-        smoothing_value = 1e-10
-
-        for site_freq_a, site_freq_b in zip(freqs_a, freqs_b):
-            total_count_a = sum(site_freq_a.values())
-            total_count_b = sum(site_freq_b.values())
-            try:
-                normalized_freq_a = {k: v / total_count_a for
-                                     k, v in site_freq_a.items()}
-            except ZeroDivisionError:
-                normalized_freq_a = {k: 0 for
-                                     k, v in site_freq_a.items()}
-            try:
-                normalized_freq_b = {k: v / total_count_b for
-                                     k, v in site_freq_b.items()}
-            except:
-                normalized_freq_b = {k: 0 for
-                                     k, v in site_freq_b.items()}
-
-            site_freq_a_array = np.array(list(normalized_freq_a.values()))
-
-            site_freq_b_array = np.array(list(normalized_freq_b.values()))
-
-            entropy_a = entropy(site_freq_a_array)
-            entropy_b = entropy(site_freq_b_array)
-            kl_divergence_value = abs(entropy_a - entropy_b)
-            # kl_divergence_value = np.std(kl_divergence_value)
-
-            # kl_divergence_value = entropy(site_freq_a_array, site_freq_b_array)
-
-            kl_divergence_results.append(kl_divergence_value)
-
-        # Normalize the list to the range [0, 1]
-        entropy_values = []
-        for i in range(alignment.get_alignment_length()):
-            column = alignment[:, i]
-            entropy_val = column_entropy(column)
-            entropy_values.append(entropy_val)
-        num_values = len(entropy_values)
-        num_values_top_10_percent = int(num_values * 0.1)
-
-        # Sort the entropy values in ascending order
-        sorted_entropy_values = sorted(enumerate(entropy_values), key=lambda x: x[1])
-
-        # Create a list to store the 1s and 0s
-        entropy_binary = [0] * num_values
-
-        # Set the top 10% largest and smallest values to 1
-        #for i in range(num_values_top_10_percent):
-         #   entropy_binary[sorted_entropy_values[i][0]] = 1
-        for i in range(num_values - num_values_top_10_percent, num_values):
-            entropy_binary[sorted_entropy_values[i][0]] = 1
-
-        # Print or use the entropy_binary list as needed
-
-        #normalized_kl_divergence_results = entropy_values
-        # binary_results = [1 if value < 0.5 else 0 for value in normalized_kl_divergence_results]
-        #mean_z = np.mean(normalized_kl_divergence_results)
-        #std_dev_z = np.std(normalized_kl_divergence_results)
-        #threshold = 2
-        #binary_results = [1 if abs((value - mean_z) / std_dev_z) > threshold else 0 for value in kl_divergence_results]
-        # threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
-        # binary_results = [1 if value >= threshold else 0 for value in normalized_kl_divergence_results]
-        binary_results = entropy_binary
-        ################################
-        # Deduplicate original MSA, this is now reference
-        results_pythia = []
-        new_alignment_dup = []
-        unique_sequences = set()
-        for record in alignment:
-            # Convert the sequence to a string for comparison
-            sequence_str = str(record.seq)
-
-            # Check if the sequence is unique
-            if sequence_str not in unique_sequences:
-                unique_sequences.add(sequence_str)
-                new_alignment_dup.append(record)
-        SeqIO.write(new_alignment_dup, os.path.abspath(msa_filepath.replace("_reference", "_dedup_reference")), "fasta")
-        msa_filepath = msa_filepath.replace("_reference", "_dedup_reference")
-        alignment = AlignIO.MultipleSeqAlignment(new_alignment_dup)
-        modified_sequences = []
-
-        # Calculate Sites to delete and disalign on the fly, create reference msa with deleted sites
-        print("Binary sum \n")
-        print(sum(binary_results))
-        for record in alignment:
-            # Convert the sequence to a list to modify it
-            sequence_list = list(record.seq)
-
-            # Iterate over sites and binary_results together
-            for site, keep_site in zip(sequence_list, binary_results):
-                if keep_site == 1:
-                    # If binary_results is 1, replace the site with a gap or another character as needed
-                    sequence_list[sequence_list.index(site)] = '+'
-
-            # Convert the modified list back to a sequence and add it to the list of modified sequences#
-
-            sequence_list = [char for char in sequence_list if char != '+']
-
-            modified_sequence = Seq(''.join(sequence_list))
-            modified_record = SeqRecord(modified_sequence, id=record.id, description=record.description)
-
-            # Add the modified record to the list of modified sequences
-            modified_sequences.append(modified_record)
-
-        filtered_alignment = AlignIO.MultipleSeqAlignment(modified_sequences)
-        num_sequences = len(alignment)
-        num_sites = alignment.get_alignment_length()
-        if num_sites >= 10000:
-            return
-        if num_sequences >= 1000:
-            return
-
-        print(f"Number of Sequences now: {num_sequences}")
-        print(f"Number of Sites now: {num_sites}")
-
-        print("Binary sum")
-        print(sum(binary_results))
-
-        num_sequences_new = len(filtered_alignment)
-        num_sites_new = filtered_alignment.get_alignment_length()
-
-        print(f"Number of Sequences now: {num_sequences_new}")
-        print(f"Number of Sites now: {num_sites_new}")
-
-        # Write site filtered, aligned alignment
-        aligned_filtered_path = msa_filepath.replace("_reference", "_reference_aligned_site_filtered")
-        SeqIO.write(filtered_alignment, aligned_filtered_path,
-                    "fasta")
-
-        filtered_msa_disalgined = aligned_filtered_path.replace("aligned", "disaligned")
-        with open(os.path.abspath(aligned_filtered_path), "r") as input_handle, open(filtered_msa_disalgined,
-                                                                            "w") as output_handle:
-            for line in input_handle:
-                if line.startswith('>'):
-                    output_handle.write(line)
-                else:
-                    sequence = line.strip()
-                    disaligned_sequence = remove_gaps(sequence)
-                    output_handle.write(disaligned_sequence + '\n')
-
-        # Realigne site filtered alignment
-        command = ["mafft", "--preservecase", filtered_msa_disalgined]
-
-        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
-        mafft_output = result.stdout
-        aligned_output_file_filtered = filtered_msa_disalgined.replace("_disaligned", "_alignedmafft")
-
-        with open(aligned_output_file_filtered, "w") as output_file:
-            output_file.write(mafft_output)
-        raxml_path = subprocess.check_output(["which", "raxml-ng"], text=True).strip()
-
-        try:
-            # Disalign old MSA again, to make sure the comparison is unbiased, get old Pythia score
-            output_file_disaligned_full = os.path.abspath(msa_filepath).replace(".fasta", "_disaligned.fasta")
-            with open(os.path.abspath(msa_filepath), "r") as input_handle, open(output_file_disaligned_full,
-                                                                                "w") as output_handle:
-                for line in input_handle:
-                    if line.startswith('>'):
-                        output_handle.write(line)
-                    else:
-                        sequence = line.strip()
-                        disaligned_sequence = remove_gaps(sequence)
-                        output_handle.write(disaligned_sequence + '\n')
-            print("Disaligned old one: " + output_file_disaligned_full)
-
-            command = ["mafft", "--preservecase", output_file_disaligned_full]
-
-            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
-            mafft_output = result.stdout
-            output_file_aligned_full_mafft = output_file_disaligned_full.replace("_disaligned", "_realigned")
-            with open(output_file_aligned_full_mafft, "w") as output_file:
-                output_file.write(mafft_output)
-
-            command = ["pythia", "--msa", output_file_aligned_full_mafft, "--raxmlng", raxml_path]
-            result_old = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
-
-            pattern = r"[-+]?\d*\.\d+|\d+"
-
-            matches_old = re.findall(pattern, result_old.stderr)
-            last_float_old = float(matches_old[-1])
-
-            # Score new alignment with deleted sites
-            command = ["pythia", "--msa", os.path.abspath(aligned_output_file_filtered), "--raxmlng", raxml_path]
-            result_new = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, text=True)
-
-            matches_new = re.findall(pattern, result_new.stderr)
-            last_float_new = float(matches_new[-1])
-
-            print("Old difficulty: " + str(last_float_old))
-            print("New difficulty: " + str(last_float_new))
-
-            results_pythia.append((name, num_sites, sum(binary_results), last_float_old, last_float_new,
-                                   last_float_old - last_float_new, 0.5, min_support))
-
-            df_py = pd.DataFrame(results_pythia,
-                                 columns=["dataset", "num_sites", "num_sites_del", "old_diff", "new_diff",
-                                          "diff_change", "theshold_max", "min_support"])
-
-            if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "site_filter_max01_rest.csv")):
-                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_max01_rest.csv"),
-                             index=False, header=True,
-                             columns=["dataset", "num_sites", "num_sites_del", "old_diff", "new_diff", "diff_change",
-                                      "theshold_max", "min_support"])
-            else:
-                df_py.to_csv(os.path.join(os.pardir, "data/processed/final", "site_filter_max01_rest.csv"),
-                             index=False,
-                             mode='a', header=False,
-                             columns=["dataset", "num_sites", "num_sites_del", "old_diff", "new_diff", "diff_change",
-                                      "theshold_max", "min_support"])
-
-            return
-        except subprocess.CalledProcessError:
-            print("Called Process Error Occured ... " + name)
-            return
-        ################################
-
-        threshold = sorted(normalized_kl_divergence_results)[-int(0.05 * len(normalized_kl_divergence_results))]
-        # print(threshold)
-        # Set values greater than or equal to the threshold to 1, and the rest to 0
-        support_kl_div_filtered_1_frac = sum(binary_results) / len(binary_results)  # how much of the msa is difficult
-        print("support filtered: " + str(support_kl_div_filtered_1_frac))
-        support_kl_div_filtered_1_frac_thresh = sum(binary_results_threshold) / len(
-            binary_results_threshold)  # how much of the msa is difficult
-        print("support filtered threshold: " + str(support_kl_div_filtered_1_frac_thresh))
-
         results_final = []
 
         for record in alignment:
@@ -442,201 +192,16 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
             max_a_max_b = abs(max_a - max_b)
             mean_a_mean_b = abs(mean_a - mean_b)
             min_a_min_b = abs(min_a - min_b)
+            diff_std_a_std_b = abs(std_a - std_b)
 
-            non_gap_count = 0
-            for char in queryseq:
-                if char not in ["-", "N"]:
-                    non_gap_count += 1
-            gap_count = len(queryseq) - non_gap_count
-
-            gap_match_counter = 0
-            non_gap_match_counter = 0
-
-            non_diff_match_counter_parta = 0
-            non_diff_match_counter_partb = 0
-
-            diff_match_counter_parta = 0
-            diff_match_counter_partb = 0
-
-            for i in range(len(alignment_a[0])):
-                if (binary_results[i] == 1) and (queryseq[i] in ["-", "N"]):
-                    gap_match_counter += 1
-                if (binary_results[i] == 1) and (queryseq[i] not in ["-", "N"]):
-                    non_gap_match_counter += 1
-                if (binary_results[i] == 0):
-                    if (queryseq[i]) == alignment_a[0][i]:
-                        non_diff_match_counter_parta += 1
-                    if (queryseq[i]) == alignment_b[0][i]:
-                        non_diff_match_counter_partb += 1
-                if (binary_results[i] == 1):
-                    if (queryseq[i]) == alignment_a[0][i]:
-                        diff_match_counter_parta += 1
-                    if (queryseq[i]) == alignment_b[0][i]:
-                        diff_match_counter_partb += 1
-            try:
-                non_diff_match_counter_parta = (non_diff_match_counter_parta / len(alignment_a)) / (
-                        len(queryseq) - (sum(binary_results)))
-                non_diff_match_counter_partb = (non_diff_match_counter_partb / len(alignment_b)) / (len(queryseq) - (
-                    sum(binary_results)))  # how many non diff sites match diff in avg on part b?
-
-                diff_match_counter_parta = (diff_match_counter_parta / len(alignment_a)) / sum(binary_results)
-                diff_match_counter_partb = (diff_match_counter_partb / len(alignment_b)) / sum(
-                    binary_results)  # how many non diff sites match diff in avg on part b?
-            except ZeroDivisionError:
-                print("Div Error occured")
-
-                non_diff_match_counter_parta = 0
-                non_diff_match_counter_partb = 0
-                diff_match_counter_parta = 0
-                diff_match_counter_partb = 0
-            if sum(binary_results) != 0:
-                gaps_over_diff_sites_frac = gap_match_counter / sum(binary_results)  # how many of diff sites are gaps
-                non_gaps_over_diff_sites_frac = non_gap_match_counter / sum(
-                    binary_results)  # how many of diff sites are non gaps
-            else:
-                gaps_over_diff_sites_frac = 0
-                non_gaps_over_diff_sites_frac = 0
-
-            if non_gap_count != 0:
-                rel_non_gap_over_diff_sites = non_gap_match_counter / non_gap_count  # how much of the actual sequence without gaps lies over diff sites
-            else:
-                rel_non_gap_over_diff_sites = 0
-
-            if gap_count != 0:
-                rel_gap_over_diff_sites = gap_match_counter / gap_count  # how much of the gaps lies over diff site
-            else:
-                rel_gap_over_diff_sites = 0
-
-            gap_match_counter_thresh = 0
-            non_gap_match_counter_thresh = 0
-            non_diff_match_counter_parta_thresh = 0
-            non_diff_match_counter_partb_thresh = 0
-
-            diff_match_counter_parta_thresh = 0
-            diff_match_counter_partb_thresh = 0
-
-            for i in range(len(alignment_a[0])):
-                if (binary_results_threshold[i] == 1) and (queryseq[i] in ["-", "N"]):
-                    gap_match_counter_thresh += 1
-                if (binary_results_threshold[i] == 1) and (queryseq[i] not in ["-", "N"]):
-                    non_gap_match_counter_thresh += 1
-                if (binary_results_threshold[i] == 0):
-                    if (queryseq[i]) == alignment_a[0][i]:
-                        non_diff_match_counter_parta_thresh += 1
-                    if (queryseq[i]) == alignment_b[0][i]:
-                        non_diff_match_counter_partb_thresh += 1
-                if (binary_results_threshold[i] == 1):
-                    if (queryseq[i]) == alignment_a[0][i]:
-                        diff_match_counter_parta_thresh += 1
-                    if (queryseq[i]) == alignment_b[0][i]:
-                        diff_match_counter_partb_thresh += 1
-            try:
-                non_diff_match_counter_parta_thresh = (non_diff_match_counter_parta_thresh / len(alignment_a)) / (
-                        len(queryseq) - (sum(binary_results_threshold)))
-                non_diff_match_counter_partb_thresh = (non_diff_match_counter_partb_thresh / len(alignment_b)) / (
-                        len(queryseq) - (
-                    sum(binary_results_threshold)))  # how many non diff sites match in avg on part b?
-
-                diff_match_counter_parta_thresh = (diff_match_counter_parta_thresh / len(alignment_a)) / sum(
-                    binary_results_threshold)
-                diff_match_counter_partb_thresh = (diff_match_counter_partb_thresh / len(alignment_b)) / sum(
-                    binary_results_threshold)  # how many non diff sites match in avg on part b?
-            except ZeroDivisionError:
-                print("Div Error occured")
-                non_diff_match_counter_parta_thresh = 0
-                non_diff_match_counter_partb_thresh = 0
-                diff_match_counter_parta_thresh = 0
-                diff_match_counter_partb_thresh = 0
-            if sum(binary_results_threshold) != 0:
-                gaps_over_diff_sites_frac_thresh = gap_match_counter_thresh / sum(
-                    binary_results_threshold)  # how many of diff sites are gaps
-                non_gaps_over_diff_sites_frac_thresh = non_gap_match_counter_thresh / sum(
-                    binary_results_threshold)  # how many of diff sites are non gaps
-            else:
-                gaps_over_diff_sites_frac_thresh = 0
-                non_gaps_over_diff_sites_frac_thresh = 0
-
-            if non_gap_count != 0:
-                rel_non_gap_over_diff_sites_thresh = non_gap_match_counter_thresh / non_gap_count  # how much of the actual sequence without gaps lies over diff sites
-            else:
-                rel_non_gap_over_diff_sites_thresh = 0
-
-            if gap_count != 0:
-                rel_gap_over_diff_sites_thresh = gap_match_counter_thresh / gap_count  # how much of the gaps lies over diff site
-            else:
-                rel_gap_over_diff_sites_thresh = 0
-
-            if min_support == 0:
-                min_support = 1
-
-            results_final.append((name, record.id, support_kl_div_filtered_1_frac, gaps_over_diff_sites_frac,
-                                  non_gaps_over_diff_sites_frac, rel_non_gap_over_diff_sites, rel_gap_over_diff_sites,
-                                  support_kl_div_filtered_1_frac_thresh, gaps_over_diff_sites_frac_thresh,
-                                  non_gaps_over_diff_sites_frac_thresh, rel_non_gap_over_diff_sites_thresh,
-                                  rel_gap_over_diff_sites_thresh,
-                                  non_diff_match_counter_parta_thresh, non_diff_match_counter_partb_thresh,
-                                  diff_match_counter_parta_thresh, diff_match_counter_partb_thresh,
-                                  non_diff_match_counter_parta, non_diff_match_counter_partb, diff_match_counter_parta,
-                                  diff_match_counter_partb, min_support,
-                                  support_kl_div_filtered_1_frac / (min_support / 100),
-                                  gaps_over_diff_sites_frac / (min_support / 100),
-                                  non_gaps_over_diff_sites_frac / (min_support / 100),
-                                  rel_non_gap_over_diff_sites / (min_support / 100),
-                                  rel_gap_over_diff_sites / (min_support / 100),
-                                  support_kl_div_filtered_1_frac_thresh / (min_support / 100),
-                                  gaps_over_diff_sites_frac_thresh / (min_support / 100),
-                                  non_gaps_over_diff_sites_frac_thresh / (min_support / 100),
-                                  rel_non_gap_over_diff_sites_thresh / (min_support / 100),
-                                  rel_gap_over_diff_sites_thresh / (min_support / 100),
-                                  non_diff_match_counter_parta_thresh / (min_support / 100),
-                                  non_diff_match_counter_partb_thresh / (min_support / 100),
-                                  diff_match_counter_parta_thresh / (min_support / 100),
-                                  diff_match_counter_partb_thresh / (min_support / 100),
-                                  non_diff_match_counter_parta / (min_support / 100),
-                                  non_diff_match_counter_partb / (min_support / 100),
-                                  diff_match_counter_parta / (min_support / 100),
-                                  diff_match_counter_partb / (min_support / 100), mean_a, max_a, min_a, std_a, mean_b,
-                                  max_b, min_b, std_b, min_a_min_b, max_a_max_b, mean_a_mean_b,
-                                  np.std(kl_divergence_results), np.mean(kl_divergence_results),
-                                  max(kl_divergence_results), min(kl_divergence_results)
-                                  ))
+            results_final.append((name, record.id, mean_a, max_a, min_a, std_a, mean_b,
+                                  max_b, min_b, std_b, min_a_min_b, max_a_max_b, mean_a_mean_b, diff_std_a_std_b))
 
         columns = [
             'sampleId',
             "dataset",
-            'support_kl_div_filtered_1_frac',
-            'gaps_over_diff_sites_frac',
-            'non_gaps_over_diff_sites_frac',
-            'rel_non_gap_over_diff_sites',
-            'rel_gap_over_diff_sites',
-            'support_kl_div_filtered_1_frac_thresh',
-            'gaps_over_diff_sites_frac_thresh',
-            'non_gaps_over_diff_sites_frac_thresh',
-            'rel_non_gap_over_diff_sites_thresh',
-            'rel_gap_over_diff_sites_thresh',
-            "non_diff_match_counter_parta_thresh", "non_diff_match_counter_partb_thresh",
-            "diff_match_counter_parta_thresh",
-            "diff_match_counter_partb_thresh",
-            "non_diff_match_counter_parta", "non_diff_match_counter_partb", "diff_match_counter_parta",
-            "diff_match_counter_partb", "min_support_split",
-            'support_kl_div_filtered_1_frac_w',
-            'gaps_over_diff_sites_frac_w',
-            'non_gaps_over_diff_sites_frac_w',
-            'rel_non_gap_over_diff_sites_w',
-            'rel_gap_over_diff_sites_w',
-            'support_kl_div_filtered_1_frac_thresh:w',
-            'gaps_over_diff_sites_frac_thresh_w',
-            'non_gaps_over_diff_sites_frac_thresh_w',
-            'rel_non_gap_over_diff_sites_thresh_w',
-            'rel_gap_over_diff_sites_thresh_w',
-            "non_diff_match_counter_parta_thresh_w", "non_diff_match_counter_partb_thresh_w",
-            "diff_match_counter_parta_thresh_w",
-            "diff_match_counter_partb_thresh_w",
-            "non_diff_match_counter_parta_w", "non_diff_match_counter_partb_w", "diff_match_counter_parta_w",
-            "diff_match_counter_partb_w",
             "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b", "min_a_min_b", "max_a_max_b",
-            "mean_a_mean_b",
-            "divergence_results_std", "divergence_results_mean", "divergence_results_max", "divergence_results_min"
+            "mean_a_mean_b", "diff_std_a_std_b"
         ]
         df = pd.DataFrame(results_final, columns=columns)
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
@@ -768,8 +333,6 @@ def compute_rf_distance_statistics(bootstrap_path, reference_tree_path):
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", ".newick").tolist()
-random.seed(80)
-filenames = random.sample(filenames, 500)
 results = []
 counter = 0
 
@@ -782,13 +345,11 @@ for file in filenames:
     if not os.path.exists(bootstrap_path):
         print("Skipped, no bootstrap found: " + file)
         continue
-
-    support_path = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
+    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_199.raxml.support"
+    #support_path = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
     msa_path = os.path.join(os.pardir, "data/raw/msa/") + file.replace(".newick", "_reference.fasta")
     calculate_imp_site(support_path, msa_path, file.replace(".newick", ""))
 
-    tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
-    print("Finished " + file)
     continue
     distance_file = os.path.join(os.pardir, "data/processed/features",
                                  file.replace(".newick", "") + "16p_msa_perc_hash_dist.csv")
@@ -872,10 +433,10 @@ for file in filenames:
          min_rf, max_rf, mean_rf, std_dev_rf,
          skewness_rf, kurtosis_rf))
 
-df = pd.DataFrame(results,
-                  columns=["dataset", "min_sup_tree", "max_sup_tree", "mean_sup_tree", "std_sup_tree", "sk_sup_tree",
-                           "kurt_support", "distance_major_modes_supp", "abs_distance_major_modes_supp",
-                           "weighted_distance_major_modes_supp", "abs_weighted_distance_major_modes_supp",
-                           "min_rf_tree", "max_rf_tree", "mean_rf_tree", "std_rf_tree", "sk_rf_tree", "kur_rf_tree"
-                           ])
-df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
+#df = pd.DataFrame(results,
+ #                 columns=["dataset", "min_sup_tree", "max_sup_tree", "mean_sup_tree", "std_sup_tree", "sk_sup_tree",
+  #                         "kurt_support", "distance_major_modes_supp", "abs_distance_major_modes_supp",
+   #                        "weighted_distance_major_modes_supp", "abs_weighted_distance_major_modes_supp",
+    #                       "min_rf_tree", "max_rf_tree", "mean_rf_tree", "std_rf_tree", "sk_rf_tree", "kur_rf_tree"
+     #                      ])
+#df.to_csv(os.path.join(os.pardir, "data/processed/features", "tree_uncertainty.csv"), index=False)
