@@ -206,7 +206,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         ]
         df = pd.DataFrame(results_final, columns=columns)
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                               name + "_diff_site_stats.csv"))
+                               name + "_diff_site_stats_bad.csv"))
         return
 
 
