@@ -203,8 +203,8 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         columns = [
             'sampleId',
             "dataset",
-            "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b", "min_a_min_b", "max_a_max_b",
-            "mean_a_mean_b", "diff_std_a_std_b", "support_inner_branch", "len_ratio_inner_branch"
+            "mean_a_good", "max_a_good", "min_a_good", "std_a_good", "mean_b_good", "max_b_good", "min_b_good", "std_b_good", "min_a_min_b_good", "max_a_max_b_good",
+            "mean_a_mean_b_good", "diff_std_a_std_b_good", "support_inner_branch_good", "len_ratio_inner_branch_good"
         ]
         df = pd.DataFrame(results_final, columns=columns)
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
