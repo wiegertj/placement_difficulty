@@ -51,6 +51,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     print(df["entropy"].median())
     df.columns = df.columns.str.replace(':', '_')
 
+    df =df[["dataset", "entropy", "sampleId",'mean_kmer_sim', 'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim',
+    'frac_inv_sites_msa9', 'transversion_count_rel7',
+    'std_fraction_char_rests7', 'transversion_count_rel5',
+    'min_fraction_char_rests5', 'std_length', 'sk_clo_sim',
+    'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot',
+    'group']]
+
     #df = df[[]]
     ####  boot
     #df = df[["dataset", "entropy", "max_rf_tree", "sampleId",
@@ -323,12 +330,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     metrics_df = pd.DataFrame(metrics_dict)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot.csv")):
+                                       "diff_guesser_noboot_new.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "diff_guesser_noboot.csv")), index=False)
+                                                    "diff_guesser_noboot_new.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot.csv"),
+                                       "diff_guesser_noboot_new.csv"),
                           index=False,
                           mode='a', header=False)
 
@@ -439,5 +446,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
                 plt.savefig(f"lgbm_{i}_noboot.png", bbox_inches='tight')
 
 
-for i in range(0, 1):
+for i in range(0, 10):
     light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
