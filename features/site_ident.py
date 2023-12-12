@@ -345,7 +345,7 @@ for file in filenames:
     if not os.path.exists(bootstrap_path):
         print("Skipped, no bootstrap found: " + file)
         continue
-    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_199.raxml.support"
+    support_path = os.path.join(os.pardir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_199.raxml.support"
     #support_path = os.path.join(os.pardir, "data/raw/reference_tree/") + file + ".raxml.support"
     msa_path = os.path.join(os.pardir, "data/raw/msa/") + file.replace(".newick", "_reference.fasta")
     calculate_imp_site(support_path, msa_path, file.replace(".newick", ""))
