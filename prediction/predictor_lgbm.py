@@ -105,72 +105,84 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
       #  "cv_ham_dist": "coefficient_variation_hamming_dist"
     #}
 
-    ### no boot
-    df = df[["avg_rel_rf_no_boot","dataset", "entropy", "sampleId",
-        "min_fraction_char_rests5",
-        "no_top_boot",
-        "transversion_count_rel5",
-        "kur_kmer_sim",
-        "std_length",
-        "min_a_min_b",
-        "transversion_count_rel7",
-        "max_subst_freq",
-        "std_fraction_char_rests8",
-        "std_fraction_char_rests7",
-        "sk_clo_sim",
-        "sk_kmer_sim",
-        "std_kmer_sim",
-        "diff_match_counter_parta_w",
-        "avg_entropy_msa",
-        "spec_n1_query",
-        "mean_kmer_sim",
-        "kur_kmer_sim25",
-        "cumSum_abs_max_query",
-        "frac_inv_sites_msa9",
-        "diff_match_counter_parta",
-        "rel_std_kmer_sim10",
-        "std_fraction_char_rests5",
-        "std_perc_hash_lcs",
-        "match_rel_8",
-        "approxEntropy_ape_query",
-        "mean_a_mean_b",
-        "avg_rel_rf_boot",
-        "rel_gap_over_diff_sites_thresh_w"]]
 
-    column_name_mapping = {"avg_rel_rf_no_boot": "mean_nrf_parsimony_trees",
-    "min_fraction_char_rests5": "min_frac_non_major_residues_t5",
-    "no_top_boot": "no_topologies_parsimony",
-    "transversion_count_rel5": "transversion_frac_t5",
-    "kur_kmer_sim": "kurtosis_kmer_similarity",
-    "std_length": "std_branch_length",
-    "min_a_min_b": "min_ham_dist_central_split",
-    "transversion_count_rel7": "transversion_frac_t7",
-    "max_subst_freq": "max_parsimony_subst_freq",
-    "std_fraction_char_rests8": "std_frac_non_major_residues_t8",
-    "std_fraction_char_rests7": "std_frac_non_major_residues_t7",
-    "sk_clo_sim": "skewness_closeness_centrality",
-    "sk_kmer_sim": "skewness_kmer_similarity",
-    "std_kmer_sim": "std_kmer_similarity",
-    "diff_match_counter_parta_w": "impure_sites_match_counter_w",
-    "avg_entropy_msa": "mean_site_entropy_msa",
-    "spec_n1_query": "spec_n1_query",
-    "mean_kmer_sim": "mean_kmer_similarity",
-    "kur_kmer_sim25": "kurtosis_25mer_similarity_perc_hash",
-    "cumSum_abs_max_query": "cumSum_abs_max_query",
-    "frac_inv_sites_msa9": "inv_site_fraction_msa_t9",
-    "diff_match_counter_parta": "impure_sites_match_counter",
-    "rel_std_kmer_sim10": "std_10mer_similarity_perc_hash",
-    "std_fraction_char_rests5": "std_frac_non_major_residues_t5",
-    "std_perc_hash_lcs": "std_perc_hash_lcs",
-    "match_rel_8": "matching_sites_inv_t8",
-    "approxEntropy_ape_query": "approx_entropy_ape_query",
-    "mean_a_mean_b": "mean_ham_dist_central_split",
-    "avg_rel_rf_boot": "mean_rf_parsimony_trees",
-    "rel_gap_over_diff_sites_thresh_w": "gaps_frac_over_impure_sites"}
+
+
+
+
+
+
+
+
+
+
+
+    ### no boot
+    #df = df[["avg_rel_rf_no_boot","dataset", "entropy", "sampleId",
+     #   "min_fraction_char_rests5",
+    #    "no_top_boot",
+    #    "transversion_count_rel5",
+    #    "kur_kmer_sim",
+    #    "std_length",
+     #   "min_a_min_b",
+     #   "transversion_count_rel7",
+    #    "max_subst_freq",
+    #    "std_fraction_char_rests8",
+    #    "std_fraction_char_rests7",
+     #   "sk_clo_sim",
+     #   "sk_kmer_sim",
+     #   "std_kmer_sim",
+     #   "diff_match_counter_parta_w",
+    #    "avg_entropy_msa",
+    #    "spec_n1_query",
+    #    "mean_kmer_sim",
+    #    "kur_kmer_sim25",
+    #    "cumSum_abs_max_query",
+     #   "frac_inv_sites_msa9",
+     #   "diff_match_counter_parta",
+    #   "rel_std_kmer_sim10",
+    #    "std_fraction_char_rests5",
+     #   "std_perc_hash_lcs",
+    #    "match_rel_8",
+    #    "approxEntropy_ape_query",
+   #     "mean_a_mean_b",
+    #    "avg_rel_rf_boot",
+    #    "rel_gap_over_diff_sites_thresh_w"]]
+
+    #column_name_mapping = {"avg_rel_rf_no_boot": "mean_nrf_parsimony_trees",
+    #"min_fraction_char_rests5": "min_frac_non_major_residues_t5",
+    #"no_top_boot": "no_topologies_parsimony",
+    #"transversion_count_rel5": "transversion_frac_t5",
+    #"kur_kmer_sim": "kurtosis_kmer_similarity",
+    #"std_length": "std_branch_length",
+    #"min_a_min_b": "min_ham_dist_central_split",
+    #"transversion_count_rel7": "transversion_frac_t7",
+    #"max_subst_freq": "max_parsimony_subst_freq",
+    #"std_fraction_char_rests8": "std_frac_non_major_residues_t8",
+    #"std_fraction_char_rests7": "std_frac_non_major_residues_t7",
+    #"sk_clo_sim": "skewness_closeness_centrality",
+    #"sk_kmer_sim": "skewness_kmer_similarity",
+    #"std_kmer_sim": "std_kmer_similarity",
+    #"diff_match_counter_parta_w": "impure_sites_match_counter_w",
+    #"avg_entropy_msa": "mean_site_entropy_msa",
+    #"spec_n1_query": "spec_n1_query",
+    #"mean_kmer_sim": "mean_kmer_similarity",
+    #"kur_kmer_sim25": "kurtosis_25mer_similarity_perc_hash",
+    #"cumSum_abs_max_query": "cumSum_abs_max_query",
+    #"frac_inv_sites_msa9": "inv_site_fraction_msa_t9",
+    #"diff_match_counter_parta": "impure_sites_match_counter",
+    #"rel_std_kmer_sim10": "std_10mer_similarity_perc_hash",
+    #"std_fraction_char_rests5": "std_frac_non_major_residues_t5",
+    #"std_perc_hash_lcs": "std_perc_hash_lcs",
+    #"match_rel_8": "matching_sites_inv_t8",
+    #"approxEntropy_ape_query": "approx_entropy_ape_query",
+    #"mean_a_mean_b": "mean_ham_dist_central_split",
+    #"avg_rel_rf_boot": "mean_rf_parsimony_trees",
+    #"rel_gap_over_diff_sites_thresh_w": "gaps_frac_over_impure_sites"}
 
 
     # Rename the columns in the DataFrame
-    df = df.rename(columns=column_name_mapping)
+    #df = df.rename(columns=column_name_mapping)
 
     print(df.columns)
     print(df.shape)
@@ -424,4 +436,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
 
 
 for i in range(0, 1):
-    light_gbm_regressor(rfe=False, shapley_calc=True, targets=[])
+    light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
