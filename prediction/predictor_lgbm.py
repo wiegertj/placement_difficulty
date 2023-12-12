@@ -43,7 +43,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=30, shapley_calc=True, targets=
     df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pars_top_features.csv"))
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot.csv"))
     df = df.merge(df_pars_top, on=["dataset"], how="inner")
-    df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "difficult", "current_closest_taxon_perc_ham"],
+    df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "difficult", "current_closest_taxon_perc_ham",
+                     "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b",],
             inplace=True)
     print("Median Entropy: ")
     print(df["entropy"].median())
