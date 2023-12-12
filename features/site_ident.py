@@ -103,7 +103,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         phylo_tree = Tree(tree_str)
         print(len(phylo_tree.get_leaves()))
         # Initialize variables to store the branch with the least support
-        max_support = 100  # Initialize with a high value
+        max_support = 0  # Initialize with a high value
         min_support_branch = None
         min_support_branches10 = []
         # Iterate through all branches in the tree
@@ -111,7 +111,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
 
         for node in phylo_tree.traverse("postorder"):
             if node.support is not None and not node.is_root() and not node.is_leaf():
-                if node.support < max_support and (len(node.get_leaves()) > (0.35 * len(phylo_tree.get_leaves()))) and (
+                if node.support > max_support and (len(node.get_leaves()) > (0.35 * len(phylo_tree.get_leaves()))) and (
                         len(node.get_leaves()) < (0.65 * len(phylo_tree.get_leaves()))):
                     print("matched")
                     max_support = node.support
@@ -120,7 +120,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         if min_support_branch == None or max_support > 50:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
-                    if node.support < max_support and (
+                    if node.support > max_support and (
                             len(node.get_leaves()) > (0.25 * len(phylo_tree.get_leaves()))) and (
                             len(node.get_leaves()) < (0.75 * len(phylo_tree.get_leaves()))):
                         print("matched larger")
@@ -130,7 +130,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         if min_support_branch == None or max_support > 50:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
-                    if node.support < max_support and (
+                    if node.support > max_support and (
                             len(node.get_leaves()) > (0.15 * len(phylo_tree.get_leaves()))) and (
                             len(node.get_leaves()) < (0.85 * len(phylo_tree.get_leaves()))):
                         print("matched much larger")
@@ -140,7 +140,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         if min_support_branch == None or max_support > 50:
             for node in phylo_tree.traverse("postorder"):
                 if node.support is not None and not node.is_root() and not node.is_leaf():
-                    if node.support < max_support:
+                    if node.support > max_support:
                         print("matched None")
                         max_support = node.support
                         min_support_branch = node
@@ -208,7 +208,7 @@ def calculate_imp_site(support_file_path, msa_filepath, name):
         ]
         df = pd.DataFrame(results_final, columns=columns)
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                               name + "_diff_site_stats_bad.csv"))
+                               name + "_diff_site_stats_good.csv"))
         return
 
 
