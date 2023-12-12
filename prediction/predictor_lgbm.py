@@ -55,8 +55,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     'frac_inv_sites_msa9', 'transversion_count_rel7',
     'std_fraction_char_rests7', 'transversion_count_rel5',
     'min_fraction_char_rests5', 'std_length', 'sk_clo_sim',
-    'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot',
-    'group']]
+    'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot'
+    ]]
 
     #df = df[[]]
     ####  boot
