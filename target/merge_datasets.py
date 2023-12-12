@@ -240,9 +240,7 @@ combined_df = loo_resuls_combined
 
 columns_with_nan = combined_df.columns[combined_df.isna().any()].tolist()
 
-for col in columns_with_nan:
-    num_nan = combined_df[col].isna().sum()
-    print(f"Column '{col}' contains {num_nan} NaN values.")
+
 
 columns_to_fill = ['kur_gaps_msa', 'kur_gap_query', 'sk_kmer_sim25', 'kur_kmer_sim25',
                     'sk_kmer_sim50', 'kur_kmer_sim50', 'sk_dist_hu', 'sk_dist_lbp',
@@ -250,7 +248,11 @@ columns_to_fill = ['kur_gaps_msa', 'kur_gap_query', 'sk_kmer_sim25', 'kur_kmer_s
                     'kurtosis_branch_length_tips', 'skewness_nearest', 'kurtosis_nearest',
                     'sk_branch_len_nearest', 'kurt_branch_len_nearest', 'skw_fraction_char_rests8',
                     'kur_fraction_char_rests8', 'skw_fraction_char_rests7', 'kur_fraction_char_rests7',
-                    'skw_fraction_char_rests5', 'kur_fraction_char_rests5']
+                    'skw_fraction_char_rests5', 'kur_fraction_char_rests5', "kur_fraction_char_rests9", "skw_fraction_char_rests9"]
+
+for col in columns_with_nan:
+    num_nan = combined_df[col].isna().sum()
+    print(f"Column '{col}' contains {num_nan} NaN values.")
 
 for column in columns_to_fill:
     if column in combined_df.columns:
