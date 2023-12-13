@@ -50,13 +50,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     print("Median Entropy: ")
     print(df["entropy"].median())
     df.columns = df.columns.str.replace(':', '_')
-
-    df =df[["dataset", "entropy", "sampleId",'mean_kmer_sim', 'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim',
-    'frac_inv_sites_msa9', 'transversion_count_rel7',
-    'std_fraction_char_rests7', 'transversion_count_rel5',
-    'min_fraction_char_rests5', 'std_length', 'sk_clo_sim',
-    'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot'
-    ]]
+    #  final
+    #df =df[["dataset", "entropy", "sampleId",'mean_kmer_sim', 'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim',
+    #'frac_inv_sites_msa9', 'transversion_count_rel7',
+    #'std_fraction_char_rests7', 'transversion_count_rel5',
+    #'min_fraction_char_rests5', 'std_length', 'sk_clo_sim',
+    #'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot'
+    #]]
 
     #df = df[[]]
     ####  boot
