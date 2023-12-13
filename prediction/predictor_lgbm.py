@@ -40,9 +40,9 @@ def MBE(y_true, y_pred):
 
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=[]):
-    #df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pars_top_features.csv"))
-    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_boot.csv"))
-    #df = df.merge(df_pars_top, on=["dataset"], how="inner")
+    df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pars_top_features.csv"))
+    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot.csv"))
+    df = df.merge(df_pars_top, on=["dataset"], how="inner")
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "difficult", "current_closest_taxon_perc_ham",
                      "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b",
                      "mean_a_good", "std_eig_sim", "max_a_good", "min_a_good", "std_a_good", "mean_b_good", "max_b_good", "min_b_good", "std_b_good",],
@@ -51,29 +51,29 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     print(df["entropy"].median())
     df.columns = df.columns.str.replace(':', '_')
     # final boot
-    df = df[["dataset", "entropy", "sampleId","max_rf_tree",
-    "sk_sup_tree",
-    "transversion_count_rel5",
-    "sk_clo_sim",
-    "kur_kmer_sim",
-    "avg_entropy_msa",
-    "std_fraction_char_rests8",
-    "mean_rf_tree",
-    "min_fraction_char_rests5",
-    "sk_kmer_sim",
-    "std_kmer_sim",
-    "cumSum_abs_max_query",
-    "std_fraction_char_rests7",
-    "mean_kmer_sim",
-    "mean_sup_tree"]]
+    #df = df[["dataset", "entropy", "sampleId","max_rf_tree",
+    #"sk_sup_tree",
+    #"transversion_count_rel5",
+    #"sk_clo_sim",
+    #"kur_kmer_sim",
+    #"avg_entropy_msa",
+    #"std_fraction_char_rests8",
+    #"mean_rf_tree",
+    #"min_fraction_char_rests5",
+    #"sk_kmer_sim",
+    #"std_kmer_sim",
+    #"cumSum_abs_max_query",
+    #"std_fraction_char_rests7",
+    #"mean_kmer_sim",
+    #"mean_sup_tree"]]
 
     #  final noboot
-    #df =df[["dataset", "entropy", "sampleId",'mean_kmer_sim', 'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim',
-    #'frac_inv_sites_msa9', 'transversion_count_rel7',
-    #'std_fraction_char_rests7', 'transversion_count_rel5',
-    #'min_fraction_char_rests5', 'std_length', 'sk_clo_sim',
-    #'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot'
-    #]]
+    df =df[["dataset", "entropy", "sampleId",'mean_kmer_sim', 'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim',
+    'frac_inv_sites_msa9', 'transversion_count_rel7',
+    'std_fraction_char_rests7', 'transversion_count_rel5',
+    'min_fraction_char_rests5', 'std_length', 'sk_clo_sim',
+    'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot'
+    ]]
 
     #df = df[[]]
     ####  boot
@@ -347,12 +347,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     metrics_df = pd.DataFrame(metrics_dict)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_boot_new.csv")):
+                                       "diff_guesser_noboot_new.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "diff_guesser_boot_new.csv")), index=False)
+                                                    "diff_guesser_noboot_new.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_boot_new.csv"),
+                                       "diff_guesser_noboot_new.csv"),
                           index=False,
                           mode='a', header=False)
 
@@ -379,7 +379,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     # importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     # importance_df = importance_df.nlargest(35, 'Importance')
 
-    importance_df.to_csv("diff_guesser_importances_boot_new.csv")
+    importance_df.to_csv("diff_guesser_importances_noboot_new.csv")
 
     plt.figure(figsize=(10, 6))
     plt.bar(importance_df['Feature'], importance_df['Importance'])
