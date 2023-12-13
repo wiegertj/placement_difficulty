@@ -330,12 +330,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     metrics_df = pd.DataFrame(metrics_dict)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new.csv")):
+                                       "diff_guesser_boot_new.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "diff_guesser_noboot_new.csv")), index=False)
+                                                    "diff_guesser_boot_new.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new.csv"),
+                                       "diff_guesser_boot_new.csv"),
                           index=False,
                           mode='a', header=False)
 
@@ -446,5 +446,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
                 plt.savefig(f"lgbm_{i}_noboot.png", bbox_inches='tight')
 
 
-for i in range(0, 10):
+for i in range(0, 1):
     light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
