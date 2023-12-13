@@ -372,12 +372,14 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     importance_df = pd.DataFrame(
         {'Feature': X_train.drop(axis=1, columns=["group"]).columns, 'Importance': feature_importance})
     importance_df = importance_df.sort_values(by='Importance', ascending=False)
+    total_sum = importance_df['Importance'].sum()
+    importance_df['Normalized_Importance'] = importance_df['Importance'] / total_sum
 
     scaler = MinMaxScaler()
     # importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     # importance_df = importance_df.nlargest(35, 'Importance')
 
-    importance_df.to_csv("diff_guesser_importances_noboot_new.csv")
+    importance_df.to_csv("diff_guesser_importances_boot_new.csv")
 
     plt.figure(figsize=(10, 6))
     plt.bar(importance_df['Feature'], importance_df['Importance'])
@@ -463,5 +465,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
                 plt.savefig(f"lgbm_{i}_noboot.png", bbox_inches='tight')
 
 
-for i in range(0, 9):
+for i in range(0, 1):
     light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
