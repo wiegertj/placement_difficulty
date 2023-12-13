@@ -50,7 +50,24 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     print("Median Entropy: ")
     print(df["entropy"].median())
     df.columns = df.columns.str.replace(':', '_')
-    #  final
+    # final boot
+    df = df[["dataset", "entropy", "sampleId","max_rf_tree",
+    "sk_sup_tree",
+    "transversion_count_rel5",
+    "sk_clo_sim",
+    "kur_kmer_sim",
+    "avg_entropy_msa",
+    "std_fraction_char_rests8",
+    "mean_rf_tree",
+    "min_fraction_char_rests5",
+    "sk_kmer_sim",
+    "std_kmer_sim",
+    "cumSum_abs_max_query",
+    "std_fraction_char_rests7",
+    "mean_kmer_sim",
+    "mean_sup_tree"]]
+
+    #  final noboot
     #df =df[["dataset", "entropy", "sampleId",'mean_kmer_sim', 'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim',
     #'frac_inv_sites_msa9', 'transversion_count_rel7',
     #'std_fraction_char_rests7', 'transversion_count_rel5',
@@ -446,5 +463,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
                 plt.savefig(f"lgbm_{i}_noboot.png", bbox_inches='tight')
 
 
-for i in range(0, 1):
-    light_gbm_regressor(rfe=True, shapley_calc=False, targets=[])
+for i in range(0, 9):
+    light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
