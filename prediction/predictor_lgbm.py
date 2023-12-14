@@ -208,6 +208,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     "avg_rel_rf_boot": "mean_rf_parsimony_trees",
     "rel_gap_over_diff_sites_thresh_w": "gaps_frac_over_impure_sites"}
 
+    pickle_version = pickle.format_version
+
+    print("Pickle Version:", pickle_version)
+
     group_tree_space = ["mean_nrf_parsimony_trees", "avg_rel_rf_no_boot"]
     group_inv_sites = ["std_frac_query_residue_msa_t7", "transversion_frac_query_msa_t7", "transversion_frac_query_msa_t5",
                        "min_frac_non_major_residues_t5", "frac_inv_sites_msa9"]
