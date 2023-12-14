@@ -9,7 +9,6 @@ import optuna
 import random
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from statistics import mean
 from sklearn.feature_selection import RFE
 from sklearn.preprocessing import MinMaxScaler
@@ -367,14 +366,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     residuals = y_test - y_pred
 
-    plt.scatter(y_pred, residuals)
-    plt.xlabel("Predicted Values")
-    plt.ylabel("Residuals")
-    plt.title("Residual Plot")
-    plt.axhline(y=0, color='r', linestyle='--')  # Add a horizontal line at y=0 for reference
 
-    # Save the plot as an image file (e.g., PNG)
-    plt.savefig("residual_plot.png")
 
     feature_importance = final_model.feature_importance(importance_type='gain')
 
@@ -390,21 +382,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     importance_df.to_csv("diff_guesser_importances_noboot_new.csv")
 
-    plt.figure(figsize=(10, 6))
-    plt.bar(importance_df['Feature'], importance_df['Importance'])
-    plt.xticks(rotation=90)
-    plt.xlabel('Features')
-    plt.ylabel('Importance')
-    plt.title('Feature Importances')
-    plt.tight_layout()
+
 
     name = "8000"
     if rfe:
         name = name + "_rfe_" + str(rfe_feature_n)
 
     plot_filename = os.path.join(os.pardir, "data/prediction", "feature_importances_" + name + ".png")
-    plt.savefig(plot_filename)
-    plt.show()
 
     print("Feature Importances (Normalized):")
     for index, row in importance_df.iterrows():
@@ -451,44 +435,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         # Save the DataFrame to a CSV file
         shap_df.to_csv('shap_values_noboot.csv', index=False)
 
-        feature_names = [
-            a + ": " + str(b) for a, b in
-            zip(X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns,
-                np.abs(shap_values.values).mean(0).round(2))
-        ]
-        plt.figure(figsize=(10, 6))
-        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]),
-                          max_display=10,
-                          feature_names=feature_names)
 
-        plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + "shapely_summary_noboot" + "shap.png"),
-                    bbox_inches='tight')
-
-        plt.figure(figsize=(10, 6))
-        size_ = X_test.shape[0]
-        for i in range(0, size_):
-            if i < 10 or i > size_ - 10:
-                plt.figure(figsize=(10, 6))  # Adjust width and height as needed
-                # Create the waterfall plot
-                shap.initjs()  # Initialize JavaScript visualization
-                shap.plots.waterfall(shap_values[i], max_display=8)  # Limit the display to 10 features
-                plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
-                plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
-                plt.xticks(fontsize=14)  # Adjust x-axis tick font size
-                plt.yticks(fontsize=14)  # Adjust y-axis tick font size
-                plt.tight_layout()  # Adjust layout to prevent overlapping elements
-                plt.savefig(f"lgbm_{i}_noboot.png", bbox_inches='tight')
-            if i % 50 == 0:
-                plt.figure(figsize=(10, 6))  # Adjust width and height as needed
-                # Create the waterfall plot
-                shap.initjs()  # Initialize JavaScript visualization
-                shap.plots.waterfall(shap_values[i], max_display=8)  # Limit the display to 10 features
-                plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
-                plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
-                plt.xticks(fontsize=14)  # Adjust x-axis tick font size
-                plt.yticks(fontsize=14)  # Adjust y-axis tick font size
-                plt.tight_layout()  # Adjust layout to prevent overlapping elements
-                plt.savefig(f"lgbm_{i}_noboot.png", bbox_inches='tight')
 
 
 for i in range(0, 1):
