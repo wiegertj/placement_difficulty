@@ -208,6 +208,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     "avg_rel_rf_boot": "mean_rf_parsimony_trees",
     "rel_gap_over_diff_sites_thresh_w": "gaps_frac_over_impure_sites"}
 
+    group_tree_space = ["mean_nrf_parsimony_trees", "avg_rel_rf_no_boot"]
+    group_inv_sites = ["std_frac_query_residue_msa_t7", "transversion_frac_query_msa_t7", "transversion_frac_query_msa_t5",
+                       "min_frac_non_major_residues_t5", "frac_inv_sites_msa9"]
+    group_sim_qs_msa = ["kurtosis_15mer_similarity", "skewness_15mer_similarity", "std_15mer_similarity", "mean_15mer_similarity", "kurtosis_25mer_similarity_perc_hash"]
+    group_tree_msa = ["max_parsimony_subst_freq", "std_branch_length", "skewness_closeness_centrality"]
 
     # Rename the columns in the DataFrame
     df = df.rename(columns=column_name_mapping)
@@ -415,6 +420,23 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
                                    check_additivity=False)
         shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]),
                                 check_additivity=False)
+
+        shap_values_group_tree_space = shap_values[:, [feature in group_tree_space for feature in X_test.columns]].sum(
+            axis=1)
+        shap_values_group_inv_sites = shap_values[:, [feature in group_inv_sites for feature in X_test.columns]].sum(
+            axis=1)
+        shap_values_group_sim_qs_msa = shap_values[:, [feature in group_sim_qs_msa for feature in X_test.columns]].sum(
+            axis=1)
+        shap_values_group_tree_msa = shap_values[:, [feature in group_tree_msa for feature in X_test.columns]].sum(
+            axis=1)
+
+        # Displaying the results
+        for i in range(len(X_test)):
+            print(f"Instance {i + 1} - Group Tree Space Sum SHAP Values: {shap_values_group_tree_space[i]}")
+            print(f"Instance {i + 1} - Group Inv Sites Sum SHAP Values: {shap_values_group_inv_sites[i]}")
+            print(f"Instance {i + 1} - Group Sim QS MSA Sum SHAP Values: {shap_values_group_sim_qs_msa[i]}")
+            print(f"Instance {i + 1} - Group Tree MSA Sum SHAP Values: {shap_values_group_tree_msa[i]}")
+            print("------------------------")
 
         shap_df = pd.DataFrame(
             np.c_[shap_values.base_values, shap_values.values],
