@@ -421,13 +421,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         shap_values = explainer(X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]),
                                 check_additivity=False)
 
-        shap_values_group_tree_space = shap_values[:, [feature in group_tree_space for feature in X_test.columns]].sum(
+        shap_values_group_tree_space = shap_values[:, [feature in group_tree_space for feature in X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns]].sum(
             axis=1)
-        shap_values_group_inv_sites = shap_values[:, [feature in group_inv_sites for feature in X_test.columns]].sum(
+        shap_values_group_inv_sites = shap_values[:, [feature in group_inv_sites for feature in X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns]].sum(
             axis=1)
-        shap_values_group_sim_qs_msa = shap_values[:, [feature in group_sim_qs_msa for feature in X_test.columns]].sum(
+        shap_values_group_sim_qs_msa = shap_values[:, [feature in group_sim_qs_msa for feature in X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns]].sum(
             axis=1)
-        shap_values_group_tree_msa = shap_values[:, [feature in group_tree_msa for feature in X_test.columns]].sum(
+        shap_values_group_tree_msa = shap_values[:, [feature in group_tree_msa for feature in X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]).columns]].sum(
             axis=1)
 
         # Displaying the results
