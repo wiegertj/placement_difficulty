@@ -178,7 +178,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     #    "rel_gap_over_diff_sites_thresh_w"]]
 
     column_name_mapping = {"avg_rel_rf_no_boot": "mean_nrf_parsimony_trees",
-    "min_fraction_char_rests5": "min_frac_non_major_residues_t5",
+    "min_fraction_char_rests5": "min_frac_query_msa_t5",
     "no_top_boot": "no_topologies_parsimony_bootstrap",
     "transversion_count_rel5": "transversion_frac_query_msa_t5",
     "kur_kmer_sim": "kurtosis_15mer_similarity",
@@ -187,7 +187,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     "transversion_count_rel7": "transversion_frac_query_msa_t7",
     "max_subst_freq": "max_parsimony_subst_freq",
     "std_fraction_char_rests8": "std_frac_query_residue_msa_t8",
-    "std_fraction_char_rests7": "std_frac_query_residue_msa_t7",
+    "std_fraction_char_rests7": "inv_site_std_frac_query_msa_t7",
     "sk_clo_sim": "skewness_closeness_centrality",
     "sk_kmer_sim": "skewness_15mer_similarity",
     "std_kmer_sim": "std_15mer_similarity",
@@ -197,7 +197,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     "mean_kmer_sim": "mean_15mer_similarity",
     "kur_kmer_sim25": "kurtosis_25mer_similarity_perc_hash",
     "cumSum_abs_max_query": "cumSum_abs_max_query",
-    "frac_inv_sites_msa9": "inv_site_fraction_msa_t9",
+    "frac_inv_sites_msa9": "inv_site_matches_query_msa_t9",
     "diff_match_counter_parta": "impure_sites_match_counter",
     "rel_std_kmer_sim10": "std_10mer_similarity_perc_hash",
     "std_fraction_char_rests5": "std_frac_query_residue_msa_t5",
