@@ -203,8 +203,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     #####################################################################################################################
 
     def objective_rf(trial):
-        n_estimators = trial.suggest_int('n_estimators', 10, 200)
-        max_depth = trial.suggest_int('max_depth', 1, 32, log=True)
+        n_estimators = trial.suggest_int('n_estimators', 10, 15)
+        max_depth = trial.suggest_int('max_depth', 1, 32)
         min_samples_split = trial.suggest_float('min_samples_split', 0.1, 1.0)
         min_samples_leaf = trial.suggest_float('min_samples_leaf', 0.1, 0.5)
 
