@@ -224,7 +224,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
                 max_depth=max_depth,
                 min_samples_split=min_samples_split,
                 min_samples_leaf=min_samples_leaf,
-                random_state=42
+                random_state=42,
+                n_jobs=-1
             )
 
             model.fit(X_train_scaled, y_train_tmp)
