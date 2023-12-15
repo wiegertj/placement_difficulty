@@ -17,7 +17,7 @@ for file in filenames:
     print(counter)
     print(file)
 
-    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_499.raxml.support"
+    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_99.raxml.support"
 
     if not os.path.exists(support_path):
         print("Couldnt find support: " + support_path)
@@ -154,4 +154,4 @@ df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_boot_s
                                         "mean_pars_bootsupp_tree"
 
                                         ])
-df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony_boot_500.csv"))
+df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony_boot_100.csv"))
