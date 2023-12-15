@@ -407,8 +407,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
 
 
-
-light_gbm_regressor(rfe=False, shapley_calc=False)
+for i in range(0,9):
+    light_gbm_regressor(rfe=False, shapley_calc=False)
 
 
 
