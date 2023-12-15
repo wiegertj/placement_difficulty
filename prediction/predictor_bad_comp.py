@@ -193,10 +193,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_score_lr = study.best_value
     scaler = MinMaxScaler()
     X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.fit_transform(X_test.drop(axis=1, columns=["group"]))
     final_model_lr = Ridge(best_params_lr["alpha"])
     final_model_lr.fit(X_train_scaled, y_train)
-    y_pred = final_model_lr.predict(X_test_scaled.drop(axis=1, columns=["group"]))
+    y_pred = final_model_lr.predict(X_test_scaled)
 
     mae_lr = mean_absolute_error(y_test, y_pred)
     print(f"MAE on test set: {mae_lr:.2f}")
