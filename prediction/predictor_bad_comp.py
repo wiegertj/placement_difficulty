@@ -1,4 +1,3 @@
-
 import math
 import sys
 import random
@@ -200,6 +199,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     mae_lr = mean_absolute_error(y_test, y_pred)
     print(f"MAE on test set: {mae_lr:.2f}")
+
     #####################################################################################################################
 
     def objective_rf(trial):
@@ -236,8 +236,6 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
         return sum(val_scores_rf) / len(val_scores_rf)
 
-
-
     # Perform 100 Optuna trials
     study = optuna.create_study(direction='minimize')
     study.optimize(objective_rf, n_trials=100)
@@ -257,19 +255,19 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mae_rf = mean_absolute_error(y_test, y_test_pred)
     print(f"MAE on test set: {mae_rf:.2f}")
 
-    df_res = pd.DataFrame([(mae_lr, mae_rf)],columns=["mae_r", "mae_rf"])
+    df_res = pd.DataFrame([(mae_lr, mae_rf)], columns=["mae_r", "mae_rf"])
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                                        "df_res.csv")):
         df_res.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "df_res.csv")), index=False)
+                                                "df_res.csv")), index=False)
     else:
         df_res.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "df_res.csv"),
-                          index=False,
-                          mode='a', header=False)
+                                   "df_res.csv"),
+                      index=False,
+                      mode='a', header=False)
 
-    sys.exit()
+    return
 
     #####################################################################################################################
 
@@ -400,21 +398,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + ".csv"))
 
 
-
-
-
-
-
-
-
-for i in range(0,9):
+for i in range(0, 9):
     light_gbm_regressor(rfe=False, shapley_calc=False)
-
-
-
-
-
-
 
 #########    #########
 #########    #########
