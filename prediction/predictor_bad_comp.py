@@ -177,7 +177,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
             scaler = MinMaxScaler()
             X_train_scaled = scaler.fit_transform(X_train_tmp)
             X_valid_scaled = scaler.fit_transform(X_val)
-            model = Ridge(alpha=C, random_state=42)
+            model = Ridge(alpha=alpha, random_state=42)
             model.fit(X_train_scaled, y_train_tmp)
 
             val_preds = model.predict(X_valid_scaled)
