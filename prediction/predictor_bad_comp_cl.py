@@ -223,7 +223,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     scaler = MinMaxScaler()
     X_train_scaled = scaler.fit_transform(X_train.drop(axis=1, columns=["group"]))
     X_test_scaled = scaler.fit_transform(X_test.drop(axis=1, columns=["group"]))
-    final_model_lr = LogisticRegression(**best_params)
+    final_model_lr = LogisticRegression(**best_params_lr)
     final_model_lr.fit(X_train_scaled, y_train)
     y_pred = final_model_lr.predict(X_test_scaled)
 
