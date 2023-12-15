@@ -643,7 +643,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.savefig("lgbm-300.png")
 
 for cutoff in [0.8]:
-    for i in range(0,10):
+    for i in range(0,3):
         light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=False)
 
 ############################################LR#########################################################################
