@@ -191,7 +191,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     def objective_lr(trial):
         param_grid = {
             'C': trial.suggest_loguniform('C', 1e-5, 1e5),  # Regularization parameter
-            'penalty': trial.suggest_categorical('penalty', ['l1', 'l2']),  # Regularization type
+            'penalty': trial.suggest_categorical('penalty', ['l2']),  # Regularization type
             'fit_intercept': trial.suggest_categorical('fit_intercept', [True, False]),
             # Whether to fit an intercept term
         }
