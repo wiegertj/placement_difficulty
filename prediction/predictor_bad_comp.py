@@ -173,11 +173,14 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
         for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
+
             scaler = MinMaxScaler()
-            X_train_scaled = scaler.fit_transform(X_train)
-            X_valid_scaled = scaler.transform(X_val)
+            X_train_scaled = scaler.fit_transform(X_train_tmp)
+            X_valid_scaled = scaler.fit_transform(X_val)
             model = LogisticRegression(C=C, random_state=42)
-            val_preds = model.predict(X_val)
+            model.fit(X_train_scaled, y_train_tmp)
+
+            val_preds = model.predict(X_valid_scaled)
             val_score = mean_absolute_error(y_val, val_preds)
             val_scores_lr.append(val_score)
 
