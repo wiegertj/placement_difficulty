@@ -257,7 +257,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     mae_rf = mean_absolute_error(y_test, y_test_pred)
     print(f"MAE on test set: {mae_rf:.2f}")
 
-    df_res = pd.DataFrame([mae_lr, mae_rf],columns=["mae_r", "mae_rf"])
+    df_res = pd.DataFrame([(mae_lr, mae_rf)],columns=["mae_r", "mae_rf"])
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                                        "df_res.csv")):
