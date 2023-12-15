@@ -247,12 +247,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     # Train the final model with the best hyperparameters using the full dataset
     final_model_rf = RandomForestRegressor(**best_params_rf, random_state=42)
-    X_train_scaled = MinMaxScaler().fit_transform(X_train_scaled)
+    X_train_scaled = MinMaxScaler().fit_transform(X_train.drop(axis=1, columns=["group"]))
     final_model_rf.fit(X_train_scaled, y_train)
 
     # Evaluate the final model on the test set
-    X_test_scaled = MinMaxScaler().fit_transform(X_test_scaled)
-    y_test_pred = final_model_rf.predict(X_test_scaled.drop(axis=1, columns=["group"]))
+    X_test_scaled = MinMaxScaler().fit_transform(X_test_scaled.drop(axis=1, columns=["group"]))
+    y_test_pred = final_model_rf.predict(X_test_scaled)
     mae_rf = mean_absolute_error(y_test, y_test_pred)
     print(f"MAE on test set: {mae_rf:.2f}")
 
