@@ -36,7 +36,7 @@ parsimony_features = pd.read_csv(os.path.join(os.pardir, "data/processed/feature
                                  usecols=lambda column: column != 'Unnamed: 0')
 parsimony_features2 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features.csv"),
                                   usecols=lambda column: column != 'Unnamed: 0')
-parsimony_features3 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/parsimony_boot_100.csv"),
+parsimony_features3 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/parsimony_boot_500.csv"),
                                   usecols=lambda column: column != 'Unnamed: 0')
 print(parsimony_features2.columns)
 # Get split features
@@ -122,6 +122,6 @@ print("Mean " + str(sampled_data["support"].median()))
 print(sampled_data.columns)
 sampled_data_test = sampled_data[df_merged["dataset"] == "15861_1"]
 print(sampled_data_test.shape)
-sampled_data.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support_100.csv"), index=False)
+sampled_data.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support_500.csv"), index=False)
 
 #print(df_merged.shape)
