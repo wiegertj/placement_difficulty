@@ -122,9 +122,9 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
               'rb') as model_file:
         regression_lower5 = pickle.load(model_file)
 
-    df["median_pred"] = regression_median.predict(df_reg_pred)
-    df["lower_bound_10"] = regression_lower10.predict(df_reg_pred)
-    df["lower_bound_5"] = regression_lower5.predict(df_reg_pred)
+    #df["median_pred"] = regression_median.predict(df_reg_pred)
+    #df["lower_bound_10"] = regression_lower10.predict(df_reg_pred)
+    #df["lower_bound_5"] = regression_lower5.predict(df_reg_pred)
 
 
 
