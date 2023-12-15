@@ -165,7 +165,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     from sklearn.linear_model import Ridge
 
     def objective_lr(trial):
-        alpha = trial.suggest_loguniform('alpha', 1e-5, 1)
+        alpha = trial.suggest_loguniform('alpha', 1e-5, 1000)
 
         val_scores_lr = []
 
@@ -194,7 +194,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     scaler = MinMaxScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.fit_transform(X_train)
-    final_model_lr = Ridge(best_params_lr)
+    final_model_lr = Ridge(best_params_lr["alpha"])
     final_model_lr.fit(X_train_scaled, y_train)
     y_pred = final_model_lr.predict(X_test_scaled.drop(axis=1, columns=["group"]))
 
