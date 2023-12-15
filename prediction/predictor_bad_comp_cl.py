@@ -281,7 +281,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     # Evaluate the final model on the test set
     X_test_scaled = MinMaxScaler().fit_transform(X_test.drop(axis=1, columns=["group"]))
     y_test_pred = final_model_rf.predict(X_test_scaled)
-    bac_rf = balanced_accuracy_score(y_test, (y_pred >= 0.5).astype(int))
+    bac_rf = balanced_accuracy_score(y_test, (y_test_pred >= 0.5).astype(int))
     print(f"bac_rf on test set: {bac_rf:.2f}")
 
     df_res = pd.DataFrame([(bac_lr, bac_rf)], columns=["bac_lr", "bac_rf"])
