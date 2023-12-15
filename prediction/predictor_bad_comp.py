@@ -192,7 +192,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     best_params_lr = study.best_params
     best_score_lr = study.best_value
     scaler = MinMaxScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
+    X_train_scaled = scaler.fit_transform(X_train.drop(axis=1, columns=["group"]))
     X_test_scaled = scaler.fit_transform(X_test.drop(axis=1, columns=["group"]))
     final_model_lr = Ridge(best_params_lr["alpha"])
     final_model_lr.fit(X_train_scaled, y_train)
