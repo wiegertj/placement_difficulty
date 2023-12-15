@@ -198,10 +198,77 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     final_model_lr.fit(X_train_scaled, y_train)
     y_pred = final_model_lr.predict(X_test_scaled.drop(axis=1, columns=["group"]))
 
-    mae = mean_absolute_error(y_test, y_pred)
-    print(f"MAE on test set: {mae:.2f}")
-    sys.exit()
+    mae_lr = mean_absolute_error(y_test, y_pred)
+    print(f"MAE on test set: {mae_lr:.2f}")
+    #####################################################################################################################
 
+    def objective_rf(trial):
+        n_estimators = trial.suggest_int('n_estimators', 10, 200)
+        max_depth = trial.suggest_int('max_depth', 1, 32, log=True)
+        min_samples_split = trial.suggest_float('min_samples_split', 0.1, 1.0)
+        min_samples_leaf = trial.suggest_float('min_samples_leaf', 0.1, 0.5)
+
+        val_scores_rf = []
+
+        gkf = GroupKFold(n_splits=6)
+        for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
+            X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
+            X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
+
+            scaler = MinMaxScaler()
+            X_train_scaled = scaler.fit_transform(X_train_tmp)
+            X_valid_scaled = scaler.fit_transform(X_val)
+
+            model = RandomForestRegressor(
+                n_estimators=n_estimators,
+                max_depth=max_depth,
+                min_samples_split=min_samples_split,
+                min_samples_leaf=min_samples_leaf,
+                random_state=42
+            )
+
+            model.fit(X_train_scaled, y_train_tmp)
+
+            val_preds = model.predict(X_valid_scaled)
+            val_score = mean_absolute_error(y_val, val_preds)
+            val_scores_rf.append(val_score)
+
+        return sum(val_scores_rf) / len(val_scores_rf)
+
+
+
+    # Perform 100 Optuna trials
+    study = optuna.create_study(direction='minimize')
+    study.optimize(objective_rf, n_trials=100)
+
+    # Get the best hyperparameters
+    best_params_rf = study.best_params
+    print("Best Hyperparameters:", best_params_rf)
+
+    # Train the final model with the best hyperparameters using the full dataset
+    final_model_rf = RandomForestRegressor(**best_params_rf, random_state=42)
+    X_train_scaled = MinMaxScaler().fit_transform(X_train_scaled)
+    final_model_rf.fit(X_train_scaled, y_train)
+
+    # Evaluate the final model on the test set
+    X_test_scaled = MinMaxScaler().fit_transform(X_test_scaled)
+    y_test_pred = final_model_rf.predict(X_test_scaled.drop(axis=1, columns=["group"]))
+    mae_rf = mean_absolute_error(y_test, y_test_pred)
+    print(f"MAE on test set: {mae_rf:.2f}")
+
+    df_res = pd.DataFrame([mae_lr, mae_rf],columns=["mae_r", "mae_rf"])
+
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "df_res.csv")):
+        df_res.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                    "df_res.csv")), index=False)
+    else:
+        df_res.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "df_res.csv"),
+                          index=False,
+                          mode='a', header=False)
+
+    sys.exit()
 
     #####################################################################################################################
 
