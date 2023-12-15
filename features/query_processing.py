@@ -654,6 +654,17 @@ def query_statistics(query_filepath) -> list:
             skw_fraction_char_rests9 = -1
             kur_fraction_char_rests9 = -1
 
+        if isAA:
+            transversion_count_rel5 = -1
+            transversion_count_rel7 = -1
+            transversion_count_rel8 = -1
+            transversion_count_rel9 = -1
+
+            transition_count_rel5 = -1
+            transition_count_rel7 = -1
+            transition_count_rel8 = -1
+            transition_count_rel9 = -1
+
         results.append((name, record.id, gap_fraction, longest_gap_rel,
                         match_counter_7 / seq_length, match_counter_8 / seq_length, match_counter_9 / seq_length,
                         match_counter_95 / seq_length, match_counter_3 / seq_length, match_counter_1 / seq_length,
