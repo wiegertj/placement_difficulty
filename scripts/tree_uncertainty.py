@@ -87,7 +87,8 @@ for tree_filename in filenames:
         "--redo",
         "--prefix", "output_prefix"
     ]
-
+    print(model_path)
+    print(msa_filepath)
     print(" ".join(raxml_command))
     subprocess.run(" ".join(raxml_command), shell=True)
 
