@@ -17,7 +17,7 @@ for file in filenames:
     print(counter)
     print(file)
 
-    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_10000.raxml.support"
+    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_2000.raxml.support"
     #support_path_low = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_100_low.raxml.support"
     #support_path_low1000 = os.path.join(grandir, "scripts/") + file.replace(".newick",
      #                                                                   "") + "_parsimony_1000_low.raxml.support"
@@ -208,4 +208,4 @@ df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_suppor
                                         "min_pars_supp_tree", "max_pars_supp_tree", "std_pars_supp_tree", "skw_pars_supp_tree",
                                         "mean_pars_supp_tree"
                                         ])
-df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony_10000.csv"))
+df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony_2000.csv"))
