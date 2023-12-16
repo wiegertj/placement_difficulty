@@ -33,13 +33,13 @@ accepted = []
     #print("--------")
 #accepted_df = pd.DataFrame(accepted, columns=["dataset"])
 #accepted_df.to_csv(os.path.join(os.pardir, "data/bs_support_pred_selection.csv"), index=False)
-for file in filenames:
-    if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree", file)):
-        print("Not found " + file)
-        filenames_filtered.remove(file)
-print(len(filenames_filtered))
+#for file in filenames:
+ #   if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree", file)):
+  #      print("Not found " + file)
+   #     filenames_filtered.remove(file)
+print(len(filenames))
 counter = 0
-for tree_filename in filenames_filtered:
+for tree_filename in filenames:
     counter += 1
     print(str(counter) + "/" + str(len(filenames_filtered)))
     #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
