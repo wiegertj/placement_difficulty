@@ -15,25 +15,25 @@ filenames = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))["verb
 filenames_filtered = []
 duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 accepted = []
-for file in filenames:
-    try:
-        dupl = duplicate_data.loc[duplicate_data["name"] == file.replace(".newick", ".phy")].iloc[0]
-        dupl = dupl["no_duplicates"]
-    except IndexError:
-        print("File not found in placements")
-        continue
-    print(dupl)
-    print(file)
+#for file in filenames:
+ #   try:
+  #      dupl = duplicate_data.loc[duplicate_data["name"] == file.replace(".newick", ".phy")].iloc[0]
+   #     dupl = dupl["no_duplicates"]
+ #   except IndexError:
+  #      print("File not found in placements")
+   #     continue
+  #  print(dupl)
+   # print(file)
 
-    if dupl == 0:
-        print("removed")
-        accepted.append(file)
-    else:
-        filenames_filtered.append(file)
-    print("--------")
-accepted_df = pd.DataFrame(accepted, columns=["dataset"])
-accepted_df.to_csv(os.path.join(os.pardir, "data/bs_support_pred_selection.csv"), index=False)
-for file in filenames_filtered:
+    #if dupl == 0:
+      #  print("removed")
+     #   accepted.append(file)
+    #else:
+     #   filenames_filtered.append(file)
+    #print("--------")
+#accepted_df = pd.DataFrame(accepted, columns=["dataset"])
+#accepted_df.to_csv(os.path.join(os.pardir, "data/bs_support_pred_selection.csv"), index=False)
+for file in filenames:
     if not os.path.exists(os.path.join(os.pardir, "data/raw/reference_tree", file)):
         print("Not found " + file)
         filenames_filtered.remove(file)
