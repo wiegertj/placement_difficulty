@@ -88,6 +88,7 @@ for tree_filename in filenames_filtered:
         "--prefix", "output_prefix"
     ]
 
+    print(" ".join(raxml_command))
     subprocess.run(" ".join(raxml_command), shell=True)
 
     print(f"Bootstrap analysis for {tree_filename} completed.")
