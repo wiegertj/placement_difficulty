@@ -53,16 +53,9 @@ for tree_filename in filenames_filtered:
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", tree_filename)
     print(tree_path)
 
-    if os.path.exists(os.path.join(os.pardir, "scripts/") + tree_filename.replace(".newick", "") + "_1000.raxml.support"):
-        print("Found already, move on")
-        #continue
 
     t = Tree(tree_path)
     num_leaves = len(t.get_leaves())
-
-    if num_leaves >= 800:
-        print("Too large, skipped")
-        continue
 
 
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", tree_filename.replace(".newick", "_reference.fasta"))
@@ -80,7 +73,7 @@ for tree_filename in filenames_filtered:
     filtered_filenames_df_tmp.to_csv(existing_csv_file, mode='a', header=False, index=False)
 
     model_path = os.path.join(os.pardir, "data/processed/loo", tree_filename.replace(".newick", "") + "_msa_model.txt")
-    output_prefix = tree_filename.split(".")[0] + "_1000"  # Using the filename as the prefix
+    output_prefix = tree_filename.split(".")[0] + "_5000"  # Using the filename as the prefix
 
     bootstrap_filepath = os.path.join(os.pardir, "scripts",
                                       output_prefix+".raxml.bootstraps")
@@ -89,7 +82,7 @@ for tree_filename in filenames_filtered:
         "raxml-ng",
         "--bootstrap",
         "--model", model_path,
-        "--bs-trees", 1000,
+        "--bs-trees", 5000,
         "--msa", msa_filepath,
         "--redo",
         "--prefix", "output_prefix"
