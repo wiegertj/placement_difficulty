@@ -17,7 +17,7 @@ for file in filenames:
     print(counter)
     print(file)
 
-    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_1000.raxml.support"
+    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_10000.raxml.support"
     #support_path_low = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_100_low.raxml.support"
     #support_path_low1000 = os.path.join(grandir, "scripts/") + file.replace(".newick",
      #                                                                   "") + "_parsimony_1000_low.raxml.support"
@@ -97,46 +97,7 @@ for file in filenames:
             branch_id_counter += 1
             node.__setattr__("name", branch_id_counter)
             if node.support is not None and not node.is_leaf():
-               # node_low = tree_low.search_nodes(name=branch_id_counter)[0]
-                #node_low_support = node_low.support
 
-
-                #diff_support_100 = node.support - node_low_support
-
-                #node_low1000 = tree_low1000.search_nodes(name=branch_id_counter)[0]
-                #node_low2000 = tree_low2000.search_nodes(name=branch_id_counter)[0]
-                #node_low_support2000 = node_low2000.support
-
-                #node_low_support1000 = node_low1000.support
-
-                #node_low500 = tree_low500.search_nodes(name=branch_id_counter)[0]
-                #node_low_support500 = node_low500.support
-
-                #diff_support_500 = node.support - node_low_support500
-
-                #all_supps.append(node.support)
-                #all_supps.append(node_low_support)
-                #all_supps.append(node_low_support1000)
-                #all_supps.append(node_low_support500)
-                #all_diff_supps.append(node_low_support2000)
-
-
-
-
-
-
-
-
-
-                #diff_support_1000 = node.support - node_low_support1000
-                #diff_support_2000 = node.support - node_low_support2000
-
-                #diff_support_500 = node.support - node_low_support500
-
-                #all_diff_supps.append(diff_support_100)
-                #all_diff_supps.append(diff_support_500)
-                #all_diff_supps.append(diff_support_1000)
-                #all_diff_supps.append(diff_support_2000)
 
 
                 childs_inner = [node_child for node_child in node.traverse() if not node_child.is_leaf()]
@@ -247,4 +208,4 @@ df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_suppor
                                         "min_pars_supp_tree", "max_pars_supp_tree", "std_pars_supp_tree", "skw_pars_supp_tree",
                                         "mean_pars_supp_tree"
                                         ])
-df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony.csv"))
+df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony_10000.csv"))
