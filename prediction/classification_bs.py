@@ -23,7 +23,7 @@ from optuna.integration import LightGBMPruningCallback
 
 
 def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
-    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support_500.csv"))
+    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support_100_ps.csv"))
     df = df[["dataset", "branchId", "support", "parsimony_boot_support",
              "parsimony_support",
              "avg_subst_freq",
