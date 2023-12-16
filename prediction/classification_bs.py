@@ -23,7 +23,7 @@ from optuna.integration import LightGBMPruningCallback
 
 
 def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
-    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support_100.csv"))
+    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "bs_support_500.csv"))
     df = df[["dataset", "branchId", "support", "parsimony_boot_support",
              "parsimony_support",
              "avg_subst_freq",
@@ -347,12 +347,12 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     time_dat = pd.DataFrame(data_list)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       f"classifier_metrics{cutoff}_bacc_100.csv")):
+                                       f"classifier_metrics{cutoff}_bacc_500.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  f"classifier_metrics{cutoff}_bacc_100.csv")), index=False)
+                                                  f"classifier_metrics{cutoff}_bacc_500.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     f"classifier_metrics{cutoff}_bacc_100.csv"),
+                                     f"classifier_metrics{cutoff}_bacc_500.csv"),
                         index=False,
                         mode='a', header=False)
 
