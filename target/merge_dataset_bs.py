@@ -32,11 +32,11 @@ tree_features_embed = pd.read_csv(os.path.join(os.pardir, "data/processed/featur
 tree_features_embed = tree_features_embed.drop_duplicates(subset=['dataset'], keep='first')
 
 # Get parsimony features
-parsimony_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/parsimony.csv"),
+parsimony_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/parsimony_100.csv"),
                                  usecols=lambda column: column != 'Unnamed: 0')
 parsimony_features2 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/pars_top_features.csv"),
                                   usecols=lambda column: column != 'Unnamed: 0')
-parsimony_features3 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/parsimony_boot_100.csv"),
+parsimony_features3 = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features/parsimony_boot.csv"),
                                   usecols=lambda column: column != 'Unnamed: 0')
 print(parsimony_features2.columns)
 # Get split features
@@ -122,6 +122,6 @@ print("Mean " + str(sampled_data["support"].median()))
 print(sampled_data.columns)
 sampled_data_test = sampled_data[df_merged["dataset"] == "15861_1"]
 print(sampled_data_test.shape)
-sampled_data.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support_100.csv"), index=False)
+sampled_data.to_csv(os.path.join(os.pardir, "data/processed/final/bs_support_100_ps.csv"), index=False)
 
 #print(df_merged.shape)
