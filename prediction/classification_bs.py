@@ -347,12 +347,12 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     time_dat = pd.DataFrame(data_list)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       f"classifier_metrics{cutoff}_bacc_500.csv")):
+                                       f"classifier_metrics{cutoff}_bacc_100_ps.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  f"classifier_metrics{cutoff}_bacc_500.csv")), index=False)
+                                                  f"classifier_metrics{cutoff}_bacc_100_ps.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     f"classifier_metrics{cutoff}_bacc_500.csv"),
+                                     f"classifier_metrics{cutoff}_bacc_100_ps.csv"),
                         index=False,
                         mode='a', header=False)
 
