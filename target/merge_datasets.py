@@ -48,7 +48,7 @@ print(tree_features_uncertainty.shape)
 
 
 tree_features_uncertainty["dataset"] = tree_features_uncertainty["dataset"].str.replace(".newick", "")
-tree_features = tree_features.merge(tree_features_uncertainty, on="dataset", how="inner")
+#tree_features = tree_features.merge(tree_features_uncertainty, on="dataset", how="inner")
 tree_features = tree_features.merge(difficulties_df[["verbose_name", "difficult"]], left_on="dataset",
                                     right_on="verbose_name", how="inner").drop(columns=["verbose_name"])
 
@@ -357,4 +357,4 @@ print(uniformly_distributed_df["entropy"].mean())
 uniformly_distributed_df.drop(columns=["percentile"], inplace=True)
 print(uniformly_distributed_df.shape)
 print(list(uniformly_distributed_df.columns))
-uniformly_distributed_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset.csv"), index=False)
+uniformly_distributed_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot.csv"), index=False)
