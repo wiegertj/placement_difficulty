@@ -121,8 +121,10 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
 
             result_string_kernels.append(
                 hash_kernel / len(set(kmers_query)))  # normalize by the number of k-mers in query
-    print(result_string_kernels)
-    print(len(result_string_kernels))
+    if query.id == "taxon42":
+
+        print(result_string_kernels)
+        print(len(result_string_kernels))
     # Compute summary statistics over string kernels as features
     min_kernel = min(result_string_kernels)
     max_kernel = max(result_string_kernels)
@@ -130,6 +132,10 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
     std_kernel = statistics.stdev(result_string_kernels)
     kur_kernel = kurtosis(result_string_kernels, fisher=True)
     sk_kernel = skew(result_string_kernels)
+    if query.id == "taxon42":
+
+        print(mean_kernel)
+        print(std_kernel)
 
     return msa_file.replace("_reference.fasta",
                             ""), query.id, min_kernel, max_kernel, mean_kernel, std_kernel, sk_kernel, kur_kernel
