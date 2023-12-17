@@ -121,7 +121,8 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
 
             result_string_kernels.append(
                 hash_kernel / len(set(kmers_query)))  # normalize by the number of k-mers in query
-
+    print(result_string_kernels)
+    print(len(result_string_kernels))
     # Compute summary statistics over string kernels as features
     min_kernel = min(result_string_kernels)
     max_kernel = max(result_string_kernels)
