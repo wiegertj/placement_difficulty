@@ -175,6 +175,13 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
    #     "mean_a_mean_b",
     #    "avg_rel_rf_boot",
     #    "rel_gap_over_diff_sites_thresh_w"]]
+    group_tree_space = ["mean_nrf_parsimony_trees", "no_topologies_parsimony_bootstrap"]
+    group_inv_sites = ["inv_site_std_frac_query_msa_t7", "transversion_frac_query_msa_t7",
+                       "transversion_frac_query_msa_t5",
+                       "min_frac_query_msa_t5", "inv_site_matches_query_msa_t9"]
+    group_sim_qs_msa = ["kurtosis_15mer_similarity", "skewness_15mer_similarity", "std_15mer_similarity",
+                        "mean_15mer_similarity", "kurtosis_25mer_similarity_perc_hash"]
+    group_tree_msa = ["max_parsimony_subst_freq", "std_branch_length", "skewness_closeness_centrality"]
 
     column_name_mapping = {"avg_rel_rf_no_boot": "mean_nrf_parsimony_trees",
     "min_fraction_char_rests5": "min_frac_query_msa_t5",
