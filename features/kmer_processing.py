@@ -214,7 +214,7 @@ def multiprocess_string_kernel(query_filename, isAA, bloom_filters_MSA_, msa_fil
         if counter > interval:
             break
 
-    pool = multiprocessing.Pool(initializer=initializer, initargs=(bloom_filters_MSA_, msa_file_, isAA))
+    pool = multiprocessing.Pool(processes=1,initializer=initializer, initargs=(bloom_filters_MSA_, msa_file_, isAA))
     results_async = [pool.apply_async(compute_string_kernel_statistics, (item,)) for item in data]
     #monitor_progress(results_async)
     try:
