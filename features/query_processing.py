@@ -35,9 +35,6 @@ def query_statistics(query_filepath) -> list:
     for record in alignment_original:
         alignment = [record_ for record_ in alignment_original if record_.id != record.id]
 
-        print(f"Number of Sequences: {len(alignment_original)}")
-        print(f"Number of Sequences: {len(alignment)}")
-
         analyzed_sites_9 = []
         analyzed_sites_8 = []
         analyzed_sites_7 = []
