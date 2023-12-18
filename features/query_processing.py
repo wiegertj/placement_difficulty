@@ -31,99 +31,100 @@ def query_statistics(query_filepath) -> list:
     """
     results = []
     filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
-    alignment = AlignIO.read(filepath, 'fasta')
+    alignment_original = AlignIO.read(filepath, 'fasta')
+    for record in alignment_original:
+        alignment = [record_ for record_ in alignment_original if record_.id != record.id]
 
-    analyzed_sites_9 = []
-    analyzed_sites_8 = []
-    analyzed_sites_7 = []
-    analyzed_sites_95 = []
-    analyzed_sites_3 = []
-    analyzed_sites_1 = []
-    analyzed_sites_6 = []
-    analyzed_sites_5 = []
-    analyzed_sites_4 = []
-    analyzed_sites_2 = []
+        analyzed_sites_9 = []
+        analyzed_sites_8 = []
+        analyzed_sites_7 = []
+        analyzed_sites_95 = []
+        analyzed_sites_3 = []
+        analyzed_sites_1 = []
+        analyzed_sites_6 = []
+        analyzed_sites_5 = []
+        analyzed_sites_4 = []
+        analyzed_sites_2 = []
 
-    # Iterate over each position in the alignment
-    for position in range(len(alignment[0])):
-        # Extract characters (residues) at the current position for all sequences
-        residues_at_position = [str(record.seq[position]) for record in alignment]
+        # Iterate over each position in the alignment
+        for position in range(len(alignment[0])):
+            # Extract characters (residues) at the current position for all sequences
+            residues_at_position = [str(record.seq[position]) for record in alignment]
 
-        # Count the occurrences of each character
-        char_counts = Counter(residues_at_position)
+            # Count the occurrences of each character
+            char_counts = Counter(residues_at_position)
 
-        # Calculate the most frequent character and its count
-        most_common_char, most_common_count = char_counts.most_common(1)[0]
+            # Calculate the most frequent character and its count
+            most_common_char, most_common_count = char_counts.most_common(1)[0]
 
-        # Calculate the total count of all characters excluding gaps and "N"s
-        total_count = sum(count for char, count in char_counts.items())
+            # Calculate the total count of all characters excluding gaps and "N"s
+            total_count = sum(count for char, count in char_counts.items())
 
-        # Calculate the proportion of the most frequent character
-        proportion_most_common = most_common_count / total_count if total_count > 0 else 0
+            # Calculate the proportion of the most frequent character
+            proportion_most_common = most_common_count / total_count if total_count > 0 else 0
 
-        # Check if the proportion is below the threshold and the character is not a gap or "N"
-        if proportion_most_common < 0.9 or most_common_char in ['-', 'N']:
-            analyzed_sites_9.append((0, most_common_char))
-        else:
-            analyzed_sites_9.append((1, most_common_char))
+            # Check if the proportion is below the threshold and the character is not a gap or "N"
+            if proportion_most_common < 0.9 or most_common_char in ['-', 'N']:
+                analyzed_sites_9.append((0, most_common_char))
+            else:
+                analyzed_sites_9.append((1, most_common_char))
 
-        if proportion_most_common < 0.6 or most_common_char in ['-', 'N']:
-            analyzed_sites_6.append((0, most_common_char))
-        else:
-            analyzed_sites_6.append((1, most_common_char))
+            if proportion_most_common < 0.6 or most_common_char in ['-', 'N']:
+                analyzed_sites_6.append((0, most_common_char))
+            else:
+                analyzed_sites_6.append((1, most_common_char))
 
-        if proportion_most_common < 0.5 or most_common_char in ['-', 'N']:
-            analyzed_sites_5.append((0, most_common_char))
-        else:
-            analyzed_sites_5.append((1, most_common_char))
+            if proportion_most_common < 0.5 or most_common_char in ['-', 'N']:
+                analyzed_sites_5.append((0, most_common_char))
+            else:
+                analyzed_sites_5.append((1, most_common_char))
 
-        if proportion_most_common < 0.4 or most_common_char in ['-', 'N']:
-            analyzed_sites_4.append((0, most_common_char))
-        else:
-            analyzed_sites_4.append((1, most_common_char))
+            if proportion_most_common < 0.4 or most_common_char in ['-', 'N']:
+                analyzed_sites_4.append((0, most_common_char))
+            else:
+                analyzed_sites_4.append((1, most_common_char))
 
-        if proportion_most_common < 0.2 or most_common_char in ['-', 'N']:
-            analyzed_sites_2.append((0, most_common_char))
-        else:
-            analyzed_sites_2.append((1, most_common_char))
+            if proportion_most_common < 0.2 or most_common_char in ['-', 'N']:
+                analyzed_sites_2.append((0, most_common_char))
+            else:
+                analyzed_sites_2.append((1, most_common_char))
 
-        if proportion_most_common < 0.1 or most_common_char in ['-', 'N']:
-            analyzed_sites_1.append((0, most_common_char))
-        else:
-            analyzed_sites_1.append((1, most_common_char))
+            if proportion_most_common < 0.1 or most_common_char in ['-', 'N']:
+                analyzed_sites_1.append((0, most_common_char))
+            else:
+                analyzed_sites_1.append((1, most_common_char))
 
-        if proportion_most_common < 0.3 or most_common_char in ['-', 'N']:
-            analyzed_sites_3.append((0, most_common_char))
-        else:
-            analyzed_sites_3.append((1, most_common_char))
+            if proportion_most_common < 0.3 or most_common_char in ['-', 'N']:
+                analyzed_sites_3.append((0, most_common_char))
+            else:
+                analyzed_sites_3.append((1, most_common_char))
 
-        # Check if the proportion is below the threshold and the character is not a gap or "N"
-        if proportion_most_common < 0.8 or most_common_char in ['-', 'N']:
-            analyzed_sites_8.append((0, most_common_char))
-        else:
-            analyzed_sites_8.append((1, most_common_char))
+            # Check if the proportion is below the threshold and the character is not a gap or "N"
+            if proportion_most_common < 0.8 or most_common_char in ['-', 'N']:
+                analyzed_sites_8.append((0, most_common_char))
+            else:
+                analyzed_sites_8.append((1, most_common_char))
 
-        # Check if the proportion is below the threshold and the character is not a gap or "N"
-        if proportion_most_common < 0.7 or most_common_char in ['-', 'N']:
-            analyzed_sites_7.append((0, most_common_char))
-        else:
-            analyzed_sites_7.append((1, most_common_char))
+            # Check if the proportion is below the threshold and the character is not a gap or "N"
+            if proportion_most_common < 0.7 or most_common_char in ['-', 'N']:
+                analyzed_sites_7.append((0, most_common_char))
+            else:
+                analyzed_sites_7.append((1, most_common_char))
 
-        # Check if the proportion is below the threshold and the character is not a gap or "N"
-        if proportion_most_common < 0.95 or most_common_char in ['-', 'N']:
-            analyzed_sites_95.append((0, most_common_char))
-        else:
-            analyzed_sites_95.append((1, most_common_char))
+            # Check if the proportion is below the threshold and the character is not a gap or "N"
+            if proportion_most_common < 0.95 or most_common_char in ['-', 'N']:
+                analyzed_sites_95.append((0, most_common_char))
+            else:
+                analyzed_sites_95.append((1, most_common_char))
 
-    isAA = False
-    loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-    datatype = loo_selection[loo_selection["verbose_name"] == query_filepath.replace("_query.fasta", ".phy")].iloc[0][
-        "data_type"]
-    if datatype == "AA" or datatype == "DataType.AA":
-        isAA = True
-        print("Found AA")
-    print(isAA)  # Skip already processed
-    for record in alignment:
+        isAA = False
+        loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+        datatype = loo_selection[loo_selection["verbose_name"] == query_filepath.replace("_query.fasta", ".phy")].iloc[0][
+            "data_type"]
+        if datatype == "AA" or datatype == "DataType.AA":
+            isAA = True
+            print("Found AA")
+        print(isAA)  # Skip already processed
         gap_matches = 0
         total_gap_count = 0
         for i, (flag, char) in enumerate(analyzed_sites_8):
