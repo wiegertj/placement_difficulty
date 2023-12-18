@@ -124,7 +124,6 @@ def query_statistics(query_filepath) -> list:
         if datatype == "AA" or datatype == "DataType.AA":
             isAA = True
             print("Found AA")
-        print(isAA)  # Skip already processed
         gap_matches = 0
         total_gap_count = 0
         for i, (flag, char) in enumerate(analyzed_sites_8):
