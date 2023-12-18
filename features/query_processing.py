@@ -45,7 +45,10 @@ def query_statistics(query_filepath) -> list:
         analyzed_sites_5 = []
         analyzed_sites_4 = []
         analyzed_sites_2 = []
-
+        try:
+            test = range(len(alignment[0]))
+        except IndexError:
+            return -1
         # Iterate over each position in the alignment
         for position in range(len(alignment[0])):
             # Extract characters (residues) at the current position for all sequences
@@ -731,9 +734,10 @@ if __name__ == '__main__':
     counter = 0
 
     for result in pool.imap(query_statistics, filenames):
-        results.append(result)
-        print(counter)
-        counter += 1
+        if result != -1:
+            results.append(result)
+            print(counter)
+            counter += 1
 
     pool.close()
     pool.join()
