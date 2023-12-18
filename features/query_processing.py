@@ -46,7 +46,8 @@ def query_statistics(query_filepath) -> list:
         analyzed_sites_4 = []
         analyzed_sites_2 = []
         try:
-            test = range(len(alignment[0]))
+            for position in range(len(alignment[0])):
+                break
         except IndexError:
             return -1
         # Iterate over each position in the alignment
