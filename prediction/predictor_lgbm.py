@@ -294,7 +294,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.5),
-            'max_depth': -1,
+            #'max_depth': -1,
             'min_child_samples': trial.suggest_int('min_child_samples', 1, 200),
             # 'feature_fraction': trial.suggest_uniform('feature_fraction', 0.5, 1.0),
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
@@ -329,7 +329,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     best_params["alpha"] = 0.5
     best_params["boosting_type"] = "gbdt"
     #best_params["bagging_freq"] = 0
-    best_params["max_depth"] = -1
+    #best_params["max_depth"] = -1
 
     best_score = study.best_value
 
