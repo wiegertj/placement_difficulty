@@ -268,10 +268,10 @@ if __name__ == '__main__':
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
 
-    filenames = filenames[-135:]
+    #filenames = filenames[-135:]
 
     counter_msa = 0
-    for msa_file in ["13674_0_reference.fasta"]:
+    for msa_file in filenames:
         isAA = False
         datatype = loo_selection[loo_selection["verbose_name"] == msa_file.replace("_reference.fasta", ".phy")].iloc[0]["data_type"]
         if datatype == "AA" or datatype == "DataType.AA":
@@ -312,9 +312,9 @@ if __name__ == '__main__':
         bound = feature_config.KMER_PROCESSING_COUNT  # how many sequences
 
         # Check if too large
-        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
-           print("Skipped " + msa_file + " too large")
-           continue
+        #if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
+         #  print("Skipped " + msa_file + " too large")
+          # continue
         num_sequences = sum(1 for _ in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'))
 
         #if num_sequences > 150:
