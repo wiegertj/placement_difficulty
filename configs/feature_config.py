@@ -1,7 +1,7 @@
 # -------------------- Feature config --------------------  #
 K_MER_LENGTH = 15
-K_MER_MAX_GAP_PERCENTAGE = 0.3
-K_MER_MAX_N_PERCENTAGE = 0.3
+K_MER_MAX_GAP_PERCENTAGE = 1.0
+K_MER_MAX_N_PERCENTAGE = 1.0
 BLOOM_FILTER_FP_RATE = 0.01
 KMER_PROCESSING_INTERVAL_START = 0
 KMER_PROCESSING_COUNT = 5000 # how many kmers of bv, tara, neotrop to compute
