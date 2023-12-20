@@ -273,7 +273,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     if rfe:
         model = RandomForestRegressor(n_jobs=-1, n_estimators=250, max_depth=20, min_samples_split=10,
-                                      min_samples_leaf=5, )
+                                      min_samples_leaf=20)
         rfe = RFE(estimator=model, n_features_to_select=rfe_feature_n,
                   step=0.05)  # Adjust the number of features as needed
         rfe.fit(X_train.drop(axis=1, columns=['dataset', 'sampleId', 'group']), y_train)
