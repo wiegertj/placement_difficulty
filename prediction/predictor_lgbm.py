@@ -338,7 +338,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "bad_no_filter.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "bad_no_filter_TEST.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
@@ -363,12 +363,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     metrics_df = pd.DataFrame(metrics_dict)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new_no_filter.csv")):
+                                       "diff_guesser_noboot_new_no_filter_TEST.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "diff_guesser_noboot_new_no_filter.csv")), index=False)
+                                                    "diff_guesser_noboot_new_no_filter_TEST.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new_no_filter.csv"),
+                                       "diff_guesser_noboot_new_no_filter_TEST.csv"),
                           index=False,
                           mode='a', header=False)
 
@@ -388,7 +388,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     # importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     # importance_df = importance_df.nlargest(35, 'Importance')
 
-    importance_df.to_csv("diff_guesser_importances_noboot_new_no_filter.csv")
+    importance_df.to_csv("diff_guesser_importances_noboot_new_no_filter_TEST.csv")
 
 
 
@@ -441,7 +441,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         )
 
         # Save the DataFrame to a CSV file
-        shap_df.to_csv('shap_values_noboot_no_filter.csv', index=False)
+        shap_df.to_csv('shap_values_noboot_no_filter_TEST.csv', index=False)
 
 
 
