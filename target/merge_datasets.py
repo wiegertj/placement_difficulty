@@ -340,7 +340,7 @@ def sample_rows(group):
 
 print(combined_df.shape)
 
-difficulties_df = combined_df.drop_duplicates(subset=['dataset', "sampelId"], keep='first')
+difficulties_df = combined_df.drop_duplicates(subset=['dataset', "sampleId"], keep='first')
 
 print(combined_df.shape)
 bin_edges = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
