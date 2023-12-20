@@ -42,6 +42,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pars_top_features.csv"))
     df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot_no_filter.csv"))
     df = df.merge(df_pars_top, on=["dataset"], how="inner")
+    print(df.shape)
+    df = df.drop_duplicates(subset=['dataset', "sampleId"], keep='first')
+    print(df.shape)
+
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "difficult", "current_closest_taxon_perc_ham",
                      "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b",
                      "mean_a_good", "std_eig_sim", "max_a_good", "min_a_good", "std_a_good", "mean_b_good", "max_b_good", "min_b_good", "std_b_good","percentile"],
