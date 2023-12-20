@@ -287,9 +287,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     def objective(trial):
 
         params = {
-            'objective': 'regression',
-            'metric': 'l1',
-            'num_iterations': trial.suggest_int('num_iterations', 10, 200),
+            'objective': 'quantile',
+            'metric': 'quantile',
+            'alpha': 0.5,
+            'num_iterations': trial.suggest_int('num_iterations', 10, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
             'learning_rate': trial.suggest_uniform('learning_rate', 0.001, 0.5),
@@ -323,10 +324,11 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     study.optimize(objective, n_trials=100)
 
     best_params = study.best_params
-    best_params["objective"] = "regression"
-    best_params["metric"] = "l1"
+    best_params["objective"] = "quantile"
+    best_params["metric"] = "quantile"
+    best_params["alpha"] = 0.5
     best_params["boosting_type"] = "gbdt"
-    best_params["bagging_freq"] = 0
+    #best_params["bagging_freq"] = 0
     best_params["max_depth"] = -1
 
     best_score = study.best_value
@@ -338,7 +340,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "bad_no_filter_TEST.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "bad_no_filter_TEST_quant.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
@@ -363,12 +365,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     metrics_df = pd.DataFrame(metrics_dict)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new_no_filter_TEST.csv")):
+                                       "diff_guesser_noboot_new_no_filter_TEST_quant.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "diff_guesser_noboot_new_no_filter_TEST.csv")), index=False)
+                                                    "diff_guesser_noboot_new_no_filter_TEST_quant.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new_no_filter_TEST.csv"),
+                                       "diff_guesser_noboot_new_no_filter_TEST_quant.csv"),
                           index=False,
                           mode='a', header=False)
 
