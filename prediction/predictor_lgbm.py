@@ -40,7 +40,7 @@ def MBE(y_true, y_pred):
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=[]):
     df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pars_top_features.csv"))
-    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot.csv"))
+    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot_no_filter.csv"))
     df = df.merge(df_pars_top, on=["dataset"], how="inner")
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "difficult", "current_closest_taxon_perc_ham",
                      "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b",
@@ -338,7 +338,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "bad.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "bad_no_filter.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
@@ -363,12 +363,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     metrics_df = pd.DataFrame(metrics_dict)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new.csv")):
+                                       "diff_guesser_noboot_new_no_filter.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "diff_guesser_noboot_new.csv")), index=False)
+                                                    "diff_guesser_noboot_new_no_filter.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new.csv"),
+                                       "diff_guesser_noboot_new_no_filter.csv"),
                           index=False,
                           mode='a', header=False)
 
@@ -388,7 +388,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     # importance_df['Importance'] = scaler.fit_transform(importance_df[['Importance']])
     # importance_df = importance_df.nlargest(35, 'Importance')
 
-    importance_df.to_csv("diff_guesser_importances_noboot_new.csv")
+    importance_df.to_csv("diff_guesser_importances_noboot_new_no_filter.csv")
 
 
 
@@ -396,7 +396,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     if rfe:
         name = name + "_rfe_" + str(rfe_feature_n)
 
-    plot_filename = os.path.join(os.pardir, "data/prediction", "feature_importances_" + name + ".png")
+    plot_filename = os.path.join(os.pardir, "data/prediction", "feature_importances_no_filter" + name + ".png")
 
     print("Feature Importances (Normalized):")
     for index, row in importance_df.iterrows():
@@ -404,7 +404,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     X_test_["prediction"] = y_pred
     X_test_["entropy"] = y_test
-    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results_noboot" + name + ".csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", "prediction_results_noboot_no_filter" + name + ".csv"))
 
     if shapley_calc:
         # X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
@@ -441,7 +441,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         )
 
         # Save the DataFrame to a CSV file
-        shap_df.to_csv('shap_values_noboot.csv', index=False)
+        shap_df.to_csv('shap_values_noboot_no_filter.csv', index=False)
 
 
 
