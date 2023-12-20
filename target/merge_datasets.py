@@ -27,15 +27,16 @@ print("Query feature count: " + str(query_features.shape))
 tree_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree.csv"), index_col=False,
                             usecols=lambda column: column != 'Unnamed: 0')
 like = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "loglik.csv"), index_col=False,
-                            usecols=lambda column: column != 'Unnamed: 0')
+                   usecols=lambda column: column != 'Unnamed: 0')
 tree_features = tree_features.merge(like, on=["dataset"], how="inner")
-tree_features_embed = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_embedd_stats.csv"), index_col=False,
-                            usecols=lambda column: column != 'Unnamed: 0')
+tree_features_embed = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "tree_embedd_stats.csv"),
+                                  index_col=False,
+                                  usecols=lambda column: column != 'Unnamed: 0')
 tree_features_embed = tree_features_embed.drop_duplicates(subset=['dataset'], keep='first')
 tree_features = tree_features.merge(tree_features_embed, on=["dataset"], how="inner")
 tree_features = tree_features.drop_duplicates(subset=['dataset'], keep='first')
 like = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "loglik.csv"), index_col=False,
-                            usecols=lambda column: column != 'Unnamed: 0')
+                   usecols=lambda column: column != 'Unnamed: 0')
 tree_features = tree_features.merge(like, on=["dataset"], how="inner")
 print(tree_features.shape)
 
@@ -46,11 +47,10 @@ tree_features_uncertainty = pd.read_csv(os.path.join(os.pardir, "data/processed/
 tree_features_uncertainty = tree_features_uncertainty.drop_duplicates(subset=['dataset'], keep='first')
 print(tree_features_uncertainty.shape)
 
-
 tree_features_uncertainty["dataset"] = tree_features_uncertainty["dataset"].str.replace(".newick", "")
-#tree_features = tree_features.merge(tree_features_uncertainty, on="dataset", how="inner")
-#t#ree_features = tree_features.merge(difficulties_df[["verbose_name", "difficult"]], left_on="dataset",
-  #                                  right_on="verbose_name", how="inner").drop(columns=["verbose_name"])
+# tree_features = tree_features.merge(tree_features_uncertainty, on="dataset", how="inner")
+# t#ree_features = tree_features.merge(difficulties_df[["verbose_name", "difficult"]], left_on="dataset",
+#                                  right_on="verbose_name", how="inner").drop(columns=["verbose_name"])
 
 merged_df = query_features.merge(msa_features, on='dataset', how='inner')
 merged_df = merged_df.merge(tree_features, on="dataset", how="inner")
@@ -134,7 +134,7 @@ loo_hash_perc = loo_hash_perc.drop_duplicates(subset=['dataset', 'sampleId'], ke
 
 loo_hash_perc["dataset"] = loo_hash_perc["dataset"].str.replace("_reference.fasta", "")
 loo_resuls_combined = loo_resuls_combined4.merge(loo_hash_perc, on=["sampleId", 'dataset'], how='inner')
-#loo_resuls_combined = loo_resuls_combined4
+# loo_resuls_combined = loo_resuls_combined4
 # add mutation rates
 
 loo_resuls_dfs = []
@@ -178,7 +178,7 @@ for loo_dataset in loo_datasets:
 
 loo_im_comp = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_im_comp = loo_im_comp.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
-#loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'dataset'], how='inner')
+# loo_resuls_combined = loo_resuls_combined.merge(loo_im_comp, on=["sampleId", 'dataset'], how='inner')
 
 # add nearest sequence support
 
@@ -199,11 +199,7 @@ for loo_dataset in loo_datasets:
 
 loo_nearest = pd.concat(loo_resuls_dfs, ignore_index=True)
 loo_nearest = loo_nearest.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
-#loo_resuls_combined = loo_resuls_combined.merge(loo_nearest, on=["sampleId", 'dataset'], how='inner')
-
-
-
-
+# loo_resuls_combined = loo_resuls_combined.merge(loo_nearest, on=["sampleId", 'dataset'], how='inner')
 
 
 loo_resuls_dfs = []
@@ -230,8 +226,6 @@ loo_diff.drop(columns=["temp"], inplace=True, axis=1)
 loo_diff = loo_diff.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 loo_resuls_combined = loo_resuls_combined.merge(loo_diff, on=["sampleId", 'dataset'], how='inner')
 
-
-
 loo_resuls_dfs = []
 elements_to_delete = ['tara', 'bv', "neotrop"]
 dataset_list = list(merged_df['dataset'].unique())
@@ -256,24 +250,20 @@ loo_diff.drop(columns=["temp"], inplace=True, axis=1)
 loo_diff = loo_diff.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 loo_resuls_combined = loo_resuls_combined.merge(loo_diff, on=["sampleId", 'dataset'], how='inner')
 
-
-
-
 # final dataset
 # combined_df = pd.concat([neotrop, bv, tara, loo_resuls_combined], axis=0, ignore_index=True)
 combined_df = loo_resuls_combined
 
 columns_with_nan = combined_df.columns[combined_df.isna().any()].tolist()
 
-
-
 columns_to_fill = ['kur_gaps_msa', 'kur_gap_query', 'sk_kmer_sim25', 'kur_kmer_sim25',
-                    'sk_kmer_sim50', 'kur_kmer_sim50', 'sk_dist_hu', 'sk_dist_lbp',
-                    'kur_dist_lbp', 'sk_dist_pca', 'kur_dist_pca', 'skew_branch_length_tips',
-                    'kurtosis_branch_length_tips', 'skewness_nearest', 'kurtosis_nearest',
-                    'sk_branch_len_nearest', 'kurt_branch_len_nearest', 'skw_fraction_char_rests8',
-                    'kur_fraction_char_rests8', 'skw_fraction_char_rests7', 'kur_fraction_char_rests7',
-                    'skw_fraction_char_rests5', 'kur_fraction_char_rests5', "kur_fraction_char_rests9", "skw_fraction_char_rests9"]
+                   'sk_kmer_sim50', 'kur_kmer_sim50', 'sk_dist_hu', 'sk_dist_lbp',
+                   'kur_dist_lbp', 'sk_dist_pca', 'kur_dist_pca', 'skew_branch_length_tips',
+                   'kurtosis_branch_length_tips', 'skewness_nearest', 'kurtosis_nearest',
+                   'sk_branch_len_nearest', 'kurt_branch_len_nearest', 'skw_fraction_char_rests8',
+                   'kur_fraction_char_rests8', 'skw_fraction_char_rests7', 'kur_fraction_char_rests7',
+                   'skw_fraction_char_rests5', 'kur_fraction_char_rests5', "kur_fraction_char_rests9",
+                   "skw_fraction_char_rests9"]
 
 for col in columns_with_nan:
     num_nan = combined_df[col].isna().sum()
@@ -297,56 +287,60 @@ print("Create uniform sample")
 combined_df.loc[combined_df['entropy'] > 1, 'entropy'] = 1
 
 
-#combined_df["avg_perc_ham_dist_msa"] = 0.0
-#combined_df["std_perc_ham_dist_msa"] = 0.0
-#combined_df["min_perc_ham_dist_msa"] = 0.0
-#combined_df["max_perc_ham_dist_msa"] = 0.0
-#combined_df["avg_kmer_simt_msa"] = 0.0
-#combined_df["min_kmer_simt_msa"] = 0.0
-#combined_df["max_kmer_simt_msa"] = 0.0
-#combined_df["std_kmer_simt_msa"] = 0.0
+# combined_df["avg_perc_ham_dist_msa"] = 0.0
+# combined_df["std_perc_ham_dist_msa"] = 0.0
+# combined_df["min_perc_ham_dist_msa"] = 0.0
+# combined_df["max_perc_ham_dist_msa"] = 0.0
+# combined_df["avg_kmer_simt_msa"] = 0.0
+# combined_df["min_kmer_simt_msa"] = 0.0
+# combined_df["max_kmer_simt_msa"] = 0.0
+# combined_df["std_kmer_simt_msa"] = 0.0
 
-#dataset_counter = 0
-#for dataset in combined_df['dataset'].unique():
- #   dataset_counter += 1
-  #  print(dataset_counter)
-   # subset = combined_df[combined_df['dataset'] == dataset]
-    #for index_aim, row_aim in subset.iterrows():
-     #   row_set = []
-      #  for index, row in subset.iterrows():
-       ##     if index != index_aim:
-         #       row_set.append(row)
-   #     avg_perc_ham_dist_msa = pd.DataFrame(row_set)['avg_perc_hash_ham_dist'].mean()
-    #    std_perc_ham_dist_msa = pd.DataFrame(row_set)['std_perc_hash_ham_dist'].std()
-     #   min_perc_ham_dist_msa = pd.DataFrame(row_set)['min_perc_hash_ham_dist'].min()
-      #  max_perc_ham_dist_msa = pd.DataFrame(row_set)['max_perc_hash_ham_dist'].max()
-   #     avg_kmer_sim_msa = pd.DataFrame(row_set)['mean_kmer_sim'].mean()
-    #    std_kmer_sim_msa = pd.DataFrame(row_set)['std_kmer_sim'].std()
-     #   min_kmer_sim_msa = pd.DataFrame(row_set)['min_kmer_sim'].min()
-      #  max_kmer_sim_msa = pd.DataFrame(row_set)['max_kmer_sim'].max()
-       # combined_df.at[index_aim, "avg_perc_ham_dist_msa"] = avg_perc_ham_dist_msa
-        #combined_df.at[index_aim, "std_perc_ham_dist_msa"] = std_perc_ham_dist_msa
-        #combined_df.at[index_aim, "min_perc_ham_dist_msa"] = min_perc_ham_dist_msa
-    #    combined_df.at[index_aim, "max_perc_ham_dist_msa"] = max_perc_ham_dist_msa
-     #   combined_df.at[index_aim, "avg_kmer_simt_msa"] = avg_kmer_sim_msa
-      #  combined_df.at[index_aim, "std_kmer_simt_msa"] = std_kmer_sim_msa
-       # combined_df.at[index_aim, "min_kmer_simt_msa"] = min_kmer_sim_msa
-        #combined_df.at[index_aim, "max_kmer_simt_msa"] = max_kmer_sim_msa##
+# dataset_counter = 0
+# for dataset in combined_df['dataset'].unique():
+#   dataset_counter += 1
+#  print(dataset_counter)
+# subset = combined_df[combined_df['dataset'] == dataset]
+# for index_aim, row_aim in subset.iterrows():
+#   row_set = []
+#  for index, row in subset.iterrows():
+##     if index != index_aim:
+#       row_set.append(row)
+#     avg_perc_ham_dist_msa = pd.DataFrame(row_set)['avg_perc_hash_ham_dist'].mean()
+#    std_perc_ham_dist_msa = pd.DataFrame(row_set)['std_perc_hash_ham_dist'].std()
+#   min_perc_ham_dist_msa = pd.DataFrame(row_set)['min_perc_hash_ham_dist'].min()
+#  max_perc_ham_dist_msa = pd.DataFrame(row_set)['max_perc_hash_ham_dist'].max()
+#     avg_kmer_sim_msa = pd.DataFrame(row_set)['mean_kmer_sim'].mean()
+#    std_kmer_sim_msa = pd.DataFrame(row_set)['std_kmer_sim'].std()
+#   min_kmer_sim_msa = pd.DataFrame(row_set)['min_kmer_sim'].min()
+#  max_kmer_sim_msa = pd.DataFrame(row_set)['max_kmer_sim'].max()
+# combined_df.at[index_aim, "avg_perc_ham_dist_msa"] = avg_perc_ham_dist_msa
+# combined_df.at[index_aim, "std_perc_ham_dist_msa"] = std_perc_ham_dist_msa
+# combined_df.at[index_aim, "min_perc_ham_dist_msa"] = min_perc_ham_dist_msa
+#    combined_df.at[index_aim, "max_perc_ham_dist_msa"] = max_perc_ham_dist_msa
+#   combined_df.at[index_aim, "avg_kmer_simt_msa"] = avg_kmer_sim_msa
+#  combined_df.at[index_aim, "std_kmer_simt_msa"] = std_kmer_sim_msa
+# combined_df.at[index_aim, "min_kmer_simt_msa"] = min_kmer_sim_msa
+# combined_df.at[index_aim, "max_kmer_simt_msa"] = max_kmer_sim_msa##
 
 
 def sample_rows(group):
     percentile = group["percentile"].iloc[0]
     print(percentile)
     max_sample_size = min(1800, group.shape[0])
-    #if percentile <= 4.0:
-     #   max_sample_size = 1000
-    #else:
-     #   print(group.shape)
+    # if percentile <= 4.0:
+    #   max_sample_size = 1000
+    # else:
+    #   print(group.shape)
 
-      #  return group
+    #  return group
     print(group.shape)
     return group.sample(max_sample_size)
 
+
+print(combined_df.shape)
+
+difficulties_df = combined_df.drop_duplicates(subset=['dataset', "sampelId"], keep='first')
 
 print(combined_df.shape)
 bin_edges = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
