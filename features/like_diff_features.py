@@ -52,7 +52,7 @@ def query_statistics(query_filepath) -> list:
             print(copied_array.shape)
             copied_array = np.delete(copied_array, col, axis=1)
         if len(np.unique(alignment_array[:, col])) == 2:
-            if np.unique(alignment_array[:, col])[0] == "-" or np.unique(alignment_array[:, col])[1] == "-"):
+            if np.unique(alignment_array[:, col])[0] == "-" or np.unique(alignment_array[:, col])[1] == "-":
                 copied_array = np.delete(copied_array, col, axis=1)
 
                         # Identify undetermined columns (columns with only gaps or missing characters)
