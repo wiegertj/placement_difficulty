@@ -48,7 +48,7 @@ for tree_filename in filenames:
             max_value = max(numbers)
 
             # Perform min-max scaling
-            scaled_numbers = [(x - min_value) / (max_value - min_value) for x in numbers]
+            scaled_numbers = [(x / sum(numbers)) for x in numbers]
 
             mean_loglik = mean(scaled_numbers)
             min_loglik = min(scaled_numbers)
