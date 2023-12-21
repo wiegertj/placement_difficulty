@@ -49,6 +49,8 @@ def query_statistics(query_filepath) -> list:
     for col in range(0, alignment_array.shape[1]):
 
         if np.all(alignment_array[:, col] == '-'):
+            print("found")
+            print(alignment_array[:, col])
             alignment_array = np.delete(alignment_array, col, axis=1)
         if len(np.unique(alignment_array[:, col])) == 2:
             if np.unique(alignment_array[:, col])[0] == "-" or np.unique(alignment_array[:, col])[1] == "-":
