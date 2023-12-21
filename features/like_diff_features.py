@@ -136,8 +136,8 @@ def query_statistics(query_filepath) -> list:
         isAA = False
         loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
         datatype = \
-        loo_selection[loo_selection["verbose_name"] == query_filepath.replace("_query.fasta", ".phy")].iloc[0][
-            "data_type"]
+            loo_selection[loo_selection["verbose_name"] == query_filepath.replace("_query.fasta", ".phy")].iloc[0][
+                "data_type"]
         if datatype == "AA" or datatype == "DataType.AA":
             isAA = True
             print("Found AA")
@@ -154,7 +154,6 @@ def query_statistics(query_filepath) -> list:
         analyzed_sites_5 = []
         analyzed_sites_4 = []
         analyzed_sites_2 = []
-
 
         try:
             for position in range(len(alignment[0])):
