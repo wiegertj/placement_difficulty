@@ -321,7 +321,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             model = lgb.train(params, train_data)
             val_preds = model.predict(X_val)
-            val_score = mean_absolute_error(y_val, val_preds)
+            val_score = mean_squared_error(y_val, val_preds, squared=False)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
