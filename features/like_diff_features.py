@@ -176,58 +176,58 @@ def query_statistics(query_filepath) -> list:
 
                 # Check if the proportion is below the threshold and the character is not a gap or "N"
 
-                    if analyzed_sites_9_lik[position] != 1 or most_common_char in ['-', 'N']:
-                        analyzed_sites_9.append((0, most_common_char))
-                    else:
-                        analyzed_sites_9.append((1, most_common_char))
+                if analyzed_sites_9_lik[position] != 1 or most_common_char in ['-', 'N']:
+                    analyzed_sites_9.append((0, most_common_char))
+                else:
+                    analyzed_sites_9.append((1, most_common_char))
 
-                    if analyzed_sites_6_lik[position] != 1 or most_common_char in ['-', 'N']:
-                        analyzed_sites_6.append((0, most_common_char))
-                    else:
-                        analyzed_sites_6.append((1, most_common_char))
+                if analyzed_sites_6_lik[position] != 1 or most_common_char in ['-', 'N']:
+                    analyzed_sites_6.append((0, most_common_char))
+                else:
+                    analyzed_sites_6.append((1, most_common_char))
 
-                    if analyzed_sites_5_lik[position] != 1 or most_common_char in ['-', 'N']:
-                        analyzed_sites_5.append((0, most_common_char))
-                    else:
-                        analyzed_sites_5.append((1, most_common_char))
+                if analyzed_sites_5_lik[position] != 1 or most_common_char in ['-', 'N']:
+                    analyzed_sites_5.append((0, most_common_char))
+                else:
+                    analyzed_sites_5.append((1, most_common_char))
 
-                    if analyzed_sites_4_lik[position] != 1 or most_common_char in ['-', 'N']:
-                        analyzed_sites_4.append((0, most_common_char))
-                    else:
-                        analyzed_sites_4.append((1, most_common_char))
+                if analyzed_sites_4_lik[position] != 1 or most_common_char in ['-', 'N']:
+                    analyzed_sites_4.append((0, most_common_char))
+                else:
+                    analyzed_sites_4.append((1, most_common_char))
 
-                    if analyzed_sites_2_lik[position] != 1 or most_common_char in ['-', 'N']:
-                        analyzed_sites_2.append((0, most_common_char))
-                    else:
-                        analyzed_sites_2.append((1, most_common_char))
+                if analyzed_sites_2_lik[position] != 1 or most_common_char in ['-', 'N']:
+                    analyzed_sites_2.append((0, most_common_char))
+                else:
+                    analyzed_sites_2.append((1, most_common_char))
 
-                    if analyzed_sites_1_lik[position] != 1 or most_common_char in ['-', 'N']:
-                        analyzed_sites_1.append((0, most_common_char))
-                    else:
-                        analyzed_sites_1.append((1, most_common_char))
+                if analyzed_sites_1_lik[position] != 1 or most_common_char in ['-', 'N']:
+                    analyzed_sites_1.append((0, most_common_char))
+                else:
+                    analyzed_sites_1.append((1, most_common_char))
 
-                    if analyzed_sites_3_lik[position] != 1 or most_common_char in ['-', 'N']:
-                        analyzed_sites_3.append((0, most_common_char))
-                    else:
-                        analyzed_sites_3.append((1, most_common_char))
+                if analyzed_sites_3_lik[position] != 1 or most_common_char in ['-', 'N']:
+                    analyzed_sites_3.append((0, most_common_char))
+                else:
+                    analyzed_sites_3.append((1, most_common_char))
 
-                    # Check if the proportion is below the threshold and the character is not a gap or "N"
-                    if analyzed_sites_8_lik[position] != 1 or most_common_char in ['-', 'N']:
-                        analyzed_sites_8.append((0, most_common_char))
-                    else:
-                        analyzed_sites_8.append((1, most_common_char))
+                # Check if the proportion is below the threshold and the character is not a gap or "N"
+                if analyzed_sites_8_lik[position] != 1 or most_common_char in ['-', 'N']:
+                    analyzed_sites_8.append((0, most_common_char))
+                else:
+                    analyzed_sites_8.append((1, most_common_char))
 
-                    # Check if the proportion is below the threshold and the character is not a gap or "N"
-                    if analyzed_sites_7_lik[position] != 1 or most_common_char in ['-', 'N']:
-                        analyzed_sites_7.append((0, most_common_char))
-                    else:
-                        analyzed_sites_7.append((1, most_common_char))
+                # Check if the proportion is below the threshold and the character is not a gap or "N"
+                if analyzed_sites_7_lik[position] != 1 or most_common_char in ['-', 'N']:
+                    analyzed_sites_7.append((0, most_common_char))
+                else:
+                    analyzed_sites_7.append((1, most_common_char))
 
-                    # Check if the proportion is below the threshold and the character is not a gap or "N"
-                    if analyzed_sites_95_lik[position] != 1 or most_common_char in ['-', 'N']:
-                        analyzed_sites_95.append((0, most_common_char))
-                    else:
-                        analyzed_sites_95.append((1, most_common_char))
+                # Check if the proportion is below the threshold and the character is not a gap or "N"
+                if analyzed_sites_95_lik[position] != 1 or most_common_char in ['-', 'N']:
+                    analyzed_sites_95.append((0, most_common_char))
+                else:
+                    analyzed_sites_95.append((1, most_common_char))
         except IndexError:
             print(f"{len(alignment[0])}, {len(scaled_numbers)}")
             print(likpath)
