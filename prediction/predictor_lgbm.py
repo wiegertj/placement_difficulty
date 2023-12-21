@@ -249,6 +249,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     X_train = train.drop(axis=1, columns=target)
     y_train = np.log(train[target] + 1e10)
+    print(y_train.tolist())
     X_test = test.drop(axis=1, columns=target)
     y_test = np.log(test[target] + 1e10)
 
