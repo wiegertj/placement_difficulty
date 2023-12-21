@@ -38,15 +38,24 @@ def query_statistics(query_filepath) -> list:
     filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
     alignment_original = AlignIO.read(filepath, 'fasta')
 
+
+
+
     alignment_array = np.array([list(str(record.seq)) for record in alignment_original], dtype='str')
+    print(f"{alignment_array.shape}, {alignment_array.shape}")
+
+
+    for col in range(alignment_array.shape[1]):
+        if np.all(array[:, col] == '-'):
+            # If all elements in the column are "-", remove the column
+            array = np.delete(array, alignment_array, axis=1)
+
 
 
     # Identify undetermined columns (columns with only gaps or missing characters)
 
 
     # Remove constant columns
-    filtered_alignment_array = alignment_array[:, ~np.all(alignment_array[1:] == alignment_array[:-1], axis=0)]
-
 
     #undetermined_columns = np.all((alignment_array == '-') | (alignment_array == '?'), axis=1)
 
@@ -54,7 +63,7 @@ def query_statistics(query_filepath) -> list:
     # Remove undetermined columns from the array
     #filtered_alignment_array = alignment_array[~undetermined_columns, :]
 
-    print(f"{alignment_array.shape}, {filtered_alignment_array.shape}")
+    print(f"{alignment_array.shape}, {alignment_array.shape}")
 
     original_ids = [record.id for record in alignment_original]
 
