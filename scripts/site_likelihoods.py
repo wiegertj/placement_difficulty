@@ -47,6 +47,7 @@ for tree_filename in filenames:
         f"--msa {msa_filepath}",
         "--pat-comp off",
         "--redo",
+        "--site-repeats off",
         f"--prefix {output_prefix}"
     ]
     print(raxml_command)
