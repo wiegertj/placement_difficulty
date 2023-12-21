@@ -155,8 +155,8 @@ def query_statistics(query_filepath) -> list:
         analyzed_sites_4 = []
         analyzed_sites_2 = []
 
-        try:
 
+        try:
             for position in range(len(alignment[0])):
 
                 # Extract characters (residues) at the current position for all sequences
@@ -228,9 +228,9 @@ def query_statistics(query_filepath) -> list:
                         analyzed_sites_95.append((0, most_common_char))
                     else:
                         analyzed_sites_95.append((1, most_common_char))
-            except IndexError:
-                print(f"{len(alignment[0])}, {len(scaled_numbers)}")
-                print(likpath)
+        except IndexError:
+            print(f"{len(alignment[0])}, {len(scaled_numbers)}")
+            print(likpath)
 
         if len(analyzed_sites_8) == 0:
             print("Error")
