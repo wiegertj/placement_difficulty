@@ -49,7 +49,7 @@ def query_statistics(query_filepath) -> list:
         analyzed_sites_2_lik = []
 
 
-
+        scaled_numbers = []
 
 
         dataset = query_filepath.replace("_query.fasta", "")
