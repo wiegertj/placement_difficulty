@@ -166,6 +166,8 @@ def query_statistics(query_filepath) -> list:
 
         try:
             for position in range(len(alignment[0])):
+                print(position)
+                print(len(alignment[0]))
 
                 # Extract characters (residues) at the current position for all sequences
                 residues_at_position = [str(record.seq[position]) for record in alignment]
@@ -692,6 +694,8 @@ if __name__ == '__main__':
 
     results = []
     counter = 0
+
+    filenames = filenames[:1]
 
     for result in pool.imap(query_statistics, filenames):
         if result != -1:
