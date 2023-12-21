@@ -350,8 +350,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         pickle.dump(final_model, file)
 
     y_pred = np.exp(final_model.predict(X_test.drop(axis=1, columns=["group"])) - 1e-10)
-
-    mse = mean_squared_error(np.exp(y_test) - 1e-10, y_pred)
+    y_test = np.exp(y_test) - 1e-10
+    mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
 
