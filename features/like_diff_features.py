@@ -37,16 +37,16 @@ def query_statistics(query_filepath) -> list:
 
 
 
-        analyzed_sites_9 = []
-        analyzed_sites_8 = []
-        analyzed_sites_7 = []
-        analyzed_sites_95 = []
-        analyzed_sites_3 = []
-        analyzed_sites_1 = []
-        analyzed_sites_6 = []
-        analyzed_sites_5 = []
-        analyzed_sites_4 = []
-        analyzed_sites_2 = []
+        analyzed_sites_9_lik = []
+        analyzed_sites_8_lik = []
+        analyzed_sites_7_lik = []
+        analyzed_sites_95_lik = []
+        analyzed_sites_3_lik = []
+        analyzed_sites_1_lik = []
+        analyzed_sites_6_lik = []
+        analyzed_sites_5_lik = []
+        analyzed_sites_4_lik = []
+        analyzed_sites_2_lik = []
 
 
 
@@ -79,34 +79,34 @@ def query_statistics(query_filepath) -> list:
                 scaled_numbers = [(x / sum(numbers)) for x in numbers]
 
                 threshold_9 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.9)]
-                analyzed_sites_9 = [1 if x <= threshold_9 else 0 for x in scaled_numbers]
+                analyzed_sites_9_lik = [1 if x <= threshold_9 else 0 for x in scaled_numbers]
 
                 threshold_8 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.8)]
-                analyzed_sites_8= [1 if x <= threshold_8 else 0 for x in scaled_numbers]
+                analyzed_sites_8_lik = [1 if x <= threshold_8 else 0 for x in scaled_numbers]
 
                 threshold_95 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.95)]
-                analyzed_sites_95 = [1 if x <= threshold_95 else 0 for x in scaled_numbers]
+                analyzed_sites_95_lik = [1 if x <= threshold_95 else 0 for x in scaled_numbers]
 
                 threshold_7 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.7)]
-                analyzed_sites_7 = [1 if x <= threshold_7 else 0 for x in scaled_numbers]
+                analyzed_sites_7_lik = [1 if x <= threshold_7 else 0 for x in scaled_numbers]
 
                 threshold_3 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.3)]
-                analyzed_sites_3 = [1 if x <= threshold_3 else 0 for x in scaled_numbers]
+                analyzed_sites_3_lik = [1 if x <= threshold_3 else 0 for x in scaled_numbers]
 
                 threshold_1 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.1)]
-                analyzed_sites_1 = [1 if x <= threshold_1 else 0 for x in scaled_numbers]
+                analyzed_sites_1_lik = [1 if x <= threshold_1 else 0 for x in scaled_numbers]
 
                 threshold_6 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.6)]
-                analyzed_sites_6 = [1 if x <= threshold_6 else 0 for x in scaled_numbers]
+                analyzed_sites_6_lik = [1 if x <= threshold_6 else 0 for x in scaled_numbers]
 
                 threshold_5 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.5)]
-                analyzed_sites_5 = [1 if x <= threshold_5 else 0 for x in scaled_numbers]
+                analyzed_sites_5_lik = [1 if x <= threshold_5 else 0 for x in scaled_numbers]
 
                 threshold_4 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.4)]
-                analyzed_sites_4 = [1 if x <= threshold_4 else 0 for x in scaled_numbers]
+                analyzed_sites_4_lik = [1 if x <= threshold_4 else 0 for x in scaled_numbers]
 
                 threshold_2 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.2)]
-                analyzed_sites_2 = [1 if x <= threshold_2 else 0 for x in scaled_numbers]
+                analyzed_sites_2_lik = [1 if x <= threshold_2 else 0 for x in scaled_numbers]
             else:
                 return -1
         except:
@@ -129,6 +129,98 @@ def query_statistics(query_filepath) -> list:
             print("Found AA")
         gap_matches = 0
         total_gap_count = 0
+
+
+
+
+        analyzed_sites_9 = []
+        analyzed_sites_8 = []
+        analyzed_sites_7 = []
+        analyzed_sites_95 = []
+        analyzed_sites_3 = []
+        analyzed_sites_1 = []
+        analyzed_sites_6 = []
+        analyzed_sites_5 = []
+        analyzed_sites_4 = []
+        analyzed_sites_2 = []
+
+
+
+
+
+        for position in range(len(alignment[0])):
+            # Extract characters (residues) at the current position for all sequences
+            residues_at_position = [str(record.seq[position]) for record in alignment]
+
+            # Count the occurrences of each character
+            char_counts = Counter(residues_at_position)
+
+            # Calculate the most frequent character and its count
+            most_common_char, most_common_count = char_counts.most_common(1)[0]
+
+            # Calculate the total count of all characters excluding gaps and "N"s
+            total_count = sum(count for char, count in char_counts.items())
+
+            # Calculate the proportion of the most frequent character
+            proportion_most_common = most_common_count / total_count if total_count > 0 else 0
+
+            # Check if the proportion is below the threshold and the character is not a gap or "N"
+            if analyzed_sites_9_lik[position] != 1 or most_common_char in ['-', 'N']:
+                analyzed_sites_9.append((0, most_common_char))
+            else:
+                analyzed_sites_9.append((1, most_common_char))
+
+            if analyzed_sites_6_lik[position] != 1 or most_common_char in ['-', 'N']:
+                analyzed_sites_6.append((0, most_common_char))
+            else:
+                analyzed_sites_6.append((1, most_common_char))
+
+            if analyzed_sites_5_lik[position] != 1 or most_common_char in ['-', 'N']:
+                analyzed_sites_5.append((0, most_common_char))
+            else:
+                analyzed_sites_5.append((1, most_common_char))
+
+            if analyzed_sites_4_lik[position] != 1 or most_common_char in ['-', 'N']:
+                analyzed_sites_4.append((0, most_common_char))
+            else:
+                analyzed_sites_4.append((1, most_common_char))
+
+            if analyzed_sites_2_lik[position] != 1 or most_common_char in ['-', 'N']:
+                analyzed_sites_2.append((0, most_common_char))
+            else:
+                analyzed_sites_2.append((1, most_common_char))
+
+            if analyzed_sites_1_lik[position] != 1 or most_common_char in ['-', 'N']:
+                analyzed_sites_1.append((0, most_common_char))
+            else:
+                analyzed_sites_1.append((1, most_common_char))
+
+            if analyzed_sites_3_lik[position] != 1 or most_common_char in ['-', 'N']:
+                analyzed_sites_3.append((0, most_common_char))
+            else:
+                analyzed_sites_3.append((1, most_common_char))
+
+            # Check if the proportion is below the threshold and the character is not a gap or "N"
+            if analyzed_sites_8_lik[position] != 1 or most_common_char in ['-', 'N']:
+                analyzed_sites_8.append((0, most_common_char))
+            else:
+                analyzed_sites_8.append((1, most_common_char))
+
+            # Check if the proportion is below the threshold and the character is not a gap or "N"
+            if analyzed_sites_7_lik[position] != 1 or most_common_char in ['-', 'N']:
+                analyzed_sites_7.append((0, most_common_char))
+            else:
+                analyzed_sites_7.append((1, most_common_char))
+
+            # Check if the proportion is below the threshold and the character is not a gap or "N"
+            if analyzed_sites_95_lik[position] != 1 or most_common_char in ['-', 'N']:
+                analyzed_sites_95.append((0, most_common_char))
+            else:
+                analyzed_sites_95.append((1, most_common_char))
+
+
+
+
 
 
         if len(analyzed_sites_8) == 0:
