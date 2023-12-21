@@ -78,6 +78,8 @@ def query_statistics(query_filepath) -> list:
                 # Perform min-max scaling
                 scaled_numbers = [(x / sum(numbers)) for x in numbers]
 
+                print(len(scaled_numbers))
+
                 threshold_9 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.9)]
                 analyzed_sites_9_lik = [1 if x <= threshold_9 else 0 for x in scaled_numbers]
 
@@ -147,8 +149,9 @@ def query_statistics(query_filepath) -> list:
 
 
 
-
+        print(len(alignment[0]))
         for position in range(len(alignment[0])):
+
             # Extract characters (residues) at the current position for all sequences
             residues_at_position = [str(record.seq[position]) for record in alignment]
 
