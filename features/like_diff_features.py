@@ -237,9 +237,9 @@ def query_statistics(query_filepath) -> list:
             print("Not equal ")
             print(likpath)
 
-        if len(analyzed_sites_8) == 0:
-            print("Error")
-            return -1
+        #if len(analyzed_sites_8) == 0:
+         #   print("Error")
+          #  return -1
 
         for i, (flag, char) in enumerate(analyzed_sites_8):
             # Check if the corresponding site in the query has a 1 and if the characters are equal
