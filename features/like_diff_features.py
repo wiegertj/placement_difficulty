@@ -137,7 +137,7 @@ def query_statistics(query_filepath) -> list:
                 print("to little lines in loglh")
                 return -1
         except:
-            print(likpath)
+            print("Error in lik")
             return -1
 
         # Iterate over each position in the alignment
