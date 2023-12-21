@@ -128,16 +128,12 @@ def query_statistics(query_filepath) -> list:
                 threshold_2 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.2)]
                 analyzed_sites_2_lik = [1 if x <= threshold_2 else 0 for x in scaled_numbers]
             else:
+                print("to little lines in loglh")
                 return -1
         except:
             print(likpath)
             return -1
 
-        try:
-            for position in range(len(alignment[0])):
-                break
-        except IndexError:
-            return -1
         # Iterate over each position in the alignment
 
         isAA = False
