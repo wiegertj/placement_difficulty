@@ -55,8 +55,6 @@ def query_statistics(query_filepath) -> list:
     for record in alignment_original:
         alignment = [record_ for record_ in alignment_original if record_.id != record.id]
 
-
-
         analyzed_sites_9_lik = []
         analyzed_sites_8_lik = []
         analyzed_sites_7_lik = []
@@ -68,13 +66,12 @@ def query_statistics(query_filepath) -> list:
         analyzed_sites_4_lik = []
         analyzed_sites_2_lik = []
 
-
         scaled_numbers = []
-
 
         dataset = query_filepath.replace("_query.fasta", "")
 
-        likpath = os.path.join(os.pardir, "scripts/", query_filepath.replace("_query.fasta", "") + "_siteliks_.raxml.siteLH")
+        likpath = os.path.join(os.pardir, "scripts/",
+                               query_filepath.replace("_query.fasta", "") + "_siteliks_.raxml.siteLH")
         try:
             with open(likpath, 'r') as file:
                 # Read the lines from the file
@@ -138,16 +135,14 @@ def query_statistics(query_filepath) -> list:
 
         isAA = False
         loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
-        datatype = loo_selection[loo_selection["verbose_name"] == query_filepath.replace("_query.fasta", ".phy")].iloc[0][
+        datatype = \
+        loo_selection[loo_selection["verbose_name"] == query_filepath.replace("_query.fasta", ".phy")].iloc[0][
             "data_type"]
         if datatype == "AA" or datatype == "DataType.AA":
             isAA = True
             print("Found AA")
         gap_matches = 0
         total_gap_count = 0
-
-
-
 
         analyzed_sites_9 = []
         analyzed_sites_8 = []
@@ -160,89 +155,82 @@ def query_statistics(query_filepath) -> list:
         analyzed_sites_4 = []
         analyzed_sites_2 = []
 
+        try:
 
+            for position in range(len(alignment[0])):
 
+                # Extract characters (residues) at the current position for all sequences
+                residues_at_position = [str(record.seq[position]) for record in alignment]
 
-        for position in range(len(alignment[0])):
+                # Count the occurrences of each character
+                char_counts = Counter(residues_at_position)
 
-            # Extract characters (residues) at the current position for all sequences
-            residues_at_position = [str(record.seq[position]) for record in alignment]
+                # Calculate the most frequent character and its count
+                most_common_char, most_common_count = char_counts.most_common(1)[0]
 
-            # Count the occurrences of each character
-            char_counts = Counter(residues_at_position)
+                # Calculate the total count of all characters excluding gaps and "N"s
+                total_count = sum(count for char, count in char_counts.items())
 
-            # Calculate the most frequent character and its count
-            most_common_char, most_common_count = char_counts.most_common(1)[0]
-
-            # Calculate the total count of all characters excluding gaps and "N"s
-            total_count = sum(count for char, count in char_counts.items())
-
-            # Calculate the proportion of the most frequent character
-            proportion_most_common = most_common_count / total_count if total_count > 0 else 0
-
-            # Check if the proportion is below the threshold and the character is not a gap or "N"
-            try:
-                if analyzed_sites_9_lik[position] != 1 or most_common_char in ['-', 'N']:
-                    analyzed_sites_9.append((0, most_common_char))
-                else:
-                    analyzed_sites_9.append((1, most_common_char))
-
-                if analyzed_sites_6_lik[position] != 1 or most_common_char in ['-', 'N']:
-                    analyzed_sites_6.append((0, most_common_char))
-                else:
-                    analyzed_sites_6.append((1, most_common_char))
-
-                if analyzed_sites_5_lik[position] != 1 or most_common_char in ['-', 'N']:
-                    analyzed_sites_5.append((0, most_common_char))
-                else:
-                    analyzed_sites_5.append((1, most_common_char))
-
-                if analyzed_sites_4_lik[position] != 1 or most_common_char in ['-', 'N']:
-                    analyzed_sites_4.append((0, most_common_char))
-                else:
-                    analyzed_sites_4.append((1, most_common_char))
-
-                if analyzed_sites_2_lik[position] != 1 or most_common_char in ['-', 'N']:
-                    analyzed_sites_2.append((0, most_common_char))
-                else:
-                    analyzed_sites_2.append((1, most_common_char))
-
-                if analyzed_sites_1_lik[position] != 1 or most_common_char in ['-', 'N']:
-                    analyzed_sites_1.append((0, most_common_char))
-                else:
-                    analyzed_sites_1.append((1, most_common_char))
-
-                if analyzed_sites_3_lik[position] != 1 or most_common_char in ['-', 'N']:
-                    analyzed_sites_3.append((0, most_common_char))
-                else:
-                    analyzed_sites_3.append((1, most_common_char))
+                # Calculate the proportion of the most frequent character
+                proportion_most_common = most_common_count / total_count if total_count > 0 else 0
 
                 # Check if the proportion is below the threshold and the character is not a gap or "N"
-                if analyzed_sites_8_lik[position] != 1 or most_common_char in ['-', 'N']:
-                    analyzed_sites_8.append((0, most_common_char))
-                else:
-                    analyzed_sites_8.append((1, most_common_char))
 
-                # Check if the proportion is below the threshold and the character is not a gap or "N"
-                if analyzed_sites_7_lik[position] != 1 or most_common_char in ['-', 'N']:
-                    analyzed_sites_7.append((0, most_common_char))
-                else:
-                    analyzed_sites_7.append((1, most_common_char))
+                    if analyzed_sites_9_lik[position] != 1 or most_common_char in ['-', 'N']:
+                        analyzed_sites_9.append((0, most_common_char))
+                    else:
+                        analyzed_sites_9.append((1, most_common_char))
 
-                # Check if the proportion is below the threshold and the character is not a gap or "N"
-                if analyzed_sites_95_lik[position] != 1 or most_common_char in ['-', 'N']:
-                    analyzed_sites_95.append((0, most_common_char))
-                else:
-                    analyzed_sites_95.append((1, most_common_char))
+                    if analyzed_sites_6_lik[position] != 1 or most_common_char in ['-', 'N']:
+                        analyzed_sites_6.append((0, most_common_char))
+                    else:
+                        analyzed_sites_6.append((1, most_common_char))
+
+                    if analyzed_sites_5_lik[position] != 1 or most_common_char in ['-', 'N']:
+                        analyzed_sites_5.append((0, most_common_char))
+                    else:
+                        analyzed_sites_5.append((1, most_common_char))
+
+                    if analyzed_sites_4_lik[position] != 1 or most_common_char in ['-', 'N']:
+                        analyzed_sites_4.append((0, most_common_char))
+                    else:
+                        analyzed_sites_4.append((1, most_common_char))
+
+                    if analyzed_sites_2_lik[position] != 1 or most_common_char in ['-', 'N']:
+                        analyzed_sites_2.append((0, most_common_char))
+                    else:
+                        analyzed_sites_2.append((1, most_common_char))
+
+                    if analyzed_sites_1_lik[position] != 1 or most_common_char in ['-', 'N']:
+                        analyzed_sites_1.append((0, most_common_char))
+                    else:
+                        analyzed_sites_1.append((1, most_common_char))
+
+                    if analyzed_sites_3_lik[position] != 1 or most_common_char in ['-', 'N']:
+                        analyzed_sites_3.append((0, most_common_char))
+                    else:
+                        analyzed_sites_3.append((1, most_common_char))
+
+                    # Check if the proportion is below the threshold and the character is not a gap or "N"
+                    if analyzed_sites_8_lik[position] != 1 or most_common_char in ['-', 'N']:
+                        analyzed_sites_8.append((0, most_common_char))
+                    else:
+                        analyzed_sites_8.append((1, most_common_char))
+
+                    # Check if the proportion is below the threshold and the character is not a gap or "N"
+                    if analyzed_sites_7_lik[position] != 1 or most_common_char in ['-', 'N']:
+                        analyzed_sites_7.append((0, most_common_char))
+                    else:
+                        analyzed_sites_7.append((1, most_common_char))
+
+                    # Check if the proportion is below the threshold and the character is not a gap or "N"
+                    if analyzed_sites_95_lik[position] != 1 or most_common_char in ['-', 'N']:
+                        analyzed_sites_95.append((0, most_common_char))
+                    else:
+                        analyzed_sites_95.append((1, most_common_char))
             except IndexError:
                 print(f"{len(alignment[0])}, {len(scaled_numbers)}")
                 print(likpath)
-
-
-
-
-
-
 
         if len(analyzed_sites_8) == 0:
             print("Error")
@@ -317,8 +305,8 @@ def query_statistics(query_filepath) -> list:
             # Check if the corresponding site in the query has a 1 and if the characters are equal
             if flag == 1:
                 total_inv_sites_8 += 1
-            #if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
-             #   match_counter_8 += 1
+            # if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+            #   match_counter_8 += 1
             if flag == 1 and str(record.seq)[i] != char:
                 mut_count8 += 1
                 if char in ["C", "T", "U"]:
@@ -341,7 +329,6 @@ def query_statistics(query_filepath) -> list:
                     fraction_char_rest = 0
                 fraction_char_rests8.append(fraction_char_rest)
 
-
         match_counter_7 = 0
         total_inv_sites_7 = 0
         for i, (flag, char) in enumerate(analyzed_sites_7):
@@ -359,8 +346,8 @@ def query_statistics(query_filepath) -> list:
             # Check if the corresponding site in the query has a 1 and if the characters are equal
             if flag == 1:
                 total_inv_sites_7 += 1
-            #if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
-             #   match_counter_7 += 1
+            # if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+            #   match_counter_7 += 1
             if flag == 1 and str(record.seq)[i] != char:
                 mut_count7 += 1
                 if char in ["C", "T", "U"]:
@@ -391,8 +378,8 @@ def query_statistics(query_filepath) -> list:
             # Check if the corresponding site in the query has a 1 and if the characters are equal
             if flag == 1:
                 total_inv_sites_5 += 1
-            #if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
-             #   match_counter_5 += 1
+            # if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+            #   match_counter_5 += 1
             if flag == 1 and str(record.seq)[i] != char:
                 mut_count5 += 1
                 if char in ["C", "T", "U"]:
@@ -423,8 +410,8 @@ def query_statistics(query_filepath) -> list:
             # Check if the corresponding site in the query has a 1 and if the characters are equal
             if flag == 1:
                 total_inv_sites_9 += 1
-            #if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
-             #   match_counter_9 += 1
+            # if flag == 1 and str(record.seq)[i] == char and char not in ['-', 'N']:
+            #   match_counter_9 += 1
             if flag == 1 and str(record.seq)[i] != char:
                 mut_count9 += 1
                 if char in ["C", "T", "U"]:
@@ -446,7 +433,6 @@ def query_statistics(query_filepath) -> list:
                 else:
                     fraction_char_rest = 0
                 fraction_char_rests9.append(fraction_char_rest)
-
 
         match_counter_95 = 0
         total_inv_sites_95 = 0
@@ -710,20 +696,29 @@ if __name__ == '__main__':
     results = [item for sublist in results for item in sublist]
 
     df = pd.DataFrame(results, columns=["dataset", "sampleId",
-                        "match_counter_7_lik", "match_counter_8_lik", "match_counter_9_lik",
-                        "match_counter_95_lik", "match_counter_3_lik", "match_counter_1_lik",
-                        "match_rel_7_lik", "match_rel_8_lik", "match_rel_9_lik", "match_rel_95_lik", "match_rel_3_lik", "match_rel_1_lik", "match_rel_gap_lik",
-                        "match_rel_2_lik", "match_rel_4_lik", "match_rel_6_lik", "match_rel_5_lik",
-                        "transition_count_rel9_lik", "transversion_count_rel9_lik", "max_fraction_char_rests9_lik",
-                        "min_fraction_char_rests9_lik", "avg_fraction_char_rests9_lik", "std_fraction_char_rests9_lik",
-                        "skw_fraction_char_rests9_lik", "kur_fraction_char_rests9_lik",
-                        "transition_count_rel8_lik", "transversion_count_rel8_lik", "max_fraction_char_rests8_lik",
-                        "min_fraction_char_rests8_lik", "avg_fraction_char_rests8_lik", "std_fraction_char_rests8_lik",
-                        "skw_fraction_char_rests8_lik", "kur_fraction_char_rests8_lik",
-                        "transition_count_rel7_lik", "transversion_count_rel7_lik", "max_fraction_char_rests7_lik",
-                        "min_fraction_char_rests7_lik", "avg_fraction_char_rests7_lik", "std_fraction_char_rests7_lik",
-                        "skw_fraction_char_rests7_lik", "kur_fraction_char_rests7_lik",
-                        "transition_count_rel5_lik", "transversion_count_rel5_lik", "max_fraction_char_rests5_lik",
-                        "min_fraction_char_rests5_lik", "avg_fraction_char_rests5_lik", "std_fraction_char_rests5_lik",
-                        "skw_fraction_char_rests5_lik", "kur_fraction_char_rests5_lik"])
+                                        "match_counter_7_lik", "match_counter_8_lik", "match_counter_9_lik",
+                                        "match_counter_95_lik", "match_counter_3_lik", "match_counter_1_lik",
+                                        "match_rel_7_lik", "match_rel_8_lik", "match_rel_9_lik", "match_rel_95_lik",
+                                        "match_rel_3_lik", "match_rel_1_lik", "match_rel_gap_lik",
+                                        "match_rel_2_lik", "match_rel_4_lik", "match_rel_6_lik", "match_rel_5_lik",
+                                        "transition_count_rel9_lik", "transversion_count_rel9_lik",
+                                        "max_fraction_char_rests9_lik",
+                                        "min_fraction_char_rests9_lik", "avg_fraction_char_rests9_lik",
+                                        "std_fraction_char_rests9_lik",
+                                        "skw_fraction_char_rests9_lik", "kur_fraction_char_rests9_lik",
+                                        "transition_count_rel8_lik", "transversion_count_rel8_lik",
+                                        "max_fraction_char_rests8_lik",
+                                        "min_fraction_char_rests8_lik", "avg_fraction_char_rests8_lik",
+                                        "std_fraction_char_rests8_lik",
+                                        "skw_fraction_char_rests8_lik", "kur_fraction_char_rests8_lik",
+                                        "transition_count_rel7_lik", "transversion_count_rel7_lik",
+                                        "max_fraction_char_rests7_lik",
+                                        "min_fraction_char_rests7_lik", "avg_fraction_char_rests7_lik",
+                                        "std_fraction_char_rests7_lik",
+                                        "skw_fraction_char_rests7_lik", "kur_fraction_char_rests7_lik",
+                                        "transition_count_rel5_lik", "transversion_count_rel5_lik",
+                                        "max_fraction_char_rests5_lik",
+                                        "min_fraction_char_rests5_lik", "avg_fraction_char_rests5_lik",
+                                        "std_fraction_char_rests5_lik",
+                                        "skw_fraction_char_rests5_lik", "kur_fraction_char_rests5_lik"])
     df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features_lik.csv"))
