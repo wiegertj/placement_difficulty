@@ -107,6 +107,8 @@ def query_statistics(query_filepath) -> list:
 
                 threshold_2 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.2)]
                 analyzed_sites_2 = [1 if x <= threshold_2 else 0 for x in scaled_numbers]
+            else:
+                return -1
         except:
             print(likpath)
             return -1
