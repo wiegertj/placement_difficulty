@@ -32,6 +32,24 @@ def query_statistics(query_filepath) -> list:
     results = []
     filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
     alignment_original = AlignIO.read(filepath, 'fasta')
+
+    from Bio import AlignIO
+    from Bio.Seq import Seq
+    from Bio.SeqRecord import SeqRecord
+    from Bio.Align import MultipleSeqAlignment
+
+    # Read the original alignment
+    alignment_original = AlignIO.read(filepath, 'fasta')
+
+    # Filter out columns with only undetermined characters (gaps or missing)
+    filtered_columns = [i for i in range(alignment_original.get_alignment_length()) if
+                        set(alignment_original[:, i]) != {'-', '?'}]
+
+    # Create a new filtered alignment
+    alignment_original = MultipleSeqAlignment([SeqRecord(Seq(str(record.seq[i])) for i in filtered_columns], id=record.id) for record in alignment_original]
+
+
+
     for record in alignment_original:
         alignment = [record_ for record_ in alignment_original if record_.id != record.id]
 
