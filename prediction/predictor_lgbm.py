@@ -295,7 +295,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
         params = {
             'objective': 'regression',
-            'metric': 'l1',
+            'metric': 'rmse',
             'num_iterations': trial.suggest_int('num_iterations', 10, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
@@ -331,7 +331,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     best_params = study.best_params
     best_params["objective"] = "regression"
-    best_params["metric"] = "l1"
+    best_params["metric"] = "rmse"
     best_params["boosting_type"] = "gbdt"
     #best_params["bagging_freq"] = 0
     #best_params["max_depth"] = -1
