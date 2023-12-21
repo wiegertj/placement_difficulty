@@ -40,11 +40,11 @@ def query_statistics(query_filepath) -> list:
     alignment_array = np.array([list(str(record.seq)) for record in alignment_original], dtype='str')
 
     # Identify undetermined columns (columns with only gaps or missing characters)
-    undetermined_columns = np.all(alignment_array == alignment_array[0, :], axis=1)
 
 
     # Remove undetermined columns from the array
-    filtered_alignment_array = alignment_array[~undetermined_columns, :]
+    filtered_alignment_array = alignment_array[:, ~np.all(alignment_array[1:] == alignment_array[:-1], axis=0)]
+
 
     # Convert the filtered array back to a BioPython MultipleSeqAlignment
     filtered_sequences = [SeqRecord(Seq(''.join(filtered_alignment_array[i, :]))) for i in
