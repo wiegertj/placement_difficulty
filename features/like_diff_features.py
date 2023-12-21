@@ -44,11 +44,12 @@ def query_statistics(query_filepath) -> list:
     alignment_array = np.array([list(str(record.seq)) for record in alignment_original], dtype='str')
     print(f"{alignment_array.shape}, {alignment_array.shape}")
 
+    copied_array = alignment_array.copy()
 
     for col in range(0, alignment_array.shape[1]):
         if np.all(alignment_array[:, col] == '-') or np.sum(alignment_array[:, col] != '-') <= 1:
             # If all elements in the column are "-", remove the column
-            alignment_array = np.delete(alignment_array, col, axis=1)
+            copied_array = np.delete(copied_array, col, axis=1)
 
 
 
@@ -63,7 +64,7 @@ def query_statistics(query_filepath) -> list:
     # Remove undetermined columns from the array
     #filtered_alignment_array = alignment_array[~undetermined_columns, :]
 
-    print(f"{alignment_array.shape}, {alignment_array.shape}")
+    print(f"{alignment_array.shape}, {copied_array.shape}")
 
     original_ids = [record.id for record in alignment_original]
 
