@@ -46,15 +46,19 @@ def query_statistics(query_filepath) -> list:
 
     copied_array = alignment_array.copy()
     print(copied_array.shape)
+    list_col = []
     for col in range(0, alignment_array.shape[1]):
 
         if np.all(alignment_array[:, col] == '-'):
-            print("found")
             print(alignment_array[:, col])
-            alignment_array = np.delete(alignment_array, col, axis=1)
+            list_col.append(False)
+            continue
         if len(np.unique(alignment_array[:, col])) == 2:
             if np.unique(alignment_array[:, col])[0] == "-" or np.unique(alignment_array[:, col])[1] == "-":
                 alignment_array = np.delete(alignment_array, col, axis=1)
+                list_col.append(False)
+                continue
+        list_col.append(True)
 
                         # Identify undetermined columns (columns with only gaps or missing characters)
 
