@@ -78,7 +78,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     'frac_inv_sites_msa9', 'transversion_count_rel7',
     'std_fraction_char_rests7', 'transversion_count_rel5',
     'min_fraction_char_rests5', 'std_length', 'sk_clo_sim',
-    'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot', "avg_gaps_msa", "gap_fraction",
+    'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot'
     ]]
 
     #df = df[[]]
@@ -314,7 +314,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
         val_scores = []
 
-        gkf = GroupKFold(n_splits=6)
+        gkf = GroupKFold(n_splits=10)
         for train_idx, val_idx in gkf.split(X_train.drop(axis=1, columns=['group']), y_train, groups=X_train["group"]):
             X_train_tmp, y_train_tmp = X_train.drop(axis=1, columns=['group']).iloc[train_idx], y_train.iloc[train_idx]
             X_val, y_val = X_train.drop(axis=1, columns=['group']).iloc[val_idx], y_train.iloc[val_idx]
@@ -453,5 +453,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
 
 
-for i in range(0, 10):
+for i in range(0, 1):
     light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
