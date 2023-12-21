@@ -163,7 +163,7 @@ def query_statistics(query_filepath) -> list:
         analyzed_sites_5 = []
         analyzed_sites_4 = []
         analyzed_sites_2 = []
-
+        print(range(len(alignment[0])))
         try:
             for position in range(len(alignment[0])):
                 print(position)
@@ -241,7 +241,6 @@ def query_statistics(query_filepath) -> list:
         except IndexError:
             #print(f"{len(alignment[0])}, {len(scaled_numbers)}")
             print("Not equal ")
-            print(likpath)
 
         #if len(analyzed_sites_8) == 0:
          #   print("Error")
