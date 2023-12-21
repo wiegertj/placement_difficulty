@@ -38,17 +38,16 @@ def query_statistics(query_filepath) -> list:
     alignment_original = AlignIO.read(filepath, 'fasta')
 
     alignment_array = np.array([list(str(record.seq)) for record in alignment_original], dtype='str')
-    print("#"*50)
 
-    print(alignment_original.shape)
 
     # Identify undetermined columns (columns with only gaps or missing characters)
 
 
     # Remove undetermined columns from the array
     filtered_alignment_array = alignment_array[:, ~np.all(alignment_array[1:] == alignment_array[:-1], axis=0)]
-    print(filtered_alignment_array.shape)
-    print("#"*50)
+    print(f"{alignment_original.shape}, {filtered_alignment_array.shape}")
+
+
 
     # Convert the filtered array back to a BioPython MultipleSeqAlignment
     filtered_sequences = [SeqRecord(Seq(''.join(filtered_alignment_array[i, :]))) for i in
