@@ -35,30 +35,31 @@ def query_statistics(query_filepath) -> list:
     """
     results = []
     print(query_filepath)
-    filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
-    alignment_original = AlignIO.read(filepath, 'fasta')
+    #filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
+    filepath = os.path.join(os.pardir, "scripts", query_filepath.replace("_reference.fasta", "_siteliks_.raxml.reduced.phy"))
+    alignment_original = AlignIO.read(filepath, 'phy')
 
 
 
 
-    alignment_array = np.array([list(str(record.seq)) for record in alignment_original], dtype='str')
-    print(f"{alignment_array.shape}, {alignment_array.shape}")
+    #alignment_array = np.array([list(str(record.seq)) for record in alignment_original], dtype='str')
+    #print(f"{alignment_array.shape}, {alignment_array.shape}")
 
-    copied_array = alignment_array.copy()
-    print(copied_array.shape)
-    list_col = []
-    for col in range(0, alignment_array.shape[1]):
-        print(np.unique(alignment_array[:, col]))
-        if len(np.unique(alignment_array[:, col])) == 1 and np.unique(alignment_array[:, col])[0] == "-":
-            print(alignment_array[:, col])
-            list_col.append(False)
-            continue
-        if len(np.unique(alignment_array[:, col])) == 2:
-            if np.unique(alignment_array[:, col])[0] == "-" or np.unique(alignment_array[:, col])[1] == "-":
-                alignment_array = np.delete(alignment_array, col, axis=1)
-                list_col.append(False)
-                continue
-        list_col.append(True)
+    #copied_array = alignment_array.copy()
+    #print(copied_array.shape)
+    #list_col = []
+    #for col in range(0, alignment_array.shape[1]):
+     #   print(np.unique(alignment_array[:, col]))
+      #  if len(np.unique(alignment_array[:, col])) == 1 and np.unique(alignment_array[:, col])[0] == "-":
+       #     print(alignment_array[:, col])
+        #    list_col.append(False)
+         #   continue
+        #if len(np.unique(alignment_array[:, col])) == 2:
+         #   if np.unique(alignment_array[:, col])[0] == "-" or np.unique(alignment_array[:, col])[1] == "-":
+          #      alignment_array = np.delete(alignment_array, col, axis=1)
+           #     list_col.append(False)
+            #    continue
+        #list_col.append(True)
 
                         # Identify undetermined columns (columns with only gaps or missing characters)
 
@@ -71,17 +72,17 @@ def query_statistics(query_filepath) -> list:
     # Remove undetermined columns from the array
     #filtered_alignment_array = alignment_array[~undetermined_columns, :]
 
-    print(f"{alignment_array.shape}, {copied_array.shape}")
+    #print(f"{alignment_array.shape}, {copied_array.shape}")
 
-    original_ids = [record.id for record in alignment_original]
+    #original_ids = [record.id for record in alignment_original]
 
 
     # Convert the filtered array back to a BioPython MultipleSeqAlignment
-    filtered_sequences = [SeqRecord(seq=Seq(''.join(alignment_array[i, :])), id=original_ids[i]) for i in
-                          range(alignment_array.shape[0])]
-    alignment_original = MultipleSeqAlignment(filtered_sequences)
+    #filtered_sequences = [SeqRecord(seq=Seq(''.join(alignment_array[i, :])), id=original_ids[i]) for i in
+     #                     range(alignment_array.shape[0])]
+    #alignment_original = MultipleSeqAlignment(filtered_sequences)
 
-    print(len(alignment_original[0]))
+    #print(len(alignment_original[0]))
 
     for record in alignment_original:
         alignment = [record_ for record_ in alignment_original if record_.id != record.id]
