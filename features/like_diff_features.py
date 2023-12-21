@@ -220,6 +220,7 @@ def query_statistics(query_filepath) -> list:
                     analyzed_sites_95.append((1, most_common_char))
             except IndexError:
                 print(f"{len(alignment[0])}, {len(scaled_numbers)}")
+                print(likpath)
 
 
 
