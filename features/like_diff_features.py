@@ -47,7 +47,7 @@ def query_statistics(query_filepath) -> list:
     copied_array = alignment_array.copy()
     print(copied_array.shape)
     for col in range(0, alignment_array.shape[1]):
-        if np.all(alignment_array[:, col] == '-') or ((len(np.unique(alignment_array[:, col])) <= 2) and (np.unique(alignment_array[:, col])[0] == "-" or np.unique(alignment_array[:, col])[1])):
+        if np.all(alignment_array[:, col] == '-') or ((len(np.unique(alignment_array[:, col])) <= 2) and (np.unique(alignment_array[:, col])[0] == "-" or np.unique(alignment_array[:, col])[1]) == "-"):
             # If all elements in the column are "-", remove the column
             print(copied_array.shape)
 
