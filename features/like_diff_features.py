@@ -68,7 +68,7 @@ def query_statistics(query_filepath) -> list:
                 # Use regular expression to extract numbers from the second line
                 import re
 
-                numbers = re.findall(r"[-+]?\d*\.\d+|\d+", second_line)
+                numbers = re.findall(r"[-]?\d*\.\d+|\d+", second_line)
                 numbers = numbers[1:]
 
                 numbers = [float(number) for number in numbers]
