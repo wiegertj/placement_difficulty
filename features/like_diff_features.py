@@ -42,10 +42,10 @@ def query_statistics(query_filepath) -> list:
 
     # Identify undetermined columns (columns with only gaps or missing characters)
 
-    is_constant_array = np.all(alignment_array == alignment_array[0, :], axis=0)
 
     # Remove constant columns
-    filtered_alignment_array = alignment_array[:, ~is_constant_array]
+    filtered_alignment_array = alignment_array[:, ~np.all(alignment_array[1:] == alignment_array[:-1], axis=0)]
+
 
     #undetermined_columns = np.all((alignment_array == '-') | (alignment_array == '?'), axis=1)
 
