@@ -229,7 +229,8 @@ def query_statistics(query_filepath) -> list:
                 else:
                     analyzed_sites_95.append((1, most_common_char))
         except IndexError:
-            print(f"{len(alignment[0])}, {len(scaled_numbers)}")
+            #print(f"{len(alignment[0])}, {len(scaled_numbers)}")
+            print("Not equal ")
             print(likpath)
 
         if len(analyzed_sites_8) == 0:
