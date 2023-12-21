@@ -224,7 +224,7 @@ loo_diff["sampleId"] = loo_diff["temp"]
 loo_diff.drop(columns=["temp"], inplace=True, axis=1)
 
 loo_diff = loo_diff.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
-loo_resuls_combined = loo_resuls_combined.merge(loo_diff, on=["sampleId", 'dataset'], how='inner')
+#loo_resuls_combined = loo_resuls_combined.merge(loo_diff, on=["sampleId", 'dataset'], how='inner')
 
 loo_resuls_dfs = []
 elements_to_delete = ['tara', 'bv', "neotrop"]
