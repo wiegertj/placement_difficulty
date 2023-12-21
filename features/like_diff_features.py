@@ -15,6 +15,10 @@ from uncertainty.RunTest import RunTest
 from uncertainty.Spectral import SpectralTest
 from scipy.stats import skew, kurtosis
 import statistics
+from Bio import AlignIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio.Align import MultipleSeqAlignment
 import numpy as np
 from scipy.stats import kurtosis, skew
 
@@ -33,22 +37,18 @@ def query_statistics(query_filepath) -> list:
     filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
     alignment_original = AlignIO.read(filepath, 'fasta')
 
-    from Bio import AlignIO
-    from Bio.Seq import Seq
-    from Bio.SeqRecord import SeqRecord
-    from Bio.Align import MultipleSeqAlignment
+    alignment_array = np.array([list(str(record.seq)) for record in alignment_original], dtype='str')
 
-    # Read the original alignment
-    alignment_original = AlignIO.read(filepath, 'fasta')
+    # Identify undetermined columns (columns with only gaps or missing characters)
+    undetermined_columns = np.all((alignment_array == '-') | (alignment_array == '?'), axis=1)
 
-    # Filter out columns with only undetermined characters (gaps or missing)
-    filtered_columns = [i for i in range(alignment_original.get_alignment_length()) if
-                        set(alignment_original[:, i]) != {'-', '?'}]
+    # Remove undetermined columns from the array
+    filtered_alignment_array = alignment_array[~undetermined_columns, :]
 
-    # Create a new filtered alignment
-    alignment_original = MultipleSeqAlignment([SeqRecord(Seq(str(record.seq[i])) for i in filtered_columns], id=record.id) for record in alignment_original])
-
-
+    # Convert the filtered array back to a BioPython MultipleSeqAlignment
+    filtered_sequences = [SeqRecord(Seq(''.join(filtered_alignment_array[i, :]))) for i in
+                          range(filtered_alignment_array.shape[0])]
+    alignment_original = MultipleSeqAlignment(filtered_sequences)
 
     for record in alignment_original:
         alignment = [record_ for record_ in alignment_original if record_.id != record.id]
