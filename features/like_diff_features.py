@@ -45,7 +45,7 @@ def query_statistics(query_filepath) -> list:
 
     # Remove undetermined columns from the array
     filtered_alignment_array = alignment_array[:, ~np.all(alignment_array[1:] == alignment_array[:-1], axis=0)]
-    print(f"{alignment_original.shape}, {filtered_alignment_array.shape}")
+    print(f"{alignment_array.shape}, {filtered_alignment_array.shape}")
 
 
 
