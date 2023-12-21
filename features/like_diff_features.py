@@ -48,7 +48,7 @@ def query_statistics(query_filepath) -> list:
     for col in range(alignment_array.shape[1]):
         if np.all(alignment_array[:, col] == '-'):
             # If all elements in the column are "-", remove the column
-            array = np.delete(alignment_array, col, axis=1)
+            alignment_array = np.delete(alignment_array, col, axis=1)
 
 
 
@@ -69,8 +69,8 @@ def query_statistics(query_filepath) -> list:
 
 
     # Convert the filtered array back to a BioPython MultipleSeqAlignment
-    filtered_sequences = [SeqRecord(seq=Seq(''.join(filtered_alignment_array[i, :])), id=original_ids[i]) for i in
-                          range(filtered_alignment_array.shape[0])]
+    filtered_sequences = [SeqRecord(seq=Seq(''.join(alignment_array[i, :])), id=original_ids[i]) for i in
+                          range(alignment_array.shape[0])]
     alignment_original = MultipleSeqAlignment(filtered_sequences)
 
     print(len(alignment_original[0]))
