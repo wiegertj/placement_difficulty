@@ -46,9 +46,9 @@ def query_statistics(query_filepath) -> list:
 
 
     for col in range(alignment_array.shape[1]):
-        if np.all(array[:, col] == '-'):
+        if np.all(alignment_array[:, col] == '-'):
             # If all elements in the column are "-", remove the column
-            array = np.delete(array, alignment_array, axis=1)
+            array = np.delete(alignment_array, col, axis=1)
 
 
 
