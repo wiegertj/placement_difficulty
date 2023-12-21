@@ -118,6 +118,11 @@ def query_statistics(query_filepath) -> list:
             print("Found AA")
         gap_matches = 0
         total_gap_count = 0
+
+        if len(analyzed_sites_8) == 0:
+            print("Error")
+            return -1
+
         for i, (flag, char) in enumerate(analyzed_sites_8):
             # Check if the corresponding site in the query has a 1 and if the characters are equal
             if flag == 0 and char in ["-", "N"]:
