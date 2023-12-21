@@ -49,7 +49,7 @@ def query_statistics(query_filepath) -> list:
     list_col = []
     for col in range(0, alignment_array.shape[1]):
 
-        if np.all(alignment_array[:, col] == '-'):
+        if len(np.unique(alignment_array[:, col])) == 1 and np.unique(alignment_array[:, col])[0] == "-":
             print(alignment_array[:, col])
             list_col.append(False)
             continue
