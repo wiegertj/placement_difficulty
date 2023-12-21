@@ -167,8 +167,6 @@ def query_statistics(query_filepath) -> list:
         print(range(len(alignment[0])))
         try:
             for position in range(len(alignment[0])):
-                print(position)
-                print(len(alignment[0]))
 
                 # Extract characters (residues) at the current position for all sequences
                 residues_at_position = [str(record.seq[position]) for record in alignment]
@@ -240,7 +238,8 @@ def query_statistics(query_filepath) -> list:
                 else:
                     analyzed_sites_95.append((1, most_common_char))
         except IndexError:
-            #print(f"{len(alignment[0])}, {len(scaled_numbers)}")
+            print(f"{len(alignment[0])}, {len(scaled_numbers)}")
+            print(position)
             print("Not equal ")
 
         #if len(analyzed_sites_8) == 0:
