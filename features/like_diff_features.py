@@ -50,7 +50,7 @@ def query_statistics(query_filepath) -> list:
                           range(filtered_alignment_array.shape[0])]
     alignment_original = MultipleSeqAlignment(filtered_sequences)
 
-    print(len(alignment[0]))
+    print(len(alignment_original[0]))
 
     for record in alignment_original:
         alignment = [record_ for record_ in alignment_original if record_.id != record.id]
