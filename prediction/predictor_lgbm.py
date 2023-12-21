@@ -248,10 +248,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
-    y_train = np.log(train[target] + 1e10)
+    y_train = np.log(train[target] + 1e-10)
     print(y_train.tolist())
     X_test = test.drop(axis=1, columns=target)
-    y_test = np.log(test[target] + 1e10)
+    y_test = np.log(test[target] + 1e-10)
 
     # X = df.drop(axis=1, columns=target)
     # y = df[target]
@@ -321,7 +321,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             model = lgb.train(params, train_data)
             val_preds = model.predict(X_val)
-            val_score = mean_absolute_error(np.exp(y_val) - 1e10, val_preds)
+            val_score = mean_absolute_error(np.exp(y_val) - 1e-10, val_preds)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
@@ -349,7 +349,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
-    y_pred = np.exp(final_model.predict(X_test.drop(axis=1, columns=["group"])) - 1e10)
+    y_pred = np.exp(final_model.predict(X_test.drop(axis=1, columns=["group"])) - 1e-10)
 
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
