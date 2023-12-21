@@ -248,10 +248,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
-    y_train = np.log(train[target] + 1e-10)
-    print(y_train.tolist())
+    y_train = train[target]
+
     X_test = test.drop(axis=1, columns=target)
-    y_test = np.log(test[target] + 1e-10)
+    y_test = test[target]
 
     # X = df.drop(axis=1, columns=target)
     # y = df[target]
@@ -295,7 +295,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
         params = {
             'objective': 'regression',
-            'metric': 'rmse',
+            'metric': 'l1',
             'num_iterations': trial.suggest_int('num_iterations', 10, 300),
             'boosting_type': 'gbdt',
             'num_leaves': trial.suggest_int('num_leaves', 2, 200),
@@ -321,7 +321,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
             train_data = lgb.Dataset(X_train_tmp, label=y_train_tmp)
             model = lgb.train(params, train_data)
             val_preds = model.predict(X_val)
-            val_score = mean_absolute_error(np.exp(y_val) - 1e-10, np.exp(val_preds) - 1e-10)
+            val_score = mean_absolute_error(y_val, val_preds)
             val_scores.append(val_score)
 
         return sum(val_scores) / len(val_scores)
@@ -331,7 +331,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     best_params = study.best_params
     best_params["objective"] = "regression"
-    best_params["metric"] = "rmse"
+    best_params["metric"] = "l1"
     best_params["boosting_type"] = "gbdt"
     #best_params["bagging_freq"] = 0
     #best_params["max_depth"] = -1
@@ -349,8 +349,8 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
-    y_pred = np.exp(final_model.predict(X_test.drop(axis=1, columns=["group"])) - 1e-10)
-    y_test = np.exp(y_test) - 1e-10
+    y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
+
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
