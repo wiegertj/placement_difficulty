@@ -119,7 +119,6 @@ def query_statistics(query_filepath) -> list:
         gap_matches = 0
         total_gap_count = 0
 
-        print(analyzed_sites_8)
 
         if len(analyzed_sites_8) == 0:
             print("Error")
