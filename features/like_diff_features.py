@@ -46,7 +46,7 @@ def query_statistics(query_filepath) -> list:
                         set(alignment_original[:, i]) != {'-', '?'}]
 
     # Create a new filtered alignment
-    alignment_original = MultipleSeqAlignment([SeqRecord(Seq(str(record.seq[i])) for i in filtered_columns], id=record.id) for record in alignment_original]
+    alignment_original = MultipleSeqAlignment([SeqRecord(Seq(str(record.seq[i])) for i in filtered_columns], id=record.id) for record in alignment_original])
 
 
 
