@@ -45,6 +45,7 @@ for tree_filename in filenames:
         f"--model {model_path}",
         f"--tree {tree_path}",
         f"--msa {msa_filepath}",
+        "--pat-comp off",
         "--redo",
         f"--prefix {output_prefix}"
     ]
