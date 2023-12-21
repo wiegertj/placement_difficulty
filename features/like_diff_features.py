@@ -52,10 +52,11 @@ def query_statistics(query_filepath) -> list:
 
     print(f"{alignment_array.shape}, {filtered_alignment_array.shape}")
 
+    original_ids = [record.id for record in alignment_original]
 
 
     # Convert the filtered array back to a BioPython MultipleSeqAlignment
-    filtered_sequences = [SeqRecord(Seq(''.join(filtered_alignment_array[i, :]))) for i in
+    filtered_sequences = [SeqRecord(seq=Seq(''.join(filtered_alignment_array[i, :])), id=original_ids[i]) for i in
                           range(filtered_alignment_array.shape[0])]
     alignment_original = MultipleSeqAlignment(filtered_sequences)
 
