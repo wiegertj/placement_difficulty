@@ -34,6 +34,7 @@ def query_statistics(query_filepath) -> list:
                     :return list:
     """
     results = []
+    print(query_filepath)
     filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
     alignment_original = AlignIO.read(filepath, 'fasta')
 
