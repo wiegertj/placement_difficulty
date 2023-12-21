@@ -37,7 +37,16 @@ def query_statistics(query_filepath) -> list:
 
 
 
-
+        analyzed_sites_9 = []
+        analyzed_sites_8 = []
+        analyzed_sites_7 = []
+        analyzed_sites_95 = []
+        analyzed_sites_3 = []
+        analyzed_sites_1 = []
+        analyzed_sites_6 = []
+        analyzed_sites_5 = []
+        analyzed_sites_4 = []
+        analyzed_sites_2 = []
 
 
 
