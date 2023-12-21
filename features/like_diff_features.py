@@ -40,7 +40,7 @@ def query_statistics(query_filepath) -> list:
     alignment_array = np.array([list(str(record.seq)) for record in alignment_original], dtype='str')
 
     # Identify undetermined columns (columns with only gaps or missing characters)
-    undetermined_columns = np.all(alignment_array == alignment_array[0, :], axis=0)
+    undetermined_columns = np.all(alignment_array == alignment_array[0, :], axis=1)
 
 
     # Remove undetermined columns from the array
