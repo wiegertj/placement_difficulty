@@ -21,6 +21,10 @@ print("MSA feature count: " + str(msa_features.shape))
 query_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
 query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
+
+query_features_lik_diff = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features_lik.csv"), index_col=False,
+                             usecols=lambda column: column != 'Unnamed: 0')
+query_features = query_features.merge(query_features_lik_diff, on=["dataset", "sampleId"], how="inner")
 print("Query feature count: " + str(query_features.shape))
 
 # Get tree features
