@@ -10,6 +10,7 @@ csv_file_path = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/fea
 # Read the CSV file
 df = pd.read_csv(csv_file_path, names=["sampleId", "dataset"])
 print(df.columns)
+print(df.shape)
 
 # Path to the directory containing the FASTA files
 fasta_directory = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/loo'
