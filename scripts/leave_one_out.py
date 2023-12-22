@@ -376,12 +376,12 @@ for msa_name in filenames:
 
         except FileNotFoundError:
             print("EPA-ng executable not found. Please make sure EPA-ng is installed and in the system PATH.")
-        if feature_config.REESTIMATE_TREE == False:  # Delete tmp tree
-            os.remove(os.path.join(os.pardir, "data/raw/reference_tree_tmp", msa_name + "_" + to_query + ".newick"))
+        #if feature_config.REESTIMATE_TREE == False:  # Delete tmp tree
+         #   os.remove(os.path.join(os.pardir, "data/raw/reference_tree_tmp", msa_name + "_" + to_query + ".newick"))
 
         # ------------------------------------ Cleanup ---------------------------------------
 
-        files = glob.glob(os.path.join(os.path.join(os.pardir, "data/processed/loo", f"*{to_query}*")))
+        #files = glob.glob(os.path.join(os.path.join(os.pardir, "data/processed/loo", f"*{to_query}*")))
 
-        for file_path in files:
-            os.remove(file_path)
+        #for file_path in files:
+         #   os.remove(file_path)
