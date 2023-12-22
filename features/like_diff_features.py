@@ -128,34 +128,34 @@ def query_statistics(query_filepath) -> list:
                 scaled_numbers = [(x / sum(numbers)) for x in numbers]
 
                 threshold_9 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.9)]
-                analyzed_sites_9_lik = [1 if x <= threshold_9 else 0 for x in scaled_numbers]
+                analyzed_sites_9_lik = [1 if x >= threshold_9 else 0 for x in scaled_numbers]
 
                 threshold_8 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.8)]
-                analyzed_sites_8_lik = [1 if x <= threshold_8 else 0 for x in scaled_numbers]
+                analyzed_sites_8_lik = [1 if x >= threshold_8 else 0 for x in scaled_numbers]
 
                 threshold_95 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.95)]
-                analyzed_sites_95_lik = [1 if x <= threshold_95 else 0 for x in scaled_numbers]
+                analyzed_sites_95_lik = [1 if x >= threshold_95 else 0 for x in scaled_numbers]
 
                 threshold_7 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.7)]
-                analyzed_sites_7_lik = [1 if x <= threshold_7 else 0 for x in scaled_numbers]
+                analyzed_sites_7_lik = [1 if x >= threshold_7 else 0 for x in scaled_numbers]
 
                 threshold_3 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.3)]
-                analyzed_sites_3_lik = [1 if x <= threshold_3 else 0 for x in scaled_numbers]
+                analyzed_sites_3_lik = [1 if x >= threshold_3 else 0 for x in scaled_numbers]
 
                 threshold_1 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.1)]
-                analyzed_sites_1_lik = [1 if x <= threshold_1 else 0 for x in scaled_numbers]
+                analyzed_sites_1_lik = [1 if x >= threshold_1 else 0 for x in scaled_numbers]
 
                 threshold_6 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.6)]
-                analyzed_sites_6_lik = [1 if x <= threshold_6 else 0 for x in scaled_numbers]
+                analyzed_sites_6_lik = [1 if x >= threshold_6 else 0 for x in scaled_numbers]
 
                 threshold_5 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.5)]
-                analyzed_sites_5_lik = [1 if x <= threshold_5 else 0 for x in scaled_numbers]
+                analyzed_sites_5_lik = [1 if x >= threshold_5 else 0 for x in scaled_numbers]
 
                 threshold_4 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.4)]
-                analyzed_sites_4_lik = [1 if x <= threshold_4 else 0 for x in scaled_numbers]
+                analyzed_sites_4_lik = [1 if x >= threshold_4 else 0 for x in scaled_numbers]
 
                 threshold_2 = sorted(scaled_numbers)[int(len(scaled_numbers) * 0.2)]
-                analyzed_sites_2_lik = [1 if x <= threshold_2 else 0 for x in scaled_numbers]
+                analyzed_sites_2_lik = [1 if x >= threshold_2 else 0 for x in scaled_numbers]
             else:
                 print("to little lines in loglh")
                 return -1
