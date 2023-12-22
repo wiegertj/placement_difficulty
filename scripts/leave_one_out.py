@@ -43,12 +43,12 @@ filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 # print("Before filterling" + str(len(filenames)))
 # filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
 # print("After filterling" + str(len(filtered_filenames)))
-loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy_tmp.csv"))
-filtered_filenames = loo_reest_samples["dataset"].values.tolist()
-filtered_filenames = set(filtered_filenames)
-rand_sample = random.sample(filtered_filenames, 80)
-df = pd.DataFrame({'reest_files': rand_sample})
-rand_sample = pd.read_csv(os.path.join(os.pardir, "data/reest_selection.csv"))
+#loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy_tmp.csv"))
+#filtered_filenames = loo_reest_samples["dataset"].values.tolist()
+#filtered_filenames = set(filtered_filenames)
+#rand_sample = random.sample(filtered_filenames, 80)
+#df = pd.DataFrame({'reest_files': rand_sample})
+#rand_sample = pd.read_csv(os.path.join(os.pardir, "data/reest_selection.csv"))
 msa_counter = 0
 for msa_name in filenames:
     if msa_name == "17080_0":
