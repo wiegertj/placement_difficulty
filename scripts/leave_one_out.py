@@ -111,7 +111,7 @@ for msa_name in filenames:
                     sampled_sequence = record.seq[start_position:start_position + sample_size]
 
                 # Create a new sequence with gaps at the end
-                filled_sequence = Seq(str(sampled_sequence) + " " * (sequence_length - sample_size))
+                filled_sequence = Seq(str(sampled_sequence) + " " * (len(str(record.seq)) - sample_size))
 
                 # Create a new SeqRecord
                 sampled_record = SeqRecord(seq=filled_sequence, id=record.id, description="")
