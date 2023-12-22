@@ -107,15 +107,18 @@ for msa_name in filenames:
                     # Randomly select a starting position within the sequence
                     start_position = random.randint(0, len(str(record.seq)) - sample_size)
 
-                    # Extract 200 bases starting from the randomly selected position
-                    sampled_sequence = record.seq[start_position:start_position + sample_size]
+                from Bio.Seq import Seq
+
+                print(record.seq)
 
                 # Create a new sequence with gaps at the end
-                filled_sequence = Seq(str(sampled_sequence) + " " * (len(str(record.seq)) - sample_size))
-                print(filled_sequence)
+                sampled_sequence = Seq(
+                    "-" * start_position + str(record.seq[start_position:start_position + sample_size]) + "-" * (
+                                sequence_length - start_position - sample_size))
+                print(sampled_sequence)
 
                 # Create a new SeqRecord
-                sampled_record = SeqRecord(seq=filled_sequence, id=record.id, description="")
+                sampled_record = SeqRecord(seq=sampled_sequence, id=record.id, description="")
 
                 new_alignment.append(seq_record)
             else:
