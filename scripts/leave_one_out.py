@@ -98,6 +98,7 @@ for msa_name in filenames:
                                        "query200.csv"),
                           index=False,
                           mode='a', header=False)
+    sample_size = random.randint(200, 500)
 
     for to_query in sequence_ids_sample:
 
@@ -116,7 +117,6 @@ for msa_name in filenames:
                 new_alignment.append(seq_record)
             else:
 
-                sample_size = 200
 
                 sequence_length = len(str(record.seq))
 
