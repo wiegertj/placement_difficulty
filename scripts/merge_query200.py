@@ -8,7 +8,7 @@ from Bio.Seq import Seq
 csv_file_path = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/query200_.csv'
 
 # Read the CSV file
-df = pd.read_csv(csv_file_path)
+df = pd.read_csv(csv_file_path, names=["sampleId", "dataset"])
 print(df.columns)
 
 # Path to the directory containing the FASTA files
@@ -20,7 +20,7 @@ for dataset in df['dataset'].unique():
 
     # Iterate over unique values in the "dataset" column
     # Get all values of "sampleId" for the current dataset
-    sample_ids = df.loc[df['dataset'] == dataset, 'sampleIds']
+    sample_ids = df.loc[df['dataset'] == dataset, 'sampleId']
 
     # Iterate over sampleIds and read the corresponding FASTA files
     for sample_id in sample_ids:
