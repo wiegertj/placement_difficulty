@@ -40,7 +40,7 @@ def query_statistics(query_filepath) -> list:
 
         if str(record.seq).replace("-", "") == "":
             print("only gaps")
-            return -1
+            return -2
 
         analyzed_sites_9 = []
         analyzed_sites_8 = []
@@ -743,12 +743,17 @@ if __name__ == '__main__':
 
     results = []
     counter = 0
+    counter_gaponly = 0
 
     for result in pool.imap(query_statistics, filenames):
         if result != -1:
             results.append(result)
             print(counter)
             counter += 1
+        if result == -2:
+            counter_gaponly += 1
+            print(counter_gaponly)
+
 
     pool.close()
     pool.join()
