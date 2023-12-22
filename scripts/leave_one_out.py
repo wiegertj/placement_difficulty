@@ -54,7 +54,7 @@ for msa_name in filenames:
     if msa_name == "17080_0":
         continue
     msa_counter += 1
-    print(str(msa_counter) + "/" + str(len(rand_sample)))
+    print(str(msa_counter) + "/" + str(len(filenames)))
     print(msa_name)
 
     rf_distances = []
