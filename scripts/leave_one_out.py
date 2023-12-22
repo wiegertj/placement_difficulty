@@ -43,12 +43,12 @@ filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 # print("Before filterling" + str(len(filenames)))
 # filtered_filenames = [filename for filename in filenames if filename not in dataset_set]
 # print("After filterling" + str(len(filtered_filenames)))
-#loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy_tmp.csv"))
-#filtered_filenames = loo_reest_samples["dataset"].values.tolist()
-#filtered_filenames = set(filtered_filenames)
-#rand_sample = random.sample(filtered_filenames, 80)
-#df = pd.DataFrame({'reest_files': rand_sample})
-#rand_sample = pd.read_csv(os.path.join(os.pardir, "data/reest_selection.csv"))
+# loo_reest_samples = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy_tmp.csv"))
+# filtered_filenames = loo_reest_samples["dataset"].values.tolist()
+# filtered_filenames = set(filtered_filenames)
+# rand_sample = random.sample(filtered_filenames, 80)
+# df = pd.DataFrame({'reest_files': rand_sample})
+# rand_sample = pd.read_csv(os.path.join(os.pardir, "data/reest_selection.csv"))
 msa_counter = 0
 for msa_name in filenames:
     if msa_name == "17080_0":
@@ -78,11 +78,11 @@ for msa_name in filenames:
 
     # Create random sample
     if feature_config.LOO_SAMPLE_SIZE >= len(sequence_ids):
-       sequence_ids_sample = sequence_ids
+        sequence_ids_sample = sequence_ids
     else:
-       sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
+        sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
 
-    #sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
+    # sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
 
     for to_query in sequence_ids_sample:
 
@@ -97,6 +97,9 @@ for msa_name in filenames:
         for record in MSA:
             if record.id != to_query:
                 seq_record = SeqIO.SeqRecord(seq=record.seq, id=record.id, description="")
+
+                new_alignment.append(seq_record)
+            else:
 
                 sample_size = 200
 
@@ -122,10 +125,7 @@ for msa_name in filenames:
                 # Create a new SeqRecord
                 sampled_record = SeqRecord(seq=sampled_sequence, id=record.id, description="")
 
-                new_alignment.append(seq_record)
-            else:
-                seq_record = SeqIO.SeqRecord(seq=record.seq, id=record.id, description="")
-                query_alignment.append(seq_record)
+                query_alignment.append(sampled_record)
 
         output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa200_" + to_query + ".fasta")
         output_file = os.path.abspath(output_file)
@@ -202,7 +202,6 @@ for msa_name in filenames:
                 print(e.stderr)
 
             # ------------------------------------------ run RAxML-ng with LOO MSA ------------------------------------------
-
 
             command = ["raxml-ng", "--search", "--msa", aligned_output_file, "--model",
                        "GTR+G", "tree", "pars{50}, rand{50}", "--redo"]
@@ -300,7 +299,8 @@ for msa_name in filenames:
                     df_rf = pd.DataFrame(rf_distances, columns=["dataset", "sampleId", "norm_rf_dist", "norm_bsd_dist",
                                                                 "norm_quartet_dist"])
 
-                    if not os.path.isfile(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate_test.csv")):
+                    if not os.path.isfile(
+                            os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate_test.csv")):
                         df_rf.to_csv(os.path.join(os.pardir, "data/processed/final", "dist_loo_reestimate_test.csv"),
                                      index=False, header=True,
                                      columns=["dataset", "sampleId", "norm_rf_dist", "norm_bsd_dist",
@@ -363,7 +363,8 @@ for msa_name in filenames:
         print(model_path_epa)
         command = ["epa-ng", "--model", model_path_epa,
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
-                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + "_200"), "--filter-max",
+                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + "_200"),
+                   "--filter-max",
                    "10000", "--filter-acc-lwr", "0.999"]
         print(" ".join(command))
 
@@ -382,12 +383,12 @@ for msa_name in filenames:
 
         except FileNotFoundError:
             print("EPA-ng executable not found. Please make sure EPA-ng is installed and in the system PATH.")
-        #if feature_config.REESTIMATE_TREE == False:  # Delete tmp tree
-         #   os.remove(os.path.join(os.pardir, "data/raw/reference_tree_tmp", msa_name + "_" + to_query + ".newick"))
+        # if feature_config.REESTIMATE_TREE == False:  # Delete tmp tree
+        #   os.remove(os.path.join(os.pardir, "data/raw/reference_tree_tmp", msa_name + "_" + to_query + ".newick"))
 
         # ------------------------------------ Cleanup ---------------------------------------
 
-        #files = glob.glob(os.path.join(os.path.join(os.pardir, "data/processed/loo", f"*{to_query}*")))
+        # files = glob.glob(os.path.join(os.path.join(os.pardir, "data/processed/loo", f"*{to_query}*")))
 
-        #for file_path in files:
-         #   os.remove(file_path)
+        # for file_path in files:
+        #   os.remove(file_path)
