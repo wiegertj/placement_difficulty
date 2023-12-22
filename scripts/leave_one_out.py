@@ -84,6 +84,21 @@ for msa_name in filenames:
 
     # sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
 
+    metrics_dict = {'sampleIds': sequence_ids_sample}
+
+    metrics_df = pd.DataFrame(metrics_dict)
+    metrics_df["dataset"] = msa_name
+
+    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "query200.csv")):
+        metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                                    "query200.csv")), index=False)
+    else:
+        metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+                                       "query200.csv"),
+                          index=False,
+                          mode='a', header=False)
+
     for to_query in sequence_ids_sample:
 
         counter += 1
