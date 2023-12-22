@@ -186,7 +186,6 @@ def query_statistics(query_filepath) -> list:
         analyzed_sites_5 = []
         analyzed_sites_4 = []
         analyzed_sites_2 = []
-        print(range(len(alignment[0])))
         try:
             for position in range(len(alignment[0])):
 
