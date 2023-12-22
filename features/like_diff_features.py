@@ -716,7 +716,6 @@ if __name__ == '__main__':
     results = []
     counter = 0
 
-    filenames = filenames[:1]
 
     for result in pool.imap(query_statistics, filenames):
         if result != -1:
