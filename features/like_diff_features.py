@@ -40,7 +40,12 @@ def query_statistics(query_filepath) -> list:
     try:
         alignment_original = AlignIO.read(filepath, 'phylip-relaxed')
     except FileNotFoundError:
-        return -1
+        try:
+            filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
+            alignment_original = AlignIO.read(filepath, 'fasta')
+
+        except FileNotFoundError:
+            return -1
 
 
 
