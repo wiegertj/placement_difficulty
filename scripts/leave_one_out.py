@@ -86,17 +86,6 @@ for msa_name in rand_sample["reest_files"]:
 
     for to_query in sequence_ids_sample:
 
-        # if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
-        #   if not os.listdir(os.path.join(os.pardir, "data/processed/loo_results",
-        #                                 msa_name + "_" + to_query)):  # if folder empty
-        #     print("Empty folder found for " + msa_name + " " + to_query + " filling it")
-        #    os.rmdir(os.path.join(os.pardir, "data/processed/loo_results",
-        #                         msa_name + "_" + to_query))  # delete empty folder
-        # else:
-        #   if feature_config.SKIP_EXISTING_PLACEMENTS_LOO:
-        #      print("Skipping " + msa_name + " " + to_query + " result already exists")
-        # continue
-
         counter += 1
         print(to_query)
         print(str(counter) + "/" + str(len(sequence_ids_sample)))
@@ -108,15 +97,34 @@ for msa_name in rand_sample["reest_files"]:
         for record in MSA:
             if record.id != to_query:
                 seq_record = SeqIO.SeqRecord(seq=record.seq, id=record.id, description="")
+
+                sample_size = 200
+
+                # Ensure the sequence is longer than the sample size
+                if sequence_length <= sample_size:
+                    sampled_sequence = record.seq
+                else:
+                    # Randomly select a starting position within the sequence
+                    start_position = random.randint(0, sequence_length - sample_size)
+
+                    # Extract 200 bases starting from the randomly selected position
+                    sampled_sequence = record.seq[start_position:start_position + sample_size]
+
+                # Create a new sequence with gaps at the end
+                filled_sequence = Seq(str(sampled_sequence) + " " * (sequence_length - sample_size))
+
+                # Create a new SeqRecord
+                sampled_record = SeqRecord(seq=filled_sequence, id=record.id, description="")
+
                 new_alignment.append(seq_record)
             else:
                 seq_record = SeqIO.SeqRecord(seq=record.seq, id=record.id, description="")
                 query_alignment.append(seq_record)
 
-        output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_" + to_query + ".fasta")
+        output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa200_" + to_query + ".fasta")
         output_file = os.path.abspath(output_file)
 
-        output_file_query = os.path.join(os.pardir, "data/processed/loo", msa_name + "_query_" + to_query + ".fasta")
+        output_file_query = os.path.join(os.pardir, "data/processed/loo", msa_name + "_query200_" + to_query + ".fasta")
         output_file_query = os.path.abspath(output_file_query)
 
         with open(output_file, "w") as new_alignment_output:
@@ -129,7 +137,7 @@ for msa_name in rand_sample["reest_files"]:
         if feature_config.REESTIMATE_TREE == True:
 
             # Disalign msa
-            output_file_disaligned = output_file.replace(".fasta", "_disaligned.fasta")
+            output_file_disaligned = output_file.replace(".fasta", "_disaligned_200.fasta")
             output_file_query_disaligned = output_file_query.replace(".fasta", "_disaligned.fasta")
             with open(output_file, "r") as input_handle, open(output_file_disaligned, "w") as output_handle:
                 for line in input_handle:
@@ -320,7 +328,7 @@ for msa_name in rand_sample["reest_files"]:
                 leaf_names = tree.get_leaf_names()
                 leaf_count = len(leaf_names)
                 original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree_tmp",
-                                                  msa_name + "_" + to_query + ".newick")
+                                                  msa_name + "_" + to_query + "_200.newick")
                 print("Start creating loo tree")
                 original_tree_path = os.path.abspath(original_tree_path)
                 print("Storing to: " + original_tree_path)
@@ -342,14 +350,14 @@ for msa_name in rand_sample["reest_files"]:
 
         # ------------------------------------ run epa-ng with new RAxML-ng tree ---------------------------------------
 
-        if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query)):
-            shutil.rmtree(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query))
+        if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200")):
+            shutil.rmtree(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200"))
 
-        os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query))
+        os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200"))
         print(model_path_epa)
         command = ["epa-ng", "--model", model_path_epa,
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
-                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query), "--filter-max",
+                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + "_200"), "--filter-max",
                    "10000", "--filter-acc-lwr", "0.999"]
         print(" ".join(command))
 
