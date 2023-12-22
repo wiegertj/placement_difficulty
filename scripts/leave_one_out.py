@@ -102,7 +102,6 @@ for msa_name in filenames:
 
                 sequence_length = len(str(record.seq))
 
-                print(len(str(record.seq)))
 
                 # Ensure the sequence is longer than the sample size
                 if len(str(record.seq)) <= sample_size:
@@ -114,13 +113,11 @@ for msa_name in filenames:
                 from Bio.Seq import Seq
                 from Bio.SeqRecord import SeqRecord
 
-                print(record.seq)
 
                 # Create a new sequence with gaps at the end
                 sampled_sequence = Seq(
                     "-" * start_position + str(record.seq[start_position:start_position + sample_size]) + "-" * (
                                 sequence_length - start_position - sample_size))
-                print(sampled_sequence)
 
                 # Create a new SeqRecord
                 sampled_record = SeqRecord(seq=sampled_sequence, id=record.id, description="")
