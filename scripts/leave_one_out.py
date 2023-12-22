@@ -102,6 +102,8 @@ for msa_name in filenames:
 
                 sequence_length = len(str(record.seq))
 
+                print(len(str(record.seq)))
+
                 # Ensure the sequence is longer than the sample size
                 if len(str(record.seq)) <= sample_size:
                     sampled_sequence = record.seq
@@ -110,6 +112,7 @@ for msa_name in filenames:
                     start_position = random.randint(0, len(str(record.seq)) - sample_size)
 
                 from Bio.Seq import Seq
+                from Bio.SeqRecord import SeqRecord
 
                 print(record.seq)
 
