@@ -19,7 +19,7 @@ for dataset in df['dataset'].unique():
 
     # Iterate over unique values in the "dataset" column
     # Get all values of "sampleId" for the current dataset
-    sample_ids = df.loc[df['dataset'] == dataset, 'sampleId']
+    sample_ids = df.loc[df['dataset'] == dataset, 'sampleIds']
 
     # Iterate over sampleIds and read the corresponding FASTA files
     for sample_id in sample_ids:
