@@ -24,7 +24,7 @@ for dataset in df['dataset'].unique():
     # Iterate over sampleIds and read the corresponding FASTA files
     for sample_id in sample_ids:
         # Construct the path to the FASTA file
-        fasta_file_path = os.path.join(fasta_directory, f'{dataset}_msa200_{sample_id}.fasta')
+        fasta_file_path = os.path.join(fasta_directory, f'{dataset}_query200_{sample_id}.fasta')
 
         # Check if the file exists before attempting to read it
         if os.path.exists(fasta_file_path):
