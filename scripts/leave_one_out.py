@@ -50,7 +50,7 @@ rand_sample = random.sample(filtered_filenames, 80)
 df = pd.DataFrame({'reest_files': rand_sample})
 rand_sample = pd.read_csv(os.path.join(os.pardir, "data/reest_selection.csv"))
 msa_counter = 0
-for msa_name in rand_sample["reest_files"]:
+for msa_name in filenames:
     if msa_name == "17080_0":
         continue
     msa_counter += 1
