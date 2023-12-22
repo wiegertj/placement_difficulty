@@ -101,7 +101,7 @@ for msa_name in filenames:
                 sample_size = 200
 
                 # Ensure the sequence is longer than the sample size
-                if sequence_length <= sample_size:
+                if len(str(record.seq)) <= sample_size:
                     sampled_sequence = record.seq
                 else:
                     # Randomly select a starting position within the sequence
