@@ -5,7 +5,7 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 
 # Path to the CSV file
-csv_file_path = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/query200.csv'
+csv_file_path = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/query200_.csv'
 
 # Read the CSV file
 df = pd.read_csv(csv_file_path)
