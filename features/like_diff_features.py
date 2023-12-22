@@ -37,7 +37,7 @@ def query_statistics(query_filepath) -> list:
     print(query_filepath)
     #filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
     filepath = os.path.join(os.pardir, "scripts", query_filepath + "_siteliks_.raxml.reduced.phy")
-    alignment_original = AlignIO.read(filepath, 'phy')
+    alignment_original = AlignIO.read(filepath, 'phylip')
 
 
 
