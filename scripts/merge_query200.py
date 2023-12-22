@@ -18,6 +18,7 @@ fasta_directory = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/l
 # Initialize an empty list to store SeqRecord objects
 for dataset in df['dataset'].unique():
     seq_records = []
+    print(df.shape)
 
     # Iterate over unique values in the "dataset" column
     # Get all values of "sampleId" for the current dataset
