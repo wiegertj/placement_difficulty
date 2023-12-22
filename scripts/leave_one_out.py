@@ -100,6 +100,8 @@ for msa_name in filenames:
 
                 sample_size = 200
 
+                sequence_length = len(str(record.seq))
+
                 # Ensure the sequence is longer than the sample size
                 if len(str(record.seq)) <= sample_size:
                     sampled_sequence = record.seq
