@@ -43,6 +43,7 @@ def query_statistics(query_filepath) -> list:
         try:
             filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
             alignment_original = AlignIO.read(filepath, 'fasta')
+            print("Found fasta")
 
         except FileNotFoundError:
             return -1
