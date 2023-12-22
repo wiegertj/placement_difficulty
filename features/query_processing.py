@@ -747,9 +747,10 @@ if __name__ == '__main__':
 
     for result in pool.imap(query_statistics, filenames):
         if result != -1:
-            results.append(result)
-            print(counter)
-            counter += 1
+            if result != -2:
+                results.append(result)
+                print(counter)
+                counter += 1
         if result == -2:
             counter_gaponly += 1
             print(counter_gaponly)
