@@ -134,23 +134,24 @@ def extract_jplace_info(directory):
     print("Start creating filelist ... ")
 
     with Pool(processes=80) as pool:
-        directories = [os.path.join(directory, subdir) for subdir in os.listdir(directory)]
+        directories = [os.path.join(directory, subdir) for subdir in os.listdir(directory) if
+                       os.path.isdir(os.path.join(directory, subdir)) and subdir.endswith('_200')]
         results = pool.map(get_files_with_extension, directories)
 
     file_list = [item for sublist in results for item in sublist]
     print("Finished creating filelist ... ")
 
-    selection = pd.read_csv(os.path.join(os.pardir, "data/", "reest_selection.csv"))
-    selectionList = selection["reest_files"].str.replace(".newick", "").values.tolist()
+    #selection = pd.read_csv(os.path.join(os.pardir, "data/", "reest_selection.csv"))
+    #selectionList = selection["reest_files"].str.replace(".newick", "").values.tolist()
 
-    if not os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
+    if not os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv")):
         #current_df = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
         filtered_file_list = []
 
         for file_entry in file_list:
             dataset = file_entry[0].split('/')[4].split('_taxon')[0]
-            if dataset in selectionList:
-                filtered_file_list.append(file_entry)
+            #if dataset in selectionList:
+            filtered_file_list.append(file_entry)
 
 
         #for file_entry in file_list:
@@ -186,11 +187,11 @@ def extract_jplace_info(directory):
 
     df = pd.DataFrame(targets,
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
-    if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv")):
-        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), header=False,
+    if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv")):
+        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv"), header=False,
                   mode='a', index=False)
     else:
-        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"), header=True)
+        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv"), header=True)
 
 
 if __name__ == '__main__':
