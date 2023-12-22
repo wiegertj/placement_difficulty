@@ -31,7 +31,7 @@ def query_statistics(query_filepath) -> list:
     """
     results = []
     #filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
-    filepath = os.path.join(os.pardir, "data/processed/loo/merged_", query_filepath)
+    filepath = os.path.join(os.pardir, "data/processed/loo/merged_", query_filepath.replace("_query.fasta", ".fasta"))
     alignment_original = AlignIO.read(filepath, 'fasta')
     for record in alignment_original:
         alignment = [record_ for record_ in alignment_original if record_.id != record.id]
@@ -727,7 +727,7 @@ if __name__ == '__main__':
     #/ hits / fast / cme / wiegerjs / placement_difficulty / data / processed / loo / merged_10...fasta
     for file in filenames:
         #if not os.path.exists(os.path.join(os.pardir, "data/raw/query", file)):
-        if not os.path.exists(os.path.join(os.pardir, "data/processed/loo/merged_", file)):
+        if not os.path.exists(os.path.join(os.pardir, "data/processed/loo/merged_", file.replace("_query.fasta",""))):
 
             print("Query file not found: " + file)
             filenames.remove(file)
