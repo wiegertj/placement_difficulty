@@ -30,7 +30,8 @@ def query_statistics(query_filepath) -> list:
                     :return list:
     """
     results = []
-    filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
+    #filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
+    filepath = os.path.join(os.pardir, "data/processed/loo/merged_", query_filepath)
     alignment_original = AlignIO.read(filepath, 'fasta')
     for record in alignment_original:
         alignment = [record_ for record_ in alignment_original if record_.id != record.id]
@@ -718,13 +719,16 @@ if __name__ == '__main__':
     loo_selection = loo_selection.drop_duplicates(subset=['verbose_name'], keep='first')
     filenames = loo_selection['verbose_name'].str.replace(".phy", "_query.fasta").to_list()
 
+
     if feature_config.INCUDE_TARA_BV_NEO:
         filenames = filenames + ["bv_query.fasta", "neotrop_query_10k.fasta", "tara_query.fasta"]
 
     print(len(filenames))
-
+    #/ hits / fast / cme / wiegerjs / placement_difficulty / data / processed / loo / merged_10...fasta
     for file in filenames:
-        if not os.path.exists(os.path.join(os.pardir, "data/raw/query", file)):
+        #if not os.path.exists(os.path.join(os.pardir, "data/raw/query", file)):
+        if not os.path.exists(os.path.join(os.pardir, "data/processed/loo/merged_", file)):
+
             print("Query file not found: " + file)
             filenames.remove(file)
 
