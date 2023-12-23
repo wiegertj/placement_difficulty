@@ -120,8 +120,13 @@ for msa_name in filenames:
                 sequence_length = len(str(record.seq))
 
                 valid_sample = False
+                trys = 0
 
                 while not valid_sample:
+                    trys += 1
+
+                    if trys == 10:
+                        break
                     # Ensure the sequence is longer than the sample size
                     if len(str(record.seq)) <= sample_size:
                         sampled_sequence = record.seq
