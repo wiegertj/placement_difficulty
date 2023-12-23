@@ -6,9 +6,11 @@ from Bio.Seq import Seq
 
 # Path to the CSV file
 csv_file_path = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/query200_.csv'
-
+csv_file_path_ = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/query200_.csv'
 # Read the CSV file
 df = pd.read_csv(csv_file_path, names=["sampleId", "dataset"])
+df_ = pd.read_csv(csv_file_path_, names=["sampleId", "dataset"])
+df = pd.concat([df, df_])
 print(df.columns)
 print(df.shape)
 
