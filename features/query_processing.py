@@ -34,7 +34,11 @@ def query_statistics(query_filepath) -> list:
     filepath = os.path.join(os.pardir, "data/processed/loo/merged_" + query_filepath.replace("_query.fasta", ".fasta"))
     if not os.path.exists(os.path.join(os.pardir, "data/processed/loo/merged_" + query_filepath.replace("_query.fasta", ".fasta"))):
         return -1
-    alignment_original = AlignIO.read(filepath, 'fasta')
+    try:
+        alignment_original = AlignIO.read(filepath, 'fasta')
+    except ValueError:
+        print("Not equal length")
+        return -1
     for record in alignment_original:
         alignment = [record_ for record_ in alignment_original if record_.id != record.id]
 
