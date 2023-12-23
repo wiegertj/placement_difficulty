@@ -303,7 +303,7 @@ if __name__ == '__main__':
         string_kernel_features = []
 
         if os.path.exists(query_file):
-            no_queries = len(list(SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta').records))
+            no_queries = len(list(SeqIO.parse(query_file, 'fasta').records))
         else:
             print("Query file not found: " + query_file)
             continue
