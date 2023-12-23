@@ -283,7 +283,7 @@ if __name__ == '__main__':
         if msa_file == "neotrop_reference.fasta":
             query_file = msa_file.replace("reference.fasta", "query_10k.fasta")
         else:
-            query_file = os.path.join(os.pardir, "data/processed/loo/merged_", msa_file.replace("_query.fasta",""))
+            query_file = os.path.join(os.pardir, "data/processed/loo/merged_" + msa_file.replace("_reference.fasta",".fasta"))
 
         # Skip already processed
         potential_path = os.path.join(os.pardir, "data/processed/features",
@@ -302,10 +302,10 @@ if __name__ == '__main__':
         bloom_filters_MSA = []
         string_kernel_features = []
 
-        if os.path.exists(os.path.join(os.pardir, "data/processed/loo/merged_", msa_file.replace("_reference.fasta",""))):
+        if os.path.exists(query_file):
             no_queries = len(list(SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta').records))
         else:
-            print("Query file not found: " + os.path.join(os.pardir, "data/raw/query", query_file))
+            print("Query file not found: " + query_file)
             continue
 
         interval_start = feature_config.KMER_PROCESSING_INTERVAL_START  # sequence number to start with in query (last file number)
