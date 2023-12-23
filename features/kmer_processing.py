@@ -283,7 +283,7 @@ if __name__ == '__main__':
         if msa_file == "neotrop_reference.fasta":
             query_file = msa_file.replace("reference.fasta", "query_10k.fasta")
         else:
-            query_file = msa_file.replace("reference.fasta", "query.fasta")
+            query_file = os.path.join(os.pardir, "data/processed/loo/merged_", msa_file.replace("_query.fasta",""))
 
         # Skip already processed
         potential_path = os.path.join(os.pardir, "data/processed/features",
@@ -291,18 +291,18 @@ if __name__ == '__main__':
                                           feature_config.K_MER_LENGTH) + "_0" + str(
                                           feature_config.K_MER_MAX_GAP_PERCENTAGE).replace(
                                           "0.",
-                                          "") + "_" + str(
+                                          "") + "_200_" + str(
                                           1000) + ".csv")
         if os.path.exists(potential_path):
             print("Skipped: " + msa_file + " already processed")
-            #continue
+            continue
 
         results = []
 
         bloom_filters_MSA = []
         string_kernel_features = []
 
-        if os.path.exists(os.path.join(os.pardir, "data/raw/query", query_file)):
+        if os.path.exists(os.path.join(os.pardir, "data/processed/loo/merged_", msa_file.replace("_reference.fasta",""))):
             no_queries = len(list(SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta').records))
         else:
             print("Query file not found: " + os.path.join(os.pardir, "data/raw/query", query_file))
@@ -349,7 +349,7 @@ if __name__ == '__main__':
                                        msa_file.replace("_reference.fasta", "") + "_kmer" + str(
                                            feature_config.K_MER_LENGTH) + "_0" + str(
                                            feature_config.K_MER_MAX_GAP_PERCENTAGE).replace("0.",
-                                                                                            "") + "_" + str(
+                                                                                            "") + "_200_" + str(
                                            interval_start) + ".csv"), index=False)
                 results = []
 
