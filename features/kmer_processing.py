@@ -320,7 +320,7 @@ if __name__ == '__main__':
 
         if num_sequences > 150:
            print("Skipped " + msa_file + " too large")
-          continue
+           continue
 
         # Create bloom filters for each sequence in the MSA
         print(msa_file)
