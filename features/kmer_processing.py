@@ -259,6 +259,7 @@ if __name__ == '__main__':
         filenames.remove("11226_0_reference.fasta")
         filenames.remove("15849_4_reference.fasta")
         filenames.remove("15849_1_reference.fasta")
+        filenames.remove("18218_1_reference.fasta")
     except ValueError:
         print("Skipped")
 
