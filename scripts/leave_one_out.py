@@ -117,25 +117,29 @@ for msa_name in filenames:
                 new_alignment.append(seq_record)
             else:
 
-
                 sequence_length = len(str(record.seq))
 
+                valid_sample = False
 
-                # Ensure the sequence is longer than the sample size
-                if len(str(record.seq)) <= sample_size:
-                    sampled_sequence = record.seq
-                else:
-                    # Randomly select a starting position within the sequence
-                    start_position = random.randint(0, len(str(record.seq)) - sample_size)
+                while not valid_sample:
+                    # Ensure the sequence is longer than the sample size
+                    if len(str(record.seq)) <= sample_size:
+                        sampled_sequence = record.seq
+                    else:
+                        # Randomly select a starting position within the sequence
+                        start_position = random.randint(0, len(str(record.seq)) - sample_size)
 
-                from Bio.Seq import Seq
-                from Bio.SeqRecord import SeqRecord
+                    from Bio.Seq import Seq
+                    from Bio.SeqRecord import SeqRecord
 
-
-                # Create a new sequence with gaps at the end
-                sampled_sequence = Seq(
-                    "-" * start_position + str(record.seq[start_position:start_position + sample_size]) + "-" * (
+                    # Create a new sequence with gaps at the end
+                    sampled_sequence = Seq(
+                        "-" * start_position + str(record.seq[start_position:start_position + sample_size]) + "-" * (
                                 sequence_length - start_position - sample_size))
+
+                    if sampled_sequence.replace("-", "") != "":
+                        print("Generated Valid")
+                        valid_sample = True
 
                 # Create a new SeqRecord
                 sampled_record = SeqRecord(seq=sampled_sequence, id=record.id, description="")
