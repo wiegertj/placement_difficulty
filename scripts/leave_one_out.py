@@ -90,12 +90,12 @@ for msa_name in filenames:
     metrics_df["dataset"] = msa_name
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "query400.csv")):
+                                       "query200.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "query400.csv")), index=False)
+                                                    "query200.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "query400.csv"),
+                                       "query200.csv"),
                           index=False,
                           mode='a', header=False)
     sample_size = random.randint(200, 400)
@@ -151,10 +151,10 @@ for msa_name in filenames:
 
                 query_alignment.append(sampled_record)
 
-        output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa400_" + to_query + ".fasta")
+        output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa200_" + to_query + ".fasta")
         output_file = os.path.abspath(output_file)
 
-        output_file_query = os.path.join(os.pardir, "data/processed/loo", msa_name + "_query400_" + to_query + ".fasta")
+        output_file_query = os.path.join(os.pardir, "data/processed/loo", msa_name + "_query200_" + to_query + ".fasta")
         output_file_query = os.path.abspath(output_file_query)
 
         with open(output_file, "w") as new_alignment_output:
@@ -167,7 +167,7 @@ for msa_name in filenames:
         if feature_config.REESTIMATE_TREE == True:
 
             # Disalign msa
-            output_file_disaligned = output_file.replace(".fasta", "_disaligned_400.fasta")
+            output_file_disaligned = output_file.replace(".fasta", "_disaligned_200.fasta")
             output_file_query_disaligned = output_file_query.replace(".fasta", "_disaligned.fasta")
             with open(output_file, "r") as input_handle, open(output_file_disaligned, "w") as output_handle:
                 for line in input_handle:
@@ -358,7 +358,7 @@ for msa_name in filenames:
                 leaf_names = tree.get_leaf_names()
                 leaf_count = len(leaf_names)
                 original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree_tmp",
-                                                  msa_name + "_" + to_query + "_400.newick")
+                                                  msa_name + "_" + to_query + "_200.newick")
                 print("Start creating loo tree")
                 original_tree_path = os.path.abspath(original_tree_path)
                 print("Storing to: " + original_tree_path)
@@ -380,14 +380,14 @@ for msa_name in filenames:
 
         # ------------------------------------ run epa-ng with new RAxML-ng tree ---------------------------------------
 
-        if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_400")):
-            shutil.rmtree(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_400"))
+        if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200")):
+            shutil.rmtree(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200"))
 
-        os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_400"))
+        os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200"))
         print(model_path_epa)
         command = ["epa-ng", "--model", model_path_epa,
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
-                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + "_400"),
+                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + "_200"),
                    "--filter-max",
                    "10000", "--filter-acc-lwr", "0.999"]
         print(" ".join(command))
