@@ -313,14 +313,14 @@ if __name__ == '__main__':
         bound = feature_config.KMER_PROCESSING_COUNT  # how many sequences
 
         # Check if too large
-        #if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
-         #  print("Skipped " + msa_file + " too large")
-          # continue
+        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta').records).seq) > 10000:
+           print("Skipped " + msa_file + " too large")
+           continue
         num_sequences = sum(1 for _ in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'))
 
-        #if num_sequences > 150:
-        #   print("Skipped " + msa_file + " too large")
-        #  continue
+        if num_sequences > 150:
+           print("Skipped " + msa_file + " too large")
+          continue
 
         # Create bloom filters for each sequence in the MSA
         print(msa_file)
