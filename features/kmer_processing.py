@@ -102,6 +102,7 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
             Returns:
                      :return tuple: (dataset, sampleId, min_kernel, max_kernel, mean_kernel, std_kernel)
     """
+    print(query)
     kmers_query = filter_gapped_kmers(str(query.seq), isAA, k, max_gap_percent)
     if query.id == "taxon42":
         print("#"*50)
