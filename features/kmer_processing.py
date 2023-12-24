@@ -102,14 +102,14 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
             Returns:
                      :return tuple: (dataset, sampleId, min_kernel, max_kernel, mean_kernel, std_kernel)
     """
-    print(query)
+
     kmers_query = filter_gapped_kmers(str(query.seq), isAA, k, max_gap_percent)
     if query.id == "taxon42":
         print("#"*50)
         print(query.id)
         print(kmers_query)
         print("#"*50)
-
+    print(query)
     query_bf = bloom_filter(set(kmers_query), len(kmers_query), feature_config.BLOOM_FILTER_FP_RATE)
 
     result_string_kernels = []
