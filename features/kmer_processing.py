@@ -109,7 +109,6 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
         print(query.id)
         print(kmers_query)
         print("#"*50)
-    print(query)
     query_bf = bloom_filter(set(kmers_query), len(kmers_query), feature_config.BLOOM_FILTER_FP_RATE)
 
     result_string_kernels = []
