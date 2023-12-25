@@ -247,7 +247,7 @@ def example(tree_path, msa_path):
 
 
 def main():
-    current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy.csv"))
+    current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target/loo_result_entropy_200.csv"))
     dataset_set = set(current_loo_targets['dataset'])
 
     counter = 0
@@ -271,10 +271,10 @@ def main():
         sample_df = current_loo_targets[current_loo_targets['dataset'] == dataset]["sampleId"]
         if len(reference_msa[0].seq) > 10000:
             print("too large sequences")
-            continue
+            #continue
         if len(reference_msa) > 1000:
             print("too large number sequences")
-            continue
+            #continue
 
         for sample in sample_df:
             # Split MSA into query and rest
@@ -331,7 +331,7 @@ def main():
         df = pd.DataFrame(results,
                           columns=['dataset', 'sampleId', "max_subst_freq", "avg_subst_freq", "cv_subst_freq",
                                    "sk_subst_freq", "kur_subst_freq"])
-        df.to_csv(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats.csv"))
+        df.to_csv(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats_200.csv"))
 
 
 if __name__ == "__main__":
