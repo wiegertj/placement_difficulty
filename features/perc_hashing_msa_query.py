@@ -507,8 +507,8 @@ if __name__ == '__main__':
 
     for result in results:
        if result != 0:
-          print("Finished processing: " + result[1] + "with query file")
-         df = pd.DataFrame(result[0],
+        print("Finished processing: " + result[1] + "with query file")
+        df = pd.DataFrame(result[0],
                           columns=['dataset', 'sampleId', 'current_closest_taxon_perc_ham','min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
                                   'avg_perc_hash_ham_dist',
                                  'std_perc_hash_ham_dist', 'sks_perc_hash_ham_dist',
@@ -530,8 +530,8 @@ if __name__ == '__main__':
                  "std_perc_hash_lcs",
                 "max_dist_coeff", "min_dist_coeff", "std_dist_coeff", "avg_dist_coeff", "sk_dist_coeff",
            "kur_dist_coeff"
-              ])
-     df.to_csv(os.path.join(os.pardir, "data/processed/features",
+        ])
+        df.to_csv(os.path.join(os.pardir, "data/processed/features",
                            result[1].replace("_reference.fasta", "") + str(
                               feature_config.SIGN_ONLY_MATRIX_SIZE) + "p_200_msa_perc_hash_dist.csv"))
 
