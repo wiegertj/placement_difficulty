@@ -115,6 +115,13 @@ loo_entropies = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "lo
                             index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 loo_entropies = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 
+loo_entropies200 = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv"),
+                            index_col=False, usecols=lambda column: column != 'Unnamed: 0')
+loo_entropies200 = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
+loo_entropies200["sampleId"] = loo_entropies200["sampleId"].astype(str) + "_200"
+
+loo_entropies = pd.concat([loo_entropies, loo_entropies200])
+
 print("LOO entropies shape:" + str(loo_entropies.shape))
 loo_resuls_combined1 = loo_entropies.merge(loo_kmer_distances, on=["sampleId", "dataset"], how="inner")
 
