@@ -300,7 +300,7 @@ def compute_perceptual_hash_distance(msa_file):
         isAA = True
     print(isAA)  # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
-                                  msa_file.replace("_reference.fasta", "") + "16p_msa_perc_hash_dist" + ".csv")
+                                  msa_file.replace("_reference.fasta", "") + "16p_200_msa_perc_hash_dist" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped: " + msa_file + " already processed")
 
