@@ -87,7 +87,7 @@ for loo_dataset in loo_datasets:
         df = df.merge(loo_distances, on=["sampleId", "dataset"], how="inner")
         loo_resuls_dfs.append(df)
 
-        loo_distances_200_filepath = os.path.join(os.pardir, "data/processed/features",  loo_dataset + "_200_kmer15_03_1000.csv")
+        loo_distances_200_filepath = os.path.join(os.pardir, "data/processed/features",  loo_dataset + "_kmer15_03_200_1000.csv")
         df_200 = pd.read_csv(loo_distances_200_filepath, usecols=lambda column: column != 'Unnamed: 0')
         df_200['sampleId'] = df_200['sampleId'].astype(str) + "_200"
 
