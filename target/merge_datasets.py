@@ -101,7 +101,9 @@ for loo_dataset in loo_datasets:
 
 
     except FileNotFoundError:
-        print("Not found kmer: " + file_path + " skipped ")
+        print("Not found kmer: " + loo_distances_200_filepath + " skipped ")
+        print("Not found kmer: " + os.path.join(os.pardir, "data/processed/features", loo_dataset + "_200_msa_dist.csv") + " skipped ")
+
         continue
 
 loo_kmer_distances = pd.concat(loo_resuls_dfs, ignore_index=True)
