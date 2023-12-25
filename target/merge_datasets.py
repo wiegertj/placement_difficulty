@@ -124,9 +124,11 @@ loo_entropies = pd.concat([loo_entropies, loo_entropies200])
 
 print("LOO entropies shape:" + str(loo_entropies.shape))
 loo_resuls_combined1 = loo_entropies.merge(loo_kmer_distances, on=["sampleId", "dataset"], how="inner")
+print("LOO shape  before merging query features" + str(loo_resuls_combined1.shape))
 
 loo_resuls_combined2 = loo_resuls_combined1.merge(query_features, on=["sampleId", 'dataset'], how='inner')
 loo_resuls_combined2.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_QUERY.csv"), index=False)
+print("LOO shape befor dedup features" + str(loo_resuls_combined2.shape))
 
 # Check for duplicates and print them if found
 unique_values_combined1 = set(loo_resuls_combined1[['dataset', 'sampleId']].itertuples(index=False, name=None))
