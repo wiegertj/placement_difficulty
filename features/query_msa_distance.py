@@ -26,7 +26,7 @@ def compute_hamming_distance(msa_file, query_file) -> list:
     #sampledData = current_loo_targets[current_loo_targets["dataset"] == msa_file.replace("_reference.fasta", "")][
      #   "sampleId"].values.tolist()
 
-    for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
+    for record_query in SeqIO.parse(os.path.join(os.pardir, "data/processed/loo/merged_" + query_file.replace("_query.fasta",".fasta")), 'fasta'):
         counter += 1
         if counter % 50 == 0:
             print(counter)
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
     counter_msa = 0
     #filenames = filenames[:2]
-    filenames = filenames[240:]  # Slice starting from the 241st element (index 240)
+    #filenames = filenames[240:]  # Slice starting from the 241st element (index 240)
 
     for msa_file in filenames:
         print(msa_file)
@@ -148,4 +148,4 @@ if __name__ == '__main__':
 
                                                    ])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                                   msa_file.replace("_reference.fasta", "") + "_msa_dist.csv"))
+                                   msa_file.replace("_reference.fasta", "") + "_200_msa_dist.csv"))
