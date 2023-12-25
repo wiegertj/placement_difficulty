@@ -26,7 +26,7 @@ query_features200 = pd.read_csv(os.path.join(os.pardir, "data/processed/features
 query_features200['sampleId'] = query_features200['sampleId'].astype(str) + "_200"
 
 query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
-query_features = pd.concat(query_features, query_features200)
+query_features = pd.concat([query_features, query_features200])
 
 query_features_lik_diff = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features_lik.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
