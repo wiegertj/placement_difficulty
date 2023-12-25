@@ -110,7 +110,8 @@ def compute_dct_sign_only_hash(sequence, isAA):
 
         # Flatten the binary matrix into a binary string
         hash_value = "".join([str(int(bit)) for bit in binary_sequence.flatten()])
-        normalized_coeff = (dct_coeffs[:size_, :size_] - np.min(dct_coeffs[:size_, :size_])) / (np.max(dct_coeffs[:size_, :size_]) - np.min(dct_coeffs[:size_, :size_]))
+        normalized_coeff = (dct_coeffs[:size_, :size_] - np.min(dct_coeffs[:size_, :size_])) / (
+                    np.max(dct_coeffs[:size_, :size_]) - np.min(dct_coeffs[:size_, :size_]))
         # print(len(hash_value))
     except IndexError:
         print("image too small, skipped")
@@ -122,7 +123,8 @@ def compute_image_distances(msa_file):
     if msa_file == "neotrop_reference.fasta":
         query_file = msa_file.replace("_reference.fasta", "_query_10k.fasta")
     else:
-        query_file = msa_file.replace("_reference.fasta", "_query.fasta")
+        query_file = os.path.join(os.pardir,
+                                  "data/processed/loo/merged_" + msa_file.replace("_reference.fasta", ".fasta"))
     results = []
     counter = 0
     print(msa_file)
@@ -138,18 +140,18 @@ def compute_image_distances(msa_file):
                                   msa_file.replace("_reference.fasta", "") + "_msa_im_comp" + ".csv")
     if os.path.exists(potential_path):
         print("Skipped Image Comp: " + msa_file + " already processed")
-        #return 0
+        # return 0
 
-    #current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
-    #sampledData = current_loo_targets[current_loo_targets["dataset"] == msa_file.replace("_reference.fasta", "")][
-     #   "sampleId"].values.tolist()
+    # current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy.csv"))
+    # sampledData = current_loo_targets[current_loo_targets["dataset"] == msa_file.replace("_reference.fasta", "")][
+    #   "sampleId"].values.tolist()
 
     for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
         counter += 1
         if counter % 50 == 0:
             print(counter)
-        #if record_query.name not in sampledData:
-         #   continue
+        # if record_query.name not in sampledData:
+        #   continue
         distances_hu = []
         distances_lbp = []
         distances_pca = []
@@ -282,6 +284,7 @@ def compute_image_distances(msa_file):
              max_dist_pca, min_dist_pca, avg_dist_pca, std_dist_pca))
     return results, msa_file
 
+
 def compute_perceptual_hash_distance(msa_file):
     if msa_file == "neotrop_reference.fasta":
         query_file = msa_file.replace("_reference.fasta", "_query_10k.fasta")
@@ -295,7 +298,7 @@ def compute_perceptual_hash_distance(msa_file):
         "data_type"]
     if datatype == "AA" or datatype == "DataType.AA":
         isAA = True
-    print(isAA)    # Skip already processed
+    print(isAA)  # Skip already processed
     potential_path = os.path.join(os.pardir, "data/processed/features",
                                   msa_file.replace("_reference.fasta", "") + "16p_msa_perc_hash_dist" + ".csv")
     if os.path.exists(potential_path):
@@ -310,8 +313,8 @@ def compute_perceptual_hash_distance(msa_file):
         counter += 1
         if counter % 50 == 0:
             print(counter)
-        #if record_query.name not in sampledData:
-         #   continue
+        # if record_query.name not in sampledData:
+        #   continue
         distances = []
         kmer_sims10 = []
         kmer_sims15 = []
@@ -449,18 +452,20 @@ def compute_perceptual_hash_distance(msa_file):
         else:
             name = msa_file.replace("_reference.fasta", "")
 
-        results.append((name, record_query.id, current_closest_taxon,rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham, sk_ham, kur_ham,
-                        sk_kmer_sim10, kur_kmer_sim10, rel_max_kmer_sim10, rel_min_kmer_sim10, rel_avg_kmer_sim10,
-                        rel_std_kmer_sim10,
-                        sk_kmer_sim15, kur_kmer_sim15, rel_max_kmer_sim15, rel_min_kmer_sim15, rel_avg_kmer_sim15,
-                        rel_std_kmer_sim15,
-                        sk_kmer_sim25, kur_kmer_sim25, rel_max_kmer_sim25, rel_min_kmer_sim25, rel_avg_kmer_sim25,
-                        rel_std_kmer_sim25,
-                        sk_kmer_sim50, kur_kmer_sim50, rel_max_kmer_sim50, rel_min_kmer_sim50, rel_avg_kmer_sim50,
-                        rel_std_kmer_sim50,
-                        sk_ham_lcs,
-                        kur_ham_lcs, rel_max_ham_lcs, rel_min_ham_lcs, rel_avg_ham_lcs, rel_std_ham_lcs,
-                        max_dist_coeff, min_dist_coeff, std_dist_coeff, avg_dist_coeff, sk_dist_coeff, kur_dist_coeff))
+        results.append((
+                       name, record_query.id, current_closest_taxon, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham,
+                       sk_ham, kur_ham,
+                       sk_kmer_sim10, kur_kmer_sim10, rel_max_kmer_sim10, rel_min_kmer_sim10, rel_avg_kmer_sim10,
+                       rel_std_kmer_sim10,
+                       sk_kmer_sim15, kur_kmer_sim15, rel_max_kmer_sim15, rel_min_kmer_sim15, rel_avg_kmer_sim15,
+                       rel_std_kmer_sim15,
+                       sk_kmer_sim25, kur_kmer_sim25, rel_max_kmer_sim25, rel_min_kmer_sim25, rel_avg_kmer_sim25,
+                       rel_std_kmer_sim25,
+                       sk_kmer_sim50, kur_kmer_sim50, rel_max_kmer_sim50, rel_min_kmer_sim50, rel_avg_kmer_sim50,
+                       rel_std_kmer_sim50,
+                       sk_ham_lcs,
+                       kur_ham_lcs, rel_max_ham_lcs, rel_min_ham_lcs, rel_avg_ham_lcs, rel_std_ham_lcs,
+                       max_dist_coeff, min_dist_coeff, std_dist_coeff, avg_dist_coeff, sk_dist_coeff, kur_dist_coeff))
     return results, msa_file
 
 
@@ -491,70 +496,69 @@ if __name__ == '__main__':
             filenames.remove(file)
 
         if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
-           filenames.remove(file)
+            filenames.remove(file)
     filenames_comp = filenames
 
     if multiprocessing.current_process().name == 'MainProcess':
         multiprocessing.freeze_support()
 
-    #pool = multiprocessing.Pool()
-    #results = pool.imap_unordered(compute_perceptual_hash_distance, filenames)
-
-    #for result in results:
-     #   if result != 0:
-      #      print("Finished processing: " + result[1] + "with query file")
-       #     df = pd.DataFrame(result[0],
-        #                      columns=['dataset', 'sampleId', 'current_closest_taxon_perc_ham','min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
-         #                              'avg_perc_hash_ham_dist',
-          #                             'std_perc_hash_ham_dist', 'sks_perc_hash_ham_dist',
-           #                            'kur_perc_hash_ham_dist', "sk_kmer_sim10", "kur_kmer_sim10",
-            #                           "rel_max_kmer_sim10", "rel_min_kmer_sim10", "rel_avg_kmer_sim10",
-             #                          "rel_std_kmer_sim10",
-              #                         "sk_kmer_sim15", "kur_kmer_sim15", "rel_max_kmer_sim15", "rel_min_kmer_sim15",
-               #                        "rel_avg_kmer_sim15",
-                #                       "rel_std_kmer_sim15",
-                 #                      "sk_kmer_sim25", "kur_kmer_sim25", "rel_max_kmer_sim25", "rel_min_kmer_sim25",
-                  #                     "rel_avg_kmer_sim25",
-                   #                    "rel_std_kmer_sim25",
-                    #                   "sk_kmer_sim50", "kur_kmer_sim50", "rel_max_kmer_sim50", "rel_min_kmer_sim50",
-                     #                  "rel_avg_kmer_sim50",
-                      #                 "rel_std_kmer_sim50",
-                       #                "sk_perc_hash_lcs",
-                        #               "kur_perc_hash_lcs", "max_perc_hash_lcs", "min_perc_hash_lcs",
-                         #              "avg_perc_hash_lcs",
-                          #             "std_perc_hash_lcs",
-                           #            "max_dist_coeff", "min_dist_coeff", "std_dist_coeff", "avg_dist_coeff", "sk_dist_coeff",
-                            #           "kur_dist_coeff"
-                             #          ])
-           # df.to_csv(os.path.join(os.pardir, "data/processed/features",
-            #                       result[1].replace("_reference.fasta", "") + str(
-             #                          feature_config.SIGN_ONLY_MATRIX_SIZE) + "p_msa_perc_hash_dist.csv"))
-
-    #pool.close()
-    #pool.join()
-
-
-    print("Finished Perc Hash, starting CV")
-    #for file in filenames_comp:
-        #if os.path.exists(os.path.join(os.pardir, "data/processed/features",
-         #                          file.replace("_reference.fasta", "") + "_msa_im_comp.csv")):
-          #  print("Found existing one ... ")
-           # filenames_comp.remove(file)
-    print(len(filenames_comp))
-    pool = multiprocessing.Pool(multiprocessing.cpu_count())
-    results = pool.imap_unordered(compute_image_distances, filenames_comp)
+    pool = multiprocessing.Pool()
+    results = pool.imap_unordered(compute_perceptual_hash_distance, filenames)
 
     for result in results:
-        if result != 0:
-            print("Finished processing: " + result[1] + "with query file CV")
-            df = pd.DataFrame(result[0],
-                              columns=['dataset', 'sampleId', "max_dist_hu", "min_dist_hu", "avg_dist_hu",
-                                       "std_dist_hu", "sk_dist_hu", "kur_dist_hu",
-                                       "sk_dist_lbp", "kur_dist_lbp", "max_dist_lbp", "min_dist_lbp", "avg_dist_lbp",
-                                       "std_dist_lbp", "sk_dist_pca", "kur_dist_pca",
-                                       "max_dist_pca", "min_dist_pca", "avg_dist_pca", "std_dist_pca"])
-            df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                                   result[1].replace("_reference.fasta", "") + "_msa_im_comp.csv"))
+       if result != 0:
+          print("Finished processing: " + result[1] + "with query file")
+         df = pd.DataFrame(result[0],
+                          columns=['dataset', 'sampleId', 'current_closest_taxon_perc_ham','min_perc_hash_ham_dist', 'max_perc_hash_ham_dist',
+                                  'avg_perc_hash_ham_dist',
+                                 'std_perc_hash_ham_dist', 'sks_perc_hash_ham_dist',
+                                'kur_perc_hash_ham_dist', "sk_kmer_sim10", "kur_kmer_sim10",
+                               "rel_max_kmer_sim10", "rel_min_kmer_sim10", "rel_avg_kmer_sim10",
+                              "rel_std_kmer_sim10",
+                             "sk_kmer_sim15", "kur_kmer_sim15", "rel_max_kmer_sim15", "rel_min_kmer_sim15",
+                            "rel_avg_kmer_sim15",
+                           "rel_std_kmer_sim15",
+                          "sk_kmer_sim25", "kur_kmer_sim25", "rel_max_kmer_sim25", "rel_min_kmer_sim25",
+                         "rel_avg_kmer_sim25",
+                        "rel_std_kmer_sim25",
+                       "sk_kmer_sim50", "kur_kmer_sim50", "rel_max_kmer_sim50", "rel_min_kmer_sim50",
+                      "rel_avg_kmer_sim50",
+                     "rel_std_kmer_sim50",
+                    "sk_perc_hash_lcs",
+                   "kur_perc_hash_lcs", "max_perc_hash_lcs", "min_perc_hash_lcs",
+                  "avg_perc_hash_lcs",
+                 "std_perc_hash_lcs",
+                "max_dist_coeff", "min_dist_coeff", "std_dist_coeff", "avg_dist_coeff", "sk_dist_coeff",
+           "kur_dist_coeff"
+              ])
+     df.to_csv(os.path.join(os.pardir, "data/processed/features",
+                           result[1].replace("_reference.fasta", "") + str(
+                              feature_config.SIGN_ONLY_MATRIX_SIZE) + "p_200_msa_perc_hash_dist.csv"))
 
     pool.close()
     pool.join()
+
+    print("Finished Perc Hash, starting CV")
+    # for file in filenames_comp:
+    # if os.path.exists(os.path.join(os.pardir, "data/processed/features",
+    #                          file.replace("_reference.fasta", "") + "_msa_im_comp.csv")):
+    #  print("Found existing one ... ")
+    # filenames_comp.remove(file)
+    print(len(filenames_comp))
+    #pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    #results = pool.imap_unordered(compute_image_distances, filenames_comp)
+
+    #for result in results:
+     #   if result != 0:
+      #      print("Finished processing: " + result[1] + "with query file CV")
+       #     df = pd.DataFrame(result[0],
+        #                      columns=['dataset', 'sampleId', "max_dist_hu", "min_dist_hu", "avg_dist_hu",
+         #                              "std_dist_hu", "sk_dist_hu", "kur_dist_hu",
+          #                             "sk_dist_lbp", "kur_dist_lbp", "max_dist_lbp", "min_dist_lbp", "avg_dist_lbp",
+           #                            "std_dist_lbp", "sk_dist_pca", "kur_dist_pca",
+            #                           "max_dist_pca", "min_dist_pca", "avg_dist_pca", "std_dist_pca"])
+            #df.to_csv(os.path.join(os.pardir, "data/processed/features",
+             #                      result[1].replace("_reference.fasta", "") + "_msa_im_comp.csv"))
+
+    #pool.close()
+    #pool.join()
