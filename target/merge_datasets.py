@@ -162,6 +162,7 @@ for loo_dataset in loo_datasets:
         file_path_200 = loo_dataset + "16p_200_msa_perc_hash_dist.csv"
         file_path_200 = os.path.join(os.pardir, "data/processed/features", file_path_200)
         df_200 = pd.read_csv(file_path_200, usecols=lambda column: column != 'Unnamed: 0')
+        df_200["sampleId"] = df_200["sampleId"].astype(str) + "_200"
         loo_resuls_dfs.append(df_200)
 
 
