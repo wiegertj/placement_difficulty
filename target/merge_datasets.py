@@ -20,7 +20,13 @@ msa_features = msa_features.drop_duplicates(subset=['dataset'], keep='first')
 print("MSA feature count: " + str(msa_features.shape))
 query_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
+
+query_features200 = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features_200.csv"), index_col=False,
+                             usecols=lambda column: column != 'Unnamed: 0')
+query_features200['sampleId'] = query_features200['sampleId'].astype(str) + "_200"
+
 query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
+query_features = pd.concat(query_features, query_features200)
 
 query_features_lik_diff = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features_lik.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
@@ -80,6 +86,20 @@ for loo_dataset in loo_datasets:
         loo_distances["dataset"] = loo_distances["dataset"].str.replace("_reference.fasta", "")
         df = df.merge(loo_distances, on=["sampleId", "dataset"], how="inner")
         loo_resuls_dfs.append(df)
+
+        loo_distances_200_filepath = os.path.join(os.pardir, "data/processed/features",  loo_dataset + "_200_kmer15_03_1000.csv")
+        df_200 = pd.read_csv(loo_distances_200_filepath, usecols=lambda column: column != 'Unnamed: 0')
+        df_200['sampleId'] = df_200['sampleId'].astype(str) + "_200"
+
+        loo_distances_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", loo_dataset + "_200_msa_dist.csv"),
+                                    index_col=False, usecols=lambda column: column != 'Unnamed: 0')
+        loo_distances_msa["dataset"] = loo_distances_msa["dataset"].str.replace("_reference.fasta", "")
+        loo_distances_msa["sampleId"] = loo_distances_msa["sampleId"].astype(str) + "_200"
+        df_200 = df_200.merge(loo_distances_msa,  on=["sampleId", "dataset"], how="inner")
+        loo_resuls_dfs.append(df_200)
+
+
+
     except FileNotFoundError:
         print("Not found kmer: " + file_path + " skipped ")
         continue
@@ -129,6 +149,13 @@ for loo_dataset in loo_datasets:
             print("Found old hash perc, skipped ")
             continue
         loo_resuls_dfs.append(df)
+
+        file_path_200 = loo_dataset + "16p_200_msa_perc_hash_dist.csv"
+        file_path_200 = os.path.join(os.pardir, "data/processed/features", file_path_200)
+        df_200 = pd.read_csv(file_path_200, usecols=lambda column: column != 'Unnamed: 0')
+        loo_resuls_dfs.append(df_200)
+
+
     except FileNotFoundError:
         print(file_path)
         print("Not found Hash Perc: " + loo_dataset)
