@@ -11,9 +11,9 @@ import types
 import random
 from Bio import AlignIO, SeqIO
 from dendropy.calculate import treecompare
+random.seed(10)
 
 module_path = os.path.join(os.pardir, "configs/feature_config.py")
-random.seed(42)
 feature_config = types.ModuleType('feature_config')
 feature_config.__file__ = module_path
 
@@ -90,8 +90,6 @@ for msa_name in filenames:
 
     metrics_df = pd.DataFrame(metrics_dict)
     metrics_df["dataset"] = msa_name
-
-
 
     for to_query in sequence_ids_sample:
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results",
