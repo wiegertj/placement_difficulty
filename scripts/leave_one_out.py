@@ -11,7 +11,7 @@ import types
 import random
 from Bio import AlignIO, SeqIO
 from dendropy.calculate import treecompare
-random.seed(55)
+random.seed(100)
 
 module_path = os.path.join(os.pardir, "configs/feature_config.py")
 feature_config = types.ModuleType('feature_config')
