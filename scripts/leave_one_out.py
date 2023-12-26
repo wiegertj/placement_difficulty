@@ -11,7 +11,7 @@ import types
 import random
 from Bio import AlignIO, SeqIO
 from dendropy.calculate import treecompare
-random.seed(10)
+random.seed(55)
 
 module_path = os.path.join(os.pardir, "configs/feature_config.py")
 feature_config = types.ModuleType('feature_config')
@@ -95,6 +95,9 @@ for msa_name in filenames:
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results",
                                        msa_name + "_" + to_query + f"_200_r1_{sample_size}")):
             sequence_ids_sample.remove(to_query)
+
+    if len(sequence_ids_sample) == 0:
+        continue
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                                        "query200_r1.csv")):
