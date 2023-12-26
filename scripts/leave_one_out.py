@@ -387,7 +387,7 @@ for msa_name in filenames:
         print(model_path_epa)
         command = ["epa-ng", "--model", model_path_epa,
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
-                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + "_200_r1"),
+                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + f"_200_r1_{sequence_length}"),
                    "--filter-max",
                    "10000", "--filter-acc-lwr", "0.999"]
         print(" ".join(command))
