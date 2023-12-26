@@ -188,17 +188,26 @@ loo_datasets = [value for value in dataset_list if value not in elements_to_dele
 for loo_dataset in loo_datasets:
     try:
         file_path = loo_dataset + "_subst_freq_stats.csv"
+        file_path_200 = loo_dataset + "_subst_freq_stats_200.csv"
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
+        file_path_200 = os.path.join(os.pardir, "data/processed/features", file_path_200)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
+        df200 = pd.read_csv(file_path_200, usecols=lambda column: column != 'Unnamed: 0')
+
         if df.shape[1] != 7:
             print("Found old mutation rates")
             continue
         loo_resuls_dfs.append(df)
+        df_copy = df.copy()
+        df_copy["sampleId"] = df_copy["sampleId"] + "_200"
+        loo_resuls_dfs.append(df_copy)
+        loo_resuls_dfs.append(df200)
     except FileNotFoundError:
         print(file_path)
         print("Not found Mutation Stats: " + loo_dataset)
 
 loo_subst = pd.concat(loo_resuls_dfs, ignore_index=True)
+
 loo_subst = loo_subst.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 loo_resuls_combined = loo_resuls_combined.merge(loo_subst, on=["sampleId", 'dataset'], how='inner')
 
