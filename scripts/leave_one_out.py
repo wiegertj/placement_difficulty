@@ -91,6 +91,13 @@ for msa_name in filenames:
     metrics_df = pd.DataFrame(metrics_dict)
     metrics_df["dataset"] = msa_name
 
+
+
+    for to_query in sequence_ids_sample:
+        if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results",
+                                       msa_name + "_" + to_query + f"_200_r1_{sample_size}")):
+            sequence_ids_sample.remove(to_query)
+
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
                                        "query200_r1.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
@@ -384,11 +391,13 @@ for msa_name in filenames:
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200")):
             shutil.rmtree(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200"))
 
-        os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + f"_200_r1_{sample_size}"))
+        os.mkdir(
+            os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + f"_200_r1_{sample_size}"))
         print(model_path_epa)
         command = ["epa-ng", "--model", model_path_epa,
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
-                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + f"_200_r1_{sample_size}"),
+                   os.path.join(os.pardir,
+                                "data/processed/loo_results/" + msa_name + "_" + to_query + f"_200_r1_{sample_size}"),
                    "--filter-max",
                    "10000", "--filter-acc-lwr", "0.999"]
         print(" ".join(command))
