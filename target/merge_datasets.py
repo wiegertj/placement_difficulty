@@ -26,10 +26,6 @@ query_features200 = pd.read_csv(os.path.join(os.pardir, "data/processed/features
 query_features200['sampleId'] = query_features200['sampleId'].astype(str) + "_200"
 
 query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
-print(query_features.shape)
-query_features200 = query_features200.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
-print(query_features200.shape)
-
 query_features = pd.concat([query_features, query_features200])
 
 #query_features_lik_diff = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features_lik.csv"), index_col=False,
@@ -122,7 +118,6 @@ loo_entropies = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], ke
 loo_entropies200 = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv"),
                             index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 loo_entropies200["sampleId"] = loo_entropies200["sampleId"].astype(str) + "_200"
-loo_entropies200 = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 
 loo_entropies = pd.concat([loo_entropies, loo_entropies200])
 
@@ -140,9 +135,9 @@ unique_values_combined2 = set(loo_resuls_combined2[['dataset', 'sampleId']].iter
 duplicates = loo_resuls_combined2[loo_resuls_combined2.duplicated(['dataset', 'sampleId'], keep=False)]
 unique_duplicates = duplicates[['dataset', 'sampleId']].drop_duplicates()
 duplicate_values_list = unique_duplicates.values.tolist()
-print("List of Duplicate Values:")
-for dataset, sampleId in duplicate_values_list:
-    print(f"Dataset: {dataset}, SampleID: {sampleId}")
+#print("List of Duplicate Values:")
+#for dataset, sampleId in duplicate_values_list:
+ #   print(f"Dataset: {dataset}, SampleID: {sampleId}")
 
 print("LOO shape after merging query features" + str(loo_resuls_combined2.shape))
 loo_resuls_combined3 = loo_resuls_combined2.merge(tree_features, on='dataset', how='inner')
