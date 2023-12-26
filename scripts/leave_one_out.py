@@ -383,7 +383,7 @@ for msa_name in filenames:
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200")):
             shutil.rmtree(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200"))
 
-        os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200"))
+        os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200_r1"))
         print(model_path_epa)
         command = ["epa-ng", "--model", model_path_epa,
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
