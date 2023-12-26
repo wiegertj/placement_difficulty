@@ -147,7 +147,7 @@ for msa_name in filenames:
                         valid_sample = True
 
                 # Create a new SeqRecord
-                sampled_record = SeqRecord(seq=sampled_sequence, id=record.id + f"_{sequence_length}", description="")
+                sampled_record = SeqRecord(seq=sampled_sequence, id=record.id + f"_{sample_size}", description="")
 
                 query_alignment.append(sampled_record)
 
@@ -383,11 +383,11 @@ for msa_name in filenames:
         if os.path.exists(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200")):
             shutil.rmtree(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + "_200"))
 
-        os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + f"_200_r1_{sequence_length}"))
+        os.mkdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + f"_200_r1_{sample_size}"))
         print(model_path_epa)
         command = ["epa-ng", "--model", model_path_epa,
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
-                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + f"_200_r1_{sequence_length}"),
+                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + f"_200_r1_{sample_size}"),
                    "--filter-max",
                    "10000", "--filter-acc-lwr", "0.999"]
         print(" ".join(command))
