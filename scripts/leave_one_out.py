@@ -396,7 +396,7 @@ for msa_name in filenames:
             os.mkdir(
                 os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + f"_200_r1_{sample_size}"))
         except FileExistsError:
-            os.rmdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + f"_200_r1_{sample_size}"))
+            shutil.rmtree(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + f"_200_r1_{sample_size}"))
             os.mkdir(
                 os.path.join(os.pardir, "data/processed/loo_results",
                              msa_name + "_" + to_query + f"_200_r1_{sample_size}"))
