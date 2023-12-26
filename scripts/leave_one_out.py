@@ -90,12 +90,12 @@ for msa_name in filenames:
     metrics_df["dataset"] = msa_name
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "query200.csv")):
+                                       "query200_r1.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "query200.csv")), index=False)
+                                                    "query200_r1.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "query200.csv"),
+                                       "query200_r1.csv"),
                           index=False,
                           mode='a', header=False)
     sample_size = random.randint(200, 400)
@@ -147,7 +147,7 @@ for msa_name in filenames:
                         valid_sample = True
 
                 # Create a new SeqRecord
-                sampled_record = SeqRecord(seq=sampled_sequence, id=record.id, description="")
+                sampled_record = SeqRecord(seq=sampled_sequence, id=record.id + f"_{sequence_length}", description="")
 
                 query_alignment.append(sampled_record)
 
@@ -387,7 +387,7 @@ for msa_name in filenames:
         print(model_path_epa)
         command = ["epa-ng", "--model", model_path_epa,
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
-                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + "_200"),
+                   os.path.join(os.pardir, "data/processed/loo_results/" + msa_name + "_" + to_query + "_200_r1"),
                    "--filter-max",
                    "10000", "--filter-acc-lwr", "0.999"]
         print(" ".join(command))
