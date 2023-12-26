@@ -5,8 +5,8 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 
 # Path to the CSV file
-csv_file_path = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/query200_.csv'
-csv_file_path_ = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/query200_.csv'
+csv_file_path = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/query200_r1.csv'
+csv_file_path_ = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/query200_r2.csv'
 # Read the CSV file
 df = pd.read_csv(csv_file_path, names=["sampleId", "dataset"])
 df_ = pd.read_csv(csv_file_path_, names=["sampleId", "dataset"])
@@ -29,19 +29,23 @@ for dataset in df['dataset'].unique():
     # Iterate over sampleIds and read the corresponding FASTA files
     for sample_id in sample_ids:
         # Construct the path to the FASTA file
-        fasta_file_path = os.path.join(fasta_directory, f'{dataset}_query200_{sample_id}.fasta')
+        fasta_files = []
 
-        # Check if the file exists before attempting to read it
-        if os.path.exists(fasta_file_path):
-            # Read the FASTA file
+        # Collect all fasta_file_path values with a number in the third bracket
+        for i in range(200, 450):  # Adjust the range as needed
+            fasta_file_path = os.path.join(fasta_directory, f'{dataset}_query200_{sample_id}_{i:03d}.fasta')
+            if os.path.exists(fasta_file_path):
+                fasta_files.append(fasta_file_path)
+
+        # Read and process each valid FASTA file
+        for fasta_file_path in fasta_files:
             records = SeqIO.parse(fasta_file_path, 'fasta')
 
             # Iterate over SeqRecord objects and append to the list
             for record in records:
                 seq_records.append(SeqRecord(Seq(str(record.seq)), id=record.id, description=''))
-
 # Path to the merged FASTA filef
-    merged_fasta_file_path = os.path.join(fasta_directory, f'merged_{dataset}.fasta')
+    merged_fasta_file_path = os.path.join(fasta_directory, f'merged_{dataset}_r1.fasta')
 
 # Write the merged SeqRecord objects to a new FASTA file
     with open(merged_fasta_file_path, 'w') as output_file:
