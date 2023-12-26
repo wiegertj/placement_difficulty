@@ -405,4 +405,6 @@ print(uniformly_distributed_df["entropy"].mean())
 uniformly_distributed_df.drop(columns=["percentile"], inplace=True)
 print(uniformly_distributed_df.shape)
 print(list(uniformly_distributed_df.columns))
+combined_df = combined_df.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
+
 combined_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot_no_filter.csv"), index=False)
