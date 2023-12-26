@@ -25,8 +25,8 @@ query_features200 = pd.read_csv(os.path.join(os.pardir, "data/processed/features
                              usecols=lambda column: column != 'Unnamed: 0')
 query_features200['sampleId'] = query_features200['sampleId'].astype(str) + "_200"
 
-query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 query_features = pd.concat([query_features, query_features200])
+query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 
 #query_features_lik_diff = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features_lik.csv"), index_col=False,
  #                            usecols=lambda column: column != 'Unnamed: 0')
@@ -117,8 +117,8 @@ loo_entropies = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], ke
 
 loo_entropies200 = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv"),
                             index_col=False, usecols=lambda column: column != 'Unnamed: 0')
-loo_entropies200 = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 loo_entropies200["sampleId"] = loo_entropies200["sampleId"].astype(str) + "_200"
+loo_entropies200 = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 
 loo_entropies = pd.concat([loo_entropies, loo_entropies200])
 
