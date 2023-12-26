@@ -100,12 +100,12 @@ for msa_name in filenames:
         continue
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "query200_r1.csv")):
+                                       "query200_r2.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "query200_r1.csv")), index=False)
+                                                    "query200_r2.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "query200_r1.csv"),
+                                       "query200_r2.csv"),
                           index=False,
                           mode='a', header=False)
 
