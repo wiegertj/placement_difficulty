@@ -163,7 +163,7 @@ for msa_name in filenames:
         output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa200_" + to_query + ".fasta")
         output_file = os.path.abspath(output_file)
 
-        output_file_query = os.path.join(os.pardir, "data/processed/loo", msa_name + "_query200_" + to_query + ".fasta")
+        output_file_query = os.path.join(os.pardir, "data/processed/loo", msa_name + "_query200_" + to_query + f"_{sample_size}.fasta")
         output_file_query = os.path.abspath(output_file_query)
 
         with open(output_file, "w") as new_alignment_output:
