@@ -396,7 +396,10 @@ for msa_name in filenames:
             os.mkdir(
                 os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + f"_200_r1_{sample_size}"))
         except FileExistsError:
-            continue
+            os.rmdir(os.path.join(os.pardir, "data/processed/loo_results", msa_name + "_" + to_query + f"_200_r1_{sample_size}"))
+            os.mkdir(
+                os.path.join(os.pardir, "data/processed/loo_results",
+                             msa_name + "_" + to_query + f"_200_r1_{sample_size}"))
         print(model_path_epa)
         command = ["epa-ng", "--model", model_path_epa,
                    "--ref-msa", msa_path_epa, "--tree", tree_path_epa, "--query", query_path_epa, "--redo", "--outdir",
