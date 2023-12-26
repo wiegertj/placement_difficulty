@@ -74,28 +74,28 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     #"mean_sup_tree"]]
 
     #  final noboot
-    df =df[["dataset", "entropy", "sampleId",'mean_kmer_sim', 'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim',
-    'frac_inv_sites_msa9', 'transversion_count_rel7',
-    'std_fraction_char_rests7', 'transversion_count_rel5',
-    'min_fraction_char_rests5', 'std_length', 'sk_clo_sim',
-    'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot',
-            "mean_loglik", "min_loglik", "max_loglik", "std_loglik", "skw_loglik", "kurt_loglik",
-            "match_counter_7_lik",    "match_counter_8_lik",    "match_counter_9_lik",    "match_counter_95_lik",
-            "match_counter_3_lik",    "match_counter_1_lik",    "match_rel_7_lik",    "match_rel_8_lik",    "match_rel_9_lik",
-            "match_rel_95_lik",    "match_rel_3_lik",    "match_rel_1_lik",    "match_rel_gap_lik",    "match_rel_2_lik",
-            "match_rel_4_lik",    "match_rel_6_lik",    "match_rel_5_lik",    "transition_count_rel9_lik",
-            "transversion_count_rel9_lik",    "max_fraction_char_rests9_lik",    "min_fraction_char_rests9_lik",
-            "avg_fraction_char_rests9_lik",    "std_fraction_char_rests9_lik",    "skw_fraction_char_rests9_lik",
-            "kur_fraction_char_rests9_lik",    "transition_count_rel8_lik",    "transversion_count_rel8_lik",
-            "max_fraction_char_rests8_lik",    "min_fraction_char_rests8_lik",    "avg_fraction_char_rests8_lik",
-            "std_fraction_char_rests8_lik",    "skw_fraction_char_rests8_lik",    "kur_fraction_char_rests8_lik",
-            "transition_count_rel7_lik",    "transversion_count_rel7_lik",    "max_fraction_char_rests7_lik",
-            "min_fraction_char_rests7_lik",    "avg_fraction_char_rests7_lik",    "std_fraction_char_rests7_lik",
-            "skw_fraction_char_rests7_lik",    "kur_fraction_char_rests7_lik",    "transition_count_rel5_lik",
-            "transversion_count_rel5_lik",    "max_fraction_char_rests5_lik",    "min_fraction_char_rests5_lik",
-            "avg_fraction_char_rests5_lik",    "std_fraction_char_rests5_lik",    "skw_fraction_char_rests5_lik",
-            "kur_fraction_char_rests5_lik"
-    ]]
+    #df =df[["dataset", "entropy", "sampleId",'mean_kmer_sim', 'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim',
+    #'frac_inv_sites_msa9', 'transversion_count_rel7',
+    #'std_fraction_char_rests7', 'transversion_count_rel5',
+    #'min_fraction_char_rests5', 'std_length', 'sk_clo_sim',
+    #'kur_kmer_sim25', 'max_subst_freq', 'avg_rel_rf_no_boot', 'no_top_boot',
+     #       "mean_loglik", "min_loglik", "max_loglik", "std_loglik", "skw_loglik", "kurt_loglik",
+      #      "match_counter_7_lik",    "match_counter_8_lik",    "match_counter_9_lik",    "match_counter_95_lik",
+       #     "match_counter_3_lik",    "match_counter_1_lik",    "match_rel_7_lik",    "match_rel_8_lik",    "match_rel_9_lik",
+        #    "match_rel_95_lik",    "match_rel_3_lik",    "match_rel_1_lik",    "match_rel_gap_lik",    "match_rel_2_lik",
+         #   "match_rel_4_lik",    "match_rel_6_lik",    "match_rel_5_lik",    "transition_count_rel9_lik",
+          #  "transversion_count_rel9_lik",    "max_fraction_char_rests9_lik",    "min_fraction_char_rests9_lik",
+           # "avg_fraction_char_rests9_lik",    "std_fraction_char_rests9_lik",    "skw_fraction_char_rests9_lik",
+     #       "kur_fraction_char_rests9_lik",    "transition_count_rel8_lik",    "transversion_count_rel8_lik",
+      #      "max_fraction_char_rests8_lik",    "min_fraction_char_rests8_lik",    "avg_fraction_char_rests8_lik",
+       #     "std_fraction_char_rests8_lik",    "skw_fraction_char_rests8_lik",    "kur_fraction_char_rests8_lik",
+        #    "transition_count_rel7_lik",    "transversion_count_rel7_lik",    "max_fraction_char_rests7_lik",
+           # "min_fraction_char_rests7_lik",    "avg_fraction_char_rests7_lik",    "std_fraction_char_rests7_lik",
+         #   "skw_fraction_char_rests7_lik",    "kur_fraction_char_rests7_lik",    "transition_count_rel5_lik",
+          #  "transversion_count_rel5_lik",    "max_fraction_char_rests5_lik",    "min_fraction_char_rests5_lik",
+            #"avg_fraction_char_rests5_lik",    "std_fraction_char_rests5_lik",    "skw_fraction_char_rests5_lik",
+        #    "kur_fraction_char_rests5_lik"
+    #]]
 
     #df = df[[]]
     ####  boot
