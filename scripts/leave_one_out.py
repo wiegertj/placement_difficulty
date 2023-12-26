@@ -83,8 +83,10 @@ for msa_name in filenames:
         sequence_ids_sample = random.sample(sequence_ids, feature_config.LOO_SAMPLE_SIZE)
 
     # sequence_ids_sample = loo_reest_samples[loo_reest_samples["dataset"] == msa_name]["sampleId"]
+    sample_size = random.randint(200, 400)
 
     metrics_dict = {'sampleIds': sequence_ids_sample}
+    metrics_dict['sampleIds'] = [f"{seq_id}_{sample_size}" for seq_id in metrics_dict['sampleIds']]
 
     metrics_df = pd.DataFrame(metrics_dict)
     metrics_df["dataset"] = msa_name
@@ -98,7 +100,6 @@ for msa_name in filenames:
                                        "query200_r1.csv"),
                           index=False,
                           mode='a', header=False)
-    sample_size = random.randint(200, 400)
 
     for to_query in sequence_ids_sample:
 
