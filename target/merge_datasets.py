@@ -137,8 +137,8 @@ duplicates = loo_resuls_combined2[loo_resuls_combined2.duplicated(['dataset', 's
 unique_duplicates = duplicates[['dataset', 'sampleId']].drop_duplicates()
 duplicate_values_list = unique_duplicates.values.tolist()
 print("List of Duplicate Values:")
-for dataset, sampleId in duplicate_values_list:
-    print(f"Dataset: {dataset}, SampleID: {sampleId}")
+#for dataset, sampleId in duplicate_values_list:
+#    print(f"Dataset: {dataset}, SampleID: {sampleId}")
 
 print("LOO shape after merging query features" + str(loo_resuls_combined2.shape))
 loo_resuls_combined3 = loo_resuls_combined2.merge(tree_features, on='dataset', how='inner')
