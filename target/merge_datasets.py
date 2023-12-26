@@ -24,7 +24,7 @@ query_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", 
 query_features200 = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features_200.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
 query_features200['sampleId'] = query_features200['sampleId'].astype(str) + "_200"
-
+print(query_features200.shape)
 query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 query_features = pd.concat([query_features, query_features200])
 
@@ -136,7 +136,7 @@ duplicates = loo_resuls_combined2[loo_resuls_combined2.duplicated(['dataset', 's
 unique_duplicates = duplicates[['dataset', 'sampleId']].drop_duplicates()
 duplicate_values_list = unique_duplicates.values.tolist()
 #print("List of Duplicate Values:")
-#for dataset, sampleId in duplicate_values_list:
+#for dataset, sampleId in duplicate_valueƒquerys_list:
  #   print(f"Dataset: {dataset}, SampleID: {sampleId}")
 
 print("LOO shape after merging query features" + str(loo_resuls_combined2.shape))
