@@ -3,6 +3,8 @@ import math
 import multiprocessing
 import os
 import json
+import re
+
 import pandas as pd
 from Bio import Phylo
 from scipy.stats import entropy
@@ -135,11 +137,12 @@ def extract_jplace_info(directory):
 
     with Pool(processes=80) as pool:
         directories = [os.path.join(directory, subdir) for subdir in os.listdir(directory) if
-                       os.path.isdir(os.path.join(directory, subdir)) and subdir.endswith('_200')]
+                       os.path.isdir(os.path.join(directory, subdir)) and re.match(r'.*_200_r1_\d{3}$', subdir)]
         results = pool.map(get_files_with_extension, directories)
 
     file_list = [item for sublist in results for item in sublist]
     print("Finished creating filelist ... ")
+    file_list = file_list[:1]
 
     #selection = pd.read_csv(os.path.join(os.pardir, "data/", "reest_selection.csv"))
     #selectionList = selection["reest_files"].str.replace(".newick", "").values.tolist()
@@ -187,11 +190,11 @@ def extract_jplace_info(directory):
 
     df = pd.DataFrame(targets,
                       columns=["dataset", "sampleId", "entropy", "lwr_drop", "branch_dist_best_two_placements"])
-    if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv")):
-        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv"), header=False,
+    if os.path.exists(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200_r1.csv")):
+        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200_r1.csv"), header=False,
                   mode='a', index=False)
     else:
-        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv"), header=True)
+        df.to_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200_r1.csv"), header=True)
 
 
 if __name__ == '__main__':
