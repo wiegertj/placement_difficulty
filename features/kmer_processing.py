@@ -295,14 +295,17 @@ if __name__ == '__main__':
                                           "0.",
                                           "") + "_200_r1" + str(
                                           1000) + ".csv")
-        if os.path.exists(potential_path):
-            print("Skipped: " + msa_file + " already processed")
-            continue
+
 
         if msa_file.replace("_reference.fasta","") == "13356_21":
             thresh = False
-        print(msa_file.replace("_reference.fasta",""))
+
         if thresh:
+            print(msa_file.replace("_reference.fasta", ""))
+            continue
+
+        if os.path.exists(potential_path):
+            print("Skipped: " + msa_file + " already processed")
             continue
 
         results = []
