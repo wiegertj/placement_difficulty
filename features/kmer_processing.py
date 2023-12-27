@@ -270,6 +270,7 @@ if __name__ == '__main__':
         multiprocessing.freeze_support()
 
     #filenames = filenames[-135:]
+    thresh = True
 
     counter_msa = 0
     for msa_file in filenames:
@@ -296,6 +297,12 @@ if __name__ == '__main__':
                                           1000) + ".csv")
         if os.path.exists(potential_path):
             print("Skipped: " + msa_file + " already processed")
+            continue
+
+        if msa_file.replace("_reference.fasta","") == "13356_21":
+            thresh = False
+
+        if thresh:
             continue
 
         results = []
@@ -337,11 +344,14 @@ if __name__ == '__main__':
         print("Created Bloom Filter for MSAs ... ")
 
         # Parallel code to compute and store blocks of defined stepsize query samples
+        output0 = 0
         while True:
             interval_start += feature_config.KMER_PROCESSING_STEPSIZE
             result_tmp = multiprocess_string_kernel(query_file, isAA, bloom_filters_MSA, msa_file, interval_start)
-            if result_tmp != 0:
 
+            if result_tmp != 0:
+                output0 += 1
+                print(f"{output0} outputs 0")
                 results.extend(result_tmp)
                 df = pd.DataFrame(results,
                                   columns=['dataset', 'sampleId', 'min_kmer_sim', 'max_kmer_sim', 'mean_kmer_sim',
