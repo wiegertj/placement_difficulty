@@ -807,4 +807,4 @@ if __name__ == '__main__':
                                         "aa_stat_std_query", "aa_stat_mean_query", "min_gap_query", "max_gap_query",
                                         "mean_gap_query",
                                         "cv_gap_query", "sk_gap_query", "kur_gap_query"])
-    df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features_200.csv"))
+    df.to_csv(os.path.join(os.pardir, "data/processed/features", "query_features_200_r1.csv"))
