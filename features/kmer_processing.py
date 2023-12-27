@@ -212,13 +212,13 @@ def monitor_progress(results):
 def multiprocess_string_kernel(query_filename, isAA, bloom_filters_MSA_, msa_file_, interval):
     data = []
     counter = 0
-    current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv"))
-    sampledData = current_loo_targets[current_loo_targets["dataset"] == msa_file_.replace("_reference.fasta", "")]["sampleId"].values.tolist()
+    #current_loo_targets = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv"))
+    #sampledData = current_loo_targets[current_loo_targets["dataset"] == msa_file_.replace("_reference.fasta", "")]["sampleId"].values.tolist()
     for query_record in SeqIO.parse(query_filename, 'fasta'):
         counter += 1
         if (interval - feature_config.KMER_PROCESSING_STEPSIZE) < counter <= interval:
-            if query_record.name in sampledData:
-                data.append(query_record)
+            #if query_record.name in sampledData:
+            data.append(query_record)
         if counter > interval:
             break
 
