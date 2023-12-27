@@ -363,9 +363,13 @@ if __name__ == '__main__':
                 output0 += 1
                 print(f"{output0} outputs 0")
                 results.extend(result_tmp)
-                df = pd.DataFrame(results,
-                                  columns=['dataset', 'sampleId', 'min_kmer_sim', 'max_kmer_sim', 'mean_kmer_sim',
-                                           'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim'])
+                try:
+                    df = pd.DataFrame(results,
+                                      columns=['dataset', 'sampleId', 'min_kmer_sim', 'max_kmer_sim', 'mean_kmer_sim',
+                                               'std_kmer_sim', 'sk_kmer_sim', 'kur_kmer_sim'])
+                except ValueError:
+                    results = []
+                    break
                 df.to_csv(os.path.join(os.pardir, "data/processed/features",
                                        msa_file.replace("_reference.fasta", "") + "_kmer" + str(
                                            feature_config.K_MER_LENGTH) + "_0" + str(
