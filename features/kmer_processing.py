@@ -350,7 +350,7 @@ if __name__ == '__main__':
                                        msa_file.replace("_reference.fasta", "") + "_kmer" + str(
                                            feature_config.K_MER_LENGTH) + "_0" + str(
                                            feature_config.K_MER_MAX_GAP_PERCENTAGE).replace("0.",
-                                                                                            "") + "_200_" + str(
+                                                                                            "") + "_200_r1" + str(
                                            interval_start) + ".csv"), index=False)
                 results = []
 
