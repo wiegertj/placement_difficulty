@@ -301,7 +301,7 @@ if __name__ == '__main__':
 
         if msa_file.replace("_reference.fasta","") == "13356_21":
             thresh = False
-
+        print(msa_file.replace("_reference.fasta",""))
         if thresh:
             continue
 
