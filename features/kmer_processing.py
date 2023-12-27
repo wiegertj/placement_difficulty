@@ -114,7 +114,7 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
     result_string_kernels = []
     for bloom_filter_ref in bloom_filters_MSA:
 
-        if not (bloom_filter_ref[0] == query.id):  # For leave one out, dont compare to sequence it self
+        if not (bloom_filter_ref[0].__contains__(str(query.id))):  # For leave one out, dont compare to sequence it self
             hash_kernel = 0
             for kmer in set(kmers_query):
                 hash_kernel += bloom_filter_ref[1].check(kmer) * query_bf.check(kmer)
