@@ -129,7 +129,10 @@ def compute_string_kernel_statistics(query, k=feature_config.K_MER_LENGTH,
     min_kernel = min(result_string_kernels)
     max_kernel = max(result_string_kernels)
     mean_kernel = sum(result_string_kernels) / len(result_string_kernels)
-    std_kernel = statistics.stdev(result_string_kernels)
+    try:
+        std_kernel = statistics.stdev(result_string_kernels)
+    except statistics.StatisticsError:
+        return 0
     kur_kernel = kurtosis(result_string_kernels, fisher=True)
     sk_kernel = skew(result_string_kernels)
     if query.id == "taxon42":
