@@ -736,12 +736,12 @@ if __name__ == '__main__':
 
     print(len(filenames))
     #/ hits / fast / cme / wiegerjs / placement_difficulty / data / processed / loo / merged_10...fasta
-    for file in filenames:
+    #for file in filenames:
         #if not os.path.exists(os.path.join(os.pardir, "data/raw/query", file)):
-        if not os.path.exists(os.path.join(os.pardir, "data/processed/loo/merged_", file.replace("_query.fasta",""))):
+     #   if not os.path.exists(os.path.join(os.pardir, "data/processed/loo/merged_", file.replace("_query.fasta",""))):
 
-            print("Query file not found: " + file)
-            filenames.remove(file)
+      #      print("Query file not found: " + file)
+       #     filenames.remove(file)
 
     num_processes = multiprocessing.cpu_count()  # You can adjust the number of processes as needed
     pool = multiprocessing.Pool(processes=num_processes)
