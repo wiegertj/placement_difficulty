@@ -223,7 +223,11 @@ def multiprocess_string_kernel(query_filename, isAA, bloom_filters_MSA_, msa_fil
             break
 
     pool = multiprocessing.Pool(processes=1,initializer=initializer, initargs=(bloom_filters_MSA_, msa_file_, isAA))
-    results_async = [pool.apply_async(compute_string_kernel_statistics, (item,)) for item in data]
+    try:
+        results_async = [pool.apply_async(compute_string_kernel_statistics, (item,)) for item in data]
+    except statistics.StatisticsError:
+        return 0
+
     #monitor_progress(results_async)
     try:
         output = [result_.get() for result_ in results_async]
