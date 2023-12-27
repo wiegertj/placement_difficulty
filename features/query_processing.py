@@ -32,6 +32,7 @@ def query_statistics(query_filepath) -> list:
     results = []
     #filepath = os.path.join(os.pardir, "data/raw/query", query_filepath)
     filepath = os.path.join(os.pardir, "data/processed/loo/merged_" + query_filepath.replace("_query.fasta", ".fasta"))
+    print(filepath)
     if not os.path.exists(os.path.join(os.pardir, "data/processed/loo/merged_" + query_filepath.replace("_query.fasta", ".fasta"))):
         return -1
     try:
