@@ -34,6 +34,7 @@ for dataset in df['dataset'].unique():
         # Collect all fasta_file_path values with a number in the third bracket
         for i in range(200, 450):  # Adjust the range as needed
             fasta_file_path = os.path.join(fasta_directory, f'{dataset}_query200_{sample_id}_{i:03d}.fasta')
+            print(fasta_file_path)
             if os.path.exists(fasta_file_path):
                 fasta_files.append(fasta_file_path)
 
