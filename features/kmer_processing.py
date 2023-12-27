@@ -292,11 +292,11 @@ if __name__ == '__main__':
                                           feature_config.K_MER_LENGTH) + "_0" + str(
                                           feature_config.K_MER_MAX_GAP_PERCENTAGE).replace(
                                           "0.",
-                                          "") + "_200_" + str(
+                                          "") + "_200_r1" + str(
                                           1000) + ".csv")
-        #if os.path.exists(potential_path):
-         #   print("Skipped: " + msa_file + " already processed")
-          #  continue
+        if os.path.exists(potential_path):
+            print("Skipped: " + msa_file + " already processed")
+            continue
 
         results = []
 
