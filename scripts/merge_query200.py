@@ -12,7 +12,7 @@ df = pd.read_csv(csv_file_path, names=["sampleId", "dataset"])
 df_ = pd.read_csv(csv_file_path_, names=["sampleId", "dataset"])
 df = pd.concat([df, df_])
 print(df.shape)
-df = df[df.duplicated(subset=['dataset', 'sampleId'], keep=False)]
+duplicates = df[df.duplicated(subset=['dataset', 'sampleId'], keep=False)]
 df = df[~df.duplicated(subset=['dataset', 'sampleId'], keep=False)]
 
 
