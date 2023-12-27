@@ -142,7 +142,6 @@ def extract_jplace_info(directory):
 
     file_list = [item for sublist in results for item in sublist]
     print("Finished creating filelist ... ")
-    file_list = file_list[:1]
 
     #selection = pd.read_csv(os.path.join(os.pardir, "data/", "reest_selection.csv"))
     #selectionList = selection["reest_files"].str.replace(".newick", "").values.tolist()
