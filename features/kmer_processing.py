@@ -294,9 +294,9 @@ if __name__ == '__main__':
                                           "0.",
                                           "") + "_200_" + str(
                                           1000) + ".csv")
-        if os.path.exists(potential_path):
-            print("Skipped: " + msa_file + " already processed")
-            continue
+        #if os.path.exists(potential_path):
+         #   print("Skipped: " + msa_file + " already processed")
+          #  continue
 
         results = []
 
@@ -318,7 +318,7 @@ if __name__ == '__main__':
            continue
         num_sequences = sum(1 for _ in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'))
 
-        if num_sequences > 150:
+        if num_sequences > 500:
            print("Skipped " + msa_file + " too large")
            continue
 
