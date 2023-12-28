@@ -268,10 +268,7 @@ def main():
         reference_msa_path = os.path.join(os.pardir, "data/raw/msa", dataset + "_reference.fasta")
         reference_msa = AlignIO.read(reference_msa_path, 'fasta')
         reference_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", dataset + ".newick")
-        current_loo_targets[['taxon', 'value']] = current_loo_targets['sampleId'].str.split('_', n=1, expand=True)
-
-        sample_df = current_loo_targets[current_loo_targets['dataset'] == dataset]["taxon"]
-        print(sample_df)
+        sample_df = current_loo_targets[current_loo_targets['dataset'] == dataset]["sampleId"]
         if len(reference_msa[0].seq) > 20000:
             print("too large sequences")
             continue
@@ -279,7 +276,9 @@ def main():
             print("too large number sequences")
             #continue
 
-        for sample in sample_df:
+        for sample_large in sample_df:
+            sample = sample_large.split("_").str[0]
+            print(sample)
             # Split MSA into query and rest
             new_alignment = []
             for record in reference_msa:
@@ -326,13 +325,13 @@ def main():
                 kur_subst_freq = kurtosis(result, fisher=True)
 
                 results.append(
-                    (dataset, sample, max_subst_freq, avg_subst_freq, cv_subst_freq, sk_subst_freq, kur_subst_freq))
+                    (dataset, sample_large, sample, max_subst_freq, avg_subst_freq, cv_subst_freq, sk_subst_freq, kur_subst_freq))
 
                 os.remove(output_file_msa)
                 os.remove(output_file_tree)
 
         df = pd.DataFrame(results,
-                          columns=['dataset', 'sampleId', "max_subst_freq", "avg_subst_freq", "cv_subst_freq",
+                          columns=['dataset', 'sampleId', "taxonId", "max_subst_freq", "avg_subst_freq", "cv_subst_freq",
                                    "sk_subst_freq", "kur_subst_freq"])
         df.to_csv(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats_200_r1.csv"))
 
