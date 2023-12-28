@@ -21,7 +21,7 @@ print("MSA feature count: " + str(msa_features.shape))
 query_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
 
-query_features200 = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features_200.csv"), index_col=False,
+query_features200 = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features_200_r1.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
 print(query_features200.shape)
 query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
