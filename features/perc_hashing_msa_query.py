@@ -481,8 +481,13 @@ if __name__ == '__main__':
         if file == "11274_2_reference.fasta":
             filenames.remove(file)
 
-        if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
+        #if len(next(SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", file), 'fasta').records).seq) > 15000:
+         #   filenames.remove(file)
+
+        if not os.path.exists(os.path.join(os.pardir, "data/processed/loo/merged_" + file.replace("_reference.fasta",".fasta"))):
             filenames.remove(file)
+
+
     filenames_comp = filenames
 
     if multiprocessing.current_process().name == 'MainProcess':
