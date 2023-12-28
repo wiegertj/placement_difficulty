@@ -326,7 +326,7 @@ def compute_perceptual_hash_distance(msa_file):
 
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if not str(record_msa.id).__contains__(str(record_query.id)):
-                hash_msa, normalized_msa_dct_coeff = compute_dct_sign_only_hash(record_msa.seq, isAA)
+                hash_msa  = compute_dct_sign_only_hash(record_msa.seq, isAA)
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
 
@@ -341,8 +341,7 @@ def compute_perceptual_hash_distance(msa_file):
                     kmer_sims25.append(kmer_sim25)
                     kmer_sims50.append(kmer_sim50)
                     lcs_values.append(lcs)
-                    coeff_dist = np.linalg.norm(difference)
-                    coeff_dists.append(coeff_dist)
+
                 else:
                     return 0
         if len(distances) < 2:
@@ -361,13 +360,7 @@ def compute_perceptual_hash_distance(msa_file):
         rel_avg_ham = avg_ham / len(hash_query)
         rel_std_ham = std_ham / len(hash_query)
 
-        max_dist_coeff = max(coeff_dists)
-        min_dist_coeff = min(coeff_dists)
-        avg_dist_coeff = sum(coeff_dists) / len(coeff_dists)
-        std_dist_coeff = statistics.stdev(coeff_dists)
 
-        sk_dist_coeff = skew(coeff_dists)
-        kur_dist_coeff = kurtosis(coeff_dists, fisher=True)
 
         max_kmer_sim10 = max(kmer_sims10)
         min_kmer_sim10 = min(kmer_sims10)
@@ -458,7 +451,7 @@ def compute_perceptual_hash_distance(msa_file):
                        rel_std_kmer_sim50,
                        sk_ham_lcs,
                        kur_ham_lcs, rel_max_ham_lcs, rel_min_ham_lcs, rel_avg_ham_lcs, rel_std_ham_lcs,
-                       max_dist_coeff, min_dist_coeff, std_dist_coeff, avg_dist_coeff, sk_dist_coeff, kur_dist_coeff))
+                       0, 0, 0, 0, 0, 0))
     return results, msa_file
 
 
