@@ -277,7 +277,7 @@ def main():
             #continue
 
         for sample_large in sample_df:
-            sample = sample_large.split("_").str[0]
+            sample = sample_large.split("_")[0]
             print(sample)
             # Split MSA into query and rest
             new_alignment = []
