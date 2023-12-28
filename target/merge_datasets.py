@@ -23,7 +23,6 @@ query_features = pd.read_csv(os.path.join(os.pardir, "data/processed/features", 
 
 query_features200 = pd.read_csv(os.path.join(os.pardir, "data/processed/features", "query_features_200.csv"), index_col=False,
                              usecols=lambda column: column != 'Unnamed: 0')
-query_features200['sampleId'] = query_features200['sampleId'].astype(str) + "_200"
 print(query_features200.shape)
 query_features = query_features.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 query_features = pd.concat([query_features, query_features200])
@@ -87,14 +86,12 @@ for loo_dataset in loo_datasets:
         df = df.merge(loo_distances, on=["sampleId", "dataset"], how="inner")
         loo_resuls_dfs.append(df)
 
-        loo_distances_200_filepath = os.path.join(os.pardir, "data/processed/features",  loo_dataset + "_kmer15_03_200_1000.csv")
+        loo_distances_200_filepath = os.path.join(os.pardir, "data/processed/features",  loo_dataset + "_kmer15_03_200_r11000.csv")
         df_200 = pd.read_csv(loo_distances_200_filepath, usecols=lambda column: column != 'Unnamed: 0')
-        df_200['sampleId'] = df_200['sampleId'].astype(str) + "_200"
 
-        loo_distances_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", loo_dataset + "_200_msa_dist.csv"),
+        loo_distances_msa = pd.read_csv(os.path.join(os.pardir, "data/processed/features", loo_dataset + "_200_msa_dist_r1.csv"),
                                     index_col=False, usecols=lambda column: column != 'Unnamed: 0')
         loo_distances_msa["dataset"] = loo_distances_msa["dataset"].str.replace("_reference.fasta", "")
-        loo_distances_msa["sampleId"] = loo_distances_msa["sampleId"].astype(str) + "_200"
         df_200 = df_200.merge(loo_distances_msa,  on=["sampleId", "dataset"], how="inner")
         loo_resuls_dfs.append(df_200)
 
@@ -115,9 +112,8 @@ loo_entropies = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "lo
                             index_col=False, usecols=lambda column: column != 'Unnamed: 0')
 loo_entropies = loo_entropies.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 
-loo_entropies200 = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200.csv"),
+loo_entropies200 = pd.read_csv(os.path.join(os.pardir, "data/processed/target", "loo_result_entropy_200_r1.csv"),
                             index_col=False, usecols=lambda column: column != 'Unnamed: 0')
-loo_entropies200["sampleId"] = loo_entropies200["sampleId"].astype(str) + "_200"
 
 loo_entropies = pd.concat([loo_entropies, loo_entropies200])
 
@@ -160,10 +156,9 @@ for loo_dataset in loo_datasets:
             continue
         loo_resuls_dfs.append(df)
 
-        file_path_200 = loo_dataset + "16p_200_msa_perc_hash_dist.csv"
+        file_path_200 = loo_dataset + "16p_200_r1_msa_perc_hash_dist.csv"
         file_path_200 = os.path.join(os.pardir, "data/processed/features", file_path_200)
         df_200 = pd.read_csv(file_path_200, usecols=lambda column: column != 'Unnamed: 0')
-        df_200["sampleId"] = df_200["sampleId"].astype(str) + "_200"
         loo_resuls_dfs.append(df_200)
 
 
@@ -187,7 +182,7 @@ loo_datasets = [value for value in dataset_list if value not in elements_to_dele
 for loo_dataset in loo_datasets:
     try:
         file_path = loo_dataset + "_subst_freq_stats.csv"
-        file_path_200 = loo_dataset + "_subst_freq_stats_200.csv"
+        file_path_200 = loo_dataset + "_subst_freq_stats_200_r1.csv"
         file_path = os.path.join(os.pardir, "data/processed/features", file_path)
         file_path_200 = os.path.join(os.pardir, "data/processed/features", file_path_200)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
@@ -407,4 +402,4 @@ print(list(uniformly_distributed_df.columns))
 combined_df = combined_df.drop_duplicates(subset=['dataset', 'sampleId'], keep='first')
 print(combined_df.shape)
 
-combined_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot_no_filter.csv"), index=False)
+combined_df.to_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot_no_filter_r1.csv"), index=False)
