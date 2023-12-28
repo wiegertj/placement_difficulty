@@ -326,7 +326,7 @@ def compute_perceptual_hash_distance(msa_file):
         current_closest_taxon = ""
         current_min_distance = 10000000000000000000000000
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
-            if record_msa.id != record_query.id:
+            if not str(record_msa.id).__contains__(str(record_query.id)):
                 hash_msa, normalized_msa_dct_coeff = compute_dct_sign_only_hash(record_msa.seq, isAA)
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
@@ -533,7 +533,7 @@ if __name__ == '__main__':
         ])
         df.to_csv(os.path.join(os.pardir, "data/processed/features",
                            result[1].replace("_reference.fasta", "") + str(
-                              feature_config.SIGN_ONLY_MATRIX_SIZE) + "p_200_msa_perc_hash_dist.csv"))
+                              feature_config.SIGN_ONLY_MATRIX_SIZE) + "p_200_r1_msa_perc_hash_dist.csv"))
 
     pool.close()
     pool.join()
