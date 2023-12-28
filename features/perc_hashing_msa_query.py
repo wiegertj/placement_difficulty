@@ -308,7 +308,7 @@ def compute_perceptual_hash_distance(msa_file):
     sampledData = current_loo_targets[current_loo_targets["dataset"] == msa_file.replace("_reference.fasta", "")][
         "sampleId"].values.tolist()
 
-    for record_query in SeqIO.parse(os.path.join(os.pardir, "data/raw/query", query_file), 'fasta'):
+    for record_query in SeqIO.parse(os.path.join(os.pardir, "data/processed/loo/merged_" + query_file.replace("_query.fasta",".fasta")), 'fasta'):
 
         counter += 1
         if counter % 50 == 0:
