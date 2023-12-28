@@ -151,4 +151,4 @@ if __name__ == '__main__':
 
                                                    ])
             df.to_csv(os.path.join(os.pardir, "data/processed/features",
-                                   msa_file.replace("_reference.fasta", "") + "_200_msa_dist.csv"))
+                                   msa_file.replace("_reference.fasta", "") + "_200_msa_dist_r1.csv"))
