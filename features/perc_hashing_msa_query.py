@@ -110,13 +110,13 @@ def compute_dct_sign_only_hash(sequence, isAA):
 
         # Flatten the binary matrix into a binary string
         hash_value = "".join([str(int(bit)) for bit in binary_sequence.flatten()])
-        normalized_coeff = (dct_coeffs[:size_, :size_] - np.min(dct_coeffs[:size_, :size_])) / (
-                    np.max(dct_coeffs[:size_, :size_]) - np.min(dct_coeffs[:size_, :size_]))
+
+
         # print(len(hash_value))
     except IndexError:
         print("image too small, skipped")
         return 0
-    return hash_value, normalized_coeff
+    return hash_value
 
 
 def compute_image_distances(msa_file):
@@ -322,20 +322,14 @@ def compute_perceptual_hash_distance(msa_file):
         kmer_sims50 = []
         lcs_values = []
         coeff_dists = []
-        hash_query, normalized_query_dct_coeff = compute_dct_sign_only_hash(record_query.seq, isAA)
-        current_closest_taxon = ""
-        current_min_distance = 10000000000000000000000000
+        hash_query = compute_dct_sign_only_hash(record_query.seq, isAA)
+
         for record_msa in SeqIO.parse(os.path.join(os.pardir, "data/raw/msa", msa_file), 'fasta'):
             if not str(record_msa.id).__contains__(str(record_query.id)):
                 hash_msa, normalized_msa_dct_coeff = compute_dct_sign_only_hash(record_msa.seq, isAA)
                 if hash_msa != 0:
                     distance = compute_hamming_distance(hash_msa, hash_query)
-                    if current_min_distance == 10000000000000000000000000:
-                        current_min_distance = distance
-                        current_closest_taxon = record_msa.id
-                    if distance < current_min_distance:
-                        current_min_distance = distance
-                        current_closest_taxon = record_msa.id
+
                     lcs = pylcs.lcs_sequence_length(hash_msa, hash_query)
                     distances.append(distance)
                     kmer_sim10 = fraction_shared_kmers(hash_msa, hash_query, 10)
@@ -347,7 +341,6 @@ def compute_perceptual_hash_distance(msa_file):
                     kmer_sims25.append(kmer_sim25)
                     kmer_sims50.append(kmer_sim50)
                     lcs_values.append(lcs)
-                    difference = normalized_msa_dct_coeff.flatten() - normalized_query_dct_coeff.flatten()
                     coeff_dist = np.linalg.norm(difference)
                     coeff_dists.append(coeff_dist)
                 else:
@@ -453,7 +446,7 @@ def compute_perceptual_hash_distance(msa_file):
             name = msa_file.replace("_reference.fasta", "")
 
         results.append((
-                       name, record_query.id, current_closest_taxon, rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham,
+                       name, record_query.id, "x", rel_min_ham, rel_max_ham, rel_avg_ham, rel_std_ham,
                        sk_ham, kur_ham,
                        sk_kmer_sim10, kur_kmer_sim10, rel_max_kmer_sim10, rel_min_kmer_sim10, rel_avg_kmer_sim10,
                        rel_std_kmer_sim10,
