@@ -268,7 +268,10 @@ def main():
         reference_msa_path = os.path.join(os.pardir, "data/raw/msa", dataset + "_reference.fasta")
         reference_msa = AlignIO.read(reference_msa_path, 'fasta')
         reference_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", dataset + ".newick")
-        sample_df = current_loo_targets[current_loo_targets['dataset'] == dataset]["sampleId"]
+        current_loo_targets[['taxon', 'value']] = current_loo_targets['sampleId'].str.split('_', n=1, expand=True)
+
+        sample_df = current_loo_targets[current_loo_targets['dataset'] == dataset]["taxon"]
+        print(sample_df)
         if len(reference_msa[0].seq) > 20000:
             print("too large sequences")
             continue
@@ -331,7 +334,7 @@ def main():
         df = pd.DataFrame(results,
                           columns=['dataset', 'sampleId', "max_subst_freq", "avg_subst_freq", "cv_subst_freq",
                                    "sk_subst_freq", "kur_subst_freq"])
-        df.to_csv(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats_200.csv"))
+        df.to_csv(os.path.join(os.pardir, "data/processed/features", dataset + "_subst_freq_stats_200_r1.csv"))
 
 
 if __name__ == "__main__":
