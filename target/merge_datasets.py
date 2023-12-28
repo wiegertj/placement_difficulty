@@ -187,6 +187,7 @@ for loo_dataset in loo_datasets:
         file_path_200 = os.path.join(os.pardir, "data/processed/features", file_path_200)
         df = pd.read_csv(file_path, usecols=lambda column: column != 'Unnamed: 0')
         df200 = pd.read_csv(file_path_200, usecols=lambda column: column != 'Unnamed: 0')
+        df200.drop(columns=["taxonId"], inplace=True, axis=1)
 
         if df.shape[1] != 7:
             print("Found old mutation rates")
