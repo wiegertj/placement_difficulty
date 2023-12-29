@@ -193,9 +193,6 @@ for loo_dataset in loo_datasets:
             print("Found old mutation rates")
             continue
         loo_resuls_dfs.append(df)
-        df_copy = df.copy()
-        df_copy["sampleId"] = df_copy["sampleId"] + "_200"
-        loo_resuls_dfs.append(df_copy)
         loo_resuls_dfs.append(df200)
     except FileNotFoundError:
         print(file_path)
