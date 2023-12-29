@@ -57,7 +57,7 @@ tree_features_uncertainty = tree_features_uncertainty.drop_duplicates(subset=['d
 print(tree_features_uncertainty.shape)
 
 tree_features_uncertainty["dataset"] = tree_features_uncertainty["dataset"].str.replace(".newick", "")
-# tree_features = tree_features.merge(tree_features_uncertainty, on="dataset", how="inner")
+tree_features = tree_features.merge(tree_features_uncertainty, on="dataset", how="inner")
 # t#ree_features = tree_features.merge(difficulties_df[["verbose_name", "difficult"]], left_on="dataset",
 #                                  right_on="verbose_name", how="inner").drop(columns=["verbose_name"])
 
