@@ -287,9 +287,10 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     # X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, df["group"], test_size=0.2,
     #                                                                              random_state=12)
-    mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)))
+    mse_zero = mean_squared_error(y_test, np.zeros(len(y_test)), squared=False)
     rmse_zero = math.sqrt(mse_zero)
     print("Baseline prediting 0 RMSE: " + str(rmse_zero))
+    print("Baseline prediting mean MAE: " + str(mean_absolute_error(y_test, np.zeros(len(y_test)) + mean(y_test))))
 
     mse_mean = mean_squared_error(y_test, np.zeros(len(y_test)) + mean(y_train))
     rmse_mean = math.sqrt(mse_mean)
