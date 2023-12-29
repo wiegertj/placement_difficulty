@@ -50,6 +50,17 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     print(df.shape)
     df = df.drop_duplicates(subset=['dataset', "sampleId"], keep='first')
     print(df.shape)
+    intervals = np.arange(0, 1.1, 0.1)
+
+    for i in range(len(intervals) - 1):
+        interval_start = intervals[i]
+        interval_end = intervals[i + 1]
+
+        # Filter DataFrame for values within the current interval
+        interval_mask = (entropy_df['entropy'] >= interval_start) & (df['entropy'] < interval_end)
+        elements_in_interval = df[interval_mask].shape[0]
+
+        print(f'Interval [{interval_start}, {interval_end}): {elements_in_interval} elements')
 
     df.drop(columns=["lwr_drop", "branch_dist_best_two_placements", "current_closest_taxon_perc_ham", "percentile"],
                     # "mean_a", "max_a", "min_a", "std_a", "mean_b", "max_b", "min_b", "std_b",
