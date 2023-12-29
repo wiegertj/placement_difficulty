@@ -57,7 +57,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         interval_end = intervals[i + 1]
 
         # Filter DataFrame for values within the current interval
-        interval_mask = (entropy_df['entropy'] >= interval_start) & (df['entropy'] < interval_end)
+        interval_mask = (df['entropy'] >= interval_start) & (df['entropy'] < interval_end)
         elements_in_interval = df[interval_mask].shape[0]
 
         print(f'Interval [{interval_start}, {interval_end}): {elements_in_interval} elements')
