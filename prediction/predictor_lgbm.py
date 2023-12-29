@@ -361,7 +361,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", "bad_no_filter_TEST_rmse.pkl")
+    model_path = os.path.join(os.pardir, "data/processed/final", "bad_no_filter_TEST_rmse_r1.pkl")
     with open(model_path, 'wb') as file:
         pickle.dump(final_model, file)
 
@@ -386,12 +386,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     metrics_df = pd.DataFrame(metrics_dict)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new_no_filter_TEST_rmse.csv")):
+                                       "diff_guesser_noboot_new_no_filter_TEST_rmse_r1.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "diff_guesser_noboot_new_no_filter_TEST_rmse.csv")), index=False)
+                                                    "diff_guesser_noboot_new_no_filter_TEST_rmse_r1.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new_no_filter_TEST_rmse.csv"),
+                                       "diff_guesser_noboot_new_no_filter_TEST_rmse_r1.csv"),
                           index=False,
                           mode='a', header=False)
 
@@ -469,5 +469,5 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
 
 
-for i in range(0, 1):
+for i in range(0, 10):
     light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
