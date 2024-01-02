@@ -40,7 +40,7 @@ def MBE(y_true, y_pred):
 
 def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=[]):
     df_pars_top = pd.read_csv(os.path.join(os.pardir, "data/processed/features/bs_features", "pars_top_features.csv"))
-    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot_no_filter_r1.csv"))
+    df = pd.read_csv(os.path.join(os.pardir, "data/processed/final", "final_dataset_noboot_no_filter.csv"))
     print(df.shape)
 
     df = df.merge(df_pars_top, on=["dataset"], how="inner")
@@ -386,12 +386,12 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
     metrics_df = pd.DataFrame(metrics_dict)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new_no_filter_TEST_rmse_r1.csv")):
+                                       "diff_guesser_noboot_new_no_filter_TEST_rmse_final.csv")):
         metrics_df.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                    "diff_guesser_noboot_new_no_filter_TEST_rmse_r1.csv")), index=False)
+                                                    "diff_guesser_noboot_new_no_filter_TEST_rmse_final.csv")), index=False)
     else:
         metrics_df.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "diff_guesser_noboot_new_no_filter_TEST_rmse_r1.csv"),
+                                       "diff_guesser_noboot_new_no_filter_TEST_rmse_final.csv"),
                           index=False,
                           mode='a', header=False)
 
@@ -450,12 +450,56 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
             axis=1)
 
         # Displaying the results
-        for i in range(len(X_test)):
-            print(f"Instance {i + 1} - Group Tree Space Sum SHAP Values: {shap_values_group_tree_space[i]}")
-            print(f"Instance {i + 1} - Group Inv Sites Sum SHAP Values: {shap_values_group_inv_sites[i]}")
-            print(f"Instance {i + 1} - Group Sim QS MSA Sum SHAP Values: {shap_values_group_sim_qs_msa[i]}")
-            print(f"Instance {i + 1} - Group Tree MSA Sum SHAP Values: {shap_values_group_tree_msa[i]}")
-            print("------------------------")
+        #for i in range(len(X_test)):
+         #   print(f"Instance {i + 1} - Group Tree Space Sum SHAP Values: {shap_values_group_tree_space[i]}")
+          #  print(f"Instance {i + 1} - Group Inv Sites Sum SHAP Values: {shap_values_group_inv_sites[i]}")
+           # print(f"Instance {i + 1} - Group Sim QS MSA Sum SHAP Values: {shap_values_group_sim_qs_msa[i]}")
+            #print(f"Instance {i + 1} - Group Tree MSA Sum SHAP Values: {shap_values_group_tree_msa[i]}")
+            #print("------------------------")
+        # Create the waterfall plot
+        from matplotlib import pyplot as plt
+        shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]),
+                          plot_type="bar", show=False)
+        plt.tight_layout()  # Adjust layout to prevent overlapping elements
+
+        plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap_final.png"))
+
+        plt.figure(figsize=(10, 6))
+
+
+        shap.initjs()  # Initialize JavaScript visualization
+        shap.plots.waterfall(shap_values[0], max_display=10, show=False)  # Limit the display to 10 features
+        plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
+        plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
+        plt.xticks(fontsize=12)  # Adjust x-axis tick font size
+        plt.yticks(fontsize=12)  # Adjust y-axis tick font size
+        plt.tight_layout()  # Adjust layout to prevent overlapping elements
+        plt.savefig("lgbm_0.png")
+
+        plt.figure(figsize=(10, 6))  # Adjust width and height as needed
+
+        # Create the waterfall plot
+        shap.initjs()  # Initialize JavaScript visualization
+        shap.plots.waterfall(shap_values[1500], max_display=10, show=False)  # Limit the display to 10 features
+        plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
+        plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
+        plt.xticks(fontsize=12)  # Adjust x-axis tick font size
+        plt.yticks(fontsize=12)  # Adjust y-axis tick font size
+        plt.tight_layout()  # Adjust layout to prevent overlapping elements
+        plt.savefig("lgbm_1500.png")
+
+        plt.figure(figsize=(10, 6))  # Adjust width and height as needed
+
+        # Create the waterfall plot
+        shap.initjs()  # Initialize JavaScript visualization
+        shap.plots.waterfall(shap_values[-300], max_display=10, show=False)  # Limit the display to 10 features
+
+        plt.xlabel("SHAP Value", fontsize=14)  # Adjust x-axis label font size
+        plt.ylabel("Feature", fontsize=14)  # Adjust y-axis label font size
+        plt.xticks(fontsize=12)  # Adjust x-axis tick font size
+        plt.yticks(fontsize=12)  # Adjust y-axis tick font size
+        plt.tight_layout()  # Adjust layout to prevent overlapping elements
+        plt.savefig("lgbm-300.png")
 
         shap_df = pd.DataFrame(
             np.c_[shap_values.base_values, shap_values.values],
@@ -470,4 +514,4 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
 
 
 for i in range(0, 10):
-    light_gbm_regressor(rfe=False, shapley_calc=False, targets=[])
+    light_gbm_regressor(rfe=False, shapley_calc=True, targets=[])
