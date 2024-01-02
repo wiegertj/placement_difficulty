@@ -459,7 +459,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=15, shapley_calc=True, targets=
         # Create the waterfall plot
         from matplotlib import pyplot as plt
         shap.summary_plot(shap_values, X_test.drop(columns=["entropy", "prediction", "group", "sampleId", "dataset"]),
-                          plot_type="bar", show=False)
+                          plot_type="violin", show=False)
         plt.tight_layout()  # Adjust layout to prevent overlapping elements
 
         plt.savefig(os.path.join(os.pardir, "data/prediction", "prediction_results" + name + "shap_final.png"))
