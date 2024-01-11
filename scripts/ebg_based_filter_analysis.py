@@ -57,7 +57,7 @@ for msa_name in filenames:
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
             print("#"*10)
             print(subfolder)
-            results.append(1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
+            results.append((1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]), msa_name))
             print(1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
             print("#"*10)
 import matplotlib.pyplot as plt
@@ -65,16 +65,32 @@ import matplotlib.pyplot as plt
 print(len(results))
 results = [value for value in results if abs(value) < 0.5]
 
+df_res = pd.DataFrame(results, columns=["result", "msa_name"])
 
-plt.hist(results, bins=50, color='blue', edgecolor='black')
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Assuming 'df_res' is your DataFrame
+df_res = pd.DataFrame({
+    'result': [0.5, 0.7, 0.9, 1.2, 1.5, 1.8, 2.0, 2.3, 2.6, 2.9],
+    'msa_name': ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E']
+})
+
+# Set the style for better visualization
+sns.set(style="whitegrid")
+
+# Create a single plot with histograms for each unique value in the "msa_name" column
+sns.histplot(data=df_res, x="result", hue="msa_name", multiple="stack", bins=20, palette="viridis", edgecolor='black')
 
 # Customize the plot
-plt.title('Histogram of Results')
+plt.title('Histograms by msa_name')
 plt.xlabel('Values')
 plt.ylabel('Frequency')
 
 # Save the plot as a PNG file
-plt.savefig('RESULTS_EBG_FILTER.png')
+plt.savefig('HISTOGRAMS_BY_MSA_NAME.png')
 
 # Display the plot
 plt.show()
