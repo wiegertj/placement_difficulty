@@ -40,7 +40,10 @@ for msa_name in filenames:
                 df_list.append(df)
 
     # Concatenate the list of DataFrames into a single DataFrame
-    concatenated_df = pd.concat(df_list, ignore_index=True)
+    try:
+        concatenated_df = pd.concat(df_list, ignore_index=True)
+    except ValueError:
+        break
     import numpy as np
     concatenated_df['reference_id'] = np.random.choice(concatenated_df['id'].unique())
 
