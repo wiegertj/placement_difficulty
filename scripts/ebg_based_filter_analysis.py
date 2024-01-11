@@ -63,7 +63,7 @@ for msa_name in filenames:
 import matplotlib.pyplot as plt
 
 print(len(results))
-results = [value for value in results if abs(value) < 0.5]
+results = [value for value in results if abs(value[0]) < 0.5]
 
 df_res = pd.DataFrame(results, columns=["result", "msa_name"])
 
@@ -72,11 +72,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Assuming 'df_res' is your DataFrame
-df_res = pd.DataFrame({
-    'result': [0.5, 0.7, 0.9, 1.2, 1.5, 1.8, 2.0, 2.3, 2.6, 2.9],
-    'msa_name': ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E']
-})
+
 
 # Set the style for better visualization
 sns.set(style="whitegrid")
