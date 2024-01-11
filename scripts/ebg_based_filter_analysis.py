@@ -25,7 +25,7 @@ for msa_name in filenames:
     msa_folder_path = os.path.join(base_directory, msa_name)
     try:
         ground_truth = pd.read_csv(
-         "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "/" + msa_name + "_features.csv")
+         "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "_10_xxx/" + msa_name + "_10_xxx_features.csv")
         print(msa_name)
     except FileNotFoundError:
         continue
