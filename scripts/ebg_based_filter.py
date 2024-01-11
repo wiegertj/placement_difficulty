@@ -39,6 +39,10 @@ for msa_name in filenames:
 
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
     filepath = os.path.abspath(filepath)
+
+    original_tree_path_tmp = os.path.abspath(os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick"))
+    model_path_tmp = os.path.abspath(os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt"))
+
     MSA = AlignIO.read(filepath, 'fasta')
 
     counter = 0
@@ -136,19 +140,6 @@ for msa_name in filenames:
         os.chdir(os.path.abspath(os.path.join(os.pardir,
                               msa_name + "_" + to_query)))
 
-        command = ["ebg",
-                   f"-model {os.path.abspath(model_path)}",
-                   f"-msa {filepath}",
-                   f"-tree {os.path.abspath(tree_path)}",
-                   "-t b",
-                   f"-o {msa_name}",
-                   "-redo"]
-        print(" ".join(command))
-
-        try:
-            subprocess.run(" ".join(command), shell=True)
-        except:
-            print("failed")
 
         current_file_path = os.path.abspath(__file__)
 
@@ -156,3 +147,25 @@ for msa_name in filenames:
         current_directory = os.path.dirname(current_file_path)
 
         os.chdir(current_directory)
+
+    command = ["ebg",
+               f"-model {model_path_tmp}",
+               f"-msa {filepath}",
+               f"-tree {original_tree_path_tmp}",
+               "-t b",
+               f"-o {msa_name}",
+               "-redo"]
+    print(" ".join(command))
+
+    try:
+        subprocess.run(" ".join(command), shell=True)
+    except:
+        print("failed")
+
+    current_file_path = os.path.abspath(__file__)
+
+    # Get the directory containing the currently executed file
+    current_directory = os.path.dirname(current_file_path)
+
+    os.chdir(current_directory)
+
