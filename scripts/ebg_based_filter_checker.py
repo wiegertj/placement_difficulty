@@ -40,7 +40,7 @@ for msa_name in filenames:
 
     # Concatenate the list of DataFrames into a single DataFrame
     concatenated_df = pd.concat(df_list, ignore_index=True)
-    import numpy
+    import numpy as np
     concatenated_df['reference_id'] = np.random.choice(concatenated_df['id'].unique())
 
     # Group by 'id' and sum up the values of 'prediction median'
