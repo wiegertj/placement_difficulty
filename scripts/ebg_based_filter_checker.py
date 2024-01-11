@@ -33,19 +33,25 @@ for msa_name in filenames:
 
                 # Read the CSV file into a DataFrame
                 df = pd.read_csv(csv_file_path)
+                df["id"] = folder_name
 
                 # Append the DataFrame to the list
                 df_list.append(df)
 
     # Concatenate the list of DataFrames into a single DataFrame
     concatenated_df = pd.concat(df_list, ignore_index=True)
+    import numpy
+    concatenated_df['reference_id'] = np.random.choice(concatenated_df['id'].unique())
 
-    grouped_df = concatenated_df.groupby('branchId')
+    # Group by 'id' and sum up the values of 'prediction median'
+    sum_per_id = concatenated_df.groupby('id')['prediction_median'].sum()
 
-    # Calculate the standard deviation for each group
-    std_deviation_per_group = grouped_df['prediction_median'].std()
+    # Use a random id's sum as reference
+    reference_sum = sum_per_id.loc[concatenated_df['reference_id'].iloc[0]]
+
+    # Express all other id's sums as a percentage of the reference sum
+    sum_per_id_percentage = (sum_per_id / reference_sum) * 100
 
     # Print or use the results as needed
-    print(msa_name)
-    print(std_deviation_per_group)
+    print(sum_per_id_percentage)
 
