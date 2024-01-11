@@ -62,6 +62,8 @@ for msa_name in filenames:
             print("#"*10)
 import matplotlib.pyplot as plt
 
+print(len(results))
+
 plt.hist(results, bins=50, color='blue', edgecolor='black')
 
 # Customize the plot
