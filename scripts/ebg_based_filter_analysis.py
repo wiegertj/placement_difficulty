@@ -33,12 +33,13 @@ for msa_name in filenames:
     # Filter subfolders based on msa_name and "taxon"
     filtered_subfolders = [folder for folder in all_subfolders if folder.startswith(msa_name) and "taxon" in folder]
 
-    print(filtered_subfolders)
+    #print(filtered_subfolders)
 
     # Iterate through each filtered subfolder
     for subfolder in filtered_subfolders:
         # Construct the path to the subfolder
         subfolder_path = os.path.join(base_directory, subfolder)
+        print(subfolder_path)
 
         # Read the CSV file in the subfolder into a DataFrame
         csv_files = [file for file in os.listdir(subfolder_path) if file.endswith(".csv")]
