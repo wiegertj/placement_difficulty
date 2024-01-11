@@ -16,7 +16,7 @@ random.seed(200)
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
-filenames = filenames[:100]
+filenames = filenames[50:]
 msa_counter = 0
 for msa_name in filenames:
     if msa_name == "17080_0":
