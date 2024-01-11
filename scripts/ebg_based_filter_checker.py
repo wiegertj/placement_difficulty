@@ -43,7 +43,7 @@ for msa_name in filenames:
     grouped_df = concatenated_df.groupby('branchId')
 
     # Calculate the standard deviation for each group
-    std_deviation_per_group = grouped_df['your_numeric_column'].std()
+    std_deviation_per_group = grouped_df['prediction_median'].std()
 
     # Print or use the results as needed
     print(msa_name)
