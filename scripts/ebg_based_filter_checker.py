@@ -104,7 +104,6 @@ plt.hist(result_flat, bins=20, color='g', edgecolor='black')  # Note: density=Tr
 mu, std = norm.fit(result_flat)
 
 # Plot the Gaussian curve
-xmin, xmax = plt.xlim()
 x = np.linspace(0, 2, 1000)
 p = norm.pdf(x, mu, std)
 plt.plot(x, p, 'k', linewidth=2)
