@@ -51,7 +51,7 @@ for msa_name in filenames:
             df = pd.read_csv(csv_file_path)
             df["prediction_taxon"] = df["prediction_median"]
             df_merged = df.merge(ground_truth, on="branchId")
-            df_merged["effect"] = row["prediction_original"] - row["prediction_taxon"]
+            df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
             print("#"*10)
             print(subfolder)
             print(sum((df_merged["effect"])))
