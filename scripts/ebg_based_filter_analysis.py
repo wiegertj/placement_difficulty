@@ -63,7 +63,7 @@ for msa_name in filenames:
 import matplotlib.pyplot as plt
 
 print(len(results))
-results = [value for value in results if abs(value) < 0.5]
+results = [value for value in results if abs(value[0]) < 0.5]
 
 df_res = pd.DataFrame(results, columns=["result", "msa_name"])
 
