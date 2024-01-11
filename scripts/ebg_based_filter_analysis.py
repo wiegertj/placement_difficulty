@@ -38,7 +38,7 @@ for msa_name in filenames:
     # Iterate through each filtered subfolder
     for subfolder in filtered_subfolders:
         # Construct the path to the subfolder
-        subfolder_path = os.path.join(base_directory, subfolder)
+        subfolder_path = os.path.join(base_directory, subfolder, subfolder)
         print(subfolder_path)
 
         # Read the CSV file in the subfolder into a DataFrame
