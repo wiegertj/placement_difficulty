@@ -105,7 +105,7 @@ mu, std = norm.fit(result_flat)
 
 # Plot the Gaussian curve
 xmin, xmax = plt.xlim()
-x = np.linspace(xmin, xmax, 100)
+x = np.linspace(0, 2, 100)
 p = norm.pdf(x, mu, std)
 plt.plot(x, p, 'k', linewidth=2)
 
