@@ -103,8 +103,7 @@ for msa_name in filenames:
             except Exception as e:
                 print(f"An error occurred while saving the Newick tree: {str(e)}")
             print("-------------------------------------------")
-        model_path = os.path.join(os.pardir, "data/processed/loo",
-                                  msa_name + "_msa_" + str(to_query) + "_aligned.fasta.raxml.bestModel")
+        model_path = os.path.abspath(os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt"))
         # make result dir
         if os.path.exists(       os.path.join(os.pardir, "data/processed/ebg_filter",
                          msa_name + "_" + to_query)):
@@ -140,9 +139,9 @@ for msa_name in filenames:
                 print(command)
         except:
             print("failed")
-
-        os.chdir(os.path.join(os.pardir, "data/processed/ebg_filter",
-                              msa_name + "_" + to_query))
+        os.chdir(curdir_tmp)
+        os.chdir(os.abspath(os.path.join(os.pardir, "data/processed/ebg_filter",
+                              msa_name + "_" + to_query)))
 
         command = ["ebg",
                    f"-model {os.path.abspath(model_path)}",
