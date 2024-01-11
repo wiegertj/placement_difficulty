@@ -159,4 +159,4 @@ for msa_name in filenames:
         except:
             print("failed")
 
-        os.chdir(curdir_tmp)
+        os.chdir(os.path.abspath(__file__))
