@@ -122,7 +122,8 @@ for msa_name in filenames:
                    f"-msa {os.path.abspath(output_file)}",
                    f"-tree {os.path.abspath(original_tree_path)}",
                    "-t b",
-                   f"-o {msa_name + '_' + to_query}"]
+                   f"-o {msa_name + '_' + to_query}",
+                   "-redo"]
         print(" ".join(command))
 
         try:
@@ -140,7 +141,7 @@ for msa_name in filenames:
         except:
             print("failed")
         os.chdir(curdir_tmp)
-        os.chdir(os.path.abspath(os.path.join(os.pardir, "data/processed/ebg_filter",
+        os.chdir(os.path.abspath(os.path.join(os.pardir,
                               msa_name + "_" + to_query)))
 
         command = ["ebg",
