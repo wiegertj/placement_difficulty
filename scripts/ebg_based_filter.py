@@ -16,7 +16,7 @@ random.seed(200)
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
-filenames = filenames[260:]
+filenames = filenames[:100]
 msa_counter = 0
 for msa_name in filenames:
     if msa_name == "17080_0":
@@ -52,101 +52,101 @@ for msa_name in filenames:
         sequence_ids_sample = sequence_ids
     else:
         sequence_ids_sample = random.sample(sequence_ids, 20)
-    if False:
-        for to_query in sequence_ids_sample:
 
-            counter += 1
-            print(to_query)
-            print(str(counter) + "/" + str(len(sequence_ids_sample)))
+    for to_query in sequence_ids_sample:
 
-            new_alignment = []
+        counter += 1
+        print(to_query)
+        print(str(counter) + "/" + str(len(sequence_ids_sample)))
 
-            # Delete one out of MSA
-            for record in MSA:
-                if record.id != to_query:
-                    seq_record = SeqIO.SeqRecord(seq=record.seq, id=record.id, description="")
+        new_alignment = []
 
-                    new_alignment.append(seq_record)
+        # Delete one out of MSA
+        for record in MSA:
+            if record.id != to_query:
+                seq_record = SeqIO.SeqRecord(seq=record.seq, id=record.id, description="")
 
-            output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_ebg_filter_" + to_query + ".fasta")
-            output_file = os.path.abspath(output_file)
+                new_alignment.append(seq_record)
 
-            with open(output_file, "w") as new_alignment_output:
-                SeqIO.write(new_alignment, new_alignment_output, "fasta")
+        output_file = os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_ebg_filter_" + to_query + ".fasta")
+        output_file = os.path.abspath(output_file)
 
-            # Delete one from tree
-            original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick")
+        with open(output_file, "w") as new_alignment_output:
+            SeqIO.write(new_alignment, new_alignment_output, "fasta")
 
-            tree_path = original_tree_path  # use original tree without reestimation
-            print("-------------------------------------------")
+        # Delete one from tree
+        original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree", msa_name + ".newick")
 
-            print("Getting original from " + tree_path)
-            print("Start without reestimation")
+        tree_path = original_tree_path  # use original tree without reestimation
+        print("-------------------------------------------")
 
-            with open(tree_path, 'r') as file:
-                print(tree_path)
-                newick_tree = file.read()
-                tree = ete3.Tree(newick_tree)
+        print("Getting original from " + tree_path)
+        print("Start without reestimation")
 
-                leaf_names = tree.get_leaf_names()
-                leaf_count = len(leaf_names)
-                leaf_node = tree.search_nodes(name=to_query)[0]
-                leaf_node.delete()
-                leaf_names = tree.get_leaf_names()
-                leaf_count = len(leaf_names)
-                original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree_tmp",
-                                                  msa_name + "_" + to_query + "_ebg_filter.newick")
-                print("Start creating loo tree")
-                original_tree_path = os.path.abspath(original_tree_path)
-                print("Storing to: " + original_tree_path)
+        with open(tree_path, 'r') as file:
+            print(tree_path)
+            newick_tree = file.read()
+            tree = ete3.Tree(newick_tree)
 
-                newick_string = tree.write()
-                try:
-                    with open(original_tree_path, 'w') as file:
-                        file.write(newick_string)
-                    print(f"Newick tree has been saved to {original_tree_path}")
-                except Exception as e:
-                    print(f"An error occurred while saving the Newick tree: {str(e)}")
-                print("-------------------------------------------")
-            model_path = os.path.abspath(os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt"))
-            # make result dir
-            if os.path.exists(       os.path.join(os.pardir, "data/processed/ebg_filter",
-                             msa_name + "_" + to_query)):
-                # If it exists, delete the directory and its contents
-                shutil.rmtree(       os.path.join(os.pardir, "data/processed/ebg_filter",
-                             msa_name + "_" + to_query))
-            os.mkdir(
-                os.path.join(os.pardir, "data/processed/ebg_filter",
-                             msa_name + "_" + to_query))
-            curdir_tmp = os.curdir
-            os.chdir(os.path.join(os.pardir, "data/processed/ebg_filter",
-                                  msa_name + "_" + to_query))
+            leaf_names = tree.get_leaf_names()
+            leaf_count = len(leaf_names)
+            leaf_node = tree.search_nodes(name=to_query)[0]
+            leaf_node.delete()
+            leaf_names = tree.get_leaf_names()
+            leaf_count = len(leaf_names)
+            original_tree_path = os.path.join(os.pardir, "data/raw/reference_tree_tmp",
+                                              msa_name + "_" + to_query + "_ebg_filter.newick")
+            print("Start creating loo tree")
+            original_tree_path = os.path.abspath(original_tree_path)
+            print("Storing to: " + original_tree_path)
 
-            command = ["ebg",
-                       f"-model {os.path.abspath(model_path)}",
-                       f"-msa {os.path.abspath(output_file)}",
-                       f"-tree {os.path.abspath(original_tree_path)}",
-                       "-t b",
-                       f"-o {msa_name + '_' + to_query}",
-                       "-redo"]
-            print(" ".join(command))
-
+            newick_string = tree.write()
             try:
-                subprocess.run(" ".join(command), shell=True)
+                with open(original_tree_path, 'w') as file:
+                    file.write(newick_string)
+                print(f"Newick tree has been saved to {original_tree_path}")
+            except Exception as e:
+                print(f"An error occurred while saving the Newick tree: {str(e)}")
+            print("-------------------------------------------")
+        model_path = os.path.abspath(os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt"))
+        # make result dir
+        if os.path.exists(       os.path.join(os.pardir, "data/processed/ebg_filter",
+                         msa_name + "_" + to_query)):
+            # If it exists, delete the directory and its contents
+            shutil.rmtree(       os.path.join(os.pardir, "data/processed/ebg_filter",
+                         msa_name + "_" + to_query))
+        os.mkdir(
+            os.path.join(os.pardir, "data/processed/ebg_filter",
+                         msa_name + "_" + to_query))
+        curdir_tmp = os.curdir
+        os.chdir(os.path.join(os.pardir, "data/processed/ebg_filter",
+                              msa_name + "_" + to_query))
 
-            except:
-                print("failed")
-            os.chdir(curdir_tmp)
-            os.chdir(os.path.abspath(os.path.join(os.pardir,
-                                  msa_name + "_" + to_query)))
+        command = ["ebg",
+                   f"-model {os.path.abspath(model_path)}",
+                   f"-msa {os.path.abspath(output_file)}",
+                   f"-tree {os.path.abspath(original_tree_path)}",
+                   "-t b",
+                   f"-o {msa_name + '_' + to_query}",
+                   "-redo"]
+        print(" ".join(command))
+
+        try:
+            subprocess.run(" ".join(command), shell=True)
+
+        except:
+            print("failed")
+        os.chdir(curdir_tmp)
+        os.chdir(os.path.abspath(os.path.join(os.pardir,
+                              msa_name + "_" + to_query)))
 
 
-            current_file_path = os.path.abspath(__file__)
+        current_file_path = os.path.abspath(__file__)
 
-            # Get the directory containing the currently executed file
-            current_directory = os.path.dirname(current_file_path)
+        # Get the directory containing the currently executed file
+        current_directory = os.path.dirname(current_file_path)
 
-            os.chdir(current_directory)
+        os.chdir(current_directory)
 
     os.chdir(os.path.join(os.pardir, "data/processed/ebg_filter"
                           ))
