@@ -94,7 +94,8 @@ print(f"Fraction of msa's with result >= 0.10: {fraction_0_10:.2%}")
 
 # Filter DataFrame for rows with result >= 0.10
 filtered_df = df_res[df_res['result'] >= 0.10]
-print(filtered_df.shape)
+print(len(filtered_df["msa_name"].unique()))
+print(len(df_res["msa_name"].unique()))
 
 # Print sequence length and count values for filtered msa_names
 for index, row in filtered_df.iterrows():
@@ -102,7 +103,8 @@ for index, row in filtered_df.iterrows():
 
 
 filtered_df = df_res[df_res['result'] >= 0.05]
-print(filtered_df.shape)
+print(len(filtered_df["msa_name"].unique()))
+print(len(df_res["msa_name"].unique()))
 
 # Print sequence length and count values for filtered msa_names
 for index, row in filtered_df.iterrows():
