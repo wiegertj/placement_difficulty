@@ -50,7 +50,7 @@ for msa_name in filenames:
 
             df = pd.read_csv(csv_file_path)
             df["prediction_taxon"] = df["prediction_median"]
-            df_merged = df.merge(ground_truth, on="queryId")
+            df_merged = df.merge(ground_truth, on="branchId")
 
             for index, row in df_merged.iterrows():
                 difference = row["prediction_original"] - row["prediction_taxon"]
