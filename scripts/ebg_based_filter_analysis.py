@@ -22,9 +22,11 @@ base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/eb
 
 for msa_name in filenames:
     msa_folder_path = os.path.join(base_directory, msa_name)
-
-    ground_truth = pd.read_csv(
-        "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "/" + msa_name + "_features.csv")
+    try:
+        ground_truth = pd.read_csv(
+         "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "/" + msa_name + "_features.csv")
+    except FileNotFoundError:
+        continue
     ground_truth["prediction_original"] = ground_truth["prediction_median"]
 
     all_subfolders = [folder for folder in os.listdir(base_directory) if
