@@ -57,7 +57,20 @@ for msa_name in filenames:
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
             print("#"*10)
             print(subfolder)
-            results.append((1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]), msa_name))
+
+            filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
+            filepath = os.path.abspath(filepath)
+
+            # Initialize variables for sequence count and sequence length
+            sequence_count = 0
+            sequence_length = 0
+
+            # Iterate through the sequences in the FASTA file
+            for record in SeqIO.parse(filepath, "fasta"):
+                sequence_count += 1
+                sequence_length = len(record.seq)
+
+            results.append((1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]), msa_name, sequence_length, sequence_count))
             print(1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
             print("#"*10)
 import matplotlib.pyplot as plt
@@ -65,7 +78,7 @@ import matplotlib.pyplot as plt
 print(len(results))
 results = [value for value in results if abs(value[0]) < 0.5]
 
-df_res = pd.DataFrame(results, columns=["result", "msa_name"])
+df_res = pd.DataFrame(results, columns=["result", "msa_name", "sequence_length", "sequence_count"])
 
 
 # Calculate the maximum value per unique "msa_name"
@@ -78,6 +91,20 @@ fraction_0_10 = (df_res.groupby('msa_name')['result'].max() >= 0.10).mean()
 
 print(f"Fraction of msa's with result >= 0.05: {fraction_0_05:.2%}")
 print(f"Fraction of msa's with result >= 0.10: {fraction_0_10:.2%}")
+
+# Filter DataFrame for rows with result >= 0.10
+filtered_df = df_res[df_res['result'] >= 0.10]
+
+# Print sequence length and count values for filtered msa_names
+for index, row in filtered_df.iterrows():
+    print(f"Msa_name 10: {row['msa_name']}, Sequence Length: {row['sequence_length']}, Sequence Count: {row['sequence_count']}")
+
+
+filtered_df = df_res[df_res['result'] >= 0.05]
+
+# Print sequence length and count values for filtered msa_names
+for index, row in filtered_df.iterrows():
+    print(f"Msa_name 5: {row['msa_name']}, Sequence Length: {row['sequence_length']}, Sequence Count: {row['sequence_count']}")
 
 
 # Create a histogram of the maximum values
