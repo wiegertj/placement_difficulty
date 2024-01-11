@@ -9,6 +9,7 @@ filenames = filenames[:100]
 msa_counter = 0
 base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter"
 results = []
+result_flat = []
 
 for msa_name in filenames:
     # Initialize a list to store DataFrames
@@ -68,6 +69,51 @@ for msa_name in filenames:
     # Create a DataFrame from the list of percentage changes
     result_df = pd.DataFrame(percentage_changes, index=unique_ids, columns=unique_ids)
 
+    flattened_list = result_df.stack().dropna().tolist()
+    result_flat.extend(flattened_list)
+
+
+
+
     # Display or use the result_df as needed
     print(result_df)
+
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Assuming 'concatenated_df' is your DataFrame with columns 'id' and 'prediction_median'
+# 'result_df' is the DataFrame generated from the previous code
+# 'flattened_list' is the flattened list from the previous code
+# Adjust the column names accordingly if they are different in your actual data
+
+# ... (previous code)
+
+# Flatten the result_df into a list and drop NaN values
+
+# Create a histogram
+plt.hist(result_flat, bins=30, density=True, alpha=0.6, color='g', edgecolor='black')
+
+# Fit a Gaussian curve to the histogram
+mu, std = norm.fit(flattened_list)
+
+# Plot the Gaussian curve
+xmin, xmax = plt.xlim()
+x = np.linspace(xmin, xmax, 100)
+p = norm.pdf(x, mu, std)
+plt.plot(x, p, 'k', linewidth=2)
+
+# Add labels, title, and legend
+plt.xlabel('Percentage Change')
+plt.ylabel('Density')
+plt.title('Histogram of Percentage Change with Gaussian Fit')
+plt.legend(['Gaussian Fit', 'Histogram'])
+
+plt.savefig('EBG_NOISE.png')
+
+
+
 
