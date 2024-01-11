@@ -5,7 +5,7 @@ import pandas as pd
 base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter"
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
-filenames = filenames[260:]
+filenames = filenames
 msa_counter = 0
 base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter"
 results = []
