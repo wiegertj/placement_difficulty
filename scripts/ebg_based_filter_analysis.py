@@ -63,6 +63,8 @@ for msa_name in filenames:
 import matplotlib.pyplot as plt
 
 print(len(results))
+results = [value for value in results if abs(value) < 0.5]
+
 
 plt.hist(results, bins=50, color='blue', edgecolor='black')
 
