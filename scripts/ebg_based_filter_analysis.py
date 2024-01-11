@@ -1,0 +1,57 @@
+import os
+import re
+import shutil
+import dendropy
+import ete3
+import subprocess
+import glob
+import pandas as pd
+import numpy as np
+import types
+import random
+from Bio import AlignIO, SeqIO
+from dendropy.calculate import treecompare
+
+random.seed(200)
+
+loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
+filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
+filenames = filenames[:100]
+msa_counter = 0
+base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter"
+
+for msa_name in filenames:
+    msa_folder_path = os.path.join(base_directory, msa_name)
+
+    ground_truth = pd.read_csv(
+        "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "/" + msa_name + "_features.csv")
+    ground_truth["prediction_original"] = ground_truth["prediction_median"]
+
+    all_subfolders = [folder for folder in os.listdir(base_directory) if
+                      os.path.isdir(os.path.join(base_directory, folder))]
+
+    # Filter subfolders based on msa_name and "taxon"
+    filtered_subfolders = [folder for folder in all_subfolders if folder.startswith(msa_name) and "taxon" in folder]
+
+    print(filtered_subfolders)
+
+    # Iterate through each filtered subfolder
+    for subfolder in filtered_subfolders:
+        # Construct the path to the subfolder
+        subfolder_path = os.path.join(base_directory, subfolder)
+
+        # Read the CSV file in the subfolder into a DataFrame
+        csv_files = [file for file in os.listdir(subfolder_path) if file.endswith(".csv")]
+
+        # Assuming there's only one CSV file in each subfolder
+        if len(csv_files) == 1:
+            csv_file_path = os.path.join(subfolder_path, csv_files[0])
+
+            df = pd.read_csv(csv_file_path)
+            df["prediction_taxon"] = df["prediction_median"]
+            df_merged = df.merge(ground_truth, on="queryId")
+
+            for index, row in df_merged.iterrows():
+                difference = row["prediction_original"] - row["prediction_taxon"]
+                print(f"Row {index + 1}: Difference = {difference}")
+
