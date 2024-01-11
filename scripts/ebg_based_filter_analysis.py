@@ -63,30 +63,24 @@ for msa_name in filenames:
 import matplotlib.pyplot as plt
 
 print(len(results))
-results = [value for value in results if abs(value[0]) < 0.5]
+results = [value for value in results if abs(value) < 0.5]
 
 df_res = pd.DataFrame(results, columns=["result", "msa_name"])
 
 
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
+# Calculate the maximum value per unique "msa_name"
+max_values = df_res.groupby('msa_name')['result'].max()
 
-
-
-# Set the style for better visualization
-sns.set(style="whitegrid")
-
-# Create a single plot with histograms for each unique value in the "msa_name" column
-sns.histplot(data=df_res, x="result", hue="msa_name", multiple="stack", bins=20, palette="viridis", edgecolor='black')
+# Create a histogram of the maximum values
+plt.hist(max_values, bins=10, color='blue', edgecolor='black')
 
 # Customize the plot
-plt.title('Histograms by msa_name')
-plt.xlabel('Values')
+plt.title('Histogram of Max Values by msa_name')
+plt.xlabel('Max Values')
 plt.ylabel('Frequency')
 
 # Save the plot as a PNG file
-plt.savefig('HISTOGRAMS_BY_MSA_NAME.png')
+plt.savefig('MAX_VALUES_HISTOGRAM_BY_MSA_NAME.png')
 
 # Display the plot
 plt.show()
