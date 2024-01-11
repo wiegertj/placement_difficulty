@@ -26,11 +26,13 @@ for msa_name in filenames:
     try:
         ground_truth = pd.read_csv(
          "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "_10_xxx/" + msa_name + "_10_xxx_features.csv")
-        print(msa_name)
+        print("found first")
     except FileNotFoundError:
         try:
             ground_truth = pd.read_csv(
                 "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "/" + msa_name + "_features.csv")
+            print("found second")
+
         except FileNotFoundError:
             continue
     ground_truth["prediction_original"] = ground_truth["prediction_median"]
@@ -45,8 +47,7 @@ for msa_name in filenames:
 
     # Iterate through each filtered subfolder
     for subfolder in filtered_subfolders:
-        if msa_name == "19925_6":
-            print(subfolder)
+
         # Construct the path to the subfolder
         subfolder_path = os.path.join(base_directory, subfolder, subfolder)
 
