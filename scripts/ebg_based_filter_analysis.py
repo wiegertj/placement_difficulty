@@ -62,7 +62,7 @@ for msa_name in filenames:
             print("#"*10)
 import matplotlib.pyplot as plt
 
-plt.hist(results, bins=30, color='blue', edgecolor='black')
+plt.hist(results, bins=50, color='blue', edgecolor='black')
 
 # Customize the plot
 plt.title('Histogram of Results')
