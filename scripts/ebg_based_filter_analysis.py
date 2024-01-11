@@ -19,6 +19,7 @@ filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
 filenames = filenames[:100]
 msa_counter = 0
 base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter"
+results = []
 
 for msa_name in filenames:
     msa_folder_path = os.path.join(base_directory, msa_name)
@@ -56,7 +57,20 @@ for msa_name in filenames:
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
             print("#"*10)
             print(subfolder)
+            results.append(sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
             print(sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
             print("#"*10)
+import matplotlib.pyplot as plt
 
+plt.hist(results, bins=10, color='blue', edgecolor='black')
 
+# Customize the plot
+plt.title('Histogram of Results')
+plt.xlabel('Values')
+plt.ylabel('Frequency')
+
+# Save the plot as a PNG file
+plt.savefig('RESULTS_EBG_FILTER.png')
+
+# Display the plot
+plt.show()
