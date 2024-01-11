@@ -98,7 +98,7 @@ from scipy.stats import norm
 # Flatten the result_df into a list and drop NaN values
 
 # Create a histogram
-plt.hist(result_flat, bins=20, color='g', edgecolor='black')
+plt.hist(result_flat, bins=20, color='g', edgecolor='black', density=True)  # Note: density=True for normalization
 
 # Fit a Gaussian curve to the histogram
 mu, std = norm.fit(result_flat)
@@ -106,7 +106,8 @@ mu, std = norm.fit(result_flat)
 # Plot the Gaussian curve
 xmin, xmax = plt.xlim()
 x = np.linspace(min(result_flat), max(result_flat), 1000)
-p = norm.pdf(x, mu, std)
+bin_width = (max(result_flat) - min(result_flat)) / 20  # Adjust the number of bins accordingly
+p = norm.pdf(x, mu, std) * bin_width  # Multiply by bin width for normalization
 plt.plot(x, p, 'k', linewidth=2)
 
 # Add labels, title, and legend
@@ -115,6 +116,7 @@ plt.ylabel('Density')
 plt.title('Histogram of Percentage Change with Gaussian Fit')
 plt.legend(['Gaussian Fit', 'Histogram'])
 
+# Save the plot as EBG_NOISE.png
 plt.savefig('EBG_NOISE.png')
 
 
