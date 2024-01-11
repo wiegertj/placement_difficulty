@@ -115,7 +115,7 @@ for msa_name in filenames:
 
         command = ["ebg",
                    f"-model {os.path.abspath(model_path)}",
-                   f"-msa {os.path.abspath(new_alignment)}",
+                   f"-msa {os.path.abspath(output_file)}",
                    f"-tree {os.path.abspath(original_tree_path)}",
                    "-t b",
                    f"-o {msa_name + '_' + to_query}"]
