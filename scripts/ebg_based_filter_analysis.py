@@ -57,7 +57,7 @@ for msa_name in filenames:
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
             print("#"*10)
             print(subfolder)
-            results.append(sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
+            results.append(1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
             print(1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
             print("#"*10)
 import matplotlib.pyplot as plt
