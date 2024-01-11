@@ -72,7 +72,7 @@ df_res = pd.DataFrame(results, columns=["result", "msa_name"])
 max_values = df_res.groupby('msa_name')['result'].max()
 
 # Create a histogram of the maximum values
-plt.hist(max_values, bins=10, color='blue', edgecolor='black')
+plt.hist(max_values, bins=20, color='blue', edgecolor='black')
 
 # Customize the plot
 plt.title('Histogram of Max Values by msa_name')
