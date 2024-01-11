@@ -41,6 +41,8 @@ for msa_name in filenames:
 
     # Iterate through each filtered subfolder
     for subfolder in filtered_subfolders:
+        if msa_name == "19925_6":
+            print(subfolder)
         # Construct the path to the subfolder
         subfolder_path = os.path.join(base_directory, subfolder, subfolder)
 
@@ -55,8 +57,7 @@ for msa_name in filenames:
             df["prediction_taxon"] = df["prediction_median"]
             df_merged = df.merge(ground_truth, on="branchId")
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
-            print("#"*10)
-            print(subfolder)
+
 
             filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
             filepath = os.path.abspath(filepath)
@@ -71,7 +72,6 @@ for msa_name in filenames:
                 sequence_length = len(record.seq)
 
             results.append((1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]), msa_name, sequence_length, sequence_count))
-            print("#"*10)
 import matplotlib.pyplot as plt
 
 print(len(results))
