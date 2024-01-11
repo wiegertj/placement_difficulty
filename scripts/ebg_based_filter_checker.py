@@ -106,8 +106,7 @@ mu, std = norm.fit(result_flat)
 # Plot the Gaussian curve
 xmin, xmax = plt.xlim()
 x = np.linspace(0, 100, 1000)
-bin_width = (max(result_flat) - min(result_flat)) / 20  # Adjust the number of bins accordingly
-p = norm.pdf(x, mu, std) * bin_width  # Multiply by bin width for normalization
+p = norm.pdf(x, mu, std)
 plt.plot(x, p, 'k', linewidth=2)
 
 # Add labels, title, and legend
