@@ -98,7 +98,7 @@ from scipy.stats import norm
 # Flatten the result_df into a list and drop NaN values
 
 # Create a histogram
-plt.hist(result_flat, bins=20, color='g', edgecolor='black')  # Note: density=True for normalization
+plt.hist(result_flat, bins=20, color='g', edgecolor='black', density=True)  # Note: density=True for normalization
 
 # Fit a Gaussian curve to the histogram
 mu, std = norm.fit(result_flat)
