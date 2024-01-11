@@ -26,6 +26,7 @@ for msa_name in filenames:
     try:
         ground_truth = pd.read_csv(
          "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "/" + msa_name + "_features.csv")
+        print(msa_name)
     except FileNotFoundError:
         continue
     ground_truth["prediction_original"] = ground_truth["prediction_median"]
@@ -42,7 +43,6 @@ for msa_name in filenames:
     for subfolder in filtered_subfolders:
         # Construct the path to the subfolder
         subfolder_path = os.path.join(base_directory, subfolder, subfolder)
-        print(subfolder_path)
 
         # Read the CSV file in the subfolder into a DataFrame
         csv_files = [file for file in os.listdir(subfolder_path) if file.endswith(".csv")]
@@ -71,7 +71,6 @@ for msa_name in filenames:
                 sequence_length = len(record.seq)
 
             results.append((1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]), msa_name, sequence_length, sequence_count))
-            print(1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
             print("#"*10)
 import matplotlib.pyplot as plt
 
