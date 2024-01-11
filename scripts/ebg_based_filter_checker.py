@@ -43,15 +43,31 @@ for msa_name in filenames:
     import numpy as np
     concatenated_df['reference_id'] = np.random.choice(concatenated_df['id'].unique())
 
-    # Group by 'id' and sum up the values of 'prediction median'
-    sum_per_id = concatenated_df.groupby('id')['prediction_median'].sum()
+    unique_ids = concatenated_df['id'].unique()
 
-    # Use a random id's sum as reference
-    reference_sum = sum_per_id.loc[concatenated_df['reference_id'].iloc[0]]
+    # Initialize a list to store percentage changes
+    percentage_changes = []
 
-    # Express all other id's sums as a percentage of the reference sum
-    sum_per_id_percentage = (sum_per_id / reference_sum) * 100
+    # Iterate through each id as the reference
+    for reference_id in unique_ids:
+        # Skip comparisons with itself
+        other_ids = unique_ids[unique_ids != reference_id]
 
-    # Print or use the results as needed
-    print(max(sum_per_id_percentage))
+        # Calculate the sum of 'prediction_median' for the reference id
+        reference_sum = concatenated_df[concatenated_df['id'] == reference_id]['prediction_median'].sum()
+
+        # Calculate the sum of 'prediction_median' for other ids
+        sum_per_id = concatenated_df[concatenated_df['id'].isin(other_ids)].groupby('id')['prediction_median'].sum()
+
+        # Calculate percentage change for each id with respect to the reference id
+        percentage_change = (sum_per_id / reference_sum - 1) * 100
+
+        # Append to the list
+        percentage_changes.append(percentage_change)
+
+    # Create a DataFrame from the list of percentage changes
+    result_df = pd.DataFrame(percentage_changes, index=unique_ids, columns=unique_ids)
+
+    # Display or use the result_df as needed
+    print(result_df)
 
