@@ -58,11 +58,11 @@ for msa_name in filenames:
             print("#"*10)
             print(subfolder)
             results.append(sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
-            print(sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
+            print(1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
             print("#"*10)
 import matplotlib.pyplot as plt
 
-plt.hist(results, bins=10, color='blue', edgecolor='black')
+plt.hist(results, bins=30, color='blue', edgecolor='black')
 
 # Customize the plot
 plt.title('Histogram of Results')
