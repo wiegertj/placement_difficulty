@@ -127,8 +127,7 @@ for msa_name in filenames:
                    f"-msa {os.path.abspath(output_file)}",
                    f"-tree {os.path.abspath(original_tree_path)}",
                    "-t b",
-                   f"-o {msa_name + '_' + to_query}",
-                   "-redo"]
+                   f"-o {msa_name + '_' + to_query}"]
         print(" ".join(command))
 
         try:
@@ -156,8 +155,7 @@ for msa_name in filenames:
                    f"-msa {filepath}",
                    f"-tree {original_tree_path_tmp}",
                    "-t b",
-                   f"-o {msa_name + '_' + str(i) + '_xxx'}",
-                   "-redo"]
+                   f"-o {msa_name + '_' + str(i) + '_xxx'}"]
         print(" ".join(command))
 
         try:
