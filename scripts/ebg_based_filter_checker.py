@@ -60,7 +60,7 @@ for msa_name in filenames:
         sum_per_id = concatenated_df[concatenated_df['id'].isin(other_ids)].groupby('id')['prediction_median'].sum()
 
         # Calculate percentage change for each id with respect to the reference id
-        percentage_change = (sum_per_id / reference_sum - 1) * 100
+        percentage_change = (sum_per_id / reference_sum)
 
         # Append to the list
         percentage_changes.append(percentage_change)
