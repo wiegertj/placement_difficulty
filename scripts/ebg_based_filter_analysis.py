@@ -54,7 +54,7 @@ for msa_name in filenames:
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
             print("#"*10)
             print(subfolder)
-            print(int(df_merged["effect"].max()))
+            print(sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))
             print("#"*10)
 
 
