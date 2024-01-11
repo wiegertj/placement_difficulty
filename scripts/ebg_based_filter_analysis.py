@@ -28,7 +28,11 @@ for msa_name in filenames:
          "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "_10_xxx/" + msa_name + "_10_xxx_features.csv")
         print(msa_name)
     except FileNotFoundError:
-        continue
+        try:
+            ground_truth = pd.read_csv(
+                "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "/" + msa_name + "_features.csv")
+        except FileNotFoundError:
+            continue
     ground_truth["prediction_original"] = ground_truth["prediction_median"]
 
     all_subfolders = [folder for folder in os.listdir(base_directory) if
