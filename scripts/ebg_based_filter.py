@@ -148,6 +148,9 @@ for msa_name in filenames:
 
         os.chdir(current_directory)
 
+    os.chdir(os.path.join(os.pardir, "data/processed/ebg_filter"
+                          ))
+
     command = ["ebg",
                f"-model {model_path_tmp}",
                f"-msa {filepath}",
