@@ -106,6 +106,11 @@ for msa_name in filenames:
         model_path = os.path.join(os.pardir, "data/processed/loo",
                                   msa_name + "_msa_" + str(to_query) + "_aligned.fasta.raxml.bestModel")
         # make result dir
+        if os.path.exists(       os.path.join(os.pardir, "data/processed/ebg_filter",
+                         msa_name + "_" + to_query)):
+            # If it exists, delete the directory and its contents
+            shutil.rmtree(       os.path.join(os.pardir, "data/processed/ebg_filter",
+                         msa_name + "_" + to_query))
         os.mkdir(
             os.path.join(os.pardir, "data/processed/ebg_filter",
                          msa_name + "_" + to_query))
