@@ -53,5 +53,5 @@ for msa_name in filenames:
     sum_per_id_percentage = (sum_per_id / reference_sum) * 100
 
     # Print or use the results as needed
-    print(sum_per_id_percentage)
+    print(max(sum_per_id_percentage))
 
