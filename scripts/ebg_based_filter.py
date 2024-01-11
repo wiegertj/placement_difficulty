@@ -159,4 +159,9 @@ for msa_name in filenames:
         except:
             print("failed")
 
-        os.chdir(os.path.abspath(__file__))
+        current_file_path = os.path.abspath(__file__)
+
+        # Get the directory containing the currently executed file
+        current_directory = os.path.dirname(current_file_path)
+
+        os.chdir(current_directory)
