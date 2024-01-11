@@ -38,6 +38,7 @@ for msa_name in filenames:
         continue
 
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
+    filepath = os.path.abspath(filepath)
     MSA = AlignIO.read(filepath, 'fasta')
 
     counter = 0
@@ -137,7 +138,7 @@ for msa_name in filenames:
 
         command = ["ebg",
                    f"-model {os.path.abspath(model_path)}",
-                   f"-msa {os.path.abspath(filepath)}",
+                   f"-msa {filepath}",
                    f"-tree {os.path.abspath(tree_path)}",
                    "-t b",
                    f"-o {msa_name}",
