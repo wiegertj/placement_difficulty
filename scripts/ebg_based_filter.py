@@ -145,17 +145,7 @@ for msa_name in filenames:
         print(" ".join(command))
 
         try:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, stderr = process.communicate()
-
-            if process.returncode == 0:
-                print("EBG process completed successfully.")
-                print("Output:")
-                print(stdout)
-            else:
-                print("EBG process failed with an error.")
-                print("Error Output:")
-                print(command)
+            subprocess.run(" ".join(command), shell=True)
         except:
             print("failed")
 
