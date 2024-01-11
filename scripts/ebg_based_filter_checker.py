@@ -117,6 +117,13 @@ plt.legend(['Gaussian Fit', 'Histogram'])
 # Save the plot as EBG_NOISE.png
 plt.savefig('EBG_NOISE.png')
 
+threshold = 1.05
+
+# Calculate the probability of a value larger than the threshold
+probability = 1 - norm.cdf(threshold, loc=mu, scale=std)
+
+print(f"The probability of a value larger than {threshold} is: {probability:.4f}")
+
 
 
 
