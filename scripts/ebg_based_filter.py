@@ -48,10 +48,10 @@ for msa_name in filenames:
     counter = 0
 
     # Create random sample
-    if 2 >= len(sequence_ids):
+    if 20 >= len(sequence_ids):
         sequence_ids_sample = sequence_ids
     else:
-        sequence_ids_sample = random.sample(sequence_ids, 2)
+        sequence_ids_sample = random.sample(sequence_ids, 20)
 
     for to_query in sequence_ids_sample:
 
