@@ -181,16 +181,4 @@ percentage_unique_msa_names = (len(msa_names_2_or_more) / len(df_res["msa_name"]
 print(
     f"The percentage of unique msa_name values with 2 or more rows and result >= 1.05 is: {percentage_unique_msa_names:.2f}%")
 
-count_0_05 = sum(1 for value in res_list if value >= 1.05)
-count_0_10 = sum(1 for value in res_list if value >= 1.10)
-count_0_20 = sum(1 for value in res_list if value >= 1.20)
 
-# Calculate the percentages
-percentage_0_05 = (count_0_05 / len(res_list)) * 100
-percentage_0_10 = (count_0_10 / len(res_list)) * 100
-percentage_0_20 = (count_0_20 / len(res_list)) * 100
-
-# Print the results
-print(f"The percentage of list entries >= 0.05: {percentage_0_05:.2f}%")
-print(f"The percentage of list entries >= 0.10: {percentage_0_10:.2f}%")
-print(f"The percentage of list entries >= 0.20: {percentage_0_20:.2f}%")
