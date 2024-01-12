@@ -65,7 +65,11 @@ for msa_name in filenames:
             continue
         print("taxon" + str(last_integer))
         newick_tree_original_copy = ground_truth_tree.copy()
-        leaf_node = newick_tree_original_copy.search_nodes(name="taxon" + str(last_integer))[0]
+        try:
+            leaf_node = newick_tree_original_copy.search_nodes(name="taxon" + str(last_integer))[0]
+        except IndexError:
+            print("indexerror")
+            continue
         leaf_node.delete()
 
         sum_support_original_copy = 0.0
