@@ -77,7 +77,7 @@ for msa_name in filenames:
                 sequence_count += 1
                 sequence_length = len(record.seq)
 
-            results.append((1-sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]), msa_name, sequence_length, sequence_count))
+            results.append((1-(sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"])), msa_name, sequence_length, sequence_count))
 import matplotlib.pyplot as plt
 
 print(len(results))
