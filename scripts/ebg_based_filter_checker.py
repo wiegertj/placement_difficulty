@@ -9,7 +9,7 @@ msa_counter = 0
 results = []
 result_flat = []
 counter = 0
-print(filenames)
+print(len(filenames))
 
 for msa_name in filenames:
     print(msa_name)
