@@ -91,8 +91,8 @@ for msa_name in filenames:
             sequence_count += 1
             sequence_length = len(record.seq)
 
-        results.append(sum_support_tmp / sum_support_original_copy, msa_name,
-                        sequence_length, sequence_count)
+        results.append((sum_support_tmp / sum_support_original_copy, msa_name,
+                        sequence_length, sequence_count))
 import matplotlib.pyplot as plt
 
 print(len(results))
