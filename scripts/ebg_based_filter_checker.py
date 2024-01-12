@@ -14,6 +14,7 @@ counter = 0
 
 for msa_name in filenames:
     # Initialize a list to store DataFrames
+    print(msa_name)
     df_list = []
     print(len(os.listdir(base_directory)))
     # Iterate thro  ugh folders in the base directory
@@ -44,7 +45,6 @@ for msa_name in filenames:
 
                 # Append the DataFrame to the list
                 df_list.append(df)
-            break
 
     # Concatenate the list of DataFrames into a single DataFrame
     try:
@@ -81,6 +81,7 @@ for msa_name in filenames:
 
     flattened_list = result_df.stack().dropna().tolist()
     result_flat.extend(flattened_list)
+    break
 
 
 
