@@ -115,6 +115,14 @@ print(len(df_res["msa_name"].unique()))
 for index, row in filtered_df.iterrows():
     print(f"Msa_name 5: {row['msa_name']}, Sequence Length: {row['sequence_length']}, Sequence Count: {row['sequence_count']}")
 
+filtered_df = df_res[df_res['result'] >= 0.2]
+print(len(filtered_df["msa_name"].unique()))
+print(len(df_res["msa_name"].unique()))
+
+# Print sequence length and count values for filtered msa_names
+for index, row in filtered_df.iterrows():
+    print(f"Msa_name 2: {row['msa_name']}, Sequence Length: {row['sequence_length']}, Sequence Count: {row['sequence_count']}")
+
 
 # Create a histogram of the maximum values
 plt.hist(max_values, bins=20, color='blue', edgecolor='black')
