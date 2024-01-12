@@ -107,7 +107,6 @@ from scipy.stats import norm
 # Flatten the result_df into a list and drop NaN values
 
 print(len(result_flat))
-print(result_flat)
 
 # Create a histogram
 plt.hist(result_flat, bins=20, color='g', edgecolor='black', density=True)  # Note: density=True for normalization
