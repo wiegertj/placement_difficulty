@@ -11,7 +11,7 @@ base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/eb
 results = []
 result_flat = []
 counter = 0
-
+print(filenames)
 for msa_name in filenames:
     # Initialize a list to store DataFrames
     print(msa_name)
