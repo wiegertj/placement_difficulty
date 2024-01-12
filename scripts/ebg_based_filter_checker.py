@@ -12,6 +12,7 @@ counter = 0
 print(filenames)
 
 for msa_name in filenames:
+    print(msa_name)
     if msa_name == "13184_0":
         print("found")
     # Initialize a list to store DataFrames
