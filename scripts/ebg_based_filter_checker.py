@@ -9,7 +9,7 @@ msa_counter = 0
 results = []
 result_flat = []
 counter = 0
-print(len(filenames))
+print(filenames)
 
 for msa_name in filenames:
     print(msa_name)
@@ -52,7 +52,7 @@ for msa_name in filenames:
     try:
         concatenated_df = pd.concat(df_list, ignore_index=True)
     except ValueError:
-        break
+        continue
     import numpy as np
     concatenated_df['reference_id'] = np.random.choice(concatenated_df['id'].unique())
     print(len(concatenated_df['id'].unique()))
