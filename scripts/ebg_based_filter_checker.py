@@ -30,11 +30,11 @@ for msa_name in filenames:
 
             # List CSV files in the folder
             csv_files = [file for file in os.listdir(folder_path) if file.endswith(".csv")]
-
+            counter += 1
+            print(counter)
             # Assuming there is only one CSV file in each folder
             if len(csv_files) == 1:
-                counter += 1
-                print(counter)
+
                 csv_file_path = os.path.join(folder_path, csv_files[0])
 
                 # Read the CSV file into a DataFrame
