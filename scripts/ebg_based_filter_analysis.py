@@ -136,7 +136,7 @@ filtered_df = df_res[df_res["result"] >= 0.05]
 msa_counts = filtered_df["msa_name"].value_counts()
 
 # Filter msa_names with 2 or more occurrences
-msa_names_2_or_more = msa_counts[msa_counts >= 3]
+msa_names_2_or_more = msa_counts[msa_counts >= 5]
 
 # Calculate the percentage of unique msa_names with 2 or more rows
 percentage_unique_msa_names = (len(msa_names_2_or_more) / len(df_res["msa_name"].unique()))
