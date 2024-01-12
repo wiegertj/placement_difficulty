@@ -10,11 +10,11 @@ msa_counter = 0
 base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter"
 results = []
 result_flat = []
+counter = 0
 
 for msa_name in filenames:
     # Initialize a list to store DataFrames
     df_list = []
-    counter = 0
     # Iterate thro  ugh folders in the base directory
     print(counter)
     for folder_name in os.listdir(base_directory):
