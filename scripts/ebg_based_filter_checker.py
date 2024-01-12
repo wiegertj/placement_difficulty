@@ -5,9 +5,7 @@ import pandas as pd
 base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter"
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
-filenames = filenames
 msa_counter = 0
-base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter"
 results = []
 result_flat = []
 counter = 0
@@ -24,6 +22,7 @@ for msa_name in filenames:
         folder_path = os.path.join(base_directory, folder_name)
 
         # Check if it's a directory, ends with "xxx", and starts with msa_name
+
         if (
             os.path.isdir(folder_path)
             and folder_name.endswith("xxx")
