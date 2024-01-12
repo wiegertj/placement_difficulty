@@ -58,7 +58,11 @@ for msa_name in filenames:
 
         # Read the CSV file in the subfolder into a DataFrame
         last_integer = int(re.search(r'\d+', subfolder[::-1]).group()[::-1])
-        newick_tree_tmp = ete3.Tree(os.path.join(subfolder_path, f"{subfolder}_median_support_prediction.newick"))
+        try:
+            newick_tree_tmp = ete3.Tree(os.path.join(subfolder_path, f"{subfolder}_median_support_prediction.newick"))
+        except ete3.parser.newick.NewickError:
+            print("failed")
+            continue
         print("taxon" + str(last_integer))
         newick_tree_original_copy = ground_truth_tree.copy()
         leaf_node = newick_tree_original_copy.search_nodes(name="taxon" + str(last_integer))[0]
