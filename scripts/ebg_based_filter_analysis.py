@@ -67,11 +67,11 @@ for msa_name in filenames:
             print(df["prediction_median"].sum())
             print(ground_truth["prediction_median"].sum())
             print(ground_truth["prediction_median"].mean())
-            print((1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean()))))
-            print((1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()))))
+            print(((df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean())))-1)
+            print(((df["prediction_median"].sum()/(ground_truth["prediction_median"].sum())))-1)
             print("#"*10)
 
-            res_list.append(1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean())))
+            res_list.append((df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean()))-1)
             filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
             filepath = os.path.abspath(filepath)
 
