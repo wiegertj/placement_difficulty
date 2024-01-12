@@ -11,7 +11,7 @@ result_flat = []
 counter = 0
 print(filenames)
 
-for msa_name in filenames:
+for msa_name in filenames[:180]:
     print(msa_name)
     if msa_name == "13184_0":
         print("found")

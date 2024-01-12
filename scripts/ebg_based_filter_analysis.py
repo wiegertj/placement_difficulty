@@ -22,7 +22,7 @@ base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/eb
 results = []
 res_list = []
 
-for msa_name in filenames:
+for msa_name in filenames[:180]:
     msa_folder_path = os.path.join(base_directory, msa_name)
     try:
         ground_truth = pd.read_csv(
