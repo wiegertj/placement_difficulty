@@ -81,7 +81,7 @@ for msa_name in filenames:
 
     flattened_list = result_df.stack().dropna().tolist()
     result_flat.extend(flattened_list)
-    break
+    print(len(result_flat))
 
 
 
