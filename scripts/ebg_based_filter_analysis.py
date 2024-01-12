@@ -130,7 +130,7 @@ plt.savefig('MAX_VALUES_HISTOGRAM_BY_MSA_NAME.png')
 # Display the plot
 plt.show()
 
-filtered_df = df_res[df_res["result"] >= 0.05]
+filtered_df = df_res[df_res["result"] >= 0.1]
 
 # Count the occurrences of each unique msa_name
 msa_counts = filtered_df["msa_name"].value_counts()
