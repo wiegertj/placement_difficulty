@@ -64,7 +64,7 @@ for msa_name in filenames:
             df_merged = df.merge(ground_truth, on="branchId")
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
 
-            res_list.append(1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-50)))
+            res_list.append(1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean())))
             filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
             filepath = os.path.abspath(filepath)
 
@@ -81,7 +81,7 @@ for msa_name in filenames:
 import matplotlib.pyplot as plt
 
 print(len(results))
-results = [value for value in results if abs(value[0]) < 0.5]
+#results = [value for value in results if abs(value[0]) < 0.5]
 
 df_res = pd.DataFrame(results, columns=["result", "msa_name", "sequence_length", "sequence_count"])
 
