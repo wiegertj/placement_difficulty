@@ -20,6 +20,7 @@ filenames = filenames
 msa_counter = 0
 base_directory = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter"
 results = []
+res_list = []
 
 for msa_name in filenames:
     msa_folder_path = os.path.join(base_directory, msa_name)
@@ -63,7 +64,7 @@ for msa_name in filenames:
             df_merged = df.merge(ground_truth, on="branchId")
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
 
-
+            res_list.append(1-(df["prediction_median"].sum()/ground_truth["prediction_median"].sum()))
             filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
             filepath = os.path.abspath(filepath)
 
@@ -155,3 +156,17 @@ msa_names_2_or_more = msa_counts[msa_counts >= 5]
 percentage_unique_msa_names = (len(msa_names_2_or_more) / len(df_res["msa_name"].unique()))
 
 print(f"The percentage of unique msa_name values with 2 or more rows and result >= 1.05 is: {percentage_unique_msa_names:.2f}%")
+
+count_0_05 = sum(1 for value in res_list if value >= 0.05)
+count_0_10 = sum(1 for value in res_list if value >= 0.10)
+count_0_20 = sum(1 for value in res_list if value >= 0.20)
+
+# Calculate the percentages
+percentage_0_05 = (count_0_05 / len(res_list)) * 100
+percentage_0_10 = (count_0_10 / len(res_list)) * 100
+percentage_0_20 = (count_0_20 / len(res_list)) * 100
+
+# Print the results
+print(f"The percentage of list entries >= 0.05: {percentage_0_05:.2f}%")
+print(f"The percentage of list entries >= 0.10: {percentage_0_10:.2f}%")
+print(f"The percentage of list entries >= 0.20: {percentage_0_20:.2f}%")
