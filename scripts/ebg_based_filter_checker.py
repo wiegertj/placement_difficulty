@@ -44,6 +44,7 @@ for msa_name in filenames:
 
                 # Append the DataFrame to the list
                 df_list.append(df)
+            break
 
     # Concatenate the list of DataFrames into a single DataFrame
     try:
