@@ -14,9 +14,11 @@ result_flat = []
 for msa_name in filenames:
     # Initialize a list to store DataFrames
     df_list = []
-
-    # Iterate through folders in the base directory
+    counter = 0
+    # Iterate thro  ugh folders in the base directory
+    print(counter)
     for folder_name in os.listdir(base_directory):
+        counter += 1
         folder_path = os.path.join(base_directory, folder_name)
 
         # Check if it's a directory, ends with "xxx", and starts with msa_name
