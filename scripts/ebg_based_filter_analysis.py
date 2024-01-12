@@ -90,6 +90,7 @@ max_values = df_res.groupby('msa_name')['result'].max()
 
 fraction_0_05 = (df_res.groupby('msa_name')['result'].max() >= 0.05).mean()
 
+
 # Check if there is at least one row with 'result' >= 0.10 for each unique 'msa_name'
 fraction_0_10 = (df_res.groupby('msa_name')['result'].max() >= 0.10).mean()
 
@@ -128,3 +129,16 @@ plt.savefig('MAX_VALUES_HISTOGRAM_BY_MSA_NAME.png')
 
 # Display the plot
 plt.show()
+
+filtered_df = df_res[df_res["result"] >= 1.05]
+
+# Count the occurrences of each unique msa_name
+msa_counts = filtered_df["msa_name"].value_counts()
+
+# Filter msa_names with 2 or more occurrences
+msa_names_2_or_more = msa_counts[msa_counts >= 2]
+
+# Calculate the percentage of unique msa_names with 2 or more rows
+percentage_unique_msa_names = (len(msa_names_2_or_more) / len(df_res["msa_name"].unique())) * 100
+
+print(f"The percentage of unique msa_name values with 2 or more rows and result >= 1.05 is: {percentage_unique_msa_names:.2f}%")
