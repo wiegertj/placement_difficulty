@@ -64,7 +64,7 @@ for msa_name in filenames:
             df_merged = df.merge(ground_truth, on="branchId")
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
 
-            res_list.append(1-(df["prediction_median"].sum()/ground_truth["prediction_median"].sum()))
+            res_list.append(1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-50)))
             filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
             filepath = os.path.abspath(filepath)
 
