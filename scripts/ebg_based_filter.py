@@ -55,12 +55,15 @@ for msa_name in filenames:
     else:
         sequence_ids_sample = random.sample(sequence_ids, 20)
 
+    nested_break = False
+
     for to_query in sequence_ids_sample:
 
         if os.path.exists(os.path.join(os.pardir, "data/processed/ebg_filter",
                                        msa_name + "_" + to_query)):
             print("already processed")
-            continue
+            nested_break = True
+            break
 
         counter += 1
         print(to_query)
@@ -153,7 +156,9 @@ for msa_name in filenames:
         current_directory = os.path.dirname(current_file_path)
 
         os.chdir(current_directory)
-
+    if nested_break:
+        print("skipped MSA")
+        continue
     os.chdir(os.path.join(os.pardir, "data/processed/ebg_filter"
                           ))
     for i in range(0, 20):
