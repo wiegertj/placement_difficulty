@@ -27,7 +27,7 @@ for msa_name in filenames:
     try:
         ground_truth = pd.read_csv(
             "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "_10_xxx/" + msa_name + "_10_xxx_features.csv")
-        newick_tree_path = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "_10_xxx/" + msa_name + "_10_xxx_features.csv"
+        newick_tree_path = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "_10_xxx/" + msa_name + "_median_support_prediction.newick"
         ground_truth_tree = ete3.Tree(newick_tree_path, format=1)
 
         print("found first")
