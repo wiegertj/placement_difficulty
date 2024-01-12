@@ -64,6 +64,9 @@ for msa_name in filenames:
             df_merged = df.merge(ground_truth, on="branchId")
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
             print("#"*10)
+            print(df["prediction_median"].sum())
+            print(ground_truth["prediction_median"].sum())
+            print(ground_truth["prediction_median"].mean())
             print((1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean()))))
             print((1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()))))
             print("#"*10)
