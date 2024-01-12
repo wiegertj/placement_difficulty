@@ -29,7 +29,7 @@ for msa_name in filenames:
             "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "_10_xxx/" + msa_name + "_10_xxx_features.csv")
         newick_tree_path = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/ebg_filter/" + msa_name + "_10_xxx/" + msa_name + "_10_xxx_median_support_prediction.newick"
         print(newick_tree_path)
-        ground_truth_tree = ete3.Tree(newick_tree_path, format=1)
+        ground_truth_tree = ete3.Tree(newick_tree_path, format=0)
 
         print("found first")
     except FileNotFoundError:
@@ -59,7 +59,7 @@ for msa_name in filenames:
         # Read the CSV file in the subfolder into a DataFrame
         last_integer = int(re.search(r'\d+', subfolder[::-1]).group()[::-1])
         try:
-            newick_tree_tmp = ete3.Tree(os.path.join(subfolder_path, f"{subfolder}_median_support_prediction.newick"))
+            newick_tree_tmp = ete3.Tree(os.path.join(subfolder_path, f"{subfolder}_median_support_prediction.newick"), format=0)
         except ete3.parser.newick.NewickError:
             print("failed")
             continue
