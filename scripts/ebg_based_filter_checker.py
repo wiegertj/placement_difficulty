@@ -15,6 +15,7 @@ counter = 0
 for msa_name in filenames:
     # Initialize a list to store DataFrames
     df_list = []
+    print(len(os.listdir(base_directory)))
     # Iterate thro  ugh folders in the base directory
     for folder_name in os.listdir(base_directory):
         folder_path = os.path.join(base_directory, folder_name)
