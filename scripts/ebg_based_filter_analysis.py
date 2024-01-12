@@ -67,11 +67,11 @@ for msa_name in filenames:
             print(df["prediction_median"].sum())
             print(ground_truth["prediction_median"].sum())
             print(ground_truth["prediction_median"].mean())
-            print(((df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean())))-1)
-            print(((df["prediction_median"].sum()/(ground_truth["prediction_median"].sum())))-1)
+            print(((df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean()))))
+            print(((df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()))))
             print("#"*10)
 
-            res_list.append((df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean()))-1)
+            res_list.append((df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean())))
             filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
             filepath = os.path.abspath(filepath)
 
@@ -84,7 +84,7 @@ for msa_name in filenames:
                 sequence_count += 1
                 sequence_length = len(record.seq)
 
-            results.append(((sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"]))-1, msa_name, sequence_length, sequence_count))
+            results.append(((sum(df_merged["prediction_taxon"])/sum(df_merged["prediction_original"])), msa_name, sequence_length, sequence_count))
 import matplotlib.pyplot as plt
 
 print(len(results))
@@ -96,13 +96,13 @@ df_res = pd.DataFrame(results, columns=["result", "msa_name", "sequence_length",
 # Calculate the maximum value per unique "msa_name"
 max_values = df_res.groupby('msa_name')['result'].max()
 
-fraction_0_05 = (df_res.groupby('msa_name')['result'].max() >= 0.05).mean()
+fraction_0_05 = (df_res.groupby('msa_name')['result'].max() >= 1.05).mean()
 
 
 # Check if there is at least one row with 'result' >= 0.10 for each unique 'msa_name'
-fraction_0_10 = (df_res.groupby('msa_name')['result'].max() >= 0.10).mean()
+fraction_0_10 = (df_res.groupby('msa_name')['result'].max() >= 1.10).mean()
 
-fraction_0_20 = (df_res.groupby('msa_name')['result'].max() >= 0.20).mean()
+fraction_0_20 = (df_res.groupby('msa_name')['result'].max() >= 1.20).mean()
 
 
 print(f"Fraction of msa's with result >= 0.05: {fraction_0_05:.2%}")
@@ -111,7 +111,7 @@ print(f"Fraction of msa's with result >= 0.20: {fraction_0_20:.2%}")
 
 
 # Filter DataFrame for rows with result >= 0.10
-filtered_df = df_res[df_res['result'] >= 0.10]
+filtered_df = df_res[df_res['result'] >= 1.10]
 print(len(filtered_df["msa_name"].unique()))
 print(len(df_res["msa_name"].unique()))
 
@@ -120,7 +120,7 @@ for index, row in filtered_df.iterrows():
     print(f"Msa_name 10: {row['msa_name']}, Sequence Length: {row['sequence_length']}, Sequence Count: {row['sequence_count']}")
 
 
-filtered_df = df_res[df_res['result'] >= 0.05]
+filtered_df = df_res[df_res['result'] >= 1.05]
 print(len(filtered_df["msa_name"].unique()))
 print(len(df_res["msa_name"].unique()))
 
@@ -128,7 +128,7 @@ print(len(df_res["msa_name"].unique()))
 for index, row in filtered_df.iterrows():
     print(f"Msa_name 5: {row['msa_name']}, Sequence Length: {row['sequence_length']}, Sequence Count: {row['sequence_count']}")
 
-filtered_df = df_res[df_res['result'] >= 0.2]
+filtered_df = df_res[df_res['result'] >= 1.2]
 print(len(filtered_df["msa_name"].unique()))
 print(len(df_res["msa_name"].unique()))
 
@@ -151,7 +151,7 @@ plt.savefig('MAX_VALUES_HISTOGRAM_BY_MSA_NAME.png')
 # Display the plot
 plt.show()
 
-filtered_df = df_res[df_res["result"] >= 0.1]
+filtered_df = df_res[df_res["result"] >= 1.1]
 
 # Count the occurrences of each unique msa_name
 msa_counts = filtered_df["msa_name"].value_counts()
@@ -164,9 +164,9 @@ percentage_unique_msa_names = (len(msa_names_2_or_more) / len(df_res["msa_name"]
 
 print(f"The percentage of unique msa_name values with 2 or more rows and result >= 1.05 is: {percentage_unique_msa_names:.2f}%")
 
-count_0_05 = sum(1 for value in res_list if value >= 0.05)
-count_0_10 = sum(1 for value in res_list if value >= 0.10)
-count_0_20 = sum(1 for value in res_list if value >= 0.20)
+count_0_05 = sum(1 for value in res_list if value >= 1.05)
+count_0_10 = sum(1 for value in res_list if value >= 1.10)
+count_0_20 = sum(1 for value in res_list if value >= 1.20)
 
 # Calculate the percentages
 percentage_0_05 = (count_0_05 / len(res_list)) * 100
