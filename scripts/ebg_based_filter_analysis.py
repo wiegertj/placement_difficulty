@@ -52,14 +52,14 @@ for msa_name in filenames:
 
     # Iterate through each filtered subfolder
     for subfolder in filtered_subfolders:
-
+        print(subfolder)
         # Construct the path to the subfolder
         subfolder_path = os.path.join(base_directory, subfolder, subfolder)
 
         # Read the CSV file in the subfolder into a DataFrame
         last_integer = int(re.search(r'\d+', subfolder[::-1]).group()[::-1])
         newick_tree_tmp = ete3.Tree(os.path.join(subfolder_path, f"{subfolder}_median_support_prediction.newick"))
-
+        print("taxon" + str(last_integer))
         newick_tree_original_copy = ground_truth_tree.copy()
         leaf_node = newick_tree_original_copy.search_nodes(name="taxon" + str(last_integer))[0]
         leaf_node.delete()
