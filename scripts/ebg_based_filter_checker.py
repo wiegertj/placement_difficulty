@@ -50,7 +50,7 @@ for msa_name in filenames:
         break
     import numpy as np
     concatenated_df['reference_id'] = np.random.choice(concatenated_df['id'].unique())
-
+    print(len(concatenated_df['id'].unique()))
     unique_ids = concatenated_df['id'].unique()
 
     # Initialize a list to store percentage changes
