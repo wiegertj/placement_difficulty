@@ -16,14 +16,19 @@ random.seed(200)
 
 loo_selection = pd.read_csv(os.path.join(os.pardir, "data/loo_selection.csv"))
 filenames = loo_selection['verbose_name'].str.replace(".phy", "").tolist()
-filenames = filenames[50:]
+filenames = filenames[30:180]
 msa_counter = 0
 for msa_name in filenames:
-    if msa_name == "17080_0":
-        continue
+
     msa_counter += 1
     print(str(msa_counter) + "/" + str(len(filenames)))
     print(msa_name)
+    if os.path.exists(os.path.join(os.pardir, "data/processed/ebg_filter",
+                                   msa_name + "_" + to_query)):
+        print("already processed")
+        continue
+    if msa_name == "17080_0":
+        continue
 
     rf_distances = []
     bsd_distances = []
