@@ -99,7 +99,7 @@ fraction_0_20 = (df_res.groupby('msa_name')['result'].max() >= 0.20).mean()
 
 print(f"Fraction of msa's with result >= 0.05: {fraction_0_05:.2%}")
 print(f"Fraction of msa's with result >= 0.10: {fraction_0_10:.2%}")
-print(f"Fraction of msa's with result >= 0.20: {fraction_0_10:.2%}")
+print(f"Fraction of msa's with result >= 0.20: {fraction_0_20:.2%}")
 
 
 # Filter DataFrame for rows with result >= 0.10
