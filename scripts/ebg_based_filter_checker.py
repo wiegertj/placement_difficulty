@@ -18,7 +18,7 @@ for msa_name in filenames:
     # Iterate thro  ugh folders in the base directory
     for folder_name in os.listdir(base_directory):
         folder_path = os.path.join(base_directory, folder_name)
-
+        print(folder_name)
         # Check if it's a directory, ends with "xxx", and starts with msa_name
         if (
             os.path.isdir(folder_path)
@@ -29,6 +29,7 @@ for msa_name in filenames:
         ):
             counter += 1
             print(counter)
+            print("took")
             # List CSV files in the folder
             csv_files = [file for file in os.listdir(folder_path) if file.endswith(".csv")]
 
@@ -76,14 +77,13 @@ for msa_name in filenames:
     # Create a DataFrame from the list of percentage changes
     result_df = pd.DataFrame(percentage_changes, index=unique_ids, columns=unique_ids)
 
-    flattened_list = result_df.stack().dropna().tolist()
-    result_flat.extend(flattened_list)
+    #flattened_list = result_df.stack().dropna().tolist()
+    result_flat.extend(percentage_changes)
 
 
 
 
     # Display or use the result_df as needed
-    print(result_df)
 
 
 
