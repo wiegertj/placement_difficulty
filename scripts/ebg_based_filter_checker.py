@@ -16,7 +16,6 @@ for msa_name in filenames:
     if msa_name == "13184":
         print("found")
     # Initialize a list to store DataFrames
-    print(msa_name)
     df_list = []
     print(len(os.listdir(base_directory)))
     # Iterate thro  ugh folders in the base directory
