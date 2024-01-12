@@ -23,10 +23,7 @@ for msa_name in filenames:
     msa_counter += 1
     print(str(msa_counter) + "/" + str(len(filenames)))
     print(msa_name)
-    if os.path.exists(os.path.join(os.pardir, "data/processed/ebg_filter",
-                                   msa_name + "_" + to_query)):
-        print("already processed")
-        continue
+
     if msa_name == "17080_0":
         continue
 
@@ -59,6 +56,11 @@ for msa_name in filenames:
         sequence_ids_sample = random.sample(sequence_ids, 20)
 
     for to_query in sequence_ids_sample:
+
+        if os.path.exists(os.path.join(os.pardir, "data/processed/ebg_filter",
+                                       msa_name + "_" + to_query)):
+            print("already processed")
+            continue
 
         counter += 1
         print(to_query)
