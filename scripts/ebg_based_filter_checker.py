@@ -13,6 +13,8 @@ result_flat = []
 counter = 0
 print(filenames)
 for msa_name in filenames:
+    if msa_name == "13184":
+        print("found")
     # Initialize a list to store DataFrames
     print(msa_name)
     df_list = []
