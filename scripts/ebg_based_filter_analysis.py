@@ -63,8 +63,10 @@ for msa_name in filenames:
             df["prediction_taxon"] = df["prediction_median"]
             df_merged = df.merge(ground_truth, on="branchId")
             df_merged["effect"] = df_merged["prediction_original"] - df_merged["prediction_taxon"]
+            print("#"*10)
             print((1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean()))))
             print((1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()))))
+            print("#"*10)
 
             res_list.append(1-(df["prediction_median"].sum()/(ground_truth["prediction_median"].sum()-ground_truth["prediction_median"].mean())))
             filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
