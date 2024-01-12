@@ -52,7 +52,6 @@ for msa_name in filenames:
 
     # Iterate through each filtered subfolder
     for subfolder in filtered_subfolders:
-        print(subfolder)
         # Construct the path to the subfolder
         subfolder_path = os.path.join(base_directory, subfolder, subfolder)
 
@@ -63,7 +62,6 @@ for msa_name in filenames:
         except ete3.parser.newick.NewickError:
             print("failed")
             continue
-        print("taxon" + str(last_integer))
         newick_tree_original_copy = ground_truth_tree.copy()
         try:
             leaf_node = newick_tree_original_copy.search_nodes(name="taxon" + str(last_integer))[0]
