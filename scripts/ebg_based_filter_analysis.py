@@ -100,7 +100,7 @@ for msa_name in filenames[:180]:
 
         print(sum_support_tmp)
         print(sum_support_original_copy)
-        if (sum_support_tmp / sum_support_original_copy) > 1.05:
+        if (sum_support_tmp / sum_support_original_copy) > 1.08:
             results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length))
         results.append((sum_support_tmp / sum_support_original_copy, msa_name,
                         sequence_length, sequence_count))
@@ -118,11 +118,14 @@ fraction_0_05 = (df_res.groupby('msa_name')['result'].max() >= 1.05).mean()
 
 # Check if there is at least one row with 'result' >= 0.10 for each unique 'msa_name'
 fraction_0_10 = (df_res.groupby('msa_name')['result'].max() >= 1.10).mean()
+fraction_0_08 = (df_res.groupby('msa_name')['result'].max() >= 1.08).mean()
 
 fraction_0_20 = (df_res.groupby('msa_name')['result'].max() >= 1.20).mean()
 
 print(f"Fraction of msa's with result >= 0.05: {fraction_0_05:.2%}")
 print(f"Fraction of msa's with result >= 0.10: {fraction_0_10:.2%}")
+print(f"Fraction of msa's with result >= 0.08: {fraction_0_08:.2%}")
+
 print(f"Fraction of msa's with result >= 0.20: {fraction_0_20:.2%}")
 
 # Filter DataFrame for rows with result >= 0.10
