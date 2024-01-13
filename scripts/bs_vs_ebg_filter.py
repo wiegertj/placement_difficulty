@@ -27,7 +27,7 @@ for index, row in result_df.iterrows():
         continue
 
 
-    sbs_tree_unfiltered = os.path.join(os.pardir, "data/raw/reference_tree/") + msa_name + ".raxml.support"
+    sbs_tree_unfiltered = os.path.join(os.pardir, "data/raw/reference_tree/") + msa_name + ".newick.raxml.support"
     print(sbs_tree_unfiltered)
     sbs_tree_unfiltered = ete3.Tree(sbs_tree_unfiltered, format=0)
 
