@@ -42,6 +42,9 @@ for index, row in result_df.iterrows():
     sum_support_filter = 0.0
     sum_support_unfilter = 0.0
 
+    sum_support_filter_list = []
+    sum_support_unfilter_list = []
+
     max_sum_support_filter = 0.0
     max_sum_support_unfilter = 0.0
 
@@ -50,6 +53,7 @@ for index, row in result_df.iterrows():
     for node in sbs_tree_unfiltered.traverse():
         if node.support is not None and not node.is_leaf():
             sum_support_unfilter += node.support
+            sum_support_unfilter_list.append(node.support)
             max_sum_support_unfilter += 100
 
     # Sum up the support values for newick_tree_tmp
@@ -58,18 +62,21 @@ for index, row in result_df.iterrows():
             print(node.support)
 
             sum_support_filter += node.support
+            sum_support_filter_list.append(node.support)
+
             max_sum_support_filter += 100
 
     print(sum_support_filter)
     print(sum_support_unfilter)
+    elementwise_difference = [a - b for a, b in zip(sum_support_filter_list, sum_support_unfilter_list)]
 
     result_new.append((sum_support_filter, sum_support_unfilter, sum_support_filter / sum_support_unfilter,taxon, msa_name, row['effect'], max_sum_support_unfilter, sum_support_filter/max_sum_support_unfilter,
-                       sum_support_unfilter/max_sum_support_unfilter, row["uncertainty_pred"] / row["max_uncertainty"], row["sequence_length"]))
+                       sum_support_unfilter/max_sum_support_unfilter, row["uncertainty_pred"] / row["max_uncertainty"], row["sequence_length"], min(elementwise_difference), max(elementwise_difference), statistics.stdev(elementwise_difference)))
 
 
     print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
-df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio","taxon", "msa_name", "effect", "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length"])
+df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio","taxon", "msa_name", "effect", "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length", "min", "max", "std"])
 print(df_final.sort_values("uncertainty"))
 print(df_final[["ratio", "effect"]])
 print(df_final["ratio"].mean())
@@ -79,12 +86,12 @@ print(statistics.mean(df_final["ratio"] - df_final["effect"]))
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.metrics import accuracy_score, classification_report
-df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length"]]
+df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "min", "max", "std"]]
 
 df['target'] = (df['ratio'] > 1).astype(int)
 
 # Features (X) and target variable (y)
-X = df[['effect', 'uncertainty', 'max_support', "sequence_length"]]
+X = df[['effect', 'uncertainty', 'max_support', "sequence_length",  "min", "max", "std"]]
 y = df['target']
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
