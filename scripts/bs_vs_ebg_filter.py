@@ -100,7 +100,7 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
 # Initialize the Decision Tree Classifier
 regressor = DecisionTreeRegressor()
@@ -114,7 +114,7 @@ param_grid = {
 }
 
 # Perform 10 random holdouts
-num_holdouts = 10
+num_holdouts = 20
 mae_scores = []
 median_ae_scores = []
 
