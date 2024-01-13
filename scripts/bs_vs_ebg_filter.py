@@ -32,12 +32,12 @@ for index, row in result_df.iterrows():
 
     sbs_tree_unfiltered = os.path.join(os.pardir, "data/raw/reference_tree/") + msa_name + ".newick.raxml.support"
     sbs_tree_unfiltered = ete3.Tree(sbs_tree_unfiltered, format=0)
-    print(sbs_tree_unfiltered)
 
 
     leaf_node = sbs_tree_unfiltered.search_nodes(name=taxon)[0]
     leaf_node.delete()
     leaf_names = sbs_tree_unfiltered.get_leaf_names()
+    print(sbs_tree_unfiltered)
 
     sum_support_filter = 0.0
     sum_support_unfilter = 0.0
