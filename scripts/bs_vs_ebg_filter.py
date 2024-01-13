@@ -90,7 +90,7 @@ from sklearn.metrics import accuracy_score, classification_report, f1_score
 
 df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "min", "max", "std", "skw", "kurt"]]
 
-df['target'] = (df['ratio'] > 1).astype(int)
+df['target'] = (df['ratio'] > 1.05).astype(int)
 print(df["target"].value_counts())
 
 # Features (X) and target variable (y)
