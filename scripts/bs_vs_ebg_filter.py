@@ -42,11 +42,15 @@ for index, row in result_df.iterrows():
     sum_support_filter = 0.0
     sum_support_unfilter = 0.0
 
+    max_sum_support_filter = 0.0
+    max_sum_support_unfilter = 0.0
+
 
     # Sum up the support values for newick_tree_original_copy
     for node in sbs_tree_unfiltered.traverse():
         if node.support is not None and not node.is_leaf():
             sum_support_unfilter += node.support
+            max_sum_support_unfilter += 100
 
     # Sum up the support values for newick_tree_tmp
     for node in sbs_tree_filtered.traverse():
@@ -54,16 +58,19 @@ for index, row in result_df.iterrows():
             print(node.support)
 
             sum_support_filter += node.support
+            max_sum_support_filter += 100
 
     print(sum_support_filter)
     print(sum_support_unfilter)
 
-    result_new.append((sum_support_filter, sum_support_unfilter, sum_support_filter / sum_support_unfilter,taxon, msa_name, row['effect']))
+    result_new.append((sum_support_filter, sum_support_unfilter, sum_support_filter / sum_support_unfilter,taxon, msa_name, row['effect'], max_sum_support_unfilter, sum_support_filter/max_sum_support_unfilter,
+                       sum_support_unfilter/max_sum_support_unfilter))
 
 
     print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
-df_final = pd.DataFrame(result_new, columns=["new", "old","ratio" ,"taxon", "msa_name", "effect"])
+df_final = pd.DataFrame(result_new, columns=["new", "old","ratio" ,"taxon", "msa_name", "effect", "max_support", "new_ratio", "old_ratio"])
+print(df_final)
 print(df_final[["ratio", "effect"]])
 print(df_final["ratio"].mean())
 print(df_final["ratio"].median())
