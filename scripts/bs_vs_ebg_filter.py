@@ -28,6 +28,7 @@ for index, row in result_df.iterrows():
 
 
     sbs_tree_unfiltered = os.path.join(os.pardir, "data/raw/reference_tree/") + msa_name + ".raxml.support"
+    print(sbs_tree_unfiltered)
     sbs_tree_unfiltered = ete3.Tree(sbs_tree_unfiltered, format=0)
 
     leaf_node = sbs_tree_unfiltered.search_nodes(name=taxon)[0]
