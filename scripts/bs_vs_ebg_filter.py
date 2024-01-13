@@ -79,7 +79,7 @@ print(statistics.mean(df_final["ratio"] - df_final["effect"]))
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.metrics import accuracy_score, classification_report
-df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "sequence_count"]]
+df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length"]]
 
 df['target'] = (df['ratio'] > 1).astype(int)
 
