@@ -13,7 +13,7 @@ idx = df.groupby('msa_name')['effect'].nlargest(5).index.get_level_values(1)
 idx2 = df.groupby('msa_name')['effect'].nsmallest(3).index.get_level_values(1)
 
 # Extract the corresponding rows
-result_df = df.loc[idx + idx2]
+result_df = df.loc[idx.union(idx2)]
 
 print(result_df)
 print(result_df.shape)
