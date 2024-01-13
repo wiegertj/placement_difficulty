@@ -76,3 +76,15 @@ print(df_final["ratio"].mean())
 print(df_final["ratio"].median())
 print(statistics.mean(df_final["new_ratio"] - df_final["old_ratio"]))
 print(statistics.mean(df_final["ratio"] - df_final["effect"]))
+import matplotlib.pyplot as plt
+
+plt.scatter(df['ratio'], df['uncertainty'])
+plt.title('Scatter Plot of Ratio vs. Uncertainty')
+plt.xlabel('Ratio')
+plt.ylabel('Uncertainty')
+
+# Save the plot to a file (adjust the filename and format as needed)
+plt.savefig('ratio_vs_un.png')
+
+# Show the plot (optional)
+plt.show()
