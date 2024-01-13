@@ -59,4 +59,4 @@ for index, row in result_df.iterrows():
     print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
 df_final = pd.DataFrame(result_new, columns=["new", "old","ratio" ,"taxon", "msa_name"])
-print(df_final["ratio"].mean())
+print(df_final["ratio"].median())
