@@ -199,6 +199,6 @@ percentage_unique_msa_names = (len(msa_names_2_or_more) / len(df_res["msa_name"]
 print(
     f"The percentage of unique msa_name values with 2 or more rows and result >= 1.05 is: {percentage_unique_msa_names:.2f}%")
 
-df_res_filtered = pd.DataFrame(results_filtered, columns=["effect", "msa_name", "taxon", "sequence_count","sequence_length", "uncertainty_pred"])
+df_res_filtered = pd.DataFrame(results_filtered, columns=["effect", "msa_name", "taxon", "sequence_count","sequence_length", "uncertainty_pred", "max_uncertainty"])
 
 df_res_filtered.to_csv("filtered_ebg_test.csv")
