@@ -17,7 +17,7 @@ result_df = df.loc[idx]
 print(result_df)
 print(result_df.shape)
 
-for row in result_df.iterrows():
+for index, row in result_df.iterrows():
     taxon = row["taxon"]
     msa_name = row["msa_name"]
 
