@@ -106,4 +106,3 @@ for index, row in result_df.iterrows():
                          ]
 
         subprocess.run(" ".join(raxml_command), shell=True)
-    sys.exit()
