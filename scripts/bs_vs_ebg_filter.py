@@ -79,12 +79,12 @@ print(statistics.mean(df_final["ratio"] - df_final["effect"]))
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.metrics import accuracy_score, classification_report
-df = df_final[["ratio", "effect", "uncertainty", "max_support"]]
+df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "sequence_count"]]
 
 df['target'] = (df['ratio'] > 1).astype(int)
 
 # Features (X) and target variable (y)
-X = df[['effect', 'uncertainty', 'max_support']]
+X = df[['effect', 'uncertainty', 'max_support', "sequence_length", "sequence_count"]]
 y = df['target']
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
