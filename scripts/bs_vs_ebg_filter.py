@@ -87,7 +87,7 @@ df['target'] = (df['ratio'] > 1).astype(int)
 X = df[['effect', 'uncertainty']]
 y = df['target']
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -95,13 +95,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # Initialize the Decision Tree Classifier
 classifier = DecisionTreeClassifier()
 
-# Fit the model on the training set
-classifier.fit(X_train, y_train)
+cv_scores = cross_val_score(classifier, X, y, cv=5, scoring='accuracy')
 
-# Predict on the test set
-y_pred = classifier.predict(X_test)
-
-# Calculate accuracy and print classification report
-accuracy = accuracy_score(y_test, y_pred)
-print(f'Accuracy on the test set: {accuracy:.2f}')
-print('Classification Report:\n', classification_report(y_test, y_pred))
+# Print cross-validation scores
+print('Cross-validation scores:', cv_scores)
+print('Mean accuracy:', cv_scores.mean())
