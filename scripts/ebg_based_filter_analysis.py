@@ -116,7 +116,7 @@ for msa_name in filenames[:180]:
         print(sum_support_tmp)
         print(sum_support_original_copy)
         if (sum_support_tmp / sum_support_original_copy) > 1.08:
-            results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length))
+            results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length, uncertainty, max_uncertain))
         results.append((sum_support_tmp / sum_support_original_copy, msa_name,
                         sequence_length, sequence_count))
 import matplotlib.pyplot as plt
@@ -199,6 +199,6 @@ percentage_unique_msa_names = (len(msa_names_2_or_more) / len(df_res["msa_name"]
 print(
     f"The percentage of unique msa_name values with 2 or more rows and result >= 1.05 is: {percentage_unique_msa_names:.2f}%")
 
-df_res_filtered = pd.DataFrame(results_filtered, columns=["effect", "msa_name", "taxon", "sequence_count","sequence_length"])
+df_res_filtered = pd.DataFrame(results_filtered, columns=["effect", "msa_name", "taxon", "sequence_count","sequence_length", "uncertainty_pred"])
 
 df_res_filtered.to_csv("filtered_ebg_test.csv")
