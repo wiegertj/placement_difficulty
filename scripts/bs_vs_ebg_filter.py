@@ -106,7 +106,7 @@ param_grid = {
     'criterion': ['gini', 'entropy'],
     'max_depth': [None, 5, 10, 15],
     'min_samples_split': [1, 2, 5, 10],
-    'min_samples_leaf': [1, 2, 4]
+    'min_samples_leaf': [1, 2, 4, 8]
 }
 grid_search = GridSearchCV(classifier, param_grid, cv=40, scoring='accuracy')
 grid_search.fit(X_train, y_train)
