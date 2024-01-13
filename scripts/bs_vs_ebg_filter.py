@@ -86,7 +86,8 @@ print(statistics.mean(df_final["new_ratio"] - df_final["old_ratio"]))
 print(statistics.mean(df_final["ratio"] - df_final["effect"]))
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, f1_score
+
 df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "min", "max", "std", "skw", "kurt"]]
 
 df['target'] = (df['ratio'] > 1).astype(int)
@@ -109,24 +110,35 @@ param_grid = {
     'min_samples_split': [1, 2, 5, 10],
     'min_samples_leaf': [2, 4, 8]
 }
-grid_search = GridSearchCV(classifier, param_grid, cv=30, scoring='f1')
-grid_search.fit(X_train, y_train)
+# Perform 10 random holdouts
+num_holdouts = 10
+accuracy_scores = []
+f1_scores = []
 
-# Print the best hyperparameters
-print('Best Hyperparameters:', grid_search.best_params_)
+for _ in range(num_holdouts):
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
 
-# Predict on the test set using the best model
-y_pred = grid_search.predict(X_test)
+    # Perform GridSearchCV for hyperparameter tuning
+    grid_search = GridSearchCV(classifier, param_grid, cv=5, scoring='f1')
+    grid_search.fit(X_train, y_train)
 
-classifier.fit(X_train, y_train)
+    # Print the best hyperparameters
+    print('Best Hyperparameters:', grid_search.best_params_)
 
-# Print the feature importances
-feature_importances = classifier.feature_importances_
-print('Feature Importances:')
-for feature, importance in zip(X.columns, feature_importances):
-    print(f'{feature}: {importance:.4f}')
+    # Predict on the test set using the best model
+    y_pred = grid_search.predict(X_test)
 
-# Calculate accuracy and print classification report
-accuracy = accuracy_score(y_test, y_pred)
-print(f'Accuracy on the test set: {accuracy:.2f}')
-print('Classification Report:\n', classification_report(y_test, y_pred))
+    # Print the feature importances
+    feature_importances = grid_search.best_estimator_.feature_importances_
+    print('Feature Importances:')
+    for feature, importance in zip(X.columns, feature_importances):
+        print(f'{feature}: {importance:.4f}')
+
+    # Calculate and store accuracy and F1 score
+    accuracy_scores.append(accuracy_score(y_test, y_pred))
+    f1_scores.append(f1_score(y_test, y_pred))
+
+# Print average performance metrics over holdouts
+print(f'Average Accuracy over {num_holdouts} holdouts: {sum(accuracy_scores) / num_holdouts:.2f}')
+print(f'Average F1 Score over {num_holdouts} holdouts: {sum(f1_scores) / num_holdouts:.2f}')
