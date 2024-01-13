@@ -22,6 +22,8 @@ for index, row in result_df.iterrows():
 
     taxon = row["taxon"]
     msa_name = row["msa_name"]
+    if msa_name == "21191_0":
+        continue
 
     if os.path.exists(os.path.abspath(os.path.join(os.pardir, "scripts",
                                           msa_name + "_" + taxon + ".raxml.bootstraps"))):
