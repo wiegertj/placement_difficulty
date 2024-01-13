@@ -39,7 +39,6 @@ for index, row in result_df.iterrows():
     sum_support_filter = 0.0
     sum_support_unfilter = 0.0
 
-    result_new.append(row)
 
     # Sum up the support values for newick_tree_original_copy
     for node in sbs_tree_unfiltered.traverse():
@@ -54,6 +53,10 @@ for index, row in result_df.iterrows():
     print(sum_support_filter)
     print(sum_support_unfilter)
 
+    result_new.append((sum_support_filter, sum_support_unfilter, taxon, msa_name))
+
+
     print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
-print(result_new)
+df_final = pd.DataFrame(result_new, columns=["new", "old", "taxon", "msa_name"])
+print(df_final["new"])
