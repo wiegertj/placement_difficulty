@@ -19,12 +19,14 @@ print(result_df.shape)
 
 for index, row in result_df.iterrows():
 
+
+    taxon = row["taxon"]
+    msa_name = row["msa_name"]
+
     if os.path.exists(os.path.abspath(os.path.join(os.pardir, "scripts",
                                           msa_name + "_" + taxon + ".raxml.bootstraps"))):
         print("skipped")
         continue
-    taxon = row["taxon"]
-    msa_name = row["msa_name"]
 
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
     filepath = os.path.abspath(filepath)
