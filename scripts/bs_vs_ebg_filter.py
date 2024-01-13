@@ -64,12 +64,12 @@ for index, row in result_df.iterrows():
     print(sum_support_unfilter)
 
     result_new.append((sum_support_filter, sum_support_unfilter, sum_support_filter / sum_support_unfilter,taxon, msa_name, row['effect'], max_sum_support_unfilter, sum_support_filter/max_sum_support_unfilter,
-                       sum_support_unfilter/max_sum_support_unfilter))
+                       sum_support_unfilter/max_sum_support_unfilter, row["uncertaintyPred"] / row["uncertainty_max"]))
 
 
     print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
-df_final = pd.DataFrame(result_new, columns=["new", "old","ratio" ,"taxon", "msa_name", "effect", "max_support", "new_ratio", "old_ratio"])
+df_final = pd.DataFrame(result_new, columns=["new", "old","ratio" ,"taxon", "msa_name", "effect", "max_support", "new_ratio", "old_ratio", "uncertainty"])
 print(df_final)
 print(df_final[["ratio", "effect"]])
 print(df_final["ratio"].mean())
