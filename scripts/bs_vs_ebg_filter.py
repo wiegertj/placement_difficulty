@@ -78,23 +78,29 @@ print(statistics.mean(df_final["new_ratio"] - df_final["old_ratio"]))
 print(statistics.mean(df_final["ratio"] - df_final["effect"]))
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
+from sklearn.metrics import accuracy_score, classification_report
 
-plt.scatter(df_final["new_ratio"] - df_final["old_ratio"], df_final['uncertainty'], df_final['ratio'])
-plt.title('Scatter Plot of Ratio vs. Uncertainty')
-plt.xlabel('Ratio')
-plt.ylabel('Uncertainty')
+df['target'] = (df['ratio'] > 1).astype(int)
 
-# Save the plot to a file (adjust the filename and format as needed)
-plt.savefig('ratio_vs_un.png')
-
-# Show the plot (optional)
-plt.show()
-data = df_final[["ratio", "uncertainty", "effect"]]
+# Features (X) and target variable (y)
+X = df[['effect', 'uncertainty']]
+y = df['target']
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import mean_absolute_error
-df = pd.DataFrame(data)
 
-df_final
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize the Decision Tree Classifier
+classifier = DecisionTreeClassifier()
+
+# Fit the model on the training set
+classifier.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = classifier.predict(X_test)
+
+# Calculate accuracy and print classification report
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy on the test set: {accuracy:.2f}')
+print('Classification Report:\n', classification_report(y_test, y_pred))
