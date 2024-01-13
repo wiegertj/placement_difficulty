@@ -134,7 +134,14 @@ threshold = 1.05
 probability = 1 - norm.cdf(threshold, loc=mu, scale=std)
 
 print(f"The probability of a value larger than {threshold} is: {probability:.4f}")
+# Find the critical values corresponding to the tails
+import scipy.stats as stats
 
+lower_critical_value = stats.norm.ppf(0.05, loc=mu, scale=std)
+upper_critical_value = stats.norm.ppf(0.95, loc=mu, scale=std)
+
+print("Lower Critical Value:", lower_critical_value)
+print("Upper Critical Value:", upper_critical_value)
 
 
 
