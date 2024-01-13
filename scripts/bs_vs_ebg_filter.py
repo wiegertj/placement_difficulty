@@ -120,7 +120,7 @@ for _ in range(num_holdouts):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
 
     # Perform GridSearchCV for hyperparameter tuning
-    grid_search = GridSearchCV(classifier, param_grid, cv=5, scoring='f1')
+    grid_search = GridSearchCV(classifier, param_grid, cv=30, scoring='f1')
     grid_search.fit(X_train, y_train)
 
     # Print the best hyperparameters
