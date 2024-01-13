@@ -65,7 +65,7 @@ for msa_name in filenames[:180]:
             continue
 
         try:
-            newick_tree_tmp_lower = ete3.Tree(os.path.join(subfolder_path, f"{subfolder}_lower_bound5_prediction.newick"),
+            newick_tree_tmp_lower = ete3.Tree(os.path.join(subfolder_path, f"{subfolder}_lower5_support_prediction.newick"),
                                         format=0)
         except ete3.parser.newick.NewickError:
             print("failed")
