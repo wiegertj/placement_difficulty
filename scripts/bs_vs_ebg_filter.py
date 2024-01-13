@@ -95,7 +95,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # Initialize the Decision Tree Classifier
 classifier = DecisionTreeClassifier()
 
-cv_scores = cross_val_score(classifier, X, y, cv=5, scoring='accuracy')
+cv_scores = cross_val_score(classifier, X, y, cv=10, scoring='accuracy')
 
 # Print cross-validation scores
 print('Cross-validation scores:', cv_scores)
