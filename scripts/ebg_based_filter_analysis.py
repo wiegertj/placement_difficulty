@@ -63,6 +63,14 @@ for msa_name in filenames[:180]:
         except ete3.parser.newick.NewickError:
             print("failed")
             continue
+
+        try:
+            newick_tree_tmp_lower = ete3.Tree(os.path.join(subfolder_path, f"{subfolder}_lower_bound5_prediction.newick"),
+                                        format=0)
+        except ete3.parser.newick.NewickError:
+            print("failed")
+            continue
+
         newick_tree_original_copy = ground_truth_tree.copy()
         try:
             leaf_node = newick_tree_original_copy.search_nodes(name="taxon" + str(last_integer))[0]
@@ -73,11 +81,18 @@ for msa_name in filenames[:180]:
 
         sum_support_original_copy = 0.0
         sum_support_tmp = 0.0
+        uncertainty = 0.0
+        max_uncertain = 0.0
 
         # Sum up the support values for newick_tree_original_copy
         for node in newick_tree_original_copy.traverse():
             if node.support is not None and not node.is_leaf():
                 sum_support_original_copy += node.support
+                for node_lower in newick_tree_tmp_lower.traverse():
+                    if node_lower.support is not None and node_lower.name == node.name:
+                        max_uncertain += 100
+                        uncertainty += abs(node_lower.support - node.support)
+
 
         # Sum up the support values for newick_tree_tmp
         for node in newick_tree_tmp.traverse():
