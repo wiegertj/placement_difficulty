@@ -18,6 +18,11 @@ print(result_df)
 print(result_df.shape)
 
 for index, row in result_df.iterrows():
+
+    if os.path.exists(os.path.abspath(os.path.join(os.pardir, "scripts",
+                                          msa_name + "_" + taxon + ".raxml.bootstraps"))):
+        print("skipped")
+        continue
     taxon = row["taxon"]
     msa_name = row["msa_name"]
 
