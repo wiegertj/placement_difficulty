@@ -99,7 +99,7 @@ for index, row in result_df.iterrows():
 
         raxml_command = ["raxml-ng",
                          "--support",
-                         f"--tree {tree_path}",
+                         f"--tree {original_tree_path}",
                          f"--bs-trees {bootstrap_filepath}",
                          "--redo",
                          f"--prefix " + msa_name + "_" + taxon,
