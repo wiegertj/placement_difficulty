@@ -9,7 +9,7 @@ from Bio import SeqIO, AlignIO
 link = "/hits/fast/cme/wiegerjs/placement_difficulty/scripts/filtered_ebg_test.csv"
 df = pd.read_csv(link)
 
-idx = df.groupby('msa_name')['effect'].idxmax()
+idx = df.groupby('msa_name')['effect'].nlargest(3).index.get_level_values(1)
 
 # Extract the corresponding rows
 result_df = df.loc[idx]
