@@ -20,7 +20,6 @@ print(result_df.shape)
 for row in result_df.iterrows():
     taxon = row["taxon"]
     msa_name = row["msa_name"]
-    MSA = AlignIO.read(filepath, 'fasta')
 
     filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
     filepath = os.path.abspath(filepath)
@@ -29,6 +28,8 @@ for row in result_df.iterrows():
     model_path_tmp = os.path.abspath(os.path.join(os.pardir, "data/processed/loo", msa_name + "_msa_model.txt"))
 
     new_alignment = []
+    MSA = AlignIO.read(filepath, 'fasta')
+
 
     # Delete one out of MSA
     for record in MSA:
