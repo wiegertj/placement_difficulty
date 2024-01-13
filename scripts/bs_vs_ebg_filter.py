@@ -108,7 +108,7 @@ param_grid = {
     'min_samples_split': [1, 2, 5, 10],
     'min_samples_leaf': [1, 2, 4]
 }
-grid_search = GridSearchCV(classifier, param_grid, cv=30, scoring='accuracy')
+grid_search = GridSearchCV(classifier, param_grid, cv=40, scoring='accuracy')
 grid_search.fit(X_train, y_train)
 
 # Print the best hyperparameters
