@@ -25,13 +25,15 @@ for index, row in result_df.iterrows():
     sbs_path_filtered = f"/hits/fast/cme/wiegerjs/placement_difficulty/scripts/{row['msa_name']}_{taxon}.raxml.support"
     try:
         sbs_tree_filtered = ete3.Tree(sbs_path_filtered, format=0)
+        print(sbs_tree_filtered)
     except Exception as e:
         continue
 
 
     sbs_tree_unfiltered = os.path.join(os.pardir, "data/raw/reference_tree/") + msa_name + ".newick.raxml.support"
-    print(sbs_tree_unfiltered)
     sbs_tree_unfiltered = ete3.Tree(sbs_tree_unfiltered, format=0)
+    print(sbs_tree_unfiltered)
+
 
     leaf_node = sbs_tree_unfiltered.search_nodes(name=taxon)[0]
     leaf_node.delete()
