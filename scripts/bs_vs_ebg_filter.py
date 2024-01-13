@@ -109,6 +109,14 @@ print('Best Hyperparameters:', grid_search.best_params_)
 # Predict on the test set using the best model
 y_pred = grid_search.predict(X_test)
 
+classifier.fit(X_train, y_train)
+
+# Print the feature importances
+feature_importances = classifier.feature_importances_
+print('Feature Importances:')
+for feature, importance in zip(X.columns, feature_importances):
+    print(f'{feature}: {importance:.4f}')
+
 # Calculate accuracy and print classification report
 accuracy = accuracy_score(y_test, y_pred)
 print(f'Accuracy on the test set: {accuracy:.2f}')
