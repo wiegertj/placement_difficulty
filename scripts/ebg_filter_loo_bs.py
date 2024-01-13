@@ -87,7 +87,7 @@ for index, row in result_df.iterrows():
             "--bootstrap",
             "--model", model_path_tmp,
             f"--bs-trees {1000}",
-            "--msa", filepath,
+            "--msa", output_file,
             "--redo",
             "--prefix", msa_name + "_" + taxon
         ]
