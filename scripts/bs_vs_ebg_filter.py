@@ -63,4 +63,4 @@ df_final = pd.DataFrame(result_new, columns=["new", "old","ratio" ,"taxon", "msa
 print(df_final[["ratio", "effect"]])
 print(df_final["ratio"].mean())
 print(df_final["ratio"].median())
-print(statistics.mean(df_final["new"] - df_final["old"]))
+print(statistics.mean(df_final["ratio"] - df_final["effect"]))
