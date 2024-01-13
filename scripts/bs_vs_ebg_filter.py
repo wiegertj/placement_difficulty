@@ -60,3 +60,4 @@ for index, row in result_df.iterrows():
 
 df_final = pd.DataFrame(result_new, columns=["new", "old","ratio" ,"taxon", "msa_name"])
 print(df_final["ratio"].median())
+print(df_final["ratio"])
