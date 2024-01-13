@@ -69,7 +69,7 @@ for index, row in result_df.iterrows():
 
     print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
-df_final = pd.DataFrame(result_new, columns=["new", "old","ratio" ,"taxon", "msa_name", "effect", "max_support", "new_ratio", "old_ratio", "uncertainty"])
+df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio","taxon", "msa_name", "effect", "max_support", "new_ratio", "old_ratio", "uncertainty"])
 print(df_final.sort_values("uncertainty"))
 print(df_final[["ratio", "effect"]])
 print(df_final["ratio"].mean())
@@ -91,3 +91,29 @@ plt.savefig('ratio_vs_un.png')
 
 # Show the plot (optional)
 plt.show()
+data = df_final[["ratio", "uncertainty", "effect"]]
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import mean_absolute_error
+df = pd.DataFrame(data)
+
+# Features (X) and target variable (y)
+X = df[['effect', 'uncertainty']]
+y = df['ratio']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize the Decision Tree Regressor
+regressor = DecisionTreeRegressor()
+
+# Fit the model on the training set
+regressor.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = regressor.predict(X_test)
+
+# Calculate Mean Absolute Error (MAE)
+mae = mean_absolute_error(y_test, y_pred)
+
+print(f'Mean Absolute Error on the test set: {mae}')
