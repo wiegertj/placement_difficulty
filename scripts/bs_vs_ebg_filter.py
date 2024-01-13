@@ -77,8 +77,11 @@ print(df_final["ratio"].median())
 print(statistics.mean(df_final["new_ratio"] - df_final["old_ratio"]))
 print(statistics.mean(df_final["ratio"] - df_final["effect"]))
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
 
-plt.scatter(df_final["new_ratio"] - df_final["old_ratio"], df_final['uncertainty'])
+plt.scatter(df_final["new_ratio"] - df_final["old_ratio"], df_final['uncertainty'], df_final['ratio'])
 plt.title('Scatter Plot of Ratio vs. Uncertainty')
 plt.xlabel('Ratio')
 plt.ylabel('Uncertainty')
