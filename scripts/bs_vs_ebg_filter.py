@@ -53,7 +53,7 @@ for index, row in result_df.iterrows():
     print(sum_support_filter)
     print(sum_support_unfilter)
 
-    result_new.append((sum_support_filter, sum_support_unfilter, taxon, msa_name))
+    result_new.append((sum_support_filter, sum_support_unfilter, sum_support_filter / sum_support_unfilter,taxon, msa_name))
 
 
     print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
