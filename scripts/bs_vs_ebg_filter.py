@@ -13,6 +13,7 @@ idx = df.groupby('msa_name')['effect'].idxmax()
 
 # Extract the corresponding rows
 result_df = df.loc[idx]
+result_new = []
 
 print(result_df)
 print(result_df.shape)
@@ -38,6 +39,8 @@ for index, row in result_df.iterrows():
     sum_support_filter = 0.0
     sum_support_unfilter = 0.0
 
+    result_new.append(row)
+
     # Sum up the support values for newick_tree_original_copy
     for node in sbs_tree_unfiltered.traverse():
         if node.support is not None and not node.is_leaf():
@@ -53,3 +56,4 @@ for index, row in result_df.iterrows():
 
     print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
+print(result_new)
