@@ -35,18 +35,18 @@ for index, row in result_df.iterrows():
     leaf_node.delete()
     leaf_names = sbs_tree_unfiltered.get_leaf_names()
 
-    sum_support_original_copy = 0.0
-    sum_support_tmp = 0.0
+    sum_support_filter = 0.0
+    sum_support_unfilter = 0.0
 
     # Sum up the support values for newick_tree_original_copy
     for node in sbs_tree_unfiltered.traverse():
-        if node.support is not None:
-            sum_support_original_copy += node.support
+        if node.support is not None and not node.is_leaf():
+            sum_support_unfilter += node.support
 
     # Sum up the support values for newick_tree_tmp
     for node in sbs_tree_filtered.traverse():
-        if node.support is not None:
-            sum_support_tmp += node.support
+        if node.support is not None and not node.is_leaf():
+            sum_support_filter += node.support
 
-    print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_tmp / sum_support_original_copy}")
+    print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
