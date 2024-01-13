@@ -6,6 +6,8 @@ import sys
 import ete3
 import pandas as pd
 from Bio import SeqIO, AlignIO
+from scipy.stats import kurtosis
+from sympy.stats import skewness
 
 link = "/hits/fast/cme/wiegerjs/placement_difficulty/scripts/filtered_ebg_test.csv"
 df = pd.read_csv(link)
@@ -71,12 +73,13 @@ for index, row in result_df.iterrows():
     elementwise_difference = [a - b for a, b in zip(sum_support_filter_list, sum_support_unfilter_list)]
 
     result_new.append((sum_support_filter, sum_support_unfilter, sum_support_filter / sum_support_unfilter,taxon, msa_name, row['effect'], max_sum_support_unfilter, sum_support_filter/max_sum_support_unfilter,
-                       sum_support_unfilter/max_sum_support_unfilter, row["uncertainty_pred"] / row["max_uncertainty"], row["sequence_length"], min(elementwise_difference), max(elementwise_difference), statistics.stdev(elementwise_difference)))
+                       sum_support_unfilter/max_sum_support_unfilter, row["uncertainty_pred"] / row["max_uncertainty"], row["sequence_length"], min(elementwise_difference), max(elementwise_difference), statistics.stdev(elementwise_difference), skewness(elementwise_difference)
+                       , kurtosis(elementwise_difference)))
 
 
     print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
-df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio","taxon", "msa_name", "effect", "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length", "min", "max", "std"])
+df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio","taxon", "msa_name", "effect", "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length", "min", "max", "std", "skw", "kurt"])
 print(df_final.sort_values("uncertainty"))
 print(df_final[["ratio", "effect"]])
 print(df_final["ratio"].mean())
