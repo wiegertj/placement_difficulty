@@ -107,7 +107,7 @@ classifier = DecisionTreeClassifier()
 param_grid = {
     'criterion': ['gini', 'entropy'],
     'max_depth': [None, 5, 10, 15],
-    'min_samples_split': [1, 2, 5, 10],
+    'min_samples_split': [2, 5, 10],
     'min_samples_leaf': [2, 4, 8]
 }
 # Perform 10 random holdouts
