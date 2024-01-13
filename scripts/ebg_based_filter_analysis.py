@@ -76,12 +76,12 @@ for msa_name in filenames[:180]:
 
         # Sum up the support values for newick_tree_original_copy
         for node in newick_tree_original_copy.traverse():
-            if node.support is not None:
+            if node.support is not None and not node.is_leaf():
                 sum_support_original_copy += node.support
 
         # Sum up the support values for newick_tree_tmp
         for node in newick_tree_tmp.traverse():
-            if node.support is not None:
+            if node.support is not None and not node.is_leaf():
                 sum_support_tmp += node.support
 
         # Assuming there's only one CSV file in each subfolder
