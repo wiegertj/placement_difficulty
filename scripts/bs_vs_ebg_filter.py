@@ -48,5 +48,8 @@ for index, row in result_df.iterrows():
         if node.support is not None and not node.is_leaf():
             sum_support_filter += node.support
 
+    print(sum_support_filter)
+    print(sum_support_unfilter)
+
     print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
