@@ -86,7 +86,7 @@ print(statistics.mean(df_final["new_ratio"] - df_final["old_ratio"]))
 print(statistics.mean(df_final["ratio"] - df_final["effect"]))
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from sklearn.metrics import accuracy_score, classification_report, f1_score
+from sklearn.metrics import accuracy_score, classification_report, f1_score, mean_absolute_error, median_absolute_error
 
 df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "min", "max", "std", "skw", "kurt"]]
 
@@ -95,32 +95,35 @@ print(df["target"].value_counts())
 
 # Features (X) and target variable (y)
 X = df[['effect', 'uncertainty', 'max_support', "sequence_length",  "min", "max", "std", "skw", "kurt"]]
-y = df['target']
-from sklearn.tree import DecisionTreeClassifier
+y = df['ratio']
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 # Initialize the Decision Tree Classifier
-classifier = DecisionTreeClassifier()
+regressor = DecisionTreeRegressor()
+
+# Define hyperparameters to tune
 param_grid = {
-    'criterion': ['gini', 'entropy'],
+    'criterion': ['mse', 'friedman_mse', 'mae'],
     'max_depth': [None, 5, 10, 15],
     'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [2, 4, 8]
+    'min_samples_leaf': [1, 2, 4]
 }
+
 # Perform 10 random holdouts
 num_holdouts = 10
-accuracy_scores = []
-f1_scores = []
+mae_scores = []
+median_ae_scores = []
 
 for _ in range(num_holdouts):
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
 
     # Perform GridSearchCV for hyperparameter tuning
-    grid_search = GridSearchCV(classifier, param_grid, cv=30, scoring='f1')
+    grid_search = GridSearchCV(regressor, param_grid, cv=5, scoring='neg_mean_squared_error')
     grid_search.fit(X_train, y_train)
 
     # Print the best hyperparameters
@@ -129,16 +132,10 @@ for _ in range(num_holdouts):
     # Predict on the test set using the best model
     y_pred = grid_search.predict(X_test)
 
-    # Print the feature importances
-    feature_importances = grid_search.best_estimator_.feature_importances_
-    print('Feature Importances:')
-    for feature, importance in zip(X.columns, feature_importances):
-        print(f'{feature}: {importance:.4f}')
-
-    # Calculate and store accuracy and F1 score
-    accuracy_scores.append(accuracy_score(y_test, y_pred))
-    f1_scores.append(f1_score(y_test, y_pred))
+    # Calculate and store mean absolute error and median absolute error
+    mae_scores.append(mean_absolute_error(y_test, y_pred))
+    median_ae_scores.append(median_absolute_error(y_test, y_pred))
 
 # Print average performance metrics over holdouts
-print(f'Average Accuracy over {num_holdouts} holdouts: {sum(accuracy_scores) / num_holdouts:.2f}')
-print(f'Average F1 Score over {num_holdouts} holdouts: {sum(f1_scores) / num_holdouts:.2f}')
+print(f'Average Mean Absolute Error over {num_holdouts} holdouts: {sum(mae_scores) / num_holdouts:.2f}')
+print(f'Average Median Absolute Error over {num_holdouts} holdouts: {np.median(median_ae_scores):.2f}')
