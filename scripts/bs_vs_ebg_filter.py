@@ -51,6 +51,8 @@ for index, row in result_df.iterrows():
     # Sum up the support values for newick_tree_tmp
     for node in sbs_tree_filtered.traverse():
         if node.support is not None and not node.is_leaf():
+            print(node.support)
+
             sum_support_filter += node.support
 
     print(sum_support_filter)
