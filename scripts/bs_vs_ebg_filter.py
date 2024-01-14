@@ -16,11 +16,12 @@ df2 = pd.read_csv(diff)
 df2["name"] = df2["name"].str.replace(".phy", "")
 df = df.merge(df2, left_on="msa_name", right_on="name")
 
-idx = df.groupby('msa_name')['effect'].nlargest(10).index.get_level_values(1)
-idx2 = df.groupby('msa_name')['effect'].nsmallest(5).index.get_level_values(1)
+#idx = df.groupby('msa_name')['effect'].nlargest(10).index.get_level_values(1)
+#idx2 = df.groupby('msa_name')['effect'].nsmallest(5).index.get_level_values(1)
 
 # Extract the corresponding rows
-result_df = df.loc[idx.union(idx2)]
+#result_df = df.loc[idx.union(idx2)]
+result_df = df
 result_df = result_df.drop_duplicates(subset=['taxon', 'msa_name'])
 result_new = []
 
