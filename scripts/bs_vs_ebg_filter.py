@@ -11,11 +11,12 @@ from scipy.stats import kurtosis, skew
 link = "/hits/fast/cme/wiegerjs/placement_difficulty/scripts/filtered_ebg_test.csv"
 df = pd.read_csv(link)
 
-idx = df.groupby('msa_name')['effect'].nlargest(8).index.get_level_values(1)
-idx2 = df.groupby('msa_name')['effect'].nsmallest(2).index.get_level_values(1)
+idx = df.groupby('msa_name')['effect'].nlargest(10).index.get_level_values(1)
+idx2 = df.groupby('msa_name')['effect'].nsmallest(5).index.get_level_values(1)
 
 # Extract the corresponding rows
 result_df = df.loc[idx.union(idx2)]
+result_df = result_df.drop_duplicates(subset=['taxon', 'msa_name'])
 result_new = []
 
 print(result_df)
