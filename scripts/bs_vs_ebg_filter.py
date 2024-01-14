@@ -80,8 +80,8 @@ for index, row in result_df.iterrows():
                        sum_support_unfilter / max_sum_support_unfilter,
                        row["uncertainty_pred"] / row["max_uncertainty"], row["sequence_length"],
                        min(elementwise_difference), max(elementwise_difference),
-                       statistics.stdev(elementwise_difference), skew(elementwise_difference)
-                       , kurtosis(elementwise_difference), row["difficulty"], row["min_1"], row["max_1"], row["mean_1"], row["std_1"], row["skew_1"], row["kurt_1"])
+                       statistics.stdev(elementwise_difference), skew(elementwise_difference),
+                       kurtosis(elementwise_difference), row["difficulty"], row["min_1"], row["max_1"], row["mean_1"], row["std_1"], row["skew_1"], row["kurt_1"])
                       )
 
     print(
@@ -89,7 +89,7 @@ for index, row in result_df.iterrows():
 
 df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio", "taxon", "msa_name", "effect",
                                              "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length",
-                                             "min", "max", "std", "skw", "kurt", "difficulty", "min_1", "max_1","mean_1" "std_1", "skew_1", "kurt_1"])
+                                             "min", "max", "std", "skw", "kurt", "difficulty", "min_1", "max_1","mean_1", "std_1", "skew_1", "kurt_1"])
 print(df_final.sort_values("uncertainty"))
 print(df_final[["ratio", "effect"]])
 print(df_final["ratio"].mean())
