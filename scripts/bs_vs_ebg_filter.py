@@ -146,7 +146,7 @@ for _ in range(num_holdouts):
     # Calculate and store mean absolute error and median absolute error
     mae_scores.append(mean_absolute_error(y_test, y_pred))
     median_ae_scores.append(median_absolute_error(y_test, y_pred))
-
+import numpy as np
 # Print average performance metrics over holdouts
 print(f'Average Mean Absolute Error over {num_holdouts} holdouts: {sum(mae_scores) / num_holdouts:.2f}')
 print(f'Average Median Absolute Error over {num_holdouts} holdouts: {np.median(median_ae_scores):.2f}')
