@@ -144,6 +144,13 @@ for _ in range(num_holdouts):
 
     # Print the best hyperparameters
     print('Best Hyperparameters:', grid_search.best_params_)
+    feature_importances = grid_search.best_estimator_.feature_importances_
+    sorted_features = sorted(zip(X.columns, feature_importances), key=lambda x: x[1])
+
+    # Print the sorted feature importances
+    print(f'Holdout  - Sorted Feature Importances (Ascending):')
+    for feature, importance in sorted_features:
+        print(f'{feature}: {importance:.4f}')
 
     # Predict on the test set using the best model
     y_pred = grid_search.predict(X_test)
