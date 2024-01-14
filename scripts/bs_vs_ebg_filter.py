@@ -99,13 +99,13 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.metrics import accuracy_score, classification_report, f1_score, mean_absolute_error, median_absolute_error
 
-df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "min", "max", "std", "skw", "kurt", "difficulty"]]
+df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "difficulty"]]
 
 df['target'] = (df['ratio'] > 1.05).astype(int)
 print(df["target"].value_counts())
 
 # Features (X) and target variable (y)
-X = df[['effect', 'uncertainty', 'max_support', "sequence_length", "min", "max", "std", "skw", "kurt", "difficulty"]]
+X = df[['effect', 'uncertainty', 'max_support', "sequence_length", "difficulty"]]
 y = df['ratio']
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
