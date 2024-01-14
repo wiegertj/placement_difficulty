@@ -81,7 +81,7 @@ for index, row in result_df.iterrows():
                        row["uncertainty_pred"] / row["max_uncertainty"], row["sequence_length"],
                        min(elementwise_difference), max(elementwise_difference),
                        statistics.stdev(elementwise_difference), skew(elementwise_difference)
-                       , kurtosis(elementwise_difference), row["difficulty"], row["min_1"], row["max_1"], row["mean_1"], row["std_1"], row["skw_1"], row["kurt_1"])
+                       , kurtosis(elementwise_difference), row["difficulty"], row["min_1"], row["max_1"], row["mean_1"], row["std_1"], row["skew_1"], row["kurt_1"])
                       )
 
     print(
