@@ -89,7 +89,7 @@ for index, row in result_df.iterrows():
 
 df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio", "taxon", "msa_name", "effect",
                                              "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length",
-                                             "min", "max", "std", "skw", "kurt", "difficulty", "min_1", "max_1","mean_1" "std_1", "skw_1", "kurt_1"])
+                                             "min", "max", "std", "skw", "kurt", "difficulty", "min_1", "max_1","mean_1" "std_1", "skew_1", "kurt_1"])
 print(df_final.sort_values("uncertainty"))
 print(df_final[["ratio", "effect"]])
 print(df_final["ratio"].mean())
@@ -100,13 +100,13 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.metrics import accuracy_score, classification_report, f1_score, mean_absolute_error, median_absolute_error
 
-df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "difficulty", "min_1", "max_1","mean_1" "std_1", "skw_1", "kurt_1"]]
+df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "difficulty", "min_1", "max_1","mean_1" "std_1", "skew_1", "kurt_1"]]
 
 df['target'] = (df['ratio'] > 1.05).astype(int)
 print(df["target"].value_counts())
 
 # Features (X) and target variable (y)
-X = df[['effect', 'uncertainty', 'max_support', "sequence_length", "difficulty", "min_1", "max_1","mean_1" "std_1", "skw_1", "kurt_1"]]
+X = df[['effect', 'uncertainty', 'max_support', "sequence_length", "difficulty", "min_1", "max_1","mean_1" "std_1", "skew_1", "kurt_1"]]
 y = df['ratio']
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
