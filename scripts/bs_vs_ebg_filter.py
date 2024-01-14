@@ -39,7 +39,10 @@ for index, row in result_df.iterrows():
         continue
 
     sbs_tree_unfiltered = os.path.join(os.pardir, "data/raw/reference_tree/") + msa_name + ".newick.raxml.support"
-    sbs_tree_unfiltered = ete3.Tree(sbs_tree_unfiltered, format=0)
+    try:
+        sbs_tree_unfiltered = ete3.Tree(sbs_tree_unfiltered, format=0)
+    except Exception as e:
+        continue
 
     leaf_node = sbs_tree_unfiltered.search_nodes(name=taxon)[0]
     leaf_node.delete()
