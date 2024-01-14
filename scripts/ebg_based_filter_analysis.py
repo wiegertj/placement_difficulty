@@ -131,14 +131,18 @@ for msa_name in filenames[:180]:
             results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length, uncertainty, max_uncertain,
                                      min(elementwise_difference), max(elementwise_difference), mean(elementwise_difference),np.std(elementwise_difference), skew(elementwise_difference), kurtosis(elementwise_difference)))
 
-        results.append((sum_support_tmp / sum_support_original_copy, msa_name,
-                        sequence_length, sequence_count))
+        results.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer),
+                                 sequence_count, sequence_length, uncertainty, max_uncertain,
+                                 min(elementwise_difference), max(elementwise_difference), mean(elementwise_difference),
+                                 np.std(elementwise_difference), skew(elementwise_difference),
+                                 kurtosis(elementwise_difference)))
+
 import matplotlib.pyplot as plt
 
 print(len(results))
 # results = [value for value in results if abs(value[0]) < 0.5]
 
-df_res = pd.DataFrame(results, columns=["result", "msa_name", "sequence_length", "sequence_count", "min_1", "max_1","mean_1","std_1", "skew_1", "kurt_1"])
+df_res = pd.DataFrame(results, columns=["result", "msa_name", "sequence_length", "sequence_count","uncertainty", "max_uncertainty", "min_1", "max_1","mean_1","std_1", "skew_1", "kurt_1"])
 
 # Calculate the maximum value per unique "msa_name"
 max_values = df_res.groupby('msa_name')['result'].max()
@@ -213,6 +217,6 @@ percentage_unique_msa_names = (len(msa_names_2_or_more) / len(df_res["msa_name"]
 print(
     f"The percentage of unique msa_name values with 2 or more rows and result >= 1.05 is: {percentage_unique_msa_names:.2f}%")
 
-df_res_filtered = pd.DataFrame(results_filtered, columns=["effect", "msa_name", "taxon", "sequence_count","sequence_length", "uncertainty_pred", "max_uncertainty"])
+df_res_filtered = pd.DataFrame(results_filtered, columns=["effect", "msa_name", "taxon", "sequence_count","sequence_length", "uncertainty_pred", "max_uncertainty",  "min_1", "max_1","mean_1","std_1", "skew_1", "kurt_1"])
 
 df_res_filtered.to_csv("filtered_ebg_test.csv")
