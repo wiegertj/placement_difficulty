@@ -88,7 +88,7 @@ for index, row in result_df.iterrows():
         f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
 df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio", "taxon", "msa_name", "effect",
-                                             "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length",
+                                             "max_support", "new_ratio", "old_ratio", "uncertainty","max_uncertainty", "sequence_length",
                                              "min", "max", "std", "skw", "kurt", "difficulty", "min_1", "max_1","mean_1" "std_1", "skew_1", "kurt_1"])
 print(df_final.sort_values("uncertainty"))
 print(df_final[["ratio", "effect"]])
