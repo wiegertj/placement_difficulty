@@ -7,13 +7,15 @@ import ete3
 import pandas as pd
 from Bio import SeqIO, AlignIO
 from scipy.stats import kurtosis, skew
+
 link = "/hits/fast/cme/wiegerjs/placement_difficulty/scripts/filtered_ebg_test.csv"
 df = pd.read_csv(link)
 
-idx = df.groupby('msa_name')['effect'].nlargest(3).index.get_level_values(1)
+idx = df.groupby('msa_name')['effect'].nlargest(8).index.get_level_values(1)
+idx2 = df.groupby('msa_name')['effect'].nsmallest(2).index.get_level_values(1)
 
 # Extract the corresponding rows
-result_df = df.loc[idx]
+result_df = df.loc[idx.union(idx2)]
 result_new = []
 
 print(result_df)
@@ -29,10 +31,8 @@ for index, row in result_df.iterrows():
     except Exception as e:
         continue
 
-
     sbs_tree_unfiltered = os.path.join(os.pardir, "data/raw/reference_tree/") + msa_name + ".newick.raxml.support"
     sbs_tree_unfiltered = ete3.Tree(sbs_tree_unfiltered, format=0)
-
 
     leaf_node = sbs_tree_unfiltered.search_nodes(name=taxon)[0]
     leaf_node.delete()
@@ -47,7 +47,6 @@ for index, row in result_df.iterrows():
 
     max_sum_support_filter = 0.0
     max_sum_support_unfilter = 0.0
-
 
     # Sum up the support values for newick_tree_original_copy
     for node in sbs_tree_unfiltered.traverse():
@@ -70,14 +69,20 @@ for index, row in result_df.iterrows():
     print(sum_support_unfilter)
     elementwise_difference = [a - b for a, b in zip(sum_support_filter_list, sum_support_unfilter_list)]
 
-    result_new.append((sum_support_filter, sum_support_unfilter, sum_support_filter / sum_support_unfilter,taxon, msa_name, row['effect'], max_sum_support_unfilter, sum_support_filter/max_sum_support_unfilter,
-                       sum_support_unfilter/max_sum_support_unfilter, row["uncertainty_pred"] / row["max_uncertainty"], row["sequence_length"], min(elementwise_difference), max(elementwise_difference), statistics.stdev(elementwise_difference), skew(elementwise_difference)
+    result_new.append((sum_support_filter, sum_support_unfilter, sum_support_filter / sum_support_unfilter, taxon,
+                       msa_name, row['effect'], max_sum_support_unfilter, sum_support_filter / max_sum_support_unfilter,
+                       sum_support_unfilter / max_sum_support_unfilter,
+                       row["uncertainty_pred"] / row["max_uncertainty"], row["sequence_length"],
+                       min(elementwise_difference), max(elementwise_difference),
+                       statistics.stdev(elementwise_difference), skew(elementwise_difference)
                        , kurtosis(elementwise_difference)))
 
+    print(
+        f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
-    print(f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
-
-df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio","taxon", "msa_name", "effect", "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length", "min", "max", "std", "skw", "kurt"])
+df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio", "taxon", "msa_name", "effect",
+                                             "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length",
+                                             "min", "max", "std", "skw", "kurt"])
 print(df_final.sort_values("uncertainty"))
 print(df_final[["ratio", "effect"]])
 print(df_final["ratio"].mean())
@@ -94,7 +99,7 @@ df['target'] = (df['ratio'] > 1.05).astype(int)
 print(df["target"].value_counts())
 
 # Features (X) and target variable (y)
-X = df[['effect', 'uncertainty', 'max_support', "sequence_length",  "min", "max", "std", "skw", "kurt"]]
+X = df[['effect', 'uncertainty', 'max_support', "sequence_length", "min", "max", "std", "skw", "kurt"]]
 y = df['ratio']
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
@@ -138,5 +143,6 @@ for _ in range(num_holdouts):
 
 # Print average performance metrics over holdouts
 import numpy as np
+
 print(f'Average Mean Absolute Error over {num_holdouts} holdouts: {sum(mae_scores) / num_holdouts:.2f}')
 print(f'Average Median Absolute Error over {num_holdouts} holdouts: {np.median(median_ae_scores):.2f}')
