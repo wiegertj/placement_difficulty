@@ -117,6 +117,9 @@ for msa_name in filenames[:180]:
         print(sum_support_original_copy)
         if (sum_support_tmp / sum_support_original_copy) > 1.08:
             results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length, uncertainty, max_uncertain))
+        else:
+            results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length, uncertainty, max_uncertain))
+
         results.append((sum_support_tmp / sum_support_original_copy, msa_name,
                         sequence_length, sequence_count))
 import matplotlib.pyplot as plt
