@@ -11,6 +11,8 @@ df = pd.read_csv(link)
 
 idx = df.groupby('msa_name')['effect'].nlargest(8).index.get_level_values(1)
 idx2 = df.groupby('msa_name')['effect'].nsmallest(2).index.get_level_values(1)
+idx3 = df.groupby('msa_name')['effect'].sample(5).index.get_level_values(1)
+idx2 = idx2.union(idx3)
 
 # Extract the corresponding rows
 result_df = df.loc[idx.union(idx2)]
