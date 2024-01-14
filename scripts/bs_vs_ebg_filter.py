@@ -117,11 +117,11 @@ regressor = GradientBoostingRegressor()
 
 # Define hyperparameters to tune
 param_grid = {
-    'n_estimators': [50, 100, 200],
-    'learning_rate': [0.01, 0.1, 0.2],
-    'max_depth': [3, 5, 7],
-    'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 2, 4]
+    'n_estimators': [50, 100],
+    'learning_rate': [0.01, 0.1],
+    'max_depth': [5, 7, 10],
+    'min_samples_split': [5, 10],
+    'min_samples_leaf': [2, 4]
 }
 
 # Perform 20 random holdouts
