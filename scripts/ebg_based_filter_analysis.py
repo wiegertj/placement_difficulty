@@ -126,10 +126,10 @@ for msa_name in filenames[:180]:
         print(sum_support_original_copy)
         if (sum_support_tmp / sum_support_original_copy) > 1.08:
             results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length, uncertainty, max_uncertain,
-                                     min(elementwise_difference), max(elementwise_difference), skew(elementwise_difference), kurtosis(elementwise_difference)))
+                                     min(elementwise_difference), max(elementwise_difference), mean(elementwise_difference), np.std(elementwise_difference), skew(elementwise_difference), kurtosis(elementwise_difference)))
         else:
             results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length, uncertainty, max_uncertain,
-                                     min(elementwise_difference), max(elementwise_difference), mean(elementwise_difference), skew(elementwise_difference), kurtosis(elementwise_difference)))
+                                     min(elementwise_difference), max(elementwise_difference), mean(elementwise_difference),np.std(elementwise_difference), skew(elementwise_difference), kurtosis(elementwise_difference)))
 
         results.append((sum_support_tmp / sum_support_original_copy, msa_name,
                         sequence_length, sequence_count))
@@ -138,7 +138,7 @@ import matplotlib.pyplot as plt
 print(len(results))
 # results = [value for value in results if abs(value[0]) < 0.5]
 
-df_res = pd.DataFrame(results, columns=["result", "msa_name", "sequence_length", "sequence_count", "min_1", "max_1","mean_1", "skew_1", "kurt_1"])
+df_res = pd.DataFrame(results, columns=["result", "msa_name", "sequence_length", "sequence_count", "min_1", "max_1","mean_1","std_1", "skew_1", "kurt_1"])
 
 # Calculate the maximum value per unique "msa_name"
 max_values = df_res.groupby('msa_name')['result'].max()
