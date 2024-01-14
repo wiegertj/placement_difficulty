@@ -9,7 +9,11 @@ from Bio import SeqIO, AlignIO
 from scipy.stats import kurtosis, skew
 
 link = "/hits/fast/cme/wiegerjs/placement_difficulty/scripts/filtered_ebg_test.csv"
+diff = "/hits/fast/cme/wiegerjs/placement_difficulty/data/treebase_difficulty_new.csv"
 df = pd.read_csv(link)
+df2 = pd.read_csv(diff)
+df2["name"] = df2["name"].str.replace(".phy", "")
+df = df.merge(df2, left_on="msa_name", right_on="name")
 
 idx = df.groupby('msa_name')['effect'].nlargest(10).index.get_level_values(1)
 idx2 = df.groupby('msa_name')['effect'].nsmallest(5).index.get_level_values(1)
@@ -76,14 +80,14 @@ for index, row in result_df.iterrows():
                        row["uncertainty_pred"] / row["max_uncertainty"], row["sequence_length"],
                        min(elementwise_difference), max(elementwise_difference),
                        statistics.stdev(elementwise_difference), skew(elementwise_difference)
-                       , kurtosis(elementwise_difference)))
+                       , kurtosis(elementwise_difference), row["difficulty"]))
 
     print(
         f"msa: {msa_name} taxon: {taxon} effect: {row['effect']}  new_effect {sum_support_filter / sum_support_unfilter}")
 
 df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio", "taxon", "msa_name", "effect",
                                              "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length",
-                                             "min", "max", "std", "skw", "kurt"])
+                                             "min", "max", "std", "skw", "kurt", "difficulty"])
 print(df_final.sort_values("uncertainty"))
 print(df_final[["ratio", "effect"]])
 print(df_final["ratio"].mean())
@@ -94,13 +98,13 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.metrics import accuracy_score, classification_report, f1_score, mean_absolute_error, median_absolute_error
 
-df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "min", "max", "std", "skw", "kurt"]]
+df = df_final[["ratio", "effect", "uncertainty", "max_support", "sequence_length", "min", "max", "std", "skw", "kurt", "difficulty"]]
 
 df['target'] = (df['ratio'] > 1.05).astype(int)
 print(df["target"].value_counts())
 
 # Features (X) and target variable (y)
-X = df[['effect', 'uncertainty', 'max_support', "sequence_length", "min", "max", "std", "skw", "kurt"]]
+X = df[['effect', 'uncertainty', 'max_support', "sequence_length", "min", "max", "std", "skw", "kurt", "difficulty"]]
 y = df['ratio']
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
