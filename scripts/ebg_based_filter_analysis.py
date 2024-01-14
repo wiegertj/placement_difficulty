@@ -11,6 +11,7 @@ import types
 import random
 from Bio import AlignIO, SeqIO
 from dendropy.calculate import treecompare
+from scipy.stats import skew, kurtosis
 
 random.seed(200)
 
@@ -84,10 +85,14 @@ for msa_name in filenames[:180]:
         uncertainty = 0.0
         max_uncertain = 0.0
 
+        sum_support_filter_list = []
+        sum_support_unfilter_list = []
+
         # Sum up the support values for newick_tree_original_copy
         for node in newick_tree_original_copy.traverse():
             if node.support is not None and not node.is_leaf():
                 sum_support_original_copy += node.support
+                sum_support_unfilter_list.append(node.support)
                 for node_lower in newick_tree_tmp_lower.traverse():
                     if node_lower.support is not None and node_lower.name == node.name:
                         max_uncertain += 100
@@ -97,9 +102,11 @@ for msa_name in filenames[:180]:
         # Sum up the support values for newick_tree_tmp
         for node in newick_tree_tmp.traverse():
             if node.support is not None and not node.is_leaf():
+                sum_support_filter_list.append(node.support)
                 sum_support_tmp += node.support
 
         # Assuming there's only one CSV file in each subfolder
+        elementwise_difference = [a - b for a, b in zip(sum_support_filter_list, sum_support_unfilter_list)]
 
         filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
         filepath = os.path.abspath(filepath)
@@ -116,9 +123,11 @@ for msa_name in filenames[:180]:
         print(sum_support_tmp)
         print(sum_support_original_copy)
         if (sum_support_tmp / sum_support_original_copy) > 1.08:
-            results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length, uncertainty, max_uncertain))
+            results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length, uncertainty, max_uncertain,
+                                     min(elementwise_difference), max(elementwise_difference), skew(elementwise_difference), kurtosis(elementwise_difference)))
         else:
-            results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length, uncertainty, max_uncertain))
+            results_filtered.append((sum_support_tmp / sum_support_original_copy, msa_name, "taxon" + str(last_integer), sequence_count, sequence_length, uncertainty, max_uncertain,
+                                     min(elementwise_difference), max(elementwise_difference), skew(elementwise_difference), kurtosis(elementwise_difference)))
 
         results.append((sum_support_tmp / sum_support_original_copy, msa_name,
                         sequence_length, sequence_count))
