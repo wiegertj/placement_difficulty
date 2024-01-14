@@ -7,6 +7,7 @@ import ete3
 import pandas as pd
 from Bio import SeqIO, AlignIO
 from scipy.stats import kurtosis, skew
+from sklearn.ensemble import GradientBoostingRegressor
 
 link = "/hits/fast/cme/wiegerjs/placement_difficulty/scripts/filtered_ebg_test.csv"
 diff = "/hits/fast/cme/wiegerjs/placement_difficulty/data/treebase_difficulty_new.csv"
@@ -112,18 +113,18 @@ from sklearn.model_selection import train_test_split, cross_val_score, GridSearc
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
-# Initialize the Decision Tree Classifier
-regressor = DecisionTreeRegressor()
+regressor = GradientBoostingRegressor()
 
 # Define hyperparameters to tune
 param_grid = {
-    'criterion': ['friedman_mse', 'squared_error'],
-    'max_depth': [None, 5, 10, 15],
+    'n_estimators': [50, 100, 200],
+    'learning_rate': [0.01, 0.1, 0.2],
+    'max_depth': [3, 5, 7],
     'min_samples_split': [2, 5, 10],
     'min_samples_leaf': [1, 2, 4]
 }
 
-# Perform 10 random holdouts
+# Perform 20 random holdouts
 num_holdouts = 20
 mae_scores = []
 median_ae_scores = []
@@ -133,7 +134,7 @@ for _ in range(num_holdouts):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
 
     # Perform GridSearchCV for hyperparameter tuning
-    grid_search = GridSearchCV(regressor, param_grid, cv=30, scoring='neg_mean_squared_error')
+    grid_search = GridSearchCV(regressor, param_grid, cv=5, scoring='neg_mean_squared_error')
     grid_search.fit(X_train, y_train)
 
     # Print the best hyperparameters
@@ -147,7 +148,5 @@ for _ in range(num_holdouts):
     median_ae_scores.append(median_absolute_error(y_test, y_pred))
 
 # Print average performance metrics over holdouts
-import numpy as np
-
 print(f'Average Mean Absolute Error over {num_holdouts} holdouts: {sum(mae_scores) / num_holdouts:.2f}')
 print(f'Average Median Absolute Error over {num_holdouts} holdouts: {np.median(median_ae_scores):.2f}')
