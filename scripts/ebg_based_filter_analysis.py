@@ -142,7 +142,7 @@ import matplotlib.pyplot as plt
 print(len(results))
 # results = [value for value in results if abs(value[0]) < 0.5]
 
-df_res = pd.DataFrame(results, columns=["result", "msa_name", "sequence_length", "sequence_count","uncertainty", "max_uncertainty", "min_1", "max_1","mean_1","std_1", "skew_1", "kurt_1"])
+df_res = pd.DataFrame(results, columns=["result", "msa_name", "taxon","sequence_length", "sequence_count","uncertainty", "max_uncertainty", "min_1", "max_1","mean_1","std_1", "skew_1", "kurt_1"])
 
 # Calculate the maximum value per unique "msa_name"
 max_values = df_res.groupby('msa_name')['result'].max()
