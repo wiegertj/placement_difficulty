@@ -144,11 +144,13 @@ regressor = lgb.LGBMRegressor()
 
 # Define hyperparameters to tune
 param_grid = {
-    'n_estimators': [50, 100],
-    'learning_rate': [0.01, 0.001,0.1],
-    'max_depth': [5, 10, 20],
+    'n_estimators': [100],
+    'learning_rate': [0.01,0.1],
+    'max_depth': [10, 20],
     "verbosity": [-1],
-    'min_child_samples': [3, 5, 10],  # LightGBM's equivalent of min_samples_leaf
+    'min_child_samples': [5, 10],  # LightGBM's equivalent of min_samples_leaf
+    'reg_alpha': [0, 0.1, 0.5],
+    'reg_lambda': [0, 0.1, 0.5]
 }
 
 # Perform 20 random holdouts
