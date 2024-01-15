@@ -94,15 +94,15 @@ for index, row in result_df.iterrows():
 df_final = pd.DataFrame(result_new, columns=["new_support_bs", "old_support_bs", "ratio", "taxon", "msa_name", "effect",
                                              "max_support", "new_ratio", "old_ratio", "uncertainty", "sequence_length",
                                              "min", "max", "std", "skw", "kurt", "difficulty", "min_1", "max_1","mean_1", "std_1", "skew_1", "kurt_1"])
-query_df = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/query_features.csv")
+query_df = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/query_features.csv")
 query_df["msa_name"] = query_df["dataset"]
 query_df["taxon"] = query_df["sampleId"]
-df_final = df_final.merge(pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/query_features.csv"), on=["msa_name", "taxon"], how="inner")
+df_final = df_final.merge(query_df, on=["msa_name", "taxon"], how="inner")
 #df_final.drop(columns=["dataset", "taxon", "sampleId", "msa_name"], inplace=True)
 
-msa_df = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/msa_features.csv")
-msa_df["msa_name"] = msa_df["dataset"]
-df_final = df_final.merge(pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/msa_features.csv"), on=["msa_name"], how="inner")
+#msa_df = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/msa_features.csv")
+#msa_df["msa_name"] = msa_df["dataset"]
+#df_final = df_final.merge(pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/msa_features.csv"), on=["msa_name"], how="inner")
 
 
 print(df_final.sort_values("uncertainty"))
