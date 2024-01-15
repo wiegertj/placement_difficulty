@@ -151,7 +151,7 @@ param_grid = {
 }
 
 # Perform 20 random holdouts
-num_holdouts = 20
+num_holdouts = 10
 mae_scores = []
 median_ae_scores = []
 
