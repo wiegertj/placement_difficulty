@@ -147,6 +147,7 @@ param_grid = {
     'n_estimators': [50, 100],
     'learning_rate': [0.01, 0.1],
     'max_depth': [5, 7, 10],
+    "verbosity": -1,
     'min_child_samples': [5, 10],  # LightGBM's equivalent of min_samples_leaf
 }
 
