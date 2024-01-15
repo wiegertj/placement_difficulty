@@ -155,10 +155,16 @@ param_grid = {
 num_holdouts = 10
 mae_scores = []
 median_ae_scores = []
-
+baseline_mae_scores = []
+import numpy as np
 for _ in range(num_holdouts):
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
+
+    baseline_pred = np.full_like(y_test, fill_value=y_train.mean())
+
+    # Calculate and store baseline mean absolute error
+    baseline_mae_scores.append(mean_absolute_error(y_test, baseline_pred))
 
     # Perform GridSearchCV for hyperparameter tuning
     grid_search = GridSearchCV(regressor, param_grid, cv=20, scoring='neg_mean_squared_error')
