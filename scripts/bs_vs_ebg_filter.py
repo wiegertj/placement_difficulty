@@ -193,3 +193,4 @@ for _ in range(num_holdouts):
 print(f'Average Mean Absolute Error over {num_holdouts} holdouts: {sum(mae_scores) / num_holdouts:.2f}')
 import numpy as np
 print(f'Average Median Absolute Error over {num_holdouts} holdouts: {np.median(median_ae_scores):.2f}')
+print(f'Average Baseline Mean Absolute Error over {num_holdouts} holdouts: {sum(baseline_mae_scores) / num_holdouts:.2f}')
