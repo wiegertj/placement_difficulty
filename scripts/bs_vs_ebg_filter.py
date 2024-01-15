@@ -137,17 +137,17 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+import lightgbm as lgb
 
-regressor = GradientBoostingRegressor()
+# Initialize the LightGBM Regressor
+regressor = lgb.LGBMRegressor()
 
 # Define hyperparameters to tune
 param_grid = {
     'n_estimators': [50, 100],
     'learning_rate': [0.01, 0.1],
     'max_depth': [5, 7, 10],
-    'min_samples_split': [5, 10],
-    'min_samples_leaf': [2, 4]
+    'min_child_samples': [5, 10],  # LightGBM's equivalent of min_samples_leaf
 }
 
 # Perform 20 random holdouts
@@ -165,6 +165,8 @@ for _ in range(num_holdouts):
 
     # Print the best hyperparameters
     print('Best Hyperparameters:', grid_search.best_params_)
+
+    # Get the feature importances and sort them in ascending order
     feature_importances = grid_search.best_estimator_.feature_importances_
     sorted_features = sorted(zip(X.columns, feature_importances), key=lambda x: x[1])
 
@@ -179,7 +181,8 @@ for _ in range(num_holdouts):
     # Calculate and store mean absolute error and median absolute error
     mae_scores.append(mean_absolute_error(y_test, y_pred))
     median_ae_scores.append(median_absolute_error(y_test, y_pred))
-import numpy as np
+
 # Print average performance metrics over holdouts
 print(f'Average Mean Absolute Error over {num_holdouts} holdouts: {sum(mae_scores) / num_holdouts:.2f}')
+import numpy as np
 print(f'Average Median Absolute Error over {num_holdouts} holdouts: {np.median(median_ae_scores):.2f}')
