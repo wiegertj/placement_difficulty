@@ -144,15 +144,15 @@ regressor = lgb.LGBMRegressor()
 
 # Define hyperparameters to tune
 param_grid = {
-    'n_estimators': [20, 50, 100],
+    'n_estimators': [50, 100],
     'learning_rate': [0.01, 0.05,0.1],
-    'max_depth': [5, 7, 10, 20],
+    'max_depth': [5, 10, 20],
     "verbosity": [-1],
     'min_child_samples': [3, 5, 10],  # LightGBM's equivalent of min_samples_leaf
 }
 
 # Perform 20 random holdouts
-num_holdouts = 10
+num_holdouts = 5
 mae_scores = []
 median_ae_scores = []
 baseline_mae_scores = []
@@ -167,7 +167,7 @@ for _ in range(num_holdouts):
     baseline_mae_scores.append(mean_absolute_error(y_test, baseline_pred))
 
     # Perform GridSearchCV for hyperparameter tuning
-    grid_search = GridSearchCV(regressor, param_grid, cv=20, scoring='neg_mean_squared_error')
+    grid_search = GridSearchCV(regressor, param_grid, cv=10, scoring='neg_mean_squared_error')
     grid_search.fit(X_train, y_train)
 
     # Print the best hyperparameters
