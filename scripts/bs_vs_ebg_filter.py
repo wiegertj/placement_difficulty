@@ -161,7 +161,7 @@ for _ in range(num_holdouts):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=None)
 
     # Perform GridSearchCV for hyperparameter tuning
-    grid_search = GridSearchCV(regressor, param_grid, cv=10, scoring='neg_mean_squared_error')
+    grid_search = GridSearchCV(regressor, param_grid, cv=20, scoring='neg_mean_squared_error')
     grid_search.fit(X_train, y_train)
 
     # Print the best hyperparameters
