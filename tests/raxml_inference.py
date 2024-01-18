@@ -15,11 +15,11 @@ filenames_aa = loo_selection["dataset"].values.tolist()
 duplicate_data = pd.read_csv(os.path.join(os.pardir, "data/treebase_difficulty_new.csv"))
 accepted = []
 counter = 0
-filenames = filenames[:180]
+#filenames = filenames[:180]
 # Loop over each subdirectory (folder) within the specified path
 counter = 0
 
-for file in filenames:
+for file in filenames_aa:
     file = file.replace(".newick", "")
     if file == "20675_0":
         continue
@@ -35,8 +35,8 @@ for file in filenames:
         "/home/wiegerjs/adaptive/raxml-ng/build/bin/raxml-ng",
         "--adaptive",
         f"--msa {msa_filepath}",
-        "--model GTR+G",
-        #"--model LG4M",
+        #"--model GTR+G",
+        "--model LG4M",
         "--redo",
         "--threads auto{60}"
         #"--data-type AA"
