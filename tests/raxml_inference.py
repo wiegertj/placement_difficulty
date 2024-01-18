@@ -32,13 +32,13 @@ for file in filenames:
     start = time.time()
 
     raxml_command = [
-        "raxml-ng",
-        "--search",
+        "/home/wiegerjs/adaptive/raxml-ng/build/bin/raxml-ng",
+        "--adaptive",
         f"--msa {msa_filepath}",
         "--model GTR+G",
         #"--model LG4M",
         "--redo",
-        "--threads 1"
+        "--threads auto{60}"
         #"--data-type AA"
 
     ]
@@ -56,12 +56,12 @@ for file in filenames:
     time_dat = pd.DataFrame(data_lost)
 
     if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "inference_times_standard_nomt.csv")):
+                                       "inference_times_adaptive.csv")):
         time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "inference_times_standard_nomt.csv")), index=False)
+                                                  "inference_times_adaptive.csv")), index=False)
     else:
         time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "inference_times_standard_nomt.csv"),
+                                     "inference_times_adaptive.csv"),
                         index=False,
                         mode='a', header=False)
 
