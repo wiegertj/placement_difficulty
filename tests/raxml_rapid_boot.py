@@ -103,7 +103,7 @@ for tree_filename in filenames_filtered + loo_selection_aa:
         f"-T 60",
         f"-m GTRGAMMA",
         f"-s {msa_filepath}",
-        f"-# 1000",
+        f"-# autoMRE",
         "-p 12345",
         "-x 12345",
         "-w /hits/fast/cme/wiegerjs/placement_difficulty/data/processed/raxml_rapid_bs_deimos_test",
