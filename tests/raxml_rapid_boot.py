@@ -98,6 +98,7 @@ for tree_filename in filenames_filtered + loo_selection_aa:
 
 
     start_time = time.time()
+    print(str(counter) + "/" + str(len(filenames_filtered)))
 
     raxml_command = [
         "raxmlHPC",
