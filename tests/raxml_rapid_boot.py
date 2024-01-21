@@ -39,7 +39,7 @@ print(loo_selection_aa)
 #filenames_filtered = loo_selection_aa
 #moveon = False
 #filenames_filtered = filenames_filtered[20:]
-for tree_filename in filenames_filtered + loo_selection_aa:
+for tree_filename in filenames_filtered: #+ loo_selection_aa:
     counter += 1
 
     print(str(counter) + "/" + str(len(filenames_filtered)))
