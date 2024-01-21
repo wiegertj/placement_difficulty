@@ -75,4 +75,5 @@ for tree_filename in filenames_filtered:
         continue
 
 results_df = pd.DataFrame(results, columns=["dataset", "branchId", "support_raxml_classic"])
+print(len(results_df["dataset"].unique()))
 results_df.to_csv("raxml_classic_supports.csv")
