@@ -36,10 +36,10 @@ filenames_filtered = filenames_filtered[:180]
 print(filenames_filtered)
 loo_selection_aa = pd.read_csv(os.path.join(os.pardir, "data/loo_selection_aa_test.csv"))["verbose_name"].str.replace(".phy", ".newick").values.tolist()
 print(loo_selection_aa)
-filenames_filtered = loo_selection_aa
-moveon = False
-filenames_filtered = filenames_filtered[20:]
-for tree_filename in filenames_filtered:
+#filenames_filtered = loo_selection_aa
+#moveon = False
+#filenames_filtered = filenames_filtered[20:]
+for tree_filename in filenames_filtered + loo_selection_aa:
 
     print(str(counter) + "/" + str(len(filenames_filtered)))
     #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
@@ -99,9 +99,9 @@ for tree_filename in filenames_filtered:
     start_time = time.time()
 
     raxml_command = [
-        "raxmlHPC-PTHREADS",
+        "raxmlHPC",
         f"-T 60",
-        f"-m PROTGAMMALG",
+        f"-m GTRGAMMA",
         f"-s {msa_filepath}",
         f"-# 1000",
         "-p 12345",
@@ -140,15 +140,15 @@ for tree_filename in filenames_filtered:
     data_res = [data]
     time_dat = pd.DataFrame(data_res)
 
-    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       "benchmark_rapid_bootstrap_deimos_aa.csv")):
-        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  "benchmark_rapid_bootstrap_deimos_aa.csv")), index=False)
-    else:
-        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     "benchmark_rapid_bootstrap_deimos_aa.csv"),
-                        index=False,
-                        mode='a', header=False)
+    #if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+     #                                  "benchmark_rapid_bootstrap_deimos_aa.csv")):
+      #  time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+       #                                           "benchmark_rapid_bootstrap_deimos_aa.csv")), index=False)
+    #else:
+     #   time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+      #                               "benchmark_rapid_bootstrap_deimos_aa.csv"),
+       #                 index=False,
+        #                mode='a', header=False)
 
 #raxml_command = ["raxml-ng",
      #                "--support",
