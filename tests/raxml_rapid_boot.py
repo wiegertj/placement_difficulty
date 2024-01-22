@@ -107,7 +107,7 @@ for tree_filename in loo_selection_aa: #+ loo_selection_aa:
     raxml_command = [
         "raxmlHPC",
         f"-T 60",
-        f"-m PROTGTRG",
+        f"-m PROTGAMMAGTR",
         f"-s {msa_filepath}",
         f"-# autoMRE",
         "-p 12345",
