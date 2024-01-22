@@ -93,6 +93,10 @@ for tree_filename in filenames_filtered: #+ loo_selection_aa:
     if tree_filename.split(".")[0] == "15669_9":
         continue
 
+
+    if tree_filename.split(".")[0] == "20675_0":
+        continue
+
     output_prefix = tree_filename.split(".")[0] + "_1000_bs_raxml_classic"  # Using the filename as the prefix
 
 
