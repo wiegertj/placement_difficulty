@@ -46,8 +46,8 @@ for tree_filename in loo_selection_aa: #+ loo_selection_aa:
 
     if tree_filename == "15306_5.newick":
         continue#
-
-
+    if tree_filename == "10454_1.newick":
+        continue#
     if tree_filename == "12329_0.newick":
         continue#
     print(str(counter) + "/" + str(len(filenames_filtered)))
