@@ -44,6 +44,8 @@ for tree_filename in loo_selection_aa: #+ loo_selection_aa:
     if tree_filename == "13985_6.newick":
         continue
 
+    if tree_filename == "15306_5.newick":
+        continue
     print(str(counter) + "/" + str(len(filenames_filtered)))
     #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
     #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
