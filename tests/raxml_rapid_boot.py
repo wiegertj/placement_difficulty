@@ -41,6 +41,8 @@ print(loo_selection_aa)
 #filenames_filtered = filenames_filtered[20:]
 for tree_filename in loo_selection_aa: #+ loo_selection_aa:
     counter += 1
+    if tree_filename == "13985_6.newick":
+        continue
 
     print(str(counter) + "/" + str(len(filenames_filtered)))
     #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
