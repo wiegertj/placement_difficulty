@@ -41,9 +41,8 @@ print(loo_selection_aa)
 #filenames_filtered = filenames_filtered[20:]
 for tree_filename in loo_selection_aa: #+ loo_selection_aa:
     counter += 1
-    if tree_filename == "13985_6.newick":
+    if tree_filename == "13985_6.newick": #submitted
         continue
-
     if tree_filename == "15306_5.newick":
         continue#
     if tree_filename == "10454_1.newick":
@@ -114,6 +113,9 @@ for tree_filename in loo_selection_aa: #+ loo_selection_aa:
 
 
     if tree_filename.split(".")[0] == "20675_0":
+        continue
+
+    if tree_filename.split(".")[0] == "10986_0":
         continue
 
     output_prefix = tree_filename.split(".")[0] + "_1000_bs_raxml_classic"  # Using the filename as the prefix
