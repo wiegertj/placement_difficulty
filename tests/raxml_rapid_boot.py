@@ -41,13 +41,13 @@ print(loo_selection_aa)
 #filenames_filtered = filenames_filtered[20:]
 for tree_filename in loo_selection_aa: #+ loo_selection_aa:
     counter += 1
-    if tree_filename == "13985_6.newick": #submitted
+    if tree_filename == "13985_6.newick": #finished
         continue
-    if tree_filename == "15306_5.newick":
+    if tree_filename == "15306_5.newick": #submitted
         continue#
     if tree_filename == "10454_1.newick":
         continue#
-    if tree_filename == "12329_0.newick":
+    if tree_filename == "12329_0.newick": # not necessary
         continue#
     if tree_filename == "14244_0.newick":
         continue
@@ -59,7 +59,8 @@ for tree_filename in loo_selection_aa: #+ loo_selection_aa:
         continue
     if tree_filename == "26188_0.newick":
         continue
-
+    if tree_filename "10562_0.newick":
+        continue
     print(str(counter) + "/" + str(len(filenames_filtered)))
     #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
     #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
