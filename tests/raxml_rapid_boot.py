@@ -66,6 +66,9 @@ for tree_filename in loo_selection_aa: #+ loo_selection_aa:
 
     if tree_filename == "11762_5.newick":
         continue
+
+    if tree_filename == "11762_9.newick":
+        continue
     print(str(counter) + "/" + str(len(filenames_filtered)))
     #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
     #                                  tree_filename.replace(".newick", "_reference.fasta") + ".raxml.bootstraps")):
@@ -149,6 +152,8 @@ for tree_filename in loo_selection_aa: #+ loo_selection_aa:
     subprocess.run(" ".join(raxml_command), shell=True)
 
     end_time = time.time()
+    tree_name = tree_filename.split(".")[0]
+    bootstrap_filepath = f"/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/raxml_rapid_bs_deimos_test/RAxML_bootstrap.{tree_name}_1000_bs_raxml_classic"
 
 
     elapsed_time = end_time - start_time
@@ -183,11 +188,11 @@ for tree_filename in loo_selection_aa: #+ loo_selection_aa:
        #                 index=False,
         #                mode='a', header=False)
 
-#raxml_command = ["raxml-ng",
-     #                "--support",
-      #               f"--tree {tree_path}",
-       #              f"--bs-trees {bootstrap_filepath}",
-        #             "--redo",
-         #            f"--prefix {output_prefix}"]
+    raxml_command = ["raxml-ng",
+                     "--support",
+                     f"--tree {tree_path}",
+                     f"--bs-trees {bootstrap_filepath}",
+                     "--redo",
+                     f"--prefix {output_prefix}"]
 
-    #subprocess.run(" ".join(raxml_command), shell=True)
+    subprocess.run(" ".join(raxml_command), shell=True)
