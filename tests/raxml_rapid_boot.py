@@ -59,7 +59,7 @@ for tree_filename in loo_selection_aa: #+ loo_selection_aa:
         continue
     if tree_filename == "26188_0.newick":
         continue
-    if tree_filename "10562_0.newick":
+    if tree_filename == "10562_0.newick":
         continue
     print(str(counter) + "/" + str(len(filenames_filtered)))
     #if os.path.exists(os.path.join(os.pardir, "data/raw/msa",
