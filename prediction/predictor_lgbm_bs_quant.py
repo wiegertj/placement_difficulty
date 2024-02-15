@@ -162,7 +162,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     X_test_ = X_test
     if not rfe:
         X_train = X_train.drop(axis=1, columns=['dataset'])
-        X_test = X_test.drop(axis=1, columns=['dataset'])
+        #X_test = X_test.drop(axis=1, columns=['dataset'])
 
     #####################################################################################################################
 
@@ -230,7 +230,7 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     with open(model_path, 'wb') as file:
         pickle.dump(final_model_median, file)
 
-    y_pred = final_model_median.predict(X_test.drop(axis=1, columns=["group"]))
+    y_pred = final_model_median.predict(X_test.drop(axis=1, columns=["group", "dataset"]))
 
     import matplotlib.pyplot as plt
     import seaborn as sns
