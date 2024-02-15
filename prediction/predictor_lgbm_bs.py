@@ -190,6 +190,18 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=25, shapley_calc=True):
         plt.savefig(f'residuals_vs_{feature}.png')
         plt.show()
 
+    # Plot actual vs. predicted values
+    plt.figure(figsize=(8, 6))
+    plt.scatter(y_test, y_pred, alpha=0.5)
+    plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
+    plt.title('Actual vs. Predicted Values')
+    plt.xlabel('True Values')
+    plt.ylabel('Predicted Values')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig('actual_vs_predicted.png')
+    plt.show()
+
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
