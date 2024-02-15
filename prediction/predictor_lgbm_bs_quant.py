@@ -286,6 +286,36 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
 
     plt.show()
 
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    # Define the interval length
+    interval_length = 0.1
+
+    # Calculate the number of intervals
+    num_intervals = int(np.ceil((max(residuals) - min(residuals)) / interval_length))
+
+    # Create intervals
+    intervals = [i * interval_length for i in range(num_intervals)]
+
+    # Assign residuals to intervals
+    residuals_intervals = np.digitize(residuals, intervals)
+
+    # Plot boxplots for each interval
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x=residuals_intervals, y=residuals)
+    plt.title('Boxplots of Residuals for Each Interval')
+    plt.xlabel('Interval')
+    plt.ylabel('Residuals')
+    plt.xticks(ticks=range(num_intervals),
+               labels=[f'{interval:.1f}-{interval + interval_length:.1f}' for interval in intervals])
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig('boxplots.png')
+
+    plt.show()
+
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
