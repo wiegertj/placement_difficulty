@@ -169,6 +169,27 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=25, shapley_calc=True):
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    # Calculate residuals
+    residuals = y_test - y_pred
+
+    # Get the list of features
+    features = X_test.drop(axis=1, columns=["group"]).columns
+
+    # Plot residuals against each feature
+    for feature in features:
+        plt.figure(figsize=(8, 6))
+        sns.scatterplot(x=X_test[feature], y=residuals)
+        plt.title(f'Residuals vs {feature}')
+        plt.xlabel(feature)
+        plt.ylabel('Residuals')
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(f'residuals_vs_{feature}.png')
+        plt.show()
+
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
