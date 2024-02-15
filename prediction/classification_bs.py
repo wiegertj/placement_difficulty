@@ -202,9 +202,9 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     train = df[~df['dataset'].isin(filenames)]
 
 
-    sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
-    test = df[df['group'].isin(sample_dfs)]
-    train = df[~df['group'].isin(sample_dfs)]
+    #sample_dfs = random.sample(df["group"].unique().tolist(), int(len(df["group"].unique().tolist()) * 0.2))
+    #test = df[df['group'].isin(sample_dfs)]
+    #train = df[~df['group'].isin(sample_dfs)]
 
     X_train = train.drop(axis=1, columns=target)
     y_train = train[target]
@@ -239,6 +239,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     def objective(trial):
         # callbacks = [LightGBMPruningCallback(trial, 'l1')]
+        seed_rand = random.randint()
 
         params = {
             'objective': 'binary',
@@ -252,9 +253,10 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
             'lambda_l1': trial.suggest_uniform('lambda_l1', 1e-5, 1.0),
             'lambda_l2': trial.suggest_uniform('lambda_l2', 1e-5, 1.0),
             'min_split_gain': trial.suggest_uniform('min_split_gain', 1e-5, 0.3),
-            'bagging_freq': 0,
-            'verbosity': -1
-            # 'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0)
+            'bagging_freq': 1,
+            'verbosity': -1,
+            'bagging_fraction': 0.5,
+            'seed_rand': seed_rand
         }
 
         val_scores = []
@@ -284,7 +286,8 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     best_params = study.best_params
     best_params["objective"] = "binary"
     best_params["metric"] = "binary_logloss"
-    best_params["bagging_freq"] = 0
+    best_params["bagging_freq"] = 1
+    best_params["bagging_fraction"] = 0.5
     best_score = study.best_value
 
     print(f"Best Params: {best_params}")
@@ -294,9 +297,9 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     final_model = lgb.train(best_params, train_data)
 
-    model_path = os.path.join(os.pardir, "data/processed/final", f"final_class_{str(cutoff)}.pkl")
-    with open(model_path, 'wb') as file:
-        pickle.dump(final_model, file)
+    #model_path = os.path.join(os.pardir, "data/processed/final", f"final_class_{str(cutoff)}.pkl")
+    #with open(model_path, 'wb') as file:
+     #   pickle.dump(final_model, file)
 
     y_pred = final_model.predict(X_test.drop(axis=1, columns=["group"]))
 
@@ -346,15 +349,15 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
 
     time_dat = pd.DataFrame(data_list)
 
-    if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                       f"classifier_metrics{cutoff}_bacc_5000_ps.csv")):
-        time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                                  f"classifier_metrics{cutoff}_bacc_5000_ps.csv")), index=False)
-    else:
-        time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
-                                     f"classifier_metrics{cutoff}_bacc_5000_ps.csv"),
-                        index=False,
-                        mode='a', header=False)
+    #if not os.path.isfile(os.path.join(os.pardir, "data/processed/features/bs_features",
+     #                                  f"classifier_metrics{cutoff}_bacc_5000_ps.csv")):
+      #  time_dat.to_csv(os.path.join(os.path.join(os.pardir, "data/processed/features/bs_features",
+       #                                           f"classifier_metrics{cutoff}_bacc_5000_ps.csv")), index=False)
+    #else:
+     #   time_dat.to_csv(os.path.join(os.pardir, "data/processed/features/bs_features",
+      #                               f"classifier_metrics{cutoff}_bacc_5000_ps.csv"),
+       #                 index=False,
+        #                mode='a', header=False)
 
     residuals = y_test - y_pred
 
@@ -399,7 +402,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
     X_test_["prediction"] = y_pred
     X_test_["prediction_binary"] = y_pred_binary
     X_test_["support"] = y_test
-    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", f"prediction_results_classifier{cutoff}" + name + ".csv"))
+    X_test_.to_csv(os.path.join(os.pardir, "data/prediction", f"prediction_results_classifier_SGB_{cutoff}_" + str(random.randint()) + ".csv"))
 
     if shapley_calc:
         # X_test = X_test_[(abs(X_test_['entropy'] - X_test_['prediction']) < 0.05) & (
@@ -454,5 +457,5 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
         plt.savefig("lgbm-300.png")
 
 for cutoff in [0.8]:
-    for i in range(0,10):
+    for i in range(0,11):
         light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=False)
