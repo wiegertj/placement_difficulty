@@ -290,30 +290,34 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     import matplotlib.pyplot as plt
     import seaborn as sns
 
-    # Define the interval length
+    # Define the interval length for predicted values
     interval_length = 0.1
 
     # Calculate the number of intervals
-    num_intervals = int(np.ceil((max(residuals) - min(residuals)) / interval_length))
+    num_intervals = int(np.ceil((max(y_pred) - min(y_pred)) / interval_length))
 
-    # Create intervals
-    intervals = [i * interval_length for i in range(num_intervals)]
+    # Create intervals for predicted values
+    predicted_intervals = [i * interval_length for i in range(num_intervals)]
 
-    # Assign residuals to intervals
-    residuals_intervals = np.digitize(residuals, intervals)
+    # Assign residuals to corresponding predicted value intervals
+    residuals_by_interval = []
+    for i in range(num_intervals):
+        interval_residuals = [residuals[j] for j in range(len(residuals)) if
+                              predicted_intervals[i] <= y_pred[j] < predicted_intervals[i] + interval_length]
+        residuals_by_interval.append(interval_residuals)
 
-    # Plot boxplots for each interval
-    plt.figure(figsize=(10, 6))
-    sns.boxplot(x=residuals_intervals, y=residuals)
-    plt.title('Boxplots of Residuals for Each Interval')
-    plt.xlabel('Interval')
+    # Plot boxplots for residuals by predicted value intervals
+    plt.figure(figsize=(12, 8))
+    sns.boxplot(data=residuals_by_interval)
+    plt.title('Boxplots of Residuals by Predicted Value Intervals')
+    plt.xlabel('Predicted Value Intervals')
     plt.ylabel('Residuals')
     plt.xticks(ticks=range(num_intervals),
-               labels=[f'{interval:.1f}-{interval + interval_length:.1f}' for interval in intervals])
+               labels=[f'{interval:.1f}-{interval + interval_length:.1f}' for interval in predicted_intervals],
+               rotation=45)
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig('boxplots.png')
-
+    plt.savefig("boxplots.png")
     plt.show()
 
     mse = mean_squared_error(y_test, y_pred)
