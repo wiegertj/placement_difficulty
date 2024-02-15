@@ -1,6 +1,7 @@
 import math
 import sys
 import random
+import numpy as np
 import shap
 import lightgbm as lgb
 import os
