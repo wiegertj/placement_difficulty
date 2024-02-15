@@ -260,6 +260,25 @@ def light_gbm_regressor(rfe=False, rfe_feature_n=20, shapley_calc=True):
     plt.savefig('actual_vs_predicted.png')
     plt.show()
 
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    # Calculate residuals
+    residuals = y_test - y_pred
+
+    # Plot residuals against predicted values
+    plt.figure(figsize=(8, 6))
+    sns.scatterplot(x=y_pred, y=residuals)
+    plt.title('Residuals vs Predicted Values')
+    plt.xlabel('Predicted Values')
+    plt.ylabel('Residuals')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig('res_vs_pred_val.png')
+
+    plt.show()
+
     mse = mean_squared_error(y_test, y_pred)
     rmse = math.sqrt(mse)
     print(f"Root Mean Squared Error on test set: {rmse}")
