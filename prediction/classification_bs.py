@@ -256,7 +256,7 @@ def light_gbm_regressor(cutoff, rfe=False, rfe_feature_n=10, shapley_calc=True):
             'bagging_freq': 1,
             'verbosity': -1,
             'bagging_fraction': 0.5,
-            'seed_rand': seed_rand
+            'bagging_seed': seed_rand
         }
 
         val_scores = []
