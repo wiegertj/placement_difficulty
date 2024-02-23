@@ -18,7 +18,7 @@ results = []
 for file in filenames:
     try:
         file = file.replace(".newick", "")
-        file_path_parsimonies = f"/hits/fast/cme/wiegerjs/placement_difficulty/tests/{file}ebg_test/ebg_tmp/parsimony_tmp_1000.raxml.startTree"
+        file_path_parsimonies = f"/hits/fast/cme/wiegerjs/placement_difficulty/tests/{file}ebg_test/ebg_tmp/parsimony_bootstraps_tmp.txt"
 
         raxml_command = [
             "raxml-ng",
@@ -35,11 +35,11 @@ for file in filenames:
 
         print(tree_path)
 
-        with open(consensus_path, 'r') as consensus_file, open(tree_path, 'r') as tree_file, open(file + "_combined.txt",
+        with open(consensus_path, 'r') as consensus_file, open(tree_path, 'r') as tree_file, open(file + "_combined_boot.txt",
                                                                                                   'w') as output_file:
             output_file.write(consensus_file.read())
             output_file.write(tree_file.read())
-        combined_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/scripts/{file}_combined.txt"
+        combined_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/scripts/{file}_combined_boot.txt"
         raxml_command = ["raxml-ng",
                          "--rfdist",
                          f"--tree {combined_path}",
