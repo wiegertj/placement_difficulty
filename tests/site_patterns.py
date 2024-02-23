@@ -1,5 +1,6 @@
 import pandas as pd
-
+import os
+import subprocess
 ebg_times = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/benchmark_ebg.csv")
 
 for msa_name in ebg_times["dataset"].tolist():
