@@ -21,7 +21,8 @@ for index, row in ebg_times.iterrows():
         f"--msa {msa_filepath}",
         f"--model " + filler,
         f"--prefix {prefix}",
-        "--log ERROR"
+        #"--log ERROR",
+        "--redo"
 
     ]
 
