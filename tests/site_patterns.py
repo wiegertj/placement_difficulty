@@ -45,11 +45,12 @@ for index, row in ebg_times.iterrows():
                 if patterns_match:
                     patterns_number = patterns_match.group(1)
                     print("Number of patterns:", patterns_number)
+                    return patterns_number
 
 
     # Usage
     file_path = "/hits/fast/cme/wiegerjs/placement_difficulty/tests/" +msa_name +"_parsing.raxml.log"  # Specify your log file path here
-    extract_numbers(file_path)
+    patterns_number = extract_numbers(file_path)
 
     results.append((msa_name, patterns_number))
 
