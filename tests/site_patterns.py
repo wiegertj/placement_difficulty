@@ -11,7 +11,7 @@ for msa_name in ebg_times["dataset"].tolist():
         "raxml-ng",
         "--parse",
         f"--msa {msa_filepath}",
-        "--model GTR+G",
+        "--model LG+G",
         f"--prefix {prefix}"
 
     ]
