@@ -56,6 +56,7 @@ for index, row in ebg_times.iterrows():
 
 print(results)
 df = pd.DataFrame(results, columns=['dataset', 'no_pat'])
+df.drop_duplicates(subset=["dataset"], inplace=True, keep="first")
 
 # Store the DataFrame to a CSV file
 df.to_csv('dataset_pattern_counts.csv', index=False)
