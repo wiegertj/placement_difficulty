@@ -30,7 +30,7 @@ for file in filenames:
     subprocess.run(" ".join(raxml_command), shell=True)
 
     consensus_path = file_path_parsimonies + ".raxml.consensusTreeMRE"
-    tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
+    tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file) + ".newick"
 
     consensus_path = file_path_parsimonies + ".raxml.consensusTreeMRE"
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
