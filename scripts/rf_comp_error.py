@@ -14,7 +14,7 @@ filenames = filenames[:180]
 filenames = filenames + filenames_aa
 # Loop over each subdirectory (folder) within the specified path
 counter = 0
-
+results = []
 for file in filenames:
     file = file.replace(".newick", "")
     file_path_parsimonies = f"/hits/fast/cme/wiegerjs/placement_difficulty/tests/{file}ebg_test/ebg_tmp/parsimony_tmp_1000.raxml.startTree"
@@ -71,4 +71,10 @@ for file in filenames:
     except (IndexError, NameError) as e:
         print("number extraction failed ....")
         continue
+    results.append((avg_rel_rf_no_boot, file))
+
     ###########
+
+print(results)
+df = pd.DataFrame(results, columns=["rf_pars", "dataset"])
+df.to_csv("rf_pars.csv", index=False)
