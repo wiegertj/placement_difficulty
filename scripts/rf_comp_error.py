@@ -24,7 +24,6 @@ for file in filenames:
         "--consense MRE",
         f"--tree {file_path_parsimonies}",
         "--redo",
-        "--log ERROR"
     ]
 
     subprocess.run(" ".join(raxml_command), shell=True)
