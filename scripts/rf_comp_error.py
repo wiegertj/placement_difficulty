@@ -31,8 +31,6 @@ for file in filenames:
     consensus_path = file_path_parsimonies + ".raxml.consensusTreeMRE"
     tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file) + ".newick"
 
-    consensus_path = file_path_parsimonies + ".raxml.consensusTreeMRE"
-    tree_path = os.path.join(os.pardir, "data/raw/reference_tree", file)
     print(tree_path)
 
     with open(consensus_path, 'r') as consensus_file, open(tree_path, 'r') as tree_file, open(file + "_combined.txt",
