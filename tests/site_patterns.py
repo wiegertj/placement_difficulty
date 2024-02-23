@@ -3,7 +3,7 @@ import os
 import subprocess
 ebg_times = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/benchmark_ebg.csv")
 diffs = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/treebase_difficulty.csv")
-diffs["dataset"] = diffs["dataset"].str.replace(".phy", "")
+diffs["dataset"] = diffs["verbose_name"].str.replace(".phy", "")
 ebg_times = ebg_times.merge(diffs, on=["dataset"], how="inner")
 for index, row in ebg_times.iterrows():
     msa_name = row["dataset"]
