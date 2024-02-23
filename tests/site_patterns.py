@@ -55,3 +55,7 @@ for index, row in ebg_times.iterrows():
     results.append((msa_name, patterns_number))
 
 print(results)
+df = pd.DataFrame(results, columns=['dataset', 'no_pat'])
+
+# Store the DataFrame to a CSV file
+df.to_csv('dataset_pattern_counts.csv', index=False)
