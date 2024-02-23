@@ -38,7 +38,7 @@ for file in filenames:
                                                                                               'w') as output_file:
         output_file.write(consensus_file.read())
         output_file.write(tree_file.read())
-    combined_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/tests/{file}ebg_test/ebg_tmp/{file}_combined.txt"
+    combined_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/scripts/{file}_combined.txt"
     raxml_command = ["raxml-ng",
                      "--rfdist",
                      f"--tree {combined_path}",
