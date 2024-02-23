@@ -4,7 +4,7 @@ import subprocess
 ebg_times = pd.read_csv("/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/benchmark_ebg.csv")
 
 for msa_name in ebg_times["dataset"].tolist():
-    msa_filepath = os.path.join(os.pardir, "data/raw/msa", file + "_reference.fasta")
+    msa_filepath = os.path.join(os.pardir, "data/raw/msa", msa_name + "_reference.fasta")
 
     prefix = msa_name + "_parsing"
     raxml_command = [
