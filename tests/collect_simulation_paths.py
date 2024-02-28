@@ -38,7 +38,7 @@ for folder in folders:
     print(f"Best Tree Path: {best_tree_path}")
     print(f"Best Model Path: {best_model_path}")
 
-    results.append((msa_path, best_tree_path, best_model_path))
+    results.append((msa_path, best_tree_path, best_model_path, folder))
 import pandas as pd
-df = pd.DataFrame(results, columns=["msa", "tree", "model"])
+df = pd.DataFrame(results, columns=["msa", "tree", "model", "name"])
 df.to_csv("simulation_paths.csv", index=False)
