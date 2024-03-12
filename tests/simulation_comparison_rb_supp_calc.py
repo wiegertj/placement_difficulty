@@ -29,19 +29,6 @@ for folder_name in tree_files:
         print(tree_true_path)
         continue
 
-    branch_id_counter = 0
-    for node in tree_rb.traverse():
-        branch_id_counter += 1
-        if node.support is not None and not node.is_leaf():
-            length = node.dist
-            node.__setattr__("name", branch_id_counter)
-
-    branch_id_counter = 0
-    for node in tree_true.traverse():
-        branch_id_counter += 1
-        if node.support is not None and not node.is_leaf():
-            length = node.dist
-            node.__setattr__("name", branch_id_counter)
     prefix = dataset + "_final_rb_support_"
     raxml_command = ["raxml-ng",
                      "--support",
