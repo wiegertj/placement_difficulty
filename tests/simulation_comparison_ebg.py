@@ -75,14 +75,10 @@ for folder_name in folder_names:
                             second_match = True
                         if second_match and first_match:  # bipartition is in true tree
                             bipartition_found = True
-                            if node.support >= 70:  # bipartition is deemed significant
-                                # store true positive
-                                print((node.name, node_true.name, node.support))
-                                results.append((dataset, node.name, node.support))
-                            else:  # bipartition is NOT deemed significant
-                                # store false negative
-                                print((node.name, node_true.name, node.support))
-                                results.append((dataset, node.name, node.support))
+                            results.append((dataset, node_true.name, node.support, 1))
+                if not bipartition_found:
+                    results.append((dataset, node_true.name, node.support,0))
 
-df_res = pd.DataFrame(results, columns=["dataset", "branchId", "ebg_median"])
+
+df_res = pd.DataFrame(results, columns=["dataset", "branchID_True", "EBG_support", "inTrue"])
 df_res.to_csv(os.path.join(os.pardir, "data/ebg_simulation_median.csv"))
