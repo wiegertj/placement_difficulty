@@ -16,18 +16,18 @@ def get_bipartition(node):
     return None
 
 
-folder_path = '/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/raxml_rapid_bs_simulations'
+folder_path = '/hits/fast/cme/wiegerjs/placement_difficulty/tests'
 
 # Get a list of folder names in the specified path
 # List all files in the folder
 all_files = os.listdir(folder_path)
 
 # Filter files ending with ".treefile"
-tree_files = [file for file in all_files if file.endswith('.phy')]
+tree_files = [file for file in all_files if file.endswith('_final_rb_support_.raxml.support')]
 results = []
 for folder_name in tree_files:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
-    dataset = folder_name.replace(".phy", "").replace("RAxML_bootstrap.", "")
+    dataset = folder_name.replace("_final_rb_support_.raxml.support", "")
     print(abs_path)
     tree_rb_path = abs_path
     tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{dataset}.phy/gtr_g.raxml.bestTree"
