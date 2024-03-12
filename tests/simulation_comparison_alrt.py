@@ -79,22 +79,10 @@ for folder_name in tree_files:
                             second_match = True
                         if second_match and first_match:  # bipartition is in true tree
                             bipartition_found = True
-                            if node.support >= 80:  # bipartition is deemed significant
-                                # store true positive
-                                print((node.name, node_true.name, node.support))
-                                results.append((dataset, node.name, node_true.name, node.support, "TP", 1))
-                            else:  # bipartition is NOT deemed significant
-                                # store false negative
-                                print((node.name, node_true.name, node.support))
-                                results.append((dataset, node.name, node_true.name, node.support, "FN", 1))
+                            results.append((dataset, node_true.name, node.support, 1))
                 if not bipartition_found:
-                    if node.support >= 80:  # store false positive
-                        print((node.name, node_true.name, node.support))
-                        results.append((dataset, node.name, node_true.name, node.support, "FP", 0))
-                    else:
-                        # store true negative
-                        print((node.name, node_true.name, node.support))
-                        results.append((dataset, node.name, node_true.name, node.support, "TN", 0))
+                    results.append((dataset, node_true.name, node.support, 0))
 
-df_res = pd.DataFrame(results, columns=["dataset", "branchId_alrt", "branchId_True", "alrt_Support", "Eval", "in_true"])
+
+df_res = pd.DataFrame(results, columns=["dataset", "branchID_True", "alrt_Support", "inTrue"])
 df_res.to_csv(os.path.join(os.pardir, "data/alrt_simulation.csv"))
