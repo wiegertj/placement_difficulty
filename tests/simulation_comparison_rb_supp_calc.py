@@ -53,7 +53,7 @@ for folder_name in tree_files:
                      f"--tree {tree_true_path}",
                      f"--bs-trees {abs_path}",
                      "--redo",
-                     f"--prefix {}",
+                     f"--prefix {prefix}",
                      ]
 
     subprocess.run(" ".join(raxml_command), shell=True)
