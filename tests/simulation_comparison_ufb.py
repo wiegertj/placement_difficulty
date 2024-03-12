@@ -79,22 +79,10 @@ for folder_name in tree_files:
                             second_match = True
                         if second_match and first_match:  # bipartition is in true tree
                             bipartition_found = True
-                            if node.support >= 95:  # bipartition is deemed significant
-                                # store true positive
-                                print((node.name, node_true.name, node.support))
-                                results.append((dataset, node.name, node_true.name, node.support, "TP", 1))
-                            else:  # bipartition is NOT deemed significant
-                                # store false negative
-                                print((node.name, node_true.name, node.support))
-                                results.append((dataset, node.name, node_true.name, node.support, "FN", 1))
-                if not bipartition_found:
-                    if node.support >= 95:  # store false positive
-                        print((node.name, node_true.name, node.support))
-                        results.append((dataset, node.name, node_true.name, node.support, "FP", 0))
-                    else:
-                        # store true negative
-                        print((node.name, node_true.name, node.support))
-                        results.append((dataset, node.name, node_true.name, node.support, "TN", 0))
 
-df_res = pd.DataFrame(results, columns=["dataset", "branchId_ufb", "branchId_True", "ufb_Support", "Eval", "in_true"])
+                            results.append((dataset, node_true.name, node.support, 1))
+                if not bipartition_found:
+                    results.append((dataset,  node_true.name, node.support,  0))
+
+df_res = pd.DataFrame(results, columns=["dataset", "branchID_True", "ufb_Support", "inTrue"])
 df_res.to_csv(os.path.join(os.pardir, "data/ufb_simulation.csv"))
