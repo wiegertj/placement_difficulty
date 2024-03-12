@@ -32,7 +32,7 @@ for folder_name in tree_files:
     prefix = dataset + "_final_rb_support_"
     raxml_command = ["raxml-ng",
                      "--support",
-                     f"--tree {tree_inf}",
+                     f"--tree {inference_path}",
                      f"--bs-trees {abs_path}",
                      "--redo",
                      f"--prefix {prefix}",
