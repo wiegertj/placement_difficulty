@@ -11,7 +11,7 @@ import os
 all_files = os.listdir(folder_path)
 
 # Filter files ending with ".treefile"
-tree_files = [file for file in all_files if file.__contains__('RAxML_bootstrap')]
+tree_files = [file for file in all_files if file.__contains__('bootstraps')]
 results = []
 for folder_name in tree_files:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
