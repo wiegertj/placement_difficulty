@@ -20,12 +20,7 @@ for folder_name in tree_files:
     tree_rb_path = abs_path
     tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{dataset}.phy/gtr_g.raxml.bestTree"
 
-    try:
-        tree_rb = ete3.Tree(tree_rb_path, format=0)
-    except ete3.parser.newick.NewickError as e:
-        print("RB Tree broken")
-        print(tree_rb_path)
-        continue
+
 
     try:
         tree_true = ete3.Tree(tree_true_path, format=0)
