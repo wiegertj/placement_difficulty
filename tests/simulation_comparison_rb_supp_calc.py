@@ -17,7 +17,7 @@ for folder_name in tree_files:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
     dataset = folder_name.replace(".phy", "").replace("RAxML_bootstrap.", "").replace("RAxML_info.", "")
     inference_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + dataset + ".phy_boot_test_.raxml.bestTree"
-
+    print(inference_path)
     tree_rb_path = abs_path
 
 
