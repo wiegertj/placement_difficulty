@@ -25,7 +25,7 @@ for folder_name in folder_names:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
     dataset = folder_name.replace(".phy", "")
     print(abs_path)
-    tree_ebg_path = abs_path + f"/{dataset}.phy_lower5_support_prediction.newick"
+    tree_ebg_path = abs_path + f"/{dataset}.phy_median_support_prediction.newick"
     tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{folder_name}/gtr_g.raxml.bestTree"
 
     try:
@@ -83,14 +83,6 @@ for folder_name in folder_names:
                                 # store false negative
                                 print((node.name, node_true.name, node.support))
                                 results.append((dataset, node.name, node.support))
-                if not bipartition_found:
-                    if node.support >= 70:  # store false positive
-                        print((node.name, node_true.name, node.support))
-                        results.append((dataset, node.name, node.support))
-                    else:
-                        # store true negative
-                        print((node.name, node_true.name, node.support))
-                        results.append((dataset, node.name, node.support))
 
-df_res = pd.DataFrame(results, columns=["dataset", "branchId_EBG", "EBG_lower5"])
-df_res.to_csv(os.path.join(os.pardir, "data/ebg_simulation_lower5.csv"))
+df_res = pd.DataFrame(results, columns=["dataset", "branchId", "ebg_median"])
+df_res.to_csv(os.path.join(os.pardir, "data/ebg_simulation_median.csv"))
