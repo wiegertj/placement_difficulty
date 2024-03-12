@@ -16,23 +16,23 @@ results = []
 for folder_name in tree_files:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
     dataset = folder_name.replace(".phy", "").replace("RAxML_bootstrap.", "")
+    inference_path = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + dataset + "_boot_test_.raxml.bestTree"
     print(abs_path)
     tree_rb_path = abs_path
-    tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{dataset}.phy/gtr_g.raxml.bestTree"
 
 
 
     try:
-        tree_true = ete3.Tree(tree_true_path, format=0)
+        tree_inf = ete3.Tree(inference_path, format=0)
     except ete3.parser.newick.NewickError as e:
         print("True Tree broken")
-        print(tree_true_path)
+        print(inference_path)
         continue
 
     prefix = dataset + "_final_rb_support_"
     raxml_command = ["raxml-ng",
                      "--support",
-                     f"--tree {tree_true_path}",
+                     f"--tree {tree_inf}",
                      f"--bs-trees {abs_path}",
                      "--redo",
                      f"--prefix {prefix}",
