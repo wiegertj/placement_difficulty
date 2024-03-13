@@ -83,6 +83,10 @@ for folder_name in tree_files:
                         if second_match and first_match:  # bipartition is in true tree
                             bipartition_found = True
                             results.append((dataset, node_true.name, node.support, 1))
+                            print(bipartition_true)
+                            print(bipartition_rb)
+                            print(bipartition_found)
+                            print("#" * 50)
                             break
                         print(bipartition_true)
                         print(bipartition_rb)
