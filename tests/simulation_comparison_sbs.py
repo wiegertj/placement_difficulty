@@ -70,11 +70,7 @@ for folder_name in tree_files:
                     if node_true.is_leaf():
                         continue
                     bipartition_true = get_bipartition(node_true)
-                    print("#"*50)
-                    print(bipartition_true)
-                    print(bipartition_rb)
-                    print(bipartition_true)
-                    print("#"*50)
+
                     if bipartition_true is not None:
                         first_match = False
                         second_match = False
@@ -85,6 +81,11 @@ for folder_name in tree_files:
                         if second_match and first_match:  # bipartition is in true tree
                             bipartition_found = True
                             results.append((dataset, node_true.name, node.support, 1))
+                        print("#" * 50)
+                        print(bipartition_true)
+                        print(bipartition_rb)
+                        print(bipartition_found)
+                        print("#" * 50)
                 if not bipartition_found:
 
                     results.append((dataset, node_true.name, node.support, 0))
