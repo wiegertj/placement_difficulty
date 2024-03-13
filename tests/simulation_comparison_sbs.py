@@ -70,6 +70,11 @@ for folder_name in tree_files:
                     if node_true.is_leaf():
                         continue
                     bipartition_true = get_bipartition(node_true)
+                    print("#"*50)
+                    print(bipartition_true)
+                    print(bipartition_rb)
+                    print(bipartition_true)
+                    print("#"*50)
                     if bipartition_true is not None:
                         first_match = False
                         second_match = False
