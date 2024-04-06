@@ -26,7 +26,8 @@ for folder in df["folder"]:
 
     # Define the path for the new FASTA file
     fasta_path = msa_path + "_converted.fasta"
-
+    if os.path.exists(fasta_path):
+        os.remove(fasta_path)
     SeqIO.convert(msa_path, "nexus", fasta_path, "fasta")
 
     # Write the sequences to the new FASTA file
