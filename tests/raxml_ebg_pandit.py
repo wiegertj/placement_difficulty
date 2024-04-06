@@ -32,7 +32,7 @@ for folder in df["folder"]:
     # Extract sequences from the Nexus file
     msa_sequences = []
 
-    for taxon, sequence in nexus.charsets.iteritems():
+    for taxon, sequence in nexus.charsets.items():  # Change iteritems() to items()
         msa_sequences.append(SeqIO.SeqRecord(SeqIO.Seq(sequence), id=taxon))
 
     # Define the path for the new FASTA file
