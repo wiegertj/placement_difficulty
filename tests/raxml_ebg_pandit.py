@@ -21,14 +21,13 @@ for folder in df["folder"]:
     msa_path =  f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{folder}/data.{folder}"
 
     start_time = time.time()
-    folder_name = str(folder) + "_ebg"
+    folder_name = str(folder) + "_ebg_pandit"
 
     raxml_command = [
         "ebg",
         f"-model {model_path}",
         f"-msa {msa_path}",
         f"-tree {tree_path}",
-        "-pi 75",
         "-t b",
         f"-o {folder_name}"
     ]
