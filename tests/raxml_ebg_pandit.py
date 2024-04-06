@@ -24,7 +24,7 @@ for folder in df["folder"]:
     msa_path_ebg = f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{folder}/data.{folder}"
 
     # Define the path for the new FASTA file
-    nexus = Nexus.Nexus()
+    nexus = Nexus.Nexus.Nexus()
 
     with open(msa_path, "r") as msa_file:
         nexus.read(msa_file)
