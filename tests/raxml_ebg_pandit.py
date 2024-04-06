@@ -23,25 +23,13 @@ for folder in df["folder"]:
     msa_path =  f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{folder}/data.{folder}"
     msa_path_ebg = f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{folder}/data.{folder}"
 
-    # Define the path for the new FASTA file
-    nexus = Nexus.Nexus.Nexus()
-
-    with open(msa_path, "r") as msa_file:
-        nexus.read(msa_file)
-
-    # Extract sequences from the Nexus file
-    msa_sequences = []
-
-
-    for taxon, sequence in nexus.charsets.items():
-        msa_sequences.append(SeqIO.SeqRecord(SeqIO.Seq("".join(sequence)), id=taxon))
 
     # Define the path for the new FASTA file
     fasta_path = msa_path + "_converted.fasta"
 
+    SeqIO.convert(msa_path, "nexus", fasta_path, "fasta")
+
     # Write the sequences to the new FASTA file
-    SeqIO.write(msa_sequences, fasta_path, "fasta")
-    print(fasta_path)
 
     if not os.path.exists(fasta_path):
         print("Conversion failed")
