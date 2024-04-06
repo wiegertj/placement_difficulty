@@ -42,7 +42,7 @@ for folder in df["folder"]:
     SeqIO.write(msa_sequences, fasta_path, "fasta")
 
 
-    if os.path.exists(fasta_path):
+    if not os.path.exists(fasta_path):
         print("Conversion failed")
         continue
 
