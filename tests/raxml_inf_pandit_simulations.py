@@ -29,7 +29,7 @@ for folder in df["folder"]:
         #"-t b",
         #f"-o {folder}"
     #]
-    prefix = folder + "_pandit_inference_"
+    prefix = str(folder) + "_pandit_inference_"
     raxml_command = [
         "raxml-ng",
         "--search",
