@@ -28,7 +28,7 @@ for folder_name in tree_files:
         print(inference_path)
         continue
 
-    prefix = dataset + "_final_sbs_support_pandit"
+    prefix = dataset + "_final_rb_support_pandit"
     raxml_command = ["raxml-ng",
                      "--support",
                      f"--tree {inference_path}",
