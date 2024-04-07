@@ -30,7 +30,7 @@ for folder_name in tree_files:
     dataset = folder_name.replace("_final_sbs_support_pandit.raxml.support", "")
     print(abs_path)
     tree_rb_path = abs_path
-    tree_true_path = f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{folder_name}/tree.{folder_name}"
+    tree_true_path = f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{dataset}/tree.{dataset}"
 
 
     try:
@@ -43,6 +43,7 @@ for folder_name in tree_files:
     try:
         tree_true = ete3.Tree(tree_true_path, format=0)
     except ete3.parser.newick.NewickError as e:
+        print(e)
         print("True Tree broken")
         print(tree_true_path)
         continue
