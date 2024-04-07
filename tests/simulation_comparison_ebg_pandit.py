@@ -27,7 +27,7 @@ for folder_name in folder_names:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
     dataset = folder_name.replace("_ebg_pandit", "")
     print(abs_path)
-    tree_ebg_path = abs_path + f"/{dataset}.phy_median_support_prediction.newick"
+    tree_ebg_path = abs_path + f"/{dataset}_ebg_pandit_median_support_prediction.newick"
     tree_true_path = f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{dataset}/tree.{dataset}"
 
     try:
