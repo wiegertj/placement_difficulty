@@ -16,7 +16,7 @@ def get_bipartition(node):
     return None
 
 
-folder_path = '/hits/fast/cme/wiegerjs/PANDIT/wdir'
+folder_path = '/hits/fast/cme/wiegerjs/placement_difficulty/tests'
 
 # Get a list of folder names in the specified path
 # List all files in the folder
