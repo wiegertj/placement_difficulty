@@ -76,7 +76,6 @@ for folder_name in tree_files:
                     if bipartition_true is not None:
                         first_match = False
                         second_match = False
-                        print("#" * 50)
 
                         if (bipartition_rb[0] == bipartition_true[0]) or (bipartition_rb[0] == bipartition_true[1]):
                             first_match = True
