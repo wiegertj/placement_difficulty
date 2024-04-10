@@ -83,14 +83,14 @@ for folder_name in tree_files:
                             second_match = True
                         if second_match and first_match:  # bipartition is in true tree
                             bipartition_found = True
-                            results.append((dataset, node_true.name, node.support, 1))
+                            results.append((dataset, node.name, node.support, 1))
                             break
 
                 if not bipartition_found:
 
-                    results.append((dataset, node_true.name, node.support, 0))
+                    results.append((dataset, node.name, node.support, 0))
         else:
-            results.append((dataset, node_true.name, 100, 1))
+            results.append((dataset, node.name, 100, 1))
 
 df_res = pd.DataFrame(results, columns=["dataset", "branchID_True", "sbs_Support", "inTrue"])
 df_res.to_csv(os.path.join(os.pardir, "data/sbs_simulation_pandit.csv"))
