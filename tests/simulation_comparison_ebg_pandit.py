@@ -78,8 +78,10 @@ for folder_name in folder_names:
                         if second_match and first_match:  # bipartition is in true tree
                             bipartition_found = True
                             results.append((dataset, node_true.name, node.support, 1))
+                            break
                 if not bipartition_found:
                     results.append((dataset, node_true.name, node.support, 0))
-
+        else:
+            results.append((dataset, node_true.name, 100, 1))
 df_res = pd.DataFrame(results, columns=["dataset", "branchID_True", "EBG_support", "inTrue"])
 df_res.to_csv(os.path.join(os.pardir, "data/ebg_simulation_median.csv"))

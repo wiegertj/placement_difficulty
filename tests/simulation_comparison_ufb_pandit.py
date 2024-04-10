@@ -81,8 +81,11 @@ for folder_name in tree_files:
                             bipartition_found = True
 
                             results.append((dataset, node_true.name, node.support, 1))
+                            break
                 if not bipartition_found:
                     results.append((dataset,  node_true.name, node.support,  0))
+        else:
+            results.append((dataset, node_true.name, 100, 1))
 
 df_res = pd.DataFrame(results, columns=["dataset", "branchID_True", "ufb_Support", "inTrue"])
 df_res.to_csv(os.path.join(os.pardir, "data/ufb_simulation_pandit.csv"))
