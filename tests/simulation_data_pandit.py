@@ -41,7 +41,6 @@ for folder in folders:
     print(f"MSA Path: {msa_path}")
 
 
-    raxml_path =
     command = ["pythia", "--msa", os.path.abspath(msa_path),
                "--raxmlng", "raxml-ng",
                "--removeDuplicates"]
