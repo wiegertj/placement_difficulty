@@ -23,11 +23,11 @@ folder_path = '/hits/fast/cme/wiegerjs/placement_difficulty/tests'
 all_files = os.listdir(folder_path)
 
 # Filter files ending with ".treefile"
-tree_files = [file for file in all_files if file.endswith('_final_sbs_support_pandit.raxml.support')]
+tree_files = [file for file in all_files if file.endswith('_final_sbs_support_pandit_v2.raxml.support')]
 results = []
 for folder_name in tree_files:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
-    dataset = folder_name.replace("_final_sbs_support_pandit.raxml.support", "")
+    dataset = folder_name.replace("_final_sbs_support_pandit.raxml_v2.support", "")
     print(abs_path)
     tree_rb_path = abs_path
     tree_true_path = f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{dataset}/tree.{dataset}"
@@ -93,4 +93,4 @@ for folder_name in tree_files:
             results.append((dataset, node.name, 100, 1))
 
 df_res = pd.DataFrame(results, columns=["dataset", "branchID_True", "sbs_Support", "inTrue"])
-df_res.to_csv(os.path.join(os.pardir, "data/sbs_simulation_pandit.csv"))
+df_res.to_csv(os.path.join(os.pardir, "data/sbs_simulation_pandit_v2.csv"))
