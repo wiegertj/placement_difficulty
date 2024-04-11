@@ -27,7 +27,7 @@ tree_files = [file for file in all_files if file.endswith('_final_sbs_support_pa
 results = []
 for folder_name in tree_files:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
-    dataset = folder_name.replace("_final_sbs_support_pandit.raxml_v2.support", "")
+    dataset = folder_name.replace("_final_sbs_support_pandit_v2.raxml.support", "")
     print(abs_path)
     tree_rb_path = abs_path
     tree_true_path = f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{dataset}/tree.{dataset}"
