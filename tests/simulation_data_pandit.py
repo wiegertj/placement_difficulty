@@ -29,7 +29,7 @@ for folder in folders:
     counter += 1
     print(counter)
     # Get file paths
-    msa_path = f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/data.{folder}_converted.fasta"
+    msa_path = f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{folder}/data.{folder}_converted.fasta"
 
     print(f"MSA Path: {msa_path}")
 
