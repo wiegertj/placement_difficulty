@@ -41,9 +41,9 @@ for folder in folders:
     print(f"MSA Path: {msa_path}")
 
 
-    raxml_path = "/home/wiegerjs/bin/raxml-ng-mpi"
+    raxml_path =
     command = ["pythia", "--msa", os.path.abspath(msa_path),
-               "--raxmlng", raxml_path,
+               "--raxmlng", "raxml-ng",
                "--removeDuplicates"]
 
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
