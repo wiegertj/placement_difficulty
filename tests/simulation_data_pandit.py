@@ -47,6 +47,7 @@ for folder in folders:
                "--removeDuplicates"]
 
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    print(command)
     pythia_output = result.stdout
     pythia_output = result.stdout
     pythia_error = result.stderr  # Capture stderr
