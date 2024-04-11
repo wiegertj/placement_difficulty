@@ -16,7 +16,9 @@ results = []
 for folder_name in tree_files:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
     dataset = folder_name.replace(".raxml.bootstraps", "")
-    inference_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/tests/{dataset}_pandit_inference_.raxml.bestTree"
+    #inference_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/tests/{dataset}_pandit_inference_.raxml.bestTree"
+    inference_path = f"/hits/fast/cme/wiegerjs/PANDIT/data_pandit/{dataset}/tree.{dataset}"
+
     print(inference_path)
     tree_rb_path = abs_path
 
@@ -29,7 +31,7 @@ for folder_name in tree_files:
         print(inference_path)
         continue
 
-    prefix = dataset + "_final_sbs_support_pandit"
+    prefix = dataset + "_final_sbs_support_pandit_v2"
     raxml_command = ["raxml-ng",
                      "--support",
                      f"--tree {inference_path}",
