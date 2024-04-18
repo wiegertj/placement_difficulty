@@ -41,7 +41,7 @@ for folder_name in tree_files:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
     dataset = folder_name.replace(".phy.treefile", "")
 
-    abs_path_rx = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + dataset + "_boot_test_.raxml.bestTree"
+    abs_path_rx = "/hits/fast/cme/wiegerjs/EBG_simulations/raxml_inf_res/" + dataset + ".phy_boot_test_.raxml.bestTree"
     abs_path_uf = os.path.abspath(os.path.join(folder_path, folder_name))
 
     rf_distance = calculate_rf_distance(abs_path_uf, abs_path_rx)
