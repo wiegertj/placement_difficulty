@@ -28,7 +28,7 @@ tree_files = [file for file in all_files if file.endswith('.treefile')]
 results = []
 for folder_name in tree_files:
     abs_path_uf = os.path.abspath(os.path.join(folder_path, folder_name))
-    dataset = folder_name.replace(".phy.treefile", "")
+    dataset = folder_name.replace(".treefile", "")
     abs_path_rx = f"/hits/fast/cme/wiegerjs/placement_difficulty/tests/{dataset}_pandit_inference_.raxml.bestTree"
 
 
