@@ -11,7 +11,7 @@ def calculate_rf_distance(file_path1, file_path2):
     tree1 = Tree(tree1_str)
     tree2 = Tree(tree2_str)
 
-    rf_distance = tree1.robinson_foulds(tree2)[0]
+    rf_distance = tree1.robinson_foulds(tree2, unrooted_trees=True)[0]
     return rf_distance
 
 # Example usage:
