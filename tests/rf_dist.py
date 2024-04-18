@@ -8,8 +8,8 @@ def calculate_rf_distance(file_path1, file_path2):
     tree1_str = read_tree_from_file(file_path1)
     tree2_str = read_tree_from_file(file_path2)
 
-    tree1 = Tree(tree1_str)
-    tree2 = Tree(tree2_str)
+    tree1 = Tree(tree1_str, format=1)
+    tree2 = Tree(tree2_str, format=1)
 
     max_rf_distance = max(tree1.get_farthest_leaf()[1], tree2.get_farthest_leaf()[1])
 
