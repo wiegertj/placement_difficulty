@@ -11,8 +11,11 @@ def calculate_rf_distance(file_path1, file_path2):
     tree1 = Tree(tree1_str)
     tree2 = Tree(tree2_str)
 
+    max_rf_distance = max(tree1.get_farthest_leaf()[1], tree2.get_farthest_leaf()[1])
+
     rf_distance = tree1.robinson_foulds(tree2, unrooted_trees=True)[0]
-    return rf_distance
+    normalized_distance = rf_distance / max_rf_distance
+    return normalized_distance
 
 # Example usage:
 folder_path = '/hits/fast/cme/wiegerjs/PANDIT/wdir_iq'
@@ -35,6 +38,23 @@ for folder_name in tree_files:
     rf_distance = calculate_rf_distance(abs_path_uf, abs_path_rx)
     print(rf_distance)
     results.append(rf_distance)
+
+import csv
+
+def write_results_to_csv(results, output_file):
+    with open(output_file, 'w', newline='') as csvfile:
+        fieldnames = ['nrf']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for result in results:
+            writer.writerow({'nrf': result})
+
+# Example usage:
+output_file = "nrf_pandit.csv"
+
+write_results_to_csv(results, output_file)
+print("Results have been written to", output_file)
+
 
 
 
