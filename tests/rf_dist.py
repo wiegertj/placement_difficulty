@@ -12,7 +12,7 @@ def calculate_rf_distance(file_path1, file_path2):
     tree2 = Tree(tree2_str, format=1)
     results_distance = tree1.compare(tree2, unrooted=True)
 
-    return results["norm_rf"]
+    return results_distance["norm_rf"]
 
 # Example usage:
 folder_path = '/hits/fast/cme/wiegerjs/PANDIT/wdir_iq'
