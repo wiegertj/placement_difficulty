@@ -33,6 +33,7 @@ for folder_name in tree_files:
 
 
     rf_distance = calculate_rf_distance(abs_path_uf, abs_path_rx)
+    print(rf_distance)
     results.append(rf_distance)
 
 
