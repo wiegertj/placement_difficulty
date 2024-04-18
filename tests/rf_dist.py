@@ -10,12 +10,9 @@ def calculate_rf_distance(file_path1, file_path2):
 
     tree1 = Tree(tree1_str, format=1)
     tree2 = Tree(tree2_str, format=1)
+    results_distance = tree1.compare(tree2, unrooted=True)
 
-    max_rf_distance = max(tree1.get_farthest_leaf()[1], tree2.get_farthest_leaf()[1])
-
-    rf_distance = tree1.robinson_foulds(tree2, unrooted_trees=True)[0]
-    normalized_distance = rf_distance / max_rf_distance
-    return normalized_distance
+    return results["norm_rf"]
 
 # Example usage:
 folder_path = '/hits/fast/cme/wiegerjs/PANDIT/wdir_iq'
