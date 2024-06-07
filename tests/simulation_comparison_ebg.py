@@ -15,6 +15,7 @@ def get_bipartition(node):
         return bipartition
     return None
 
+
 folder_path = '/hits/fast/cme/wiegerjs/EBG_simulations/ebg_results/'
 
 # Get a list of folder names in the specified path
@@ -26,7 +27,14 @@ for folder_name in folder_names:
     dataset = folder_name.replace(".phy", "")
     print(abs_path)
     tree_ebg_path = abs_path + f"/{dataset}.phy_median_support_prediction.newick"
+    tree_lower5_path = abs_path + f"/{dataset}.phy_lower5_support_prediction.newick"
     tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{folder_name}/gtr_g.raxml.bestTree"
+
+    try:
+        tree_lower5 = ete3.Tree(tree_lower5_path, format=0)
+    except ete3.parser.newick.NewickError as e:
+        print("EBG Tree broken")
+        continue
 
     try:
         tree_ebg = ete3.Tree(tree_ebg_path, format=0)
@@ -56,7 +64,7 @@ for folder_name in folder_names:
             length = node.dist
             node.__setattr__("name", branch_id_counter)
 
-    for node in tree_ebg.traverse():
+    for node, node_lower5 in zip(tree_ebg.traverse(), tree_lower5.traverse()):
         if not node.is_leaf():
             bipartition_ebg = get_bipartition(node)
 
@@ -75,10 +83,9 @@ for folder_name in folder_names:
                             second_match = True
                         if second_match and first_match:  # bipartition is in true tree
                             bipartition_found = True
-                            results.append((dataset, node_true.name, node.support, 1))
+                            results.append((dataset, node_true.name, node.support, 1, node_lower5.support))
                 if not bipartition_found:
-                    results.append((dataset, node_true.name, node.support,0))
+                    results.append((dataset, node_true.name, node.support, 0, node_lower5.support))
 
-
-df_res = pd.DataFrame(results, columns=["dataset", "branchID_True", "EBG_support", "inTrue"])
+df_res = pd.DataFrame(results, columns=["dataset", "branchID_True", "EBG_support", "inTrue", "lower_5"])
 df_res.to_csv(os.path.join(os.pardir, "data/ebg_simulation_median.csv"))
