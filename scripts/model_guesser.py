@@ -7,6 +7,8 @@ import subprocess
 def run_modeltest_ng(filepath, data_type):
     data_type_flag = "-d nt" if data_type.lower() in ["dna", "datatype.dna"] else "-d aa"
 
+    print(f'data type: {data_type_flag}' )
+
     command = f"modeltest-ng -i {filepath} {data_type_flag} --force"
     result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
     # Extract the best model from the output
@@ -29,7 +31,7 @@ def run_modeltest_ng(filepath, data_type):
 
     if best_model_bic is not None and best_model_aic is not None:
         print(f'best model bic {best_model_bic}')
-        print(f'best model bic {best_model_aic}')
+        print(f'best model aic {best_model_aic}')
         print('#'*20)
 
 
