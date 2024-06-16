@@ -5,23 +5,17 @@ import subprocess
 
 # Define the function to run ModelTest-NG and get the best model
 def run_modeltest_ng(filepath, data_type):
-    output_prefix = "modeltest_output"
+    data_type_flag = "-d nt" if data_type.lower() in ["dna", "datatype.dna"] else "-d aa"
 
-    # Normalize the data type for comparison
-    data_type_normalized = data_type.lower()
+    command = f"modeltest-ng -i {filepath} {data_type_flag}"
+    result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
 
-    if data_type_normalized in ["dna", "datatype.dna"]:
-        data_type_flag = "-d nt"
-    else:
-        data_type_flag = "-d aa"
-
-    command = f"modeltest-ng -i {filepath} {data_type_flag} -o {output_prefix}"
-    subprocess.run(command, shell=True, check=True)
-
-    # Read the output file to get the best model
-    best_model_path = f"{output_prefix}.best_model"
-    with open(best_model_path, "r") as f:
-        best_model = f.readline().strip()
+    # Extract the best model from the output
+    output_lines = result.stdout.splitlines()
+    for line in output_lines:
+        if line.startswith("Model:"):
+            best_model = line.split(":")[1].strip()
+            break
 
     return best_model
 
