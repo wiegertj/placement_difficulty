@@ -10,17 +10,30 @@ def run_modeltest_ng(filepath, data_type):
     command = f"modeltest-ng -i {filepath} {data_type_flag} --force"
     result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
     # Extract the best model from the output
+    best_model_bic = None
+    best_model_aic = None
+    model_count = 0
+
     output_lines = result.stdout.splitlines()
     for line in output_lines:
         if ".fasta --model" in line:
+            model_count += 1
             parts = line.split()
             model_index = parts.index('--model') + 1
-            best_model = parts[model_index].strip()
-            break
-    if best_model is not None:
-        print(f'best model {best_model}')
+            model = parts[model_index].strip()
+            if model_count == 1:
+                best_model_bic = model
+            elif model_count == 2:
+                best_model_aic = model
+                break
 
-        return best_model
+    if best_model_bic is not None and best_model_aic is not None:
+        print(f'best model bic {best_model_bic}')
+        print(f'best model bic {best_model_aic}')
+        print('#'*20)
+
+
+        return best_model_bic, best_model_aic
 
 
 # Path to the loo_selection CSV
@@ -51,12 +64,12 @@ for index, row in loo_selection.iterrows():
     filepath = os.path.join(os.pardir, "data/raw/msa", f"{msa_name}_reference.fasta")
 
     # Run ModelTest-NG and get the best model
-    best_model = run_modeltest_ng(filepath, data_type)
-    if best_model is None:
+    best_model_bic, best_model_aic = run_modeltest_ng(filepath, data_type)
+    if best_model_bic is None or best_model_aic is None:
         continue
 
     # Append the result to the DataFrame using concat
-    new_row = pd.DataFrame({"msa_name": [msa_name], "best_model": [best_model]})
+    new_row = pd.DataFrame({"msa_name": [msa_name], "best_model_bic": [best_model_bic], 'best_model_aic': [best_model_aic]})
     results_df = pd.concat([results_df, new_row], ignore_index=True)
 
 # Save the results to CSV
