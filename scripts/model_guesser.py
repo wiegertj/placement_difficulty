@@ -9,13 +9,13 @@ def run_modeltest_ng(filepath, data_type):
 
     command = f"modeltest-ng -i {filepath} {data_type_flag} --force"
     result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
-    print(result)
     # Extract the best model from the output
     output_lines = result.stdout.splitlines()
     for line in output_lines:
-        if line.startswith("Model:"):
-            best_model = line.split(":")[1].strip()
-
+        if ".fasta --model" in line:
+            parts = line.split()
+            model_index = parts.index('--model') + 1
+            best_model = parts[model_index].strip()
             break
     if best_model is not None:
         print(f'best model {best_model}')
