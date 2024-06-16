@@ -13,7 +13,6 @@ def run_modeltest_ng(filepath, data_type):
     # Extract the best model from the output
     output_lines = result.stdout.splitlines()
     for line in output_lines:
-        print(line)
         if line.startswith("Model:"):
             best_model = line.split(":")[1].strip()
             print(f'best model {best_model}')
