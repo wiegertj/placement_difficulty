@@ -9,7 +9,7 @@ def run_modeltest_ng(filepath, data_type):
 
     command = f"modeltest-ng -i {filepath} {data_type_flag}"
     result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
-
+    print(result)
     # Extract the best model from the output
     output_lines = result.stdout.splitlines()
     for line in output_lines:
