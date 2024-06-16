@@ -15,10 +15,12 @@ def run_modeltest_ng(filepath, data_type):
     for line in output_lines:
         if line.startswith("Model:"):
             best_model = line.split(":")[1].strip()
-            print(f'best model {best_model}')
 
             break
-    return best_model
+    if best_model is not None:
+        print(f'best model {best_model}')
+
+        return best_model
 
 
 # Path to the loo_selection CSV
@@ -50,6 +52,8 @@ for index, row in loo_selection.iterrows():
 
     # Run ModelTest-NG and get the best model
     best_model = run_modeltest_ng(filepath, data_type)
+    if best_model is None:
+        continue
 
     # Append the result to the DataFrame using concat
     new_row = pd.DataFrame({"msa_name": [msa_name], "best_model": [best_model]})
