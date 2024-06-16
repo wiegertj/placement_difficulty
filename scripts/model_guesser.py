@@ -53,6 +53,14 @@ else:
     results_df = pd.read_csv(results_csv_path)
 
 msa_counter = 0
+results_csv_path = "/hits/fast/cme/wiegerjs/model_test_res.csv"
+
+# Create the results CSV if it doesn't exist
+if not os.path.exists(results_csv_path):
+    results_df = pd.DataFrame(columns=["msa_name", "best_model_bic", "best_model_aic"])
+    results_df.to_csv(results_csv_path, index=False)
+
+msa_counter = 0
 for index, row in loo_selection.iterrows():
     msa_name = row['verbose_name'].replace(".phy", "")
     data_type = row['data_type']
@@ -63,14 +71,31 @@ for index, row in loo_selection.iterrows():
 
     filepath = os.path.join(os.pardir, "data/raw/msa", f"{msa_name}_reference.fasta")
 
-    # Run ModelTest-NG and get the best model
-    best_model_bic, best_model_aic = run_modeltest_ng(filepath, data_type)
-    if best_model_bic is None or best_model_aic is None:
-        continue
+    # Run ModelTest-NG and get the best models
+    try:
+        best_model_bic, best_model_aic = run_modeltest_ng(filepath, data_type)
+    except:
+        best_model_aic = 'error'
+        best_model_bic = 'error'
+        # Append the result directly to the CSV file
+        with open(results_csv_path, 'a') as f:
+            pd.DataFrame(
+                {"msa_name": [msa_name], "best_model_bic": [best_model_bic],
+                 "best_model_aic": [best_model_aic]}).to_csv(f,
+                                                             header=False,
+                                                             index=False)
 
-    # Append the result to the DataFrame using concat
-    new_row = pd.DataFrame({"msa_name": [msa_name], "best_model_bic": [best_model_bic], 'best_model_aic': [best_model_aic]})
-    results_df = pd.concat([results_df, new_row], ignore_index=True)
 
-# Save the results to CSV
-results_df.to_csv(results_csv_path, index=False)
+
+    if best_model_aic is None or best_model_bic is None:
+        best_model_aic = 'error'
+        best_model_bic = 'error'
+
+    # Append the result directly to the CSV file
+    with open(results_csv_path, 'a') as f:
+        pd.DataFrame(
+            {"msa_name": [msa_name], "best_model_bic": [best_model_bic], "best_model_aic": [best_model_aic]}).to_csv(f,
+                                                                                                                     header=False,
+                                                                                                                     index=False)
+
+
