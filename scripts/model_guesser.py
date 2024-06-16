@@ -15,8 +15,9 @@ def run_modeltest_ng(filepath, data_type):
     for line in output_lines:
         if line.startswith("Model:"):
             best_model = line.split(":")[1].strip()
-            break
 
+            break
+    print(f'best model {best_model}')
     return best_model
 
 
@@ -50,8 +51,9 @@ for index, row in loo_selection.iterrows():
     # Run ModelTest-NG and get the best model
     best_model = run_modeltest_ng(filepath, data_type)
 
-    # Append the result to the DataFrame
-    results_df = results_df.append({"msa_name": msa_name, "best_model": best_model}, ignore_index=True)
+    # Append the result to the DataFrame using concat
+    new_row = pd.DataFrame({"msa_name": [msa_name], "best_model": [best_model]})
+    results_df = pd.concat([results_df, new_row], ignore_index=True)
 
 # Save the results to CSV
 results_df.to_csv(results_csv_path, index=False)
