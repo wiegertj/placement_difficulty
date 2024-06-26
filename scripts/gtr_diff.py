@@ -23,7 +23,7 @@ for index, row in sampled_df.iterrows():
         "raxml-ng",
         "--search",
         f"--msa {msa_filepath}",
-        "--model GTR+G",
+        f"--model {row['best_model_bic']}",
         # "--model LG4M",
         "--threads auto",
         f"--prefix {row['msa_name'] + '_modelfinder'}"
