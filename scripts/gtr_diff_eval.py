@@ -40,3 +40,13 @@ output_file_path = "nrf_results.csv"
 results_df.to_csv(output_file_path, index=False)
 
 print(f"Results saved to {output_file_path}")
+import matplotlib.pyplot as plt
+
+# Plot a histogram of the NRF values
+plt.figure(figsize=(10, 6))
+plt.hist(results_df['nrf'], bins=20, edgecolor='black')
+plt.xlabel('Normalized Robinson-Foulds (NRF) Distance')
+plt.ylabel('Frequency')
+plt.title('Histogram of NRF Distances')
+plt.grid(True)
+plt.show()
