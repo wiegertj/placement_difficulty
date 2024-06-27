@@ -39,6 +39,8 @@ results_df = pd.DataFrame(results)
 output_file_path = "nrf_results.csv"
 results_df.to_csv(output_file_path, index=False)
 
+print(results_df['nrf'].mean())
+print(results_df['nrf'].std())
 print(f"Results saved to {output_file_path}")
 import matplotlib.pyplot as plt
 
