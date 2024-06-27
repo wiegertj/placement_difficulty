@@ -24,7 +24,7 @@ for index, row in sampled_df.iterrows():
     tree2 = Tree(tree_filepath_alt)
 
     # Calculate the Robinson-Foulds distance
-    rf, max_rf, common_leaves, parts_t1, parts_t2, discarded_t1, discarded_t2 = tree1.robinson_foulds(tree2)
+    rf, max_rf, common_leaves, parts_t1, parts_t2, discarded_t1, discarded_t2 = tree1.robinson_foulds(tree2, unrooted_trees=True)
 
     # Normalize the RF distance
     nrf = rf / max_rf
