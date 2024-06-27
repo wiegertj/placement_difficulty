@@ -15,6 +15,7 @@ filtered_df = filtered_df[filtered_df['best_model_bic'] != 'GTR+G+I']
 sampled_df = filtered_df.head(200)
 
 # Iterate over the sampled rows and print msa_name and best_model_bic
+results = []
 for index, row in sampled_df.iterrows():
     print(f"msa_name: {row['msa_name']}, best_model_bic: {row['best_model_bic']}")
     tree_filepath = os.path.join(os.pardir, "data/raw/reference_tree", f"{row['msa_name']}.newick")
@@ -28,6 +29,14 @@ for index, row in sampled_df.iterrows():
 
     # Normalize the RF distance
     nrf = rf / max_rf
+    results.append({'msa_name': row['msa_name'], 'nrf': nrf})
 
     print(nrf
           )
+results_df = pd.DataFrame(results)
+
+# Save the results DataFrame as a CSV file
+output_file_path = "nrf_results.csv"
+results_df.to_csv(output_file_path, index=False)
+
+print(f"Results saved to {output_file_path}")
