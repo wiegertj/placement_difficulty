@@ -42,6 +42,8 @@ results_df.to_csv(output_file_path, index=False)
 print(results_df['nrf'].mean())
 print(results_df['nrf'].std())
 print(f"Results saved to {output_file_path}")
+df_filtered = results_df[results_df['nrf'] >= 0.3]
+df_filtered.to_csv('nrf_results_filtered.csv')
 import matplotlib.pyplot as plt
 
 # Plot a histogram of the NRF values
