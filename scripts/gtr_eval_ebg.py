@@ -13,22 +13,22 @@ for index, row in df.iterrows():
     tree_filepath_alt = os.path.join(os.pardir, "scripts/", f"{row['msa_name']}_modelfinder.raxml.bestTree")
     model_filepath_alt = os.path.join(os.pardir, "scripts/", f"{row['msa_name']}_modelfinder.raxml.bestModel")
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", row['msa_name'] + "_reference.fasta")
-
+    bootstraps_filepath = os.path.join(os.pardir, "data/raw/msa", row['msa_name'] + "_reference.fasta.raxml.bootstraps")
     raxml_command = [
         "raxml-ng",
-        "--bootstrap",
-        f"--model {model_filepath_alt}",
-        f"--bs-trees {1000}",
-        f"--msa {msa_filepath}",
+        "--support",
+        f"--tree {tree_filepath_alt}",
+        f"--bs-trees {bootstraps_filepath}",
         "--redo",
-    ]
+        f"--prefix {row['msa_name']}_model"]
+    #raxml_command = [
+     #   "raxml-ng",
+    #    "--bootstrap",
+    #    f"--model {model_filepath_alt}",
+    #    f"--bs-trees {1000}",
+    #    f"--msa {msa_filepath}",
+    #    "--redo",
+    #]
 
     subprocess.run(" ".join(raxml_command), shell=True)
 
-    #raxml_command = [
-     #   "raxml-ng",
-      #  "--support",
-       # f"--tree {tree_filepath_alt}",
-       # f"--bs-trees {boot_path}",
-       # "--redo",
-       # f"--prefix {row['msa_name']}"]
