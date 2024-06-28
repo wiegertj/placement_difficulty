@@ -31,8 +31,8 @@ for index, row in df.iterrows():
 
     # Path to your input files (replace with your actual paths)
     msa_name = "example"  # Replace this with actual msa_name as needed
-    real_support_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/scripts/{msa_name}_model.raxml.support"
-    ebg_support_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/scripts/{msa_name}_modeltest/{msa_name}_modeltest_median_support_prediction.newick"
+    real_support_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/scripts/{row['msa_name']}_model.raxml.support"
+    ebg_support_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/scripts/{row['msa_name']}_modeltest/{row['msa_name']}_modeltest_median_support_prediction.newick"
     print(real_support_path)
     print(ebg_support_path)
     # Extract support values from both trees
