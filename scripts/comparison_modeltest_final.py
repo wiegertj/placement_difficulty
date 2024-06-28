@@ -1,4 +1,5 @@
 import os
+import statistics
 import subprocess
 from ete3 import Tree
 import pandas as pd
@@ -20,7 +21,7 @@ for index, row in df.iterrows():
 
     import ete3
     import pandas as pd
-    from sklearn.metrics import mean_absolute_error
+    from sklearn.metrics import mean_absolute_error, median_absolute_error
 
 
     # Function to extract support values from a Newick file
@@ -40,15 +41,17 @@ for index, row in df.iterrows():
     ebg_support_values = extract_support_values(ebg_support_path)
 
     # Compute mean absolute error
-    mae = mean_absolute_error(real_support_values, ebg_support_values)
+    mae = median_absolute_error(real_support_values, ebg_support_values)
     differences = []
     for a, b in zip(real_support_values, ebg_support_values):
         diff = abs(a-b)
         differences.append(diff)
-    print(sum(differences)/len(differences))
+    print(statistics.median(differences))
+
 
     print(f"Mean Absolute Error between real support and EBG support: {mae}")
-
+    # 8.7
+    #
 
 
 
