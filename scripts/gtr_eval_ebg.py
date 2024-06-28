@@ -14,13 +14,28 @@ for index, row in df.iterrows():
     model_filepath_alt = os.path.join(os.pardir, "scripts/", f"{row['msa_name']}_modelfinder.raxml.bestModel")
     msa_filepath = os.path.join(os.pardir, "data/raw/msa", row['msa_name'] + "_reference.fasta")
     bootstraps_filepath = os.path.join(os.pardir, "data/raw/msa", row['msa_name'] + "_reference.fasta.raxml.bootstraps")
+
     raxml_command = [
-        "raxml-ng",
-        "--support",
-        f"--tree {tree_filepath_alt}",
-        f"--bs-trees {bootstraps_filepath}",
-        "--redo",
-        f"--prefix {row['msa_name']}_model"]
+        "ebg",
+        f"-model {os.path.abspath(model_filepath_alt)}",
+        f"-msa {os.path.abspath(msa_filepath)}",
+        f"-tree {os.path.abspath(tree_filepath_alt)}",
+        "-t b",
+        f"-o {row['msa_name']}_modeltest"
+    ]
+
+    #print("Boot")
+    print("Started")
+    s = " ".join(raxml_command)
+    print(s)
+    subprocess.run(" ".join(raxml_command), shell=True)
+    #raxml_command = [
+     #   "raxml-ng",
+      #  "--support",
+     #   f"--tree {tree_filepath_alt}",
+      #  f"--bs-trees {bootstraps_filepath}",
+       # "--redo",
+        #f"--prefix {row['msa_name']}_model"]
     #raxml_command = [
      #   "raxml-ng",
     #    "--bootstrap",
@@ -30,5 +45,6 @@ for index, row in df.iterrows():
     #    "--redo",
     #]
 
-    subprocess.run(" ".join(raxml_command), shell=True)
+    #subprocess.run(" ".join(raxml_command), shell=True)
+    #/hits/fast/cme/wiegerjs/placement_difficulty/scripts/14534_25_model.raxml.support real support
 
