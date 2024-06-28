@@ -25,7 +25,7 @@ for index, row in df.iterrows():
 
     # Function to extract support values from a Newick file
     def extract_support_values(newick_file):
-        tree = ete3.Tree(newick_file, format=1)  # format=1 assumes internal node support values
+        tree = ete3.Tree(newick_file, format=0)  # format=1 assumes internal node support values
         return [node.support for node in tree.traverse() if not node.is_leaf()]
 
 
