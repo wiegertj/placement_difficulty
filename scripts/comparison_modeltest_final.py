@@ -41,6 +41,7 @@ for index, row in df.iterrows():
 
     # Compute mean absolute error
     mae = mean_absolute_error(real_support_values, ebg_support_values)
+    print(sum(mae)/len(mae))
 
     print(f"Mean Absolute Error between real support and EBG support: {mae}")
 
