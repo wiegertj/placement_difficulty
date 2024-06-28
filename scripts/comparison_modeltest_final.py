@@ -33,7 +33,8 @@ for index, row in df.iterrows():
     msa_name = "example"  # Replace this with actual msa_name as needed
     real_support_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/scripts/{msa_name}_model.raxml.support"
     ebg_support_path = f"/hits/fast/cme/wiegerjs/placement_difficulty/scripts/{msa_name}_modeltest/{msa_name}_modeltest_median_support_prediction.newick"
-
+    print(real_support_path)
+    print(ebg_support_path)
     # Extract support values from both trees
     real_support_values = extract_support_values(real_support_path)
     ebg_support_values = extract_support_values(ebg_support_path)
