@@ -26,8 +26,8 @@ for folder_name in folder_names:
     abs_path = os.path.abspath(os.path.join(folder_path, folder_name))
     dataset = folder_name.replace(".phy", "")
     print(abs_path)
-    tree_ebg_path = abs_path + f"/{dataset}.phy_median_support_prediction.newick"
-    tree_lower5_path = abs_path + f"/{dataset}.phy_lower5_support_prediction.newick"
+    tree_ebg_path = abs_path + f"/{dataset}.phy_bs_over_80_support_prediction.newick"
+    tree_lower5_path = abs_path + f"/{dataset}.phy_uncertainty_bs_over_80_support_prediction.newick"
     tree_true_path = f"/hits/fast/cme/wiegerjs/EBG_simulations/data/{folder_name}/gtr_g.raxml.bestTree"
 
     try:
@@ -88,4 +88,4 @@ for folder_name in folder_names:
                     results.append((dataset, node_true.name, node.support, 0, node_lower5.support))
 
 df_res = pd.DataFrame(results, columns=["dataset", "branchID_True", "EBG_support", "inTrue", "lower_5"])
-df_res.to_csv(os.path.join(os.pardir, "data/ebg_simulation_median.csv"))
+df_res.to_csv(os.path.join(os.pardir, "data/ebg_simulation_80_unc.csv"))
