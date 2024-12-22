@@ -11,6 +11,10 @@ path_new = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features
 
 df_1 = pd.read_csv(path_1)
 df_new = pd.read_csv(path_new)
+print("Old cols")
+print(df_1.columns)
+print("New cols")
+print(df_new.columns)
 print(df_new["std_pars_bootsupp_parents"])
 # Add suffix "_DEL" to all columns in df_new
 df_new = df_new.add_suffix('_DEL')
