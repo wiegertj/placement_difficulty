@@ -44,11 +44,18 @@ for file in filenames:
             branch_id_counter += 1
             node.__setattr__("name", branch_id_counter)
             if node.support is not None and not node.is_leaf():
+                inner_nodes_count = sum(1 for node in tree.traverse() if not node.is_leaf())
 
+                print(f"Number of inner nodes: {inner_nodes_count}")
                 childs_inner = [node_child for node_child in node.traverse() if not node_child.is_leaf()]
-                #parents_inner = node.get_ancestors()
-                all_inner_nodes = [tree_node for tree_node in node.traverse() if not tree_node.is_leaf()]
-                parents_inner = [inner_node for inner_node in all_inner_nodes if inner_node not in childs_inner]
+                print(len(childs_inner))
+                tree_copy = tree.copy()
+                tree_branch = tree_copy.search_nodes(name=branch_id_counter)[0]
+                tree_branch.detach()
+
+                parents_inner = [tree_node for tree_node in tree_copy.traverse() if not tree_node.is_leaf()]
+                print(len(parents_inner))
+                print("*"*20)
                 supports_childs = []
                 weighted_supports_childs = []
                 for child in childs_inner:
