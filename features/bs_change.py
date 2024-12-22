@@ -44,7 +44,7 @@ print(merged_df["std_pars_bootstrap_support_parents"])
 # Save or view the resulting DataFrame
 print(merged_df.head())
 # Optionally save the DataFrame to a CSV file
-# merged_df.to_csv("/path/to/output.csv", index=False)
+merged_df.to_csv("/hits/fast/cme/wiegerjs/EBG_train/EBG_train/data/processed/features_new.csv", index=False)
 
 
 print("-"*100)
