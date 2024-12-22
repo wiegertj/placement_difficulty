@@ -17,7 +17,7 @@ df_new = df_new.add_suffix('_DEL')
 
 # Perform an inner merge on 'dataset' and 'branchId'
 merged_df = df_1.merge(df_new, how='inner', left_on=['dataset', 'branchId'], right_on=['dataset_DEL', 'branchId_DEL'])
-
+print(merged_df["mean_pars_bootstrap_support_parents"])
 # Define the column mapping
 column_mapping = {
     'mean_pars_bootstrap_support_parents': 'mean_pars_bootsupp_parents_DEL',
@@ -35,6 +35,7 @@ for target_col, source_col in column_mapping.items():
 
 # Drop all columns with "_DEL" suffix
 merged_df = merged_df.loc[:, ~merged_df.columns.str.endswith('_DEL')]
+print(merged_df["mean_pars_bootstrap_support_parents"])
 
 # Save or view the resulting DataFrame
 print(merged_df.head())
