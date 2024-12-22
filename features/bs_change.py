@@ -53,6 +53,7 @@ df_new2 = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/
 df_new2 = pd.read_csv(df_new2)
 
 df_new2 = df_new.add_suffix('_DEL')
+print(df_new2.columns)
 merged_df = merged_df.merge(df_new2, how='inner', left_on=['dataset', 'branchId'], right_on=['dataset_DEL', 'branchId_DEL'])
 
 print(merged_df["min_pars_support_children_weighted"])
