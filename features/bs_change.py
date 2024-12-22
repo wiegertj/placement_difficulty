@@ -12,41 +12,34 @@ path_new = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features
 df_1 = pd.read_csv(path_1)
 df_new = pd.read_csv(path_new)
 
-# Define the column mapping from df_new to df_1
+# Add suffix "_DEL" to all columns in df_new
+df_new = df_new.add_suffix('_DEL')
+
+# Perform an inner merge on 'dataset' and 'branchId'
+merged_df = df_1.merge(df_new, how='inner', left_on=['dataset', 'branchId'], right_on=['dataset_DEL', 'branchId_DEL'])
+
+# Define the column mapping
 column_mapping = {
-    'mean_pars_bootsupp_parents': 'mean_pars_bootstrap_support_parents',
-    'std_pars_bootsupp_parents': 'std_pars_bootstrap_support_parents',
-    'skw_pars_bootsupp_parents': 'skewness_bootstrap_pars_support_tree',
-    'min_pars_bootsupp_child_w': 'min_pars_bootstrap_support_children_w',
-    'max_pars_bootsupp_child_w': 'max_pars_bootstrap_support_children_w',
-    'std_pars_bootstrap_support_children': 'std_pars_bootstrap_support_children'
+    'mean_pars_bootstrap_support_parents': 'mean_pars_bootsupp_parents_DEL',
+    'std_pars_bootstrap_support_parents': 'std_pars_bootsupp_parents_DEL',
+    'skewness_bootstrap_pars_support_tree': 'skw_pars_bootsupp_parents_DEL',
+    'min_pars_bootstrap_support_children_w': 'min_pars_bootsupp_child_w_DEL',
+    'max_pars_bootstrap_support_children_w': 'max_pars_bootsupp_child_w_DEL',
+    'std_pars_bootstrap_support_children': 'std_pars_bootstrap_support_children_DEL'
 }
 
-# Reverse the mapping for renaming purposes
-rename_mapping = {v: k for k, v in column_mapping.items()}
+# Replace df_1 columns with corresponding values from df_new
+for target_col, source_col in column_mapping.items():
+    if source_col in merged_df.columns:
+        merged_df[target_col] = merged_df[source_col]
 
-# Keep only df_1 columns
-df_1_filtered = df_1[list(rename_mapping.keys())]
-
-# Rename df_new columns for consistency with df_1
-df_new_renamed = df_new.rename(columns=rename_mapping)
-
-# Merge on the common columns (you can adjust `on` or `how` depending on your merge logic)
-merged_df = df_1_filtered.merge(df_new_renamed, how='inner', on=["branchId", "dataset"])
-
-# Replace df_1 values with those from df_new
-for old_col, new_col in rename_mapping.items():
-    if new_col in df_new.columns:
-        merged_df[old_col] = merged_df[new_col]
-
-# Drop unnecessary columns if needed
-merged_df = merged_df[df_1_filtered.columns]
+# Drop all columns with "_DEL" suffix
+merged_df = merged_df.loc[:, ~merged_df.columns.str.endswith('_DEL')]
 
 # Save or view the resulting DataFrame
 print(merged_df.head())
 # Optionally save the DataFrame to a CSV file
-merged_df.to_csv("/hits/fast/cme/wiegerjs/placement_difficulty/features_new.csv", index=False)
-
+# merged_df.to_csv("/path/to/output.csv", index=False)
 
 
 
