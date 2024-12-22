@@ -76,6 +76,7 @@ merged_df = merged_df.loc[:, ~merged_df.columns.str.endswith('_DEL')]
 
 print(merged_df["min_pars_support_children_weighted"])
 print(merged_df.shape)
+print(merged_df.columns)
 
 
 
