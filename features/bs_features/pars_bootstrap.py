@@ -17,7 +17,7 @@ for file in filenames:
     print(counter)
     print(file)
 
-    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_99.raxml.support"
+    support_path = os.path.join(grandir, "scripts/") + file.replace(".newick", "") + "_parsimony_supp_199.raxml.support"
 
     if not os.path.exists(support_path):
         print("Couldnt find support: " + support_path)
@@ -46,7 +46,9 @@ for file in filenames:
             if node.support is not None and not node.is_leaf():
 
                 childs_inner = [node_child for node_child in node.traverse() if not node_child.is_leaf()]
-                parents_inner = node.get_ancestors()
+                #parents_inner = node.get_ancestors()
+                all_inner_nodes = [tree_node for tree_node in node.traverse() if not tree_node.is_leaf()]
+                parents_inner = [inner_node for inner_node in all_inner_nodes if inner_node not in childs_inner]
                 supports_childs = []
                 weighted_supports_childs = []
                 for child in childs_inner:
@@ -154,4 +156,4 @@ df_res = pd.DataFrame(results, columns=["dataset", "branchId", "parsimony_boot_s
                                         "mean_pars_bootsupp_tree"
 
                                         ])
-df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony_boot_100.csv"))
+df_res.to_csv(os.path.join(grandir, "data/processed/features/bs_features/parsimony_boot_199.csv"))
