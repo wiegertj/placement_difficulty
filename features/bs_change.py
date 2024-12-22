@@ -35,7 +35,7 @@ for target_col, source_col in column_mapping.items():
 
 # Drop all columns with "_DEL" suffix
 merged_df = merged_df.loc[:, ~merged_df.columns.str.endswith('_DEL')]
-print(merged_df["mean_pars_bootstrap_support_parents"])
+print(merged_df["min_pars_bootstrap_support_children_w"])
 
 # Save or view the resulting DataFrame
 print(merged_df.head())
