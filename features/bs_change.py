@@ -32,7 +32,7 @@ df_1_filtered = df_1[list(rename_mapping.keys())]
 df_new_renamed = df_new.rename(columns=rename_mapping)
 
 # Merge on the common columns (you can adjust `on` or `how` depending on your merge logic)
-merged_df = df_1_filtered.merge(df_new_renamed, on=rename_mapping.keys(), how='inner')
+merged_df = df_1_filtered.merge(df_new_renamed, how='inner', on=["branchId", "dataset"])
 
 # Replace df_1 values with those from df_new
 for old_col, new_col in rename_mapping.items():
