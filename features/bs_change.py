@@ -7,7 +7,6 @@ path_new = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features
 import pandas as pd
 
 # Load the DataFrames (adjust paths if needed)
-path_1 = "/hits/fast/cme/wiegerjs/EBG_train/EBG_train/data/processed"
 path_new = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/parsimony_boot_199_new.csv"
 
 df_1 = pd.read_csv(path_1)
