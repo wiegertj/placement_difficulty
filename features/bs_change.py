@@ -51,21 +51,18 @@ print("-"*100)
 
 df_new2 = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/parsimony_1000.csv"
 df_new2 = pd.read_csv(df_new2)
-print("Old cols")
-print(df_1.columns)
-print("Old cols")
-print(df_new2.columns)
-sys.exit()
+
 df_new2 = df_new.add_suffix('_DEL')
 merged_df = merged_df.merge(df_new2, how='inner', left_on=['dataset', 'branchId'], right_on=['dataset_DEL', 'branchId_DEL'])
 
+print(merged_df["min_pars_support_children_weighted"])
 
 column_mapping = {
-    'mean_pars_bootstrap_support_parents': 'mean_pars_bootsupp_parents_DEL',
-    'std_pars_bootstrap_support_parents': 'std_pars_bootsupp_parents_DEL',
-    'min_pars_bootstrap_support_children_w': 'min_pars_bootsupp_child_w_DEL',
-    'max_pars_bootstrap_support_children_w': 'max_pars_bootsupp_child_w_DEL',
-    'std_pars_bootstrap_support_children': 'std_pars_bootstrap_support_children_DEL'
+    'min_pars_support_children_weighted': 'min_pars_supp_child_w',
+    'max_pars_support_children_weighted': 'max_pars_supp_child_w',
+    'min_pars_support_children': 'min_pars_supp_child',
+    'std_pars_support_children': 'std_pars_supp_child',
+    'mean_pars_support_children_weighted': 'mean_pars_supp_child_w'
 }
 
 # Replace df_1 columns with corresponding values from df_new
@@ -75,5 +72,9 @@ for target_col, source_col in column_mapping.items():
 
 # Drop all columns with "_DEL" suffix
 merged_df = merged_df.loc[:, ~merged_df.columns.str.endswith('_DEL')]
+
+print(merged_df["min_pars_support_children_weighted"])
+print(merged_df.shape)
+
 
 
