@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Define the paths
-path_1 = "/hits/fast/cme/wiegerjs/EBG_train/EBG_train/data/processed"
+path_1 = "/hits/fast/cme/wiegerjs/EBG_train/EBG_train/data/processed/features.csv"
 path_new = "/hits/fast/cme/wiegerjs/placement_difficulty/data/processed/features/bs_features/parsimony_boot_199_new.csv"
 
 # Load and print columns for the first file
