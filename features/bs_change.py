@@ -21,3 +21,7 @@ try:
     print(df_new.columns)
 except Exception as e:
     print(f"Error reading file {path_new}: {e}")
+
+print(df_1.shape)
+merged = df_1.merge(df_new, how="inner", on=["branchId", "dataset"])
+print(merged.shape)
