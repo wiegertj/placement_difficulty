@@ -61,11 +61,17 @@ for subfolder, paths in file_paths.items():
         "--redo",
         "--prefix", "output_prefix"
     ]
-
-    start_time = time.time()  # Record start time
-    subprocess.run(raxml_command, check=True)  # Execute the command
-    end_time = time.time()  # Record end time
-    elapsed_time = end_time - start_time
+    try:
+        start_time = time.time()  # Record start time
+        subprocess.run(raxml_command, check=True)  # Execute the command
+        end_time = time.time()  # Record end time
+        elapsed_time = end_time - start_time
+    except subprocess.CalledProcessError as e:
+        # Format the command for copy-paste if it fails
+        failed_command = " ".join(raxml_command)
+        print(f"Error occurred while running the command:\n{failed_command}\n")
+        print(f"Error details: {e}")
+        results.append({"subprocess": failed_command, "elapsed_time": None})
 
     results.append({"subprocess": subfolder, "elapsed_time": elapsed_time})
     break
