@@ -1,6 +1,7 @@
 
 # Base directory to iterate
 base_dir = "/hits/fast/cme/wiegerjs/EBG_train/EBG_train/data/raw"
+import csv
 
 import os
 import time
@@ -40,6 +41,15 @@ for root, dirs, files in os.walk(base_dir):
         file_paths[subfolder] = (newick_path, model_path, fasta_path, msa_type, subfolder)
 results = []
 # Output results
+csv_file_path = "/hits/fast/cme/wiegerjs/rapid_ng_times.csv"
+
+# Write header to the CSV file if it doesn't exist
+if os.path.exists(csv_file_path):
+    os.remove(csv_file_path)
+
+with open(csv_file_path, 'w', newline='') as csvfile:
+    writer = csv.DictWriter(csvfile, fieldnames=["subprocess", "elapsed_time"])
+    writer.writeheader()
 print("File Paths (Newick, Model, Fasta, MSA Type):")
 for subfolder, paths in file_paths.items():
     print(f"{subfolder}: {paths}")
@@ -66,14 +76,18 @@ for subfolder, paths in file_paths.items():
         subprocess.run(raxml_command, check=True)  # Execute the command
         end_time = time.time()  # Record end time
         elapsed_time = end_time - start_time
+        res = {"subprocess": subfolder, "elapsed_time": elapsed_time}
     except subprocess.CalledProcessError as e:
         # Format the command for copy-paste if it fails
         failed_command = " ".join(raxml_command)
         print(f"Error occurred while running the command:\n{failed_command}\n")
         print(f"Error details: {e}")
-        results.append({"subprocess": subfolder, "elapsed_time": None})
+        res = {"subprocess": subfolder, "elapsed_time": None}
 
-    results.append({"subprocess": subfolder, "elapsed_time": elapsed_time})
+    with open(csv_file_path, 'a', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=["subprocess", "elapsed_time"])
+        writer.writerow({"subprocess": subfolder, "elapsed_time": elapsed_time})
+
 
 
 # Convert results to a DataFrame
