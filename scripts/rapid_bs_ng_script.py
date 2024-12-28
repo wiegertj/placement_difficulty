@@ -54,7 +54,7 @@ for subfolder, paths in file_paths.items():
     raxml_command = [
         "/hits/fast/cme/wiegerjs/rapid_boot_ng_dev/raxml-ng-dev/build/bin/raxml-ng-adaptive",
         "--bootstrap",
-        "--bs-metric rbs",
+        "--bs-metric", "rbs",
         "--model", model_path,
         f"--bs-trees {1000}",
         "--msa", msa_path,
