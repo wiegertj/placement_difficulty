@@ -21,7 +21,7 @@ for root, dirs, files in os.walk(base_dir):
     for file in files:
         if file.endswith(".newick"):
             newick_path = os.path.join(root, file)
-        elif file.endswith(".model.txt"):
+        elif file.endswith("_model.txt"):
             model_path = os.path.join(root, file)
         elif file.endswith(".fasta"):
             fasta_path = os.path.join(root, file)
