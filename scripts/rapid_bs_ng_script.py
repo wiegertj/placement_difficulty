@@ -71,10 +71,9 @@ for subfolder, paths in file_paths.items():
         failed_command = " ".join(raxml_command)
         print(f"Error occurred while running the command:\n{failed_command}\n")
         print(f"Error details: {e}")
-        results.append({"subprocess": failed_command, "elapsed_time": None})
+        results.append({"subprocess": subfolder, "elapsed_time": None})
 
     results.append({"subprocess": subfolder, "elapsed_time": elapsed_time})
-    break
 
 
 # Convert results to a DataFrame
