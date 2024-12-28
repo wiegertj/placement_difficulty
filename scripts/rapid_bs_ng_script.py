@@ -59,7 +59,7 @@ for subfolder, paths in file_paths.items():
         f"--bs-trees {1000}",
         "--msa", msa_path,
         "--redo",
-        "--prefix", "output_prefix"
+        "--prefix", output_prefix
     ]
     try:
         start_time = time.time()  # Record start time
