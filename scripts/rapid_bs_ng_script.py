@@ -56,7 +56,7 @@ for subfolder, paths in file_paths.items():
         "--bootstrap",
         "--bs-metric", "rbs",
         "--model", model_path,
-        f"--bs-trees", 1000,
+        f"--bs-trees", "1000",
         "--msa", msa_path,
         "--redo",
         "--prefix", output_prefix
