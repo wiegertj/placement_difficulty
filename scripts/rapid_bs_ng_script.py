@@ -3,7 +3,9 @@
 base_dir = "/hits/fast/cme/wiegerjs/EBG_train/EBG_train/data/raw"
 
 import os
-
+import time
+import subprocess
+import pandas as pd
 # Base directory to iterate
 base_dir = "/hits/fast/cme/wiegerjs/EBG_train/EBG_train/data/raw"
 
@@ -35,21 +37,43 @@ for root, dirs, files in os.walk(base_dir):
 
         # Store paths and msa_type as a tuple
         subfolder = os.path.basename(root)
-        file_paths[subfolder] = (newick_path, model_path, fasta_path, msa_type)
-
+        file_paths[subfolder] = (newick_path, model_path, fasta_path, msa_type, subfolder)
+results = []
 # Output results
 print("File Paths (Newick, Model, Fasta, MSA Type):")
 for subfolder, paths in file_paths.items():
     print(f"{subfolder}: {paths}")
+    tree_path = paths[0]
+    model_path = paths[1]
+    msa_path = paths[2]
+    type = paths[3]
+
+    output_prefix = subfolder + "_rb_ng"
 
 
-    #raxml_command = [
-    #    "raxml-ng",
-     #   "--bootstrap",
-      #  "--model", model_path,
-       # f"--bs-trees {5000}",
-      #  "--msa", msa_filepath,
-       # "--redo",
-       # "--prefix", "output_prefix"
-    #]
+    raxml_command = [
+        "/hits/fast/cme/wiegerjs/rapid_boot_ng_dev/raxml-ng-dev/build/bin/raxml-ng-adaptive",
+        "--bootstrap",
+        "--bs-metric rbs",
+        "--model", model_path,
+        f"--bs-trees {1000}",
+        "--msa", msa_path,
+        "--redo",
+        "--prefix", "output_prefix"
+    ]
 
+    start_time = time.time()  # Record start time
+    subprocess.run(raxml_command, check=True)  # Execute the command
+    end_time = time.time()  # Record end time
+    elapsed_time = end_time - start_time
+
+    results.append({"subprocess": subfolder, "elapsed_time": elapsed_time})
+    break
+
+
+# Convert results to a DataFrame
+df = pd.DataFrame(results)
+
+# Save or display the DataFrame
+print(df)
+df.to_csv("/hits/fast/cme/wiegerjs/rapid_ng_times.csv", index=False)
