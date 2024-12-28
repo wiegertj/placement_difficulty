@@ -1,10 +1,3 @@
-import subprocess
-import pandas as pd
-import os
-from ete3 import Tree
-from Bio import SeqIO
-
-import os
 
 # Base directory to iterate
 base_dir = "/hits/fast/cme/wiegerjs/EBG_train/EBG_train/data/raw"
