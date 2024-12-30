@@ -31,10 +31,10 @@ for root, dirs, files in os.walk(raw_data_dir):
             raxml_command = [
                 raxml_executable,
                 "--support",
-                f"--tree {newick_path}",
-                f"--bs-trees {bootstrap_filepath}",
+                f"--tree", newick_path,
+                f"--bs-trees", {bootstrap_filepath},
                 "--redo",
-                f"--prefix {output_prefix}"
+                f"--prefix", {output_prefix}
             ]
 
             # Execute the command
