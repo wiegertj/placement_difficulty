@@ -4,7 +4,7 @@ import subprocess
 # Directories
 raw_data_dir = "/hits/fast/cme/wiegerjs/EBG_train/EBG_train/data/raw"
 bootstrap_dir = "/hits/fast/cme/wiegerjs/placement_difficulty/scripts"
-raxml_executable = "/hits/fast/cme/wiegerjs/rapid_boot_ng_dev/raxml-ng-dev/build/bin/raxml-ng-adaptive"
+raxml_executable = "raxml-ng"
 
 # Iterate through each subfolder in the raw data directory
 for root, dirs, files in os.walk(raw_data_dir):
